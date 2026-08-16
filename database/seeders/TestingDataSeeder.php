@@ -94,29 +94,158 @@ class TestingDataSeeder extends Seeder
             'status' => 'active',
         ]);
 
-        // Get advertisement category
-        $categoryAd = Category::where('slug', 'bimbingan-belajar-quran')->first()
-            ?? Category::where('type', 'advertisement')->first();
-
+        // Seed multiple classified advertisements
         $freePackage = Package::where('type', 'free')->first();
 
-        // Seed classified ads for merchant
-        $ad = Advertisement::create([
-            'title' => 'Jasa Bekam Sunnah Steril Panggilan',
-            'category_id' => $categoryAd->id,
-            'description' => 'Melayani terapi bekam sunnah dengan jarum dan cup steril sekali pakai untuk wilayah Solo Raya.',
-            'price' => 50000.00,
-            'location' => 'Surakarta',
-            'contact_name' => 'Haji Ahmad',
-            'whatsapp' => '082222222222',
-            'condition' => 'baru',
-            'duration_days' => 30,
-            'package_id' => $freePackage->id,
-            'status' => 'approved',
-            'merchant_id' => $store->id,
-            'owner_id' => $merchantUser->id,
-            'expires_at' => now()->addDays(30),
-        ]);
+        // 1. Create categories of type 'advertisement' if they don't exist
+        $adCategories = [
+            'Mobil' => 'car',
+            'Motor' => 'motorcycle',
+            'Handphone' => 'mobile',
+            'Elektronik' => 'laptop',
+            'Properti' => 'home',
+            'Tanah' => 'map-marked',
+            'Jasa' => 'tools',
+            'Lowongan Kerja' => 'briefcase',
+            'Fashion' => 'tshirt',
+            'Rumah Tangga' => 'couch'
+        ];
+
+        $catModels = [];
+        foreach ($adCategories as $name => $icon) {
+            $catModels[$name] = Category::firstOrCreate(
+                ['slug' => Str::slug($name), 'type' => 'advertisement'],
+                ['name' => $name, 'icon' => $icon]
+            );
+        }
+
+        $mockAdsData = [
+            [
+                'title' => 'Honda HRV 2021 E Special Edition Matic Terawat',
+                'category' => 'Mobil',
+                'condition' => 'bekas',
+                'price' => 278000000.00,
+                'location' => 'Sleman, Yogyakarta',
+                'contact_name' => 'Ahmad Hidayat',
+                'whatsapp' => '6281234567890',
+                'image' => 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=600&auto=format&fit=crop',
+                'desc' => 'Kondisi istimewa, tangan pertama dari baru. Pajak panjang bulan September. Servis rutin Honda resmi. Bebas banjir dan tabrakan. Nego tipis setelah lihat unit.',
+                'tags' => ['honda', 'hrv', 'mobil bekas']
+            ],
+            [
+                'title' => 'Yamaha NMAX ABS 2023 Low KM Gress',
+                'category' => 'Motor',
+                'condition' => 'bekas',
+                'price' => 31500000.00,
+                'location' => 'Jakarta Selatan',
+                'contact_name' => 'Rian Pratama',
+                'whatsapp' => '6289988776655',
+                'image' => 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=600&auto=format&fit=crop',
+                'desc' => 'Jual santai Yamaha NMAX ABS warna hitam matte. KM baru 4.000. Body mulus 99% like new, kunci keyless cadangan lengkap. Surat-surat lengkap STNK BPKB.',
+                'tags' => ['yamaha', 'nmax', 'motor bekas']
+            ],
+            [
+                'title' => 'iPhone 15 Pro Max 256GB Dual SIM Resmi iBox',
+                'category' => 'Handphone',
+                'condition' => 'bekas',
+                'price' => 18450000.00,
+                'location' => 'Surabaya, Jawa Timur',
+                'contact_name' => 'Budi Santoso',
+                'whatsapp' => '6281122334455',
+                'image' => 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?q=80&w=600&auto=format&fit=crop',
+                'desc' => 'iPhone 15 Pro Max warna Titanium Alami. BH 98%, Face ID lancar, True Tone aktif. Masih garansi resmi iBox sampai Desember 2026. Lengkap kotak dan kabel.',
+                'tags' => ['iphone', 'apple', 'handphone']
+            ],
+            [
+                'title' => 'MacBook Pro M2 16GB 512GB Space Gray Mulus',
+                'category' => 'Elektronik',
+                'condition' => 'bekas',
+                'price' => 21900000.00,
+                'location' => 'Bandung, Jawa Barat',
+                'contact_name' => 'Citra Lestari',
+                'whatsapp' => '6285566778899',
+                'image' => 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=600&auto=format&fit=crop',
+                'desc' => 'Jual MacBook Pro M2 untuk kebutuhan upgrade. CC batre rendah, screen guard sudah terpasang. Fisik sangat mulus tanpa dent. Kelengkapan charger original bawaan.',
+                'tags' => ['macbook', 'apple', 'laptop']
+            ],
+            [
+                'title' => 'Rumah Minimalis Modern 2 Lantai Cluster Premium',
+                'category' => 'Properti',
+                'condition' => 'baru',
+                'price' => 980000000.00,
+                'location' => 'Tangerang, Banten',
+                'contact_name' => 'Developer Amanah',
+                'whatsapp' => '6281344556677',
+                'image' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=600&auto=format&fit=crop',
+                'desc' => 'Cluster baru bernuansa syariah dengan sistem pembayaran bebas riba. 3 Kamar Tidur, 2 Kamar Mandi. Free canopy dan AC 1 PK. Keamanan 24 jam dengan CCTV.',
+                'tags' => ['rumah', 'properti', 'syariah']
+            ],
+            [
+                'title' => 'Jasa Pembuatan Landing Page & Web E-Commerce Syariah',
+                'category' => 'Jasa',
+                'condition' => 'baru',
+                'price' => 1500000.00,
+                'location' => 'Depok, Jawa Barat',
+                'contact_name' => 'ADMS Tech Agency',
+                'whatsapp' => '6281299001122',
+                'image' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop',
+                'desc' => 'Melayani pembuatan website company profile, portofolio, landing page, dan e-commerce siap pakai. Responsif mobile, desain modern, premium, gratis domain & hosting 1 tahun.',
+                'tags' => ['website', 'jasa', 'coding']
+            ],
+            [
+                'title' => 'Tanah Kavling Siap Bangun 200m2 dekat Pintu Tol',
+                'category' => 'Tanah',
+                'condition' => 'baru',
+                'price' => 320000000.00,
+                'location' => 'Bekasi, Jawa Barat',
+                'contact_name' => 'Haji Sulaiman',
+                'whatsapp' => '6287711223344',
+                'image' => 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=600&auto=format&fit=crop',
+                'desc' => 'Tanah kavling matang siap bangun pondasi di kawasan strategis. Sertifikat Hak Milik (SHM) bersih atas nama sendiri. Bebas sengketa, akses jalan masuk mobil lebar.',
+                'tags' => ['tanah', 'kavling', 'investasi']
+            ],
+            [
+                'title' => 'Lowongan Kerja Desainer Grafis & Content Creator Full-Time',
+                'category' => 'Lowongan Kerja',
+                'condition' => 'baru',
+                'price' => 0.00,
+                'location' => 'Sleman, Yogyakarta',
+                'contact_name' => 'Berkah Media Utama',
+                'whatsapp' => '6282133445566',
+                'image' => 'https://images.unsplash.com/photo-1542744094-3a31f103e35f?q=80&w=600&auto=format&fit=crop',
+                'desc' => 'Dibutuhkan Creative Designer dengan keahlian Adobe Photoshop, Illustrator, & editing video pendek. Portofolio aktif wajib disertakan. Lingkungan kerja syariah & kondusif.',
+                'tags' => ['lowongan', 'loker', 'desainer']
+            ]
+        ];
+
+        foreach ($mockAdsData as $mock) {
+            $catId = $catModels[$mock['category']]->id;
+            
+            $newAd = Advertisement::create([
+                'title' => $mock['title'],
+                'category_id' => $catId,
+                'description' => $mock['desc'],
+                'price' => $mock['price'],
+                'location' => $mock['location'],
+                'contact_name' => $mock['contact_name'],
+                'whatsapp' => $mock['whatsapp'],
+                'condition' => $mock['condition'],
+                'tags' => $mock['tags'],
+                'duration_days' => 30,
+                'package_id' => $freePackage->id,
+                'status' => 'approved',
+                'merchant_id' => $store->id,
+                'owner_id' => $merchantUser->id,
+                'expires_at' => now()->addDays(30),
+            ]);
+
+            \App\Models\Media::create([
+                'url' => $mock['image'],
+                'type' => 'ad_image',
+                'owner_id' => $newAd->id,
+                'owner_type' => Advertisement::class,
+            ]);
+        }
 
         // 3. Create Customer User
         $customerUser = User::create([

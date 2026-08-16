@@ -5,3 +5,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/pasang-iklan', function () {
+    return view('welcome');
+});
+Route::get('/iklan-gratis', function () {
+    return view('welcome');
+});
+Route::get('{any}', function () {
+    return view('welcome');
+})->where('any', '^(?!api).*$');

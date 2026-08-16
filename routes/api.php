@@ -25,11 +25,47 @@ use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController;
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Merchant;
 
 Route::get('/hello', function () {
     return response()->json([
         'message' => 'Hello from Laravel API!',
         'status' => 'success'
+    ]);
+});
+
+Route::get('/public/merchants', function () {
+    $merchants = Merchant::where('is_verified', true)->with('owner')->get();
+    return response()->json([
+        'success' => true,
+        'message' => 'Daftar merchant terverifikasi berhasil diambil.',
+        'data' => $merchants
+    ]);
+});
+
+Route::get('/public/ads', function () {
+    $ads = \App\Models\Advertisement::where('status', 'approved')
+        ->with(['category', 'media'])
+        ->get()
+        ->map(function ($ad) {
+            return [
+                'id' => $ad->id,
+                'title' => $ad->title,
+                'category' => $ad->category->name,
+                'condition' => ucfirst($ad->condition),
+                'price' => (float)$ad->price,
+                'location' => $ad->location,
+                'advertiser' => $ad->contact_name,
+                'whatsapp' => $ad->whatsapp,
+                'image' => $ad->media->first()?->url ?? 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop',
+                'desc' => $ad->description,
+                'date' => $ad->created_at->format('Y-m-d')
+            ];
+        });
+    return response()->json([
+        'success' => true,
+        'message' => 'Daftar iklan baris berhasil diambil.',
+        'data' => $ads
     ]);
 });
 

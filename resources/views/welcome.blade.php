@@ -13,6 +13,6 @@
         <div id="app"></div>
 
         @viteReactRefresh
-        @vite(['resources/js/app.jsx'])
+        @vite(['resources/css/app.css', 'resources/js/app.jsx'])
     </body>
 </html>

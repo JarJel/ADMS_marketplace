@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Search, CheckCircle2, Megaphone, Globe, TrendingUp, Zap, Share2, ShieldCheck, Home, ArrowRight, Sparkles } from 'lucide-react';
+import { X, Search, CheckCircle2, Megaphone, Globe, TrendingUp, Zap, Share2, ShieldCheck, Home, ArrowRight } from 'lucide-react';
 import { ADMS_CATALOG } from './admsKnowledge';
 
 const ICON_MAP = {
@@ -13,13 +13,13 @@ const ICON_MAP = {
 };
 
 const CATEGORY_THEME_MAP = {
-  'digital-ads': { themeClass: 'theme-ads', labelBadge: 'Digital Marketing', color: '#0ea5e9' },
-  'website-dev': { themeClass: 'theme-web', labelBadge: 'Google Cloud Web', color: '#10b981' },
-  'legalitas': { themeClass: 'theme-legal', labelBadge: 'Legalitas Bisnis', color: '#f59e0b' },
-  'sosmed': { themeClass: 'theme-sosmed', labelBadge: 'Social Media', color: '#a855f7' },
-  'automation': { themeClass: 'theme-auto', labelBadge: 'WA & Bot API', color: '#06b6d4' },
-  'offline': { themeClass: 'theme-offline', labelBadge: 'Branding Offline', color: '#f43f5e' },
-  'gcp-server': { themeClass: 'theme-gcp', labelBadge: 'Cloud Infrastructure', color: '#6366f1' }
+  'digital-ads': { themeClass: 'theme-ads', labelBadge: 'Digital Ads', color: '#f59e0b' },
+  'website-dev': { themeClass: 'theme-web', labelBadge: 'Google Cloud Web', color: '#eab308' },
+  'automation': { themeClass: 'theme-auto', labelBadge: 'WhatsApp & SMS', color: '#f59e0b' },
+  'marketing-dist': { themeClass: 'theme-dist', labelBadge: 'Marketing & SEO', color: '#d97706' },
+  'sosmed': { themeClass: 'theme-sosmed', labelBadge: 'Social Media', color: '#f59e0b' },
+  'legalitas': { themeClass: 'theme-legal', labelBadge: 'Legalitas Usaha', color: '#d97706' },
+  'offline-const': { themeClass: 'theme-offline', labelBadge: 'Layanan Offline', color: '#f59e0b' }
 };
 
 export default function CatalogModal({ isOpen, onClose, onSelectService }) {
@@ -44,11 +44,11 @@ export default function CatalogModal({ isOpen, onClose, onSelectService }) {
         <div className="modal-header">
           <div className="title-with-badge">
             <div className="catalog-icon-badge">
-              <Sparkles size={22} className="text-emerald" />
+              <img src="/assets/Images/adms-symbol.png" alt="ADMS Logo" className="w-6 h-6 object-contain" />
             </div>
             <div>
               <h3>Katalog Layanan & Harga Resmi ADMS</h3>
-              <p className="modal-subtitle">Pilih paket digital marketing, website, & legalitas usaha sesuai budget bisnis Anda</p>
+              <p className="modal-subtitle">Daftar lengkap 7 kategori layanan digital, website, legalitas & konstruksi ADMS</p>
             </div>
           </div>
           <button className="btn-close" onClick={onClose}><X size={20} /></button>
@@ -60,7 +60,7 @@ export default function CatalogModal({ isOpen, onClose, onSelectService }) {
             <Search size={18} className="search-icon" />
             <input 
               type="text"
-              placeholder="Cari layanan (Google Ads, Landing Page, NIB, WA Blast, PT...)"
+              placeholder="Cari layanan (Google Ads, Landing Page, NIB, WA Blast, PT, SEO...)"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
@@ -92,7 +92,7 @@ export default function CatalogModal({ isOpen, onClose, onSelectService }) {
         <div className="modal-body catalog-scroll">
           {filteredCategories.map(cat => {
             const IconComp = ICON_MAP[cat.icon] || Globe;
-            const theme = CATEGORY_THEME_MAP[cat.id] || { themeClass: 'theme-web', labelBadge: 'Service' };
+            const theme = CATEGORY_THEME_MAP[cat.id] || { themeClass: 'theme-web', labelBadge: 'Layanan' };
             if (cat.items.length === 0) return null;
 
             return (
@@ -127,7 +127,7 @@ export default function CatalogModal({ isOpen, onClose, onSelectService }) {
                           onClose();
                         }}
                       >
-                        <span>Pilih & Konsultasi Paket</span>
+                        <span>Pilih & Konfirmasi Pesanan</span>
                         <ArrowRight size={14} />
                       </button>
                     </div>
@@ -141,10 +141,10 @@ export default function CatalogModal({ isOpen, onClose, onSelectService }) {
         {/* Modal Footer */}
         <div className="modal-footer">
           <div className="footer-notice">
-            <CheckCircle2 size={16} className="text-emerald" />
-            <span>Garansi Google Cloud Platform Server, SSL & Maintenance Rutin Terjamin 100%!</span>
+            <CheckCircle2 size={16} className="text-amber-400" />
+            <span>Server Google Cloud Platform & Garansi Maintenance Resmi PT. ADMS</span>
           </div>
-          <button className="btn-primary glow" onClick={onClose}>Tutup Katalog</button>
+          <button className="btn-primary" onClick={onClose}>Tutup Katalog</button>
         </div>
 
       </div>

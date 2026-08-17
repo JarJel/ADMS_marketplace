@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
+import '../css/app.css';
 import Homepage from './pages/Homepage';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -8,10 +9,11 @@ import MerchantDashboard from './pages/Merchant/Dashboard';
 import AdminDashboard from './pages/Admin/Dashboard';
 import CreateAd from './pages/CreateAd';
 import ClassifiedsCatalogView from './pages/ClassifiedsCatalogView';
+import ProductsCatalogView from './pages/ProductsCatalogView';
 import MerchantDirectoryView from './pages/MerchantDirectoryView';
 import Toast from './components/Toast';
 import Cart from './pages/Customer/Cart';
-import HelpCenter from './pages/HelpCenter';
+import AdmsChatWidget from './components/Chatbot/AdmsChatWidget';
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem('auth_token'));
@@ -69,6 +71,8 @@ function App() {
             setView('create_ad');
         } else if (path === '/iklan-gratis') {
             setView('classifieds');
+        } else if (path === '/produk' || path === '/products') {
+            setView('products');
         } else if (path === '/merchants') {
             setView('merchants');
         } else if (path === '/cart') {
@@ -133,6 +137,10 @@ function App() {
             navigateTo('register', '/register');
         } else if (targetView === 'classifieds') {
             navigateTo('classifieds', '/iklan-gratis');
+        } else if (targetView === 'products') {
+            navigateTo('products', '/produk');
+        } else if (targetView === 'merchants') {
+            navigateTo('merchants', '/merchants');
         } else if (targetView === 'create_ad') {
             navigateTo('create_ad', '/pasang-iklan');
         } else if (targetView === 'help_center') {
@@ -205,6 +213,10 @@ function App() {
                 return <HelpCenter {...dashboardProps} />;
             case 'classifieds':
                 return <ClassifiedsCatalogView {...dashboardProps} />;
+            case 'products':
+                return <ProductsCatalogView {...dashboardProps} />;
+            case 'merchants':
+                return <MerchantDirectoryView {...dashboardProps} />;
             case 'login':
                 return (
                     <Login 
@@ -235,6 +247,8 @@ function App() {
                         onNavigateToDashboard={() => routeUser(user)} 
                         onNavigateToCreateAd={() => navigateTo('create_ad', '/pasang-iklan')}
                         onNavigateToClassifieds={() => navigateTo('classifieds', '/iklan-gratis')}
+                        onNavigateToProducts={() => navigateTo('products', '/produk')}
+                        onNavigate={handleNavigation}
                         onLogout={handleLogout}
                         darkMode={darkMode}
                         setDarkMode={setDarkMode}
@@ -251,6 +265,7 @@ function App() {
                 onClose={() => setToastMessage('')} 
             />
             {renderContent()}
+            <AdmsChatWidget darkMode={darkMode} />
         </>
     );
 }

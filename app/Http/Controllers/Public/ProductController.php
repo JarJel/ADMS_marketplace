@@ -31,7 +31,29 @@ class ProductController extends Controller
             $query->where('merchant_id', $request->merchant_id);
         }
 
-        $products = $query->latest()->paginate(12);
+        // Filter by Min Price
+        if ($request->has('min_price') && !empty($request->min_price)) {
+            $query->where('price', '>=', (float)$request->min_price);
+        }
+
+        // Filter by Max Price
+        if ($request->has('max_price') && !empty($request->max_price)) {
+            $query->where('price', '<=', (float)$request->max_price);
+        }
+
+        // Sorting
+        $sort = $request->get('sort', 'latest');
+        if ($sort === 'price_asc') {
+            $query->orderBy('price', 'asc');
+        } elseif ($sort === 'price_desc') {
+            $query->orderBy('price', 'desc');
+        } elseif ($sort === 'oldest') {
+            $query->orderBy('created_at', 'asc');
+        } else {
+            $query->latest(); // Default: Terbaru
+        }
+
+        $products = $query->paginate(12);
 
         return response()->json([
             'success' => true,

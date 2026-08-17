@@ -14,6 +14,22 @@ use Illuminate\Support\Facades\Validator;
 class AdController extends Controller
 {
     /**
+     * Get user's advertisements
+     */
+    public function getAds(Request $request)
+    {
+        $ads = Advertisement::where('user_id', $request->user()->id)
+            ->with(['category', 'package'])
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $ads
+        ]);
+    }
+
+    /**
      * Create listing/advertisement.
      */
     public function createAd(Request $request)

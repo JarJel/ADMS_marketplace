@@ -8,7 +8,10 @@ import MerchantDashboard from './pages/Merchant/Dashboard';
 import AdminDashboard from './pages/Admin/Dashboard';
 import CreateAd from './pages/CreateAd';
 import ClassifiedsCatalogView from './pages/ClassifiedsCatalogView';
+import ProductsCatalogView from './pages/ProductsCatalogView';
+import MerchantDirectoryView from './pages/MerchantDirectoryView';
 import Toast from './components/Toast';
+import Cart from './pages/Customer/Cart';
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem('auth_token'));
@@ -20,6 +23,15 @@ function App() {
     // Toast notification state
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState('success');
+
+    // Sync dark mode state with HTML element
+    useEffect(() => {
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }, [darkMode]);
 
     // Initial routing based on browser path on load
     useEffect(() => {
@@ -57,6 +69,12 @@ function App() {
             setView('create_ad');
         } else if (path === '/iklan-gratis') {
             setView('classifieds');
+        } else if (path === '/produk' || path === '/products') {
+            setView('products');
+        } else if (path === '/merchants') {
+            setView('merchants');
+        } else if (path === '/cart') {
+            setView('cart');
         } else {
             setView('homepage');
         }
@@ -117,6 +135,10 @@ function App() {
             navigateTo('register', '/register');
         } else if (targetView === 'classifieds') {
             navigateTo('classifieds', '/iklan-gratis');
+        } else if (targetView === 'products') {
+            navigateTo('products', '/produk');
+        } else if (targetView === 'merchants') {
+            navigateTo('merchants', '/merchants');
         } else if (targetView === 'create_ad') {
             navigateTo('create_ad', '/pasang-iklan');
         } else if (targetView === 'dashboard') {
@@ -185,6 +207,10 @@ function App() {
                 return <CreateAd {...dashboardProps} />;
             case 'classifieds':
                 return <ClassifiedsCatalogView {...dashboardProps} />;
+            case 'products':
+                return <ProductsCatalogView {...dashboardProps} />;
+            case 'merchants':
+                return <MerchantDirectoryView {...dashboardProps} />;
             case 'login':
                 return (
                     <Login 
@@ -215,6 +241,8 @@ function App() {
                         onNavigateToDashboard={() => routeUser(user)} 
                         onNavigateToCreateAd={() => navigateTo('create_ad', '/pasang-iklan')}
                         onNavigateToClassifieds={() => navigateTo('classifieds', '/iklan-gratis')}
+                        onNavigateToProducts={() => navigateTo('products', '/produk')}
+                        onNavigate={handleNavigation}
                         onLogout={handleLogout}
                         darkMode={darkMode}
                         setDarkMode={setDarkMode}

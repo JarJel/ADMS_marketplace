@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
     const [name, setName] = useState('');
@@ -11,6 +12,7 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleRegister = async (e) => {
         if (e) e.preventDefault();
@@ -75,11 +77,18 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                     
                     {/* Brand Logo & Name */}
                     <div className="text-center mb-6">
-                        <img 
-                            src="/assets/Images/adms-logo.png" 
-                            alt="ADMS Logo" 
-                            className="h-14 mx-auto mb-3 hover:scale-105 transition-transform duration-300"
-                        />
+                        <div className="flex items-center justify-center gap-2.5 mb-3 hover:scale-105 transition-transform duration-300">
+                            <img 
+                                src="/assets/Images/adms-symbol.png" 
+                                alt="ADMS Symbol" 
+                                className="h-12 w-auto object-contain"
+                            />
+                            <img 
+                                src="/assets/Images/adms-text.png" 
+                                alt="ADMS Text" 
+                                className="h-8 w-auto object-contain invert mix-blend-screen"
+                            />
+                        </div>
                         <h2 className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-indigo-400 bg-clip-text text-transparent">
                             Daftar Akun Baru
                         </h2>
@@ -154,15 +163,24 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                             <label className="block text-xs font-bold text-slate-300 mb-1">
                                 Password
                             </label>
-                            <input 
-                                type="password"
-                                required
-                                minLength={8}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
-                                placeholder="Minimal 8 karakter"
-                            />
+                            <div className="relative">
+                                <input 
+                                    type={showPassword ? "text" : "password"}
+                                    required
+                                    minLength={8}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 pr-10 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+                                    placeholder="Minimal 8 karakter"
+                                />
+                                <button 
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                                >
+                                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Confirm Password */}
@@ -170,14 +188,16 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                             <label className="block text-xs font-bold text-slate-300 mb-1">
                                 Konfirmasi Password
                             </label>
-                            <input 
-                                type="password"
-                                required
-                                value={passwordConfirmation}
-                                onChange={(e) => setPasswordConfirmation(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
-                                placeholder="Ulangi password Anda"
-                            />
+                            <div className="relative">
+                                <input 
+                                    type={showPassword ? "text" : "password"}
+                                    required
+                                    value={passwordConfirmation}
+                                    onChange={(e) => setPasswordConfirmation(e.target.value)}
+                                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 pr-10 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+                                    placeholder="Ulangi password"
+                                />
+                            </div>
                         </div>
 
                         <button 

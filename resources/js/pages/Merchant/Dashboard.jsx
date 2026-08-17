@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 
 export default function MerchantDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode }) {
+    const [activeTab, setActiveTab] = useState('overview');
     const [stats, setStats] = useState(null);
+    const [products, setProducts] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const [ads, setAds] = useState([]);
+    
     const [loading, setLoading] = useState(true);
     const [payoutAmount, setPayoutAmount] = useState('');
     const [bankName, setBankName] = useState('BSI');
@@ -12,8 +17,11 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
-        fetchDashboardData();
-    }, []);
+        if (activeTab === 'overview') fetchDashboardData();
+        if (activeTab === 'products') fetchProducts();
+        if (activeTab === 'orders') fetchOrders();
+        if (activeTab === 'ads') fetchAds();
+    }, [activeTab]);
 
     const fetchDashboardData = async () => {
         try {
@@ -32,6 +40,55 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
         } finally {
             setLoading(false);
         }
+    };
+
+    const fetchProducts = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/merchant/products', { headers: { 'Authorization': `Bearer ${token}` }});
+            const data = await res.json();
+            if (data.success) setProducts(data.data.data || data.data);
+        } catch (err) { console.error(err); } finally { setLoading(false); }
+    };
+
+    const fetchOrders = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/merchant/orders', { headers: { 'Authorization': `Bearer ${token}` }});
+            const data = await res.json();
+            if (data.success) setOrders(data.data.data || data.data);
+        } catch (err) { console.error(err); } finally { setLoading(false); }
+    };
+
+    const fetchAds = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/merchant/ads', { headers: { 'Authorization': `Bearer ${token}` }});
+            const data = await res.json();
+            if (data.success) setAds(data.data.data || data.data);
+        } catch (err) { console.error(err); } finally { setLoading(false); }
+    };
+
+    const handleUpdateOrderStatus = async (orderId, status) => {
+        try {
+            const res = await fetch(`/api/merchant/orders/${orderId}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ status })
+            });
+            if (res.ok) fetchOrders();
+        } catch (err) { console.error(err); }
+    };
+
+    const handleDeleteProduct = async (id) => {
+        if (!confirm('Apakah Anda yakin ingin menghapus produk ini?')) return;
+        try {
+            const res = await fetch(`/api/merchant/products/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) fetchProducts();
+        } catch (err) { console.error(err); }
     };
 
     const handlePayoutRequest = async (e) => {
@@ -91,9 +148,26 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
                 <h1 className="text-3xl font-extrabold text-white mb-2">Dasbor Penjual</h1>
                 <p className="text-slate-400 mb-8 text-sm">Kelola penjualan syariah, produk digital, dan penarikan dana hasil usaha Anda.</p>
 
+                {/* Tab Navigation */}
+                <div className="flex border-b border-slate-800 mb-8 overflow-x-auto">
+                    {['overview', 'products', 'orders', 'ads'].map(tab => (
+                        <button
+                            key={tab}
+                            onClick={() => setActiveTab(tab)}
+                            className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-colors border-b-2 whitespace-nowrap ${
+                                activeTab === tab ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-300'
+                            }`}
+                        >
+                            {tab === 'overview' ? 'Ringkasan' : tab === 'products' ? 'Produk' : tab === 'orders' ? 'Pesanan' : 'Iklan'}
+                        </button>
+                    ))}
+                </div>
+
                 {loading ? (
-                    <div className="text-slate-500 text-sm italic py-4">Memuat data dasbor merchant...</div>
-                ) : stats ? (
+                    <div className="text-slate-500 text-sm italic py-4 flex justify-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                    </div>
+                ) : activeTab === 'overview' && stats ? (
                     <div className="space-y-8">
                         {/* Stats Cards grid */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -223,8 +297,81 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
 
                         </div>
                     </div>
+                ) : activeTab === 'products' ? (
+                    <div className="space-y-6">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-xl font-bold text-white">Kelola Produk Digital</h2>
+                            <button className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold py-2 px-4 rounded-lg">
+                                + Tambah Produk
+                            </button>
+                        </div>
+                        <div className="bg-slate-900/40 border border-slate-800/80 rounded-xl overflow-hidden">
+                            <table className="w-full text-left text-sm text-slate-400">
+                                <thead className="bg-slate-950 text-slate-300 font-bold uppercase text-[10px]">
+                                    <tr>
+                                        <th className="px-6 py-4 border-b border-slate-800">Produk</th>
+                                        <th className="px-6 py-4 border-b border-slate-800">Harga</th>
+                                        <th className="px-6 py-4 border-b border-slate-800">Stok</th>
+                                        <th className="px-6 py-4 border-b border-slate-800">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {products.map(p => (
+                                        <tr key={p.id} className="border-b border-slate-800/50 hover:bg-slate-800/20">
+                                            <td className="px-6 py-4 font-bold text-slate-200">{p.title}</td>
+                                            <td className="px-6 py-4">Rp{p.price.toLocaleString('id-ID')}</td>
+                                            <td className="px-6 py-4">{p.stock}</td>
+                                            <td className="px-6 py-4 flex gap-2">
+                                                <button className="text-indigo-400 hover:text-indigo-300">Edit</button>
+                                                <button onClick={() => handleDeleteProduct(p.id)} className="text-red-400 hover:text-red-300">Hapus</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                ) : activeTab === 'orders' ? (
+                    <div className="space-y-6">
+                        <h2 className="text-xl font-bold text-white mb-4">Pesanan Masuk</h2>
+                        <div className="space-y-4">
+                            {orders.map(o => (
+                                <div key={o.id} className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-6 flex justify-between items-center">
+                                    <div>
+                                        <h4 className="font-bold text-slate-200">{o.order_number}</h4>
+                                        <p className="text-xs text-slate-400 mt-1">Status: <span className="uppercase text-amber-400">{o.status}</span></p>
+                                        <p className="text-sm mt-2 text-indigo-400 font-bold">Total: Rp{parseFloat(o.total_amount).toLocaleString('id-ID')}</p>
+                                    </div>
+                                    <div className="space-x-2">
+                                        {o.status === 'pending' && (
+                                            <>
+                                                <button onClick={() => handleUpdateOrderStatus(o.id, 'completed')} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg">Terima & Selesaikan</button>
+                                                <button onClick={() => handleUpdateOrderStatus(o.id, 'cancelled')} className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-lg">Tolak</button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ) : activeTab === 'ads' ? (
+                    <div className="space-y-6">
+                        <h2 className="text-xl font-bold text-white mb-4">Iklan Baris Anda</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {ads.map(ad => (
+                                <div key={ad.id} className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-6">
+                                    <h4 className="font-bold text-slate-200 mb-2">{ad.title}</h4>
+                                    <span className="inline-block px-2 py-1 bg-slate-800 rounded text-[10px] text-slate-300 uppercase">{ad.status}</span>
+                                    <div className="mt-4 flex gap-4 text-xs text-slate-400">
+                                        <span>Views: <strong className="text-white">{ad.views_count}</strong></span>
+                                        <span>Clicks: <strong className="text-white">{ad.clicks_count}</strong></span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 ) : (
-                    <div className="text-red-400">Gagal memproses data toko.</div>
+                    <div className="text-slate-500 text-sm italic py-4">Tidak ada data.</div>
                 )}
             </main>
         </div>

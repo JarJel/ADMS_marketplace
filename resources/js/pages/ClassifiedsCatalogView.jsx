@@ -31,6 +31,14 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
         }
     };
 
+    const handleAdClick = async (adId) => {
+        try {
+            await fetch(`/api/public/ads/${adId}/click`, { method: 'POST' });
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     // Search states
     const [searchQuery, setSearchQuery] = useState('');
     const [searchLocation, setSearchLocation] = useState('');
@@ -356,7 +364,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                     {filteredAds.map((ad) => (
                                         <div 
                                             key={ad.id}
-                                            onClick={() => setSelectedAd(ad)}
+                                            onClick={() => { setSelectedAd(ad); handleAdClick(ad.id); }}
                                             className={`bg-white rounded-2xl border border-slate-200 overflow-hidden flex cursor-pointer group hover:shadow-md transition-all ${
                                                 viewMode === 'grid' 
                                                     ? 'flex-col justify-between'
@@ -420,7 +428,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                                         href={`https://wa.me/${ad.whatsapp}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        onClick={(e) => e.stopPropagation()} // Stop modal popup trigger
+                                                        onClick={(e) => { e.stopPropagation(); handleAdClick(ad.id); }} // Stop modal popup trigger
                                                         className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] py-2 px-3.5 rounded-lg flex items-center justify-center gap-1.5 shadow-sm transition-colors cursor-pointer"
                                                     >
                                                         <Phone className="w-3.5 h-3.5" />

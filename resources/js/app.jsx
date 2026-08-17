@@ -143,6 +143,8 @@ function App() {
             navigateTo('merchants', '/merchants');
         } else if (targetView === 'create_ad') {
             navigateTo('create_ad', '/pasang-iklan');
+        } else if (targetView === 'help_center') {
+            navigateTo('help_center', '/bantuan');
         } else if (targetView === 'dashboard') {
             routeUser(user);
         }
@@ -207,6 +209,8 @@ function App() {
                 return <AdminDashboard {...dashboardProps} />;
             case 'create_ad':
                 return <CreateAd {...dashboardProps} />;
+            case 'help_center':
+                return <HelpCenter {...dashboardProps} />;
             case 'classifieds':
                 return <ClassifiedsCatalogView {...dashboardProps} />;
             case 'products':

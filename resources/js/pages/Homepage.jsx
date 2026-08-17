@@ -373,12 +373,12 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                         %
                                     </div>
                                     <div>
-                                        <span className="block text-xs font-bold text-slate-100">Promo Spesial Member</span>
-                                        <span className="block text-[9px] text-slate-400">Cashback & Diskon Terbatas</span>
+                                        <span className="block text-xs font-bold text-slate-100">Spesial Buat Member Baru</span>
+                                        <span className="block text-[9px] text-slate-400">Klaim sebelum kehabisan!</span>
                                     </div>
                                 </div>
                                 <span className="text-[9px] font-bold bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/25">
-                                    Promo Merchant
+                                    Voucher Merchant
                                 </span>
                             </div>
 
@@ -387,9 +387,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 <span className="bg-emerald-500 text-white text-[9px] font-black tracking-wider px-2.5 py-0.5 rounded-full mb-2">
                                     DISKON 50%
                                 </span>
-                                <h4 className="font-extrabold text-sm text-slate-100 mb-1">Source Code & Canva Kit</h4>
+                                <h4 className="font-extrabold text-sm text-slate-100 mb-1">Diskon Source Code & Template</h4>
                                 <p className="text-[10px] text-slate-400 leading-normal max-w-[240px]">
-                                    Dapatkan diskon potongan langsung untuk pembelian produk pertama dengan kode promo: <strong className="text-emerald-400">ADMSBARU</strong>
+                                    Pakai kode promo <strong className="text-emerald-400">ADMSBARU</strong> pas checkout buat dapetin potongan harga 50% di transaksi pertamamu!
                                 </p>
                             </div>
 
@@ -399,8 +399,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     <Megaphone className="w-4 h-4 text-indigo-400" />
                                 </div>
                                 <div className="flex-grow">
-                                    <span className="block text-xs font-bold text-slate-200">Paket Premium Ads Exchange</span>
-                                    <span className="block text-[9px] text-slate-400 mt-0.5">Tayang 30 hari di Homepage & prioritas teratas pencarian.</span>
+                                    <span className="block text-xs font-bold text-slate-200">Boost Iklan Premium</span>
+                                    <span className="block text-[9px] text-slate-400 mt-0.5">Bikin iklanmu nangkring di halaman utama selama 30 hari penuh.</span>
                                 </div>
                             </div>
 
@@ -417,8 +417,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     &uarr;
                                 </div>
                                 <div>
-                                    <span className="block text-[10px] font-bold text-slate-200">Iklan Premium Baru</span>
-                                    <span className="block text-[8px] text-slate-500 mt-0.5">Impression: 12.5K &bull; Ctr: 5.4%</span>
+                                    <span className="block text-[10px] font-bold text-slate-200">Performa Iklan Meroket</span>
+                                    <span className="block text-[8px] text-slate-500 mt-0.5">Dilihat: 12.5K &bull; Klik: 5.4%</span>
                                     <div className="flex gap-2 mt-1">
                                         <span className="text-[8px] font-semibold text-emerald-400">&bull; Aktif</span>
                                         <span className="text-[8px] font-semibold text-indigo-400">VIP Boost</span>
@@ -1310,12 +1310,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     </div>
 
                     {/* Bottom Status bar (with divider line) */}
-                    <div className="pt-8 border-t border-slate-900/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                    <div className="pt-8 border-t border-slate-900/60 flex flex-col items-center justify-center gap-4 text-xs text-slate-500 text-center">
                         <p>&copy; 2026 ADMS (PT. Armada Digital Marketing Syariah). All rights reserved.</p>
-                        <p className="flex items-center gap-1.5 font-medium text-slate-400">
-                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
-                            Platform Status: <span className="text-emerald-500 font-bold">Operational & Verified</span>
-                        </p>
                     </div>
                 </div>
             </footer>

@@ -294,19 +294,24 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* B. Hero Section with dark blue background wrapper */}
             <ScrollFadeIn>
-            <section className="bg-[#0A1B33] text-slate-100 py-16 transition-colors duration-300">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <section className="bg-[#0A1B33] text-slate-100 py-16 transition-colors duration-300 relative overflow-hidden">
+                {/* Background ambient glow effects */}
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-700/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/4"></div>
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-600/8 rounded-full blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/4"></div>
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,rgba(99,102,241,0.05)_0%,transparent_60%)] pointer-events-none"></div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
                     
                     {/* Copywriting (7 columns) */}
                     <div className="space-y-6 lg:col-span-7">
-                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400">
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-xs font-bold text-emerald-400 shadow-lg shadow-emerald-500/5">
                             <Star className="w-3.5 h-3.5 fill-current text-emerald-400" />
                             Platform #1 Digital Marketplace & Ad Exchange
                         </div>
 
                         <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-tight text-white">
-                            Temukan <span className="text-[#10B981]">Produk Digital</span>.<br />
-                            <span className="text-[#F59E0B]">Pasang Iklan</span>. Kembangkan Bisnis.
+                            Temukan <span className="text-transparent bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text">Produk Digital</span>.<br />
+                            <span className="text-transparent bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text">Pasang Iklan</span>. Kembangkan Bisnis.
                         </h1>
 
                         <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-xl">
@@ -314,14 +319,14 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         </p>
 
                         {/* Search Bar inside Hero */}
-                        <div className="max-w-lg mt-8 relative flex items-center bg-[#112240] border border-slate-700/60 rounded-xl p-1.5 pl-4 shadow-xl">
+                        <div className="max-w-lg mt-8 relative flex items-center bg-white/[0.05] backdrop-blur-sm border border-white/[0.1] rounded-xl p-1.5 pl-4 shadow-2xl shadow-black/20">
                             <Search className="w-4 h-4 text-slate-400 mr-2.5 flex-shrink-0" />
                             <input 
                                 type="text"
                                 placeholder="Cari produk digital, jasa, atau iklan promosi..."
                                 className="w-full bg-transparent focus:outline-none text-xs sm:text-sm text-slate-100 placeholder-slate-500"
                             />
-                            <button className="bg-[#10B981] hover:bg-[#059669] text-white text-xs font-bold px-5 py-2.5 rounded-lg active:scale-95 transition-all">
+                            <button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white text-xs font-bold px-5 py-2.5 rounded-lg active:scale-95 transition-all shadow-lg shadow-emerald-500/25">
                                 Cari
                             </button>
                         </div>
@@ -335,13 +340,13 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         <div className="flex flex-wrap items-center gap-4 pt-4">
                             <a 
                                 href="#marketplace"
-                                className="bg-[#10B981] hover:bg-[#059669] text-white font-bold py-3.5 px-6 rounded-lg text-xs shadow-lg active:scale-[0.98] transition-all flex items-center gap-1.5"
+                                className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold py-3.5 px-7 rounded-xl text-xs shadow-xl shadow-emerald-500/20 active:scale-[0.98] transition-all flex items-center gap-1.5"
                             >
                                 Jelajahi Marketplace &rarr;
                             </a>
                             <button 
                                 onClick={onNavigateToClassifieds}
-                                className="border border-slate-700 bg-transparent text-slate-100 hover:bg-slate-900 font-bold py-3.5 px-6 rounded-lg text-xs cursor-pointer active:scale-[0.98] transition-all flex items-center gap-1.5"
+                                className="border border-white/[0.12] bg-white/[0.05] backdrop-blur-sm text-slate-100 hover:bg-white/[0.1] font-bold py-3.5 px-6 rounded-xl text-xs cursor-pointer active:scale-[0.98] transition-all flex items-center gap-1.5"
                             >
                                 <Megaphone className="w-3.5 h-3.5 text-indigo-400" />
                                 Pasang Iklan Gratis
@@ -349,79 +354,113 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         </div>
 
                         {/* Core benefits checklist */}
-                        <div className="flex flex-wrap items-center gap-6 pt-6 text-xs font-bold text-slate-300">
+                        <div className="flex flex-wrap items-center gap-6 pt-4 text-xs font-bold text-slate-300">
                             <span className="flex items-center gap-1.5">
-                                <span className="text-[#10B981]">&bull;</span> Instan Download
+                                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Instan Download
                             </span>
                             <span className="flex items-center gap-1.5">
-                                <span className="text-[#10B981]">&bull;</span> Verified Merchant
+                                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Verified Merchant
                             </span>
                             <span className="flex items-center gap-1.5">
-                                <span className="text-[#10B981]">&bull;</span> Iklan Gratis Rp0
+                                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Iklan Gratis Rp0
                             </span>
                         </div>
                     </div>
 
                     {/* Visual Card Showcase (5 columns) */}
                     <div className="relative flex justify-center lg:justify-end lg:col-span-5 pt-8 lg:pt-0">
-                        {/* Main dark card */}
-                        <div className="w-full max-w-[430px] rounded-2xl bg-[#112240] border border-slate-700/50 p-5 shadow-2xl relative">
-                            {/* Card Header */}
-                            <div className="flex items-center justify-between mb-5">
-                                <div className="flex items-center gap-2.5">
-                                    <div className="w-9 h-9 rounded-full bg-indigo-600/20 flex items-center justify-center border border-indigo-500/20 text-indigo-300 text-sm font-bold">
-                                        %
+                        <div className="relative w-full max-w-[400px]">
+                            {/* Ambient glow blobs behind card */}
+                            <div className="absolute -top-16 -right-16 w-64 h-64 bg-indigo-600/20 rounded-full blur-[80px] pointer-events-none"></div>
+                            <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-emerald-500/15 rounded-full blur-[80px] pointer-events-none"></div>
+
+                            {/* Main glass card */}
+                            <div className="w-full rounded-3xl bg-gradient-to-br from-[#0f1f3d] to-[#0a1528] backdrop-blur-xl border border-white/[0.07] p-5 shadow-[0_40px_100px_rgba(0,0,0,0.6)] relative overflow-hidden">
+                                {/* Top shimmer border */}
+                                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-400/60 to-transparent"></div>
+                                <div className="absolute top-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent blur-sm"></div>
+
+                                {/* Card Header */}
+                                <div className="flex items-center justify-between mb-5">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500/30 to-purple-600/20 flex items-center justify-center border border-indigo-400/20 text-indigo-300 text-sm font-black shadow-inner shadow-indigo-500/10">
+                                            %
+                                        </div>
+                                        <div>
+                                            <span className="block text-xs font-bold text-white">Promo Spesial Member</span>
+                                            <span className="block text-[9px] text-slate-400 mt-0.5">Cashback & Diskon Terbatas</span>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <span className="block text-xs font-bold text-slate-100">Promo Spesial Member</span>
-                                        <span className="block text-[9px] text-slate-400">Cashback & Diskon Terbatas</span>
+                                    <span className="text-[8px] font-black bg-gradient-to-r from-amber-500/20 to-orange-500/10 text-amber-400 px-2.5 py-1 rounded-lg border border-amber-400/25 uppercase tracking-wider">
+                                        🔥 Promo
+                                    </span>
+                                </div>
+
+                                {/* Inner Product Display Box */}
+                                <div className="relative bg-gradient-to-br from-emerald-950/80 to-teal-950/60 border border-emerald-500/20 rounded-2xl p-5 flex flex-col items-center text-center mb-4 overflow-hidden">
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-24 bg-emerald-500/8 rounded-full blur-2xl pointer-events-none"></div>
+                                    <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent"></div>
+
+                                    <span className="relative z-10 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[9px] font-black tracking-widest px-3 py-1 rounded-full mb-3 shadow-lg shadow-emerald-500/30">
+                                        ✦ DISKON 50%
+                                    </span>
+                                    <h4 className="relative z-10 font-extrabold text-sm text-white mb-1.5 tracking-tight">Source Code & Canva Kit</h4>
+                                    <p className="relative z-10 text-[10px] text-slate-400 leading-relaxed max-w-[220px]">
+                                        Pembelian pertama dengan kode promo: <strong className="text-emerald-400 font-black tracking-wider">ADMSBARU</strong>
+                                    </p>
+                                    <button className="relative z-10 mt-3 text-[9px] font-black text-emerald-300 border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 px-3.5 py-1 rounded-lg transition-all">
+                                        Klaim Sekarang &rarr;
+                                    </button>
+                                </div>
+
+                                {/* Stats mini row */}
+                                <div className="grid grid-cols-3 gap-2 mb-4">
+                                    {[
+                                        { value: '9.8K', label: 'Produk', color: 'text-teal-400' },
+                                        { value: '3.2K', label: 'Merchant', color: 'text-indigo-400' },
+                                        { value: '25K', label: 'User', color: 'text-amber-400' },
+                                    ].map((s, i) => (
+                                        <div key={i} className="bg-white/[0.04] border border-white/[0.06] rounded-xl p-2 text-center">
+                                            <span className={`block text-xs font-black ${s.color}`}>{s.value}</span>
+                                            <span className="block text-[8px] text-slate-500 font-medium mt-0.5">{s.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Bottom Ads Exchange block */}
+                                <div className="flex items-center gap-3 bg-indigo-500/8 border border-indigo-500/15 rounded-2xl p-3">
+                                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-600/30 to-purple-600/20 flex items-center justify-center border border-indigo-400/20 flex-shrink-0">
+                                        <Megaphone className="w-4 h-4 text-indigo-400" />
                                     </div>
+                                    <div className="flex-grow min-w-0">
+                                        <span className="block text-xs font-bold text-white truncate">Ads Exchange Premium</span>
+                                        <span className="block text-[9px] text-slate-400 mt-0.5 truncate">Tayang 30 hari · Prioritas pencarian teratas.</span>
+                                    </div>
+                                    <span className="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/60 animate-pulse"></span>
                                 </div>
-                                <span className="text-[9px] font-bold bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/25">
-                                    Promo Merchant
-                                </span>
-                            </div>
 
-                            {/* Inner Green Display Box */}
-                            <div className="bg-[#072522] border border-emerald-500/20 rounded-xl p-5 flex flex-col items-center text-center mb-5">
-                                <span className="bg-emerald-500 text-white text-[9px] font-black tracking-wider px-2.5 py-0.5 rounded-full mb-2">
-                                    DISKON 50%
-                                </span>
-                                <h4 className="font-extrabold text-sm text-slate-100 mb-1">Source Code & Canva Kit</h4>
-                                <p className="text-[10px] text-slate-400 leading-normal max-w-[240px]">
-                                    Dapatkan diskon potongan langsung untuk pembelian produk pertama dengan kode promo: <strong className="text-emerald-400">ADMSBARU</strong>
-                                </p>
-                            </div>
-
-                            {/* Bottom row block */}
-                            <div className="flex items-center gap-3 bg-[#0B1B33]/50 border border-slate-700/30 rounded-xl p-3">
-                                <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-                                    <Megaphone className="w-4 h-4 text-indigo-400" />
-                                </div>
-                                <div className="flex-grow">
-                                    <span className="block text-xs font-bold text-slate-200">Paket Premium Ads Exchange</span>
-                                    <span className="block text-[9px] text-slate-400 mt-0.5">Tayang 30 hari di Homepage & prioritas teratas pencarian.</span>
+                                {/* Pagination dots */}
+                                <div className="flex items-center justify-center gap-1.5 mt-5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+                                    <span className="w-5 h-1.5 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 shadow-sm shadow-emerald-400/40"></span>
+                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
                                 </div>
                             </div>
 
-                            {/* Pagination indicator dots */}
-                            <div className="flex items-center justify-center gap-1.5 mt-5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
-                                <span className="w-3 h-1.5 rounded-full bg-emerald-400"></span>
-                                <span className="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
-                            </div>
-
-                            {/* Floating Stats Card (Overlays bottom left) */}
-                            <div className="bg-slate-950/95 backdrop-blur border border-slate-800 rounded-xl p-3.5 absolute bottom-8 -left-10 w-52 shadow-2xl flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center border border-teal-500/20 text-teal-400">
-                                    &uarr;
+                            {/* Floating Stats Card */}
+                            <div className="bg-[#080f1e]/95 backdrop-blur-xl border border-white/[0.07] rounded-2xl p-3.5 absolute bottom-10 -left-14 w-56 shadow-[0_20px_50px_rgba(0,0,0,0.7)] flex items-center gap-3 overflow-hidden">
+                                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-teal-400/40 to-transparent"></div>
+                                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-600/30 to-emerald-600/20 flex items-center justify-center border border-teal-400/20 text-teal-400 text-sm font-black flex-shrink-0">
+                                    ↑
                                 </div>
-                                <div>
-                                    <span className="block text-[10px] font-bold text-slate-200">Iklan Premium Baru</span>
-                                    <span className="block text-[8px] text-slate-500 mt-0.5">Impression: 12.5K &bull; Ctr: 5.4%</span>
-                                    <div className="flex gap-2 mt-1">
-                                        <span className="text-[8px] font-semibold text-emerald-400">&bull; Aktif</span>
-                                        <span className="text-[8px] font-semibold text-indigo-400">VIP Boost</span>
+                                <div className="min-w-0">
+                                    <span className="block text-[10px] font-bold text-white truncate">Iklan Premium Baru</span>
+                                    <span className="block text-[8px] text-slate-500 mt-0.5">Impr: 12.5K · CTR: 5.4%</span>
+                                    <div className="flex gap-2 mt-1.5">
+                                        <span className="text-[8px] font-bold text-emerald-400 flex items-center gap-1">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span> Aktif
+                                        </span>
+                                        <span className="text-[8px] font-bold text-indigo-400 bg-indigo-400/10 px-1.5 rounded">VIP</span>
                                     </div>
                                 </div>
                             </div>
@@ -430,25 +469,24 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                 </div>
 
-                {/* Social Stats footer */}
-                <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
-                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
-                    }`}>
-                        <span className="block text-3xl font-black text-teal-400">15.4K+</span>
-                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Iklan Baris Aktif</span>
-                    </div>
-                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
-                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
-                    }`}>
-                        <span className="block text-3xl font-black text-indigo-400">9.8K+</span>
-                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Aset Digital Terverifikasi</span>
-                    </div>
-                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
-                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
-                    }`}>
-                        <span className="block text-3xl font-black text-white">25K+</span>
-                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Pengguna & Merchant Aktif</span>
+                {/* Stats bar */}
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 relative z-10">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="relative bg-gradient-to-br from-teal-900/20 to-teal-950/10 border border-teal-500/10 rounded-2xl p-6 text-center overflow-hidden group hover:border-teal-500/30 hover:-translate-y-0.5 transition-all duration-300">
+                            <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <span className="block text-3xl font-black text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text">15.4K+</span>
+                            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-1 block">Iklan Baris Aktif</span>
+                        </div>
+                        <div className="relative bg-gradient-to-br from-indigo-900/20 to-indigo-950/10 border border-indigo-500/10 rounded-2xl p-6 text-center overflow-hidden group hover:border-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300">
+                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <span className="block text-3xl font-black text-transparent bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text">9.8K+</span>
+                            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-1 block">Aset Digital Terverifikasi</span>
+                        </div>
+                        <div className="relative bg-gradient-to-br from-slate-800/20 to-slate-900/10 border border-slate-700/20 rounded-2xl p-6 text-center overflow-hidden group hover:border-slate-600/40 hover:-translate-y-0.5 transition-all duration-300">
+                            <div className="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <span className="block text-3xl font-black text-transparent bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text">25K+</span>
+                            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-1 block">Pengguna & Merchant Aktif</span>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1275,9 +1313,19 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         
                         {/* Company logo/info block (5 cols) */}
                         <div className="md:col-span-5 space-y-6">
-                            <div className="inline-flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-800 max-w-[180px]">
-                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-8 object-contain" />
-                                <img src="/assets/Images/adms-text.png" alt="ADMS Text" className="h-6 object-contain" />
+                            {/* Footer logo - real PNG (transparent bg) + wordmark */}
+                            <div className="flex items-center gap-3">
+                                <img 
+                                    src="/assets/Images/adms-symbol.png" 
+                                    alt="ADMS" 
+                                    className="h-14 w-auto object-contain drop-shadow-lg" 
+                                />
+                                <div className="flex flex-col leading-none">
+                                    <span className="font-black text-2xl tracking-tight text-white leading-none">
+                                        ADM<span className="text-transparent bg-gradient-to-r from-indigo-400 to-teal-400 bg-clip-text">S</span>
+                                    </span>
+                                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] mt-1">Digital Marketplace</span>
+                                </div>
                             </div>
                             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
                                 Platform terpadu Marketplace Produk Digital, Multi-Vendor Merchant, dan Platform Pemasangan Iklan Gratis & Promosi Berbayar untuk mengembangkan bisnis Anda.

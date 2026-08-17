@@ -28,18 +28,21 @@ export default function Navbar({
                     </button>
                     <div 
                         onClick={() => onNavigate('homepage')} 
-                        className="flex items-center gap-1.5 sm:gap-2 cursor-pointer active:scale-98 transition-transform"
+                        className="flex items-center gap-2 cursor-pointer active:scale-95 transition-transform select-none"
                     >
+                        {/* ADMS Symbol - already transparent PNG */}
                         <img 
                             src="/assets/Images/adms-symbol.png" 
-                            alt="ADMS Symbol" 
-                            className="h-8 sm:h-10 w-auto object-contain transition-all duration-300" 
+                            alt="ADMS" 
+                            className="h-9 sm:h-11 w-auto object-contain drop-shadow-md" 
                         />
-                        <img 
-                            src="/assets/Images/adms-text.png" 
-                            alt="ADMS Text" 
-                            className="h-5 sm:h-7 w-auto object-contain dark:invert dark:mix-blend-screen transition-all duration-300 hidden sm:block" 
-                        />
+                        {/* Wordmark */}
+                        <div className="hidden sm:flex flex-col leading-none gap-0.5">
+                            <span className="font-black text-[15px] tracking-tight text-slate-900 dark:text-white leading-none">
+                                ADM<span className="text-transparent bg-gradient-to-r from-indigo-500 to-teal-500 bg-clip-text">S</span>
+                            </span>
+                            <span className="text-[8px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-[0.18em]">Marketplace</span>
+                        </div>
                     </div>
                 </div>
 
@@ -208,17 +211,18 @@ export default function Navbar({
             {/* Sidebar Content */}
             <div className={`fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 z-[70] transform transition-transform duration-300 ease-in-out border-r border-slate-200 dark:border-slate-800 shadow-2xl ${showSidebar ? 'translate-x-0' : '-translate-x-full'}`}>
                 <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2">
                         <img 
                             src="/assets/Images/adms-symbol.png" 
-                            alt="ADMS Symbol" 
-                            className="h-8 w-auto object-contain" 
+                            alt="ADMS" 
+                            className="h-9 w-auto object-contain drop-shadow-md" 
                         />
-                        <img 
-                            src="/assets/Images/adms-text.png" 
-                            alt="ADMS Text" 
-                            className="h-6 w-auto object-contain dark:invert dark:mix-blend-screen" 
-                        />
+                        <div className="flex flex-col leading-none gap-0.5">
+                            <span className="font-black text-[15px] tracking-tight text-slate-900 dark:text-white leading-none">
+                                ADM<span className="text-transparent bg-gradient-to-r from-indigo-500 to-teal-500 bg-clip-text">S</span>
+                            </span>
+                            <span className="text-[8px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-[0.18em]">Marketplace</span>
+                        </div>
                     </div>
                     <button 
                         onClick={() => setShowSidebar(false)}

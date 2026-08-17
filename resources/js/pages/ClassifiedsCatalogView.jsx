@@ -134,7 +134,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
     }, [ads, searchQuery, searchLocation, selectedCategory, filterCondition, minPrice, maxPrice, sortBy]);
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] text-slate-800 transition-colors duration-300 font-sans pb-20">
+        <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300 font-sans pb-20">
             {/* Header Navbar */}
             <Navbar 
                 user={user} 
@@ -173,7 +173,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Cari mobil bekas, handphone, laptop..."
-                                className="w-full bg-transparent text-slate-800 focus:outline-none text-xs sm:text-sm placeholder-slate-400"
+                                className="w-full bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none text-xs sm:text-sm placeholder-slate-400"
                             />
                         </div>
 
@@ -185,16 +185,16 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 value={searchLocation}
                                 onChange={(e) => setSearchLocation(e.target.value)}
                                 placeholder="Semua Lokasi / Kota..."
-                                className="w-full bg-transparent text-slate-800 focus:outline-none text-xs sm:text-sm placeholder-slate-400"
+                                className="w-full bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none text-xs sm:text-sm placeholder-slate-400"
                             />
                         </div>
 
                         {/* Zap CTA Button */}
                         <button 
                             onClick={() => onNavigate('create_ad', '/pasang-iklan')}
-                            className="w-full md:w-auto md:flex-shrink-0 bg-[#F59E0B] hover:bg-[#d97706] text-slate-900 font-extrabold text-xs sm:text-sm px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-500/20 active:scale-95 cursor-pointer"
+                            className="w-full md:w-auto md:flex-shrink-0 bg-[#F59E0B] hover:bg-[#d97706] text-slate-900 dark:text-slate-100 font-extrabold text-xs sm:text-sm px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-500/20 active:scale-95 cursor-pointer"
                         >
-                            <Zap className="w-4 h-4 fill-current text-slate-900" />
+                            <Zap className="w-4 h-4 fill-current text-slate-900 dark:text-slate-100" />
                             <span>Pasang Iklan Gratis</span>
                         </button>
                     </div>
@@ -202,7 +202,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             </section>
 
             {/* B. Navigasi Kategori Cepat (Horizontal Scrollable Badges) */}
-            <section className="py-6 bg-white border-b border-slate-200 shadow-sm">
+            <section className="py-6 bg-white dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800/80 shadow-sm dark:backdrop-blur-md">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2">
                         {categories.map((cat) => (
@@ -211,8 +211,8 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 onClick={() => setSelectedCategory(cat.name)}
                                 className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                                     selectedCategory === cat.name 
-                                        ? 'bg-[#071324] text-white shadow-md' 
-                                        : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                                        ? 'bg-[#071324] dark:bg-slate-700 text-white shadow-md' 
+                                        : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'
                                 }`}
                             >
                                 <span>{cat.icon}</span>
@@ -229,15 +229,15 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                     
                     {/* Sidebar Filter (3 Kolom / lg:col-span-3) */}
                     <aside className="lg:col-span-3 space-y-6">
-                        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6 text-left">
-                            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                                <span className="font-extrabold text-xs uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
-                                    <Filter className="w-4 h-4 text-slate-500" />
+                        <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm space-y-6 text-left dark:backdrop-blur-md">
+                            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4">
+                                <span className="font-extrabold text-xs uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                    <Filter className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                                     Filter Pencarian
                                 </span>
                                 <button 
                                     onClick={handleClearFilters}
-                                    className="text-[10px] font-bold text-indigo-600 hover:text-indigo-500 transition-colors"
+                                    className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
                                 >
                                     Bersihkan Filter
                                 </button>
@@ -245,16 +245,16 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
 
                             {/* Filter Kondisi */}
                             <div className="space-y-2.5">
-                                <label className="block text-xs font-bold text-slate-700">Kondisi</label>
+                                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">Kondisi</label>
                                 <div className="grid grid-cols-2 gap-2">
                                     {['Semua', 'Baru', 'Bekas', 'Jasa'].map((cond) => (
                                         <button
                                             key={cond}
                                             onClick={() => setFilterCondition(cond)}
-                                            className={`p-2 rounded-lg text-xs font-bold border transition-all cursor-pointer text-center ${
+                                            className={`text-xs py-2 px-3 rounded-lg border font-semibold transition-all ${
                                                 filterCondition === cond 
-                                                    ? 'bg-slate-900 border-slate-900 text-white shadow-sm' 
-                                                    : 'border-slate-200 hover:border-slate-300 text-slate-600'
+                                                    ? 'bg-[#071324] dark:bg-slate-700 text-white border-transparent' 
+                                                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600'
                                             }`}
                                         >
                                             {cond}
@@ -265,76 +265,80 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
 
                             {/* Filter Rentang Harga */}
                             <div className="space-y-2.5">
-                                <label className="block text-xs font-bold text-slate-700">Rentang Harga (Rp)</label>
+                                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">Rentang Harga (Rp)</label>
                                 <div className="space-y-2">
                                     <input 
                                         type="number"
                                         value={minPrice}
                                         onChange={(e) => setMinPrice(e.target.value)}
                                         placeholder="Harga Minimum"
-                                        className="w-full text-xs p-3 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"
+                                        className="w-full text-xs p-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl outline-none focus:border-indigo-500"
                                     />
                                     <input 
                                         type="number"
                                         value={maxPrice}
                                         onChange={(e) => setMaxPrice(e.target.value)}
                                         placeholder="Harga Maksimum"
-                                        className="w-full text-xs p-3 border border-slate-200 rounded-xl outline-none focus:border-indigo-500"
+                                        className="w-full text-xs p-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl outline-none focus:border-indigo-500"
                                     />
                                 </div>
                             </div>
 
-                            {/* Pemberitahuan Proteksi */}
-                            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50 flex gap-2">
-                                <AlertCircle className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
-                                <p className="text-[10px] text-slate-500 leading-relaxed">
+                            {/* Security Information Info Box */}
+                            <div className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl p-4 flex gap-3 text-left">
+                                <AlertCircle className="w-4 h-4 text-slate-400 dark:text-slate-500 flex-shrink-0 mt-0.5" />
+                                <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">
                                     Semua iklan gratis telah melalui moderasi tim keamanan untuk mencegah spam dan penipuan.
                                 </p>
                             </div>
                         </div>
                     </aside>
 
-                    {/* Area Hasil Iklan (9 Kolom / lg:col-span-9) */}
+                    {/* Main Content Area (9 Kolom / lg:col-span-9) */}
                     <main className="lg:col-span-9 space-y-6">
-                        {/* Header List */}
-                        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div className="text-left">
-                                <h3 className="font-extrabold text-sm text-slate-800">
+                        
+                        {/* Toolbar (Sort & View Options) */}
+                        <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-3 sm:p-4 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 dark:backdrop-blur-md">
+                            <div>
+                                <h2 className="font-extrabold text-slate-800 dark:text-slate-200 text-sm sm:text-base">
                                     Menampilkan {filteredAds.length} Iklan Gratis
-                                </h3>
-                                <p className="text-[10px] text-slate-400 mt-0.5">
-                                    Kategori aktif: <span className="font-bold text-slate-600">{selectedCategory}</span>
+                                </h2>
+                                <p className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 mt-1">
+                                    Kategori aktif: <strong className="text-slate-600 dark:text-slate-300">{selectedCategory}</strong>
                                 </p>
                             </div>
 
-                            {/* Sorting & Layout Grid Toggle */}
-                            <div className="flex items-center gap-3 justify-end">
-                                <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                            <div className="flex items-center gap-3 w-full sm:w-auto">
+                                {/* View toggles */}
+                                <div className="flex bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-1">
                                     <button 
                                         onClick={() => setViewMode('grid')}
-                                        className={`p-1.5 rounded transition-all cursor-pointer ${viewMode === 'grid' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                        className={`p-1.5 sm:p-2 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-slate-600 shadow text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`}
                                     >
                                         <LayoutGrid className="w-4 h-4" />
                                     </button>
                                     <button 
                                         onClick={() => setViewMode('list')}
-                                        className={`p-1.5 rounded transition-all cursor-pointer ${viewMode === 'list' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                        className={`p-1.5 sm:p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-white dark:bg-slate-600 shadow text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`}
                                     >
                                         <List className="w-4 h-4" />
                                     </button>
                                 </div>
-
-                                <div className="relative flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2">
-                                    <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 mr-2 flex-shrink-0" />
-                                    <select
-                                        value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value)}
-                                        className="text-xs bg-transparent text-slate-700 outline-none pr-4 cursor-pointer"
-                                    >
-                                        <option value="Terbaru">Terbaru</option>
-                                        <option value="Harga Terendah">Harga Terendah</option>
-                                        <option value="Harga Tertinggi">Harga Tertinggi</option>
-                                    </select>
+                                
+                                {/* Sort dropdown */}
+                                <div className="flex-1 sm:flex-none relative bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
+                                        <select 
+                                            value={sortBy}
+                                            onChange={(e) => setSortBy(e.target.value)}
+                                            className="bg-transparent text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-bold focus:outline-none appearance-none cursor-pointer pr-4"
+                                        >
+                                            <option>Terbaru</option>
+                                            <option>Harga Terendah</option>
+                                            <option>Harga Tertinggi</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -345,13 +349,13 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 /* Loading skeleton loader cards grid */
                                 <div key="loading-skeleton" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {[1, 2, 3, 4, 5, 6].map((i) => (
-                                        <div key={i} className="bg-white rounded-2xl border border-slate-200 p-5 space-y-4 animate-pulse">
-                                            <div className="aspect-[4/3] w-full bg-slate-100 rounded-xl"></div>
-                                            <div className="h-4 bg-slate-100 rounded w-3/4"></div>
-                                            <div className="h-3 bg-slate-100 rounded w-1/2"></div>
+                                        <div key={i} className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-5 space-y-4 animate-pulse">
+                                            <div className="aspect-[4/3] w-full bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+                                            <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-3/4"></div>
+                                            <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/2"></div>
                                             <div className="flex justify-between items-center pt-2">
-                                                <div className="h-5 bg-slate-100 rounded w-1/3"></div>
-                                                <div className="h-8 bg-slate-100 rounded w-1/4"></div>
+                                                <div className="h-5 bg-slate-100 dark:bg-slate-800 rounded w-1/3"></div>
+                                                <div className="h-8 bg-slate-100 dark:bg-slate-800 rounded w-1/4"></div>
                                             </div>
                                         </div>
                                     ))}
@@ -366,61 +370,55 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                         <div 
                                             key={ad.id}
                                             onClick={() => { setSelectedAd(ad); handleAdClick(ad.id); }}
-                                            className={`bg-white rounded-2xl border border-slate-200 overflow-hidden flex cursor-pointer group hover:shadow-md transition-all ${
+                                            className={`bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800/80 overflow-hidden flex cursor-pointer group hover:shadow-md transition-all ${
                                                 viewMode === 'grid' 
                                                     ? 'flex-col justify-between'
                                                     : 'flex-row items-center gap-4 p-4'
                                             }`}
                                         >
                                             {/* Image */}
-                                            <div className={`overflow-hidden bg-slate-100 relative flex-shrink-0 ${
+                                            <div className={`overflow-hidden bg-slate-100 dark:bg-slate-800 relative flex-shrink-0 ${
                                                 viewMode === 'grid' 
                                                     ? 'aspect-[4/3] w-full'
-                                                    : 'w-24 h-24 sm:w-32 sm:h-32 rounded-xl border border-slate-100'
+                                                    : 'w-24 h-24 sm:w-32 sm:h-32 rounded-xl border border-slate-100 dark:border-slate-800'
                                             }`}>
                                                 <img 
                                                     src={ad.image} 
                                                     alt={ad.title} 
                                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                 />
-                                                {/* Category Badge on image (only in Grid) */}
-                                                {viewMode === 'grid' && (
-                                                    <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm border border-slate-200/50 text-[9px] font-bold text-slate-700 px-2.5 py-1 rounded-full shadow-sm">
-                                                        {ad.category}
-                                                    </span>
-                                                )}
                                             </div>
 
                                             {/* Card Info Body */}
-                                            <div className={`p-5 flex-1 flex flex-col justify-between ${
-                                                viewMode === 'grid' ? '' : 'text-left'
-                                            }`}>
-                                                <div className="space-y-2 text-left">
-                                                    {viewMode === 'list' && (
-                                                        <span className="inline-block bg-slate-100 text-[8px] font-extrabold uppercase tracking-wider text-slate-500 px-2 py-0.5 rounded">
-                                                            {ad.category} &bull; {ad.condition}
+                                            <div className="p-5 flex flex-col flex-1 justify-between text-left">
+                                                <div>
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <span className="inline-block bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-black text-[9px] px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                                            {ad.category}
                                                         </span>
-                                                    )}
-                                                    <h4 className="font-extrabold text-xs sm:text-sm text-slate-800 leading-snug line-clamp-2 h-10 group-hover:text-indigo-600 transition-colors">
+                                                        <span className="text-[9px] text-slate-400 font-semibold">{ad.date}</span>
+                                                    </div>
+                                                    
+                                                    <h3 className="font-extrabold text-sm sm:text-base text-slate-800 dark:text-slate-200 leading-snug mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
                                                         {ad.title}
-                                                    </h4>
+                                                    </h3>
                                                     
                                                     <div className="flex items-center gap-3 text-[10px] text-slate-400">
-                                                        <span className="font-semibold text-slate-500">{ad.advertiser}</span>
+                                                        <span className="font-semibold text-slate-500 dark:text-slate-400">{ad.advertiser}</span>
                                                         <span className="flex items-center gap-0.5">
-                                                            <MapPin className="w-3 h-3 text-slate-400" />
+                                                            <MapPin className="w-3 h-3 text-slate-400 dark:text-slate-500" />
                                                             {ad.location}
                                                         </span>
                                                     </div>
                                                 </div>
 
                                                 {/* Pricing & WA button wrapper */}
-                                                <div className={`flex items-center justify-between pt-4 border-t border-slate-100 mt-4 ${
+                                                <div className={`flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700/50 mt-4 ${
                                                     viewMode === 'grid' ? 'flex-row' : 'flex-row gap-4'
                                                 }`}>
                                                     <div className="text-left">
-                                                        <span className="block text-[8px] text-slate-400 font-bold uppercase">Harga</span>
-                                                        <span className="font-black text-sm text-amber-600">
+                                                        <span className="block text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase">Harga</span>
+                                                        <span className="font-black text-sm text-amber-600 dark:text-amber-400">
                                                             {ad.price > 0 ? `Rp${new Intl.NumberFormat('id-ID').format(ad.price)}` : 'Hubungi Kontak'}
                                                         </span>
                                                     </div>
@@ -442,19 +440,19 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 </div>
                             ) : (
                                 /* Empty State */
-                                <div key="empty-state" className="bg-white rounded-2xl border border-slate-200 p-16 text-center shadow-sm space-y-4">
-                                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-300">
+                                <div key="empty-state" className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-16 text-center shadow-sm space-y-4 dark:backdrop-blur-md">
+                                    <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto text-slate-300 dark:text-slate-600">
                                         <HelpCircle className="w-8 h-8" />
                                     </div>
                                     <div className="space-y-1">
-                                        <h4 className="font-extrabold text-slate-800">Iklan Tidak Ditemukan</h4>
-                                        <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                                        <h4 className="font-extrabold text-slate-800 dark:text-slate-200">Iklan Tidak Ditemukan</h4>
+                                        <p className="text-xs text-slate-400 dark:text-slate-500 max-w-sm mx-auto">
                                             Maaf, tidak ada penawaran iklan yang cocok dengan filter atau kata kunci pencarian Anda.
                                         </p>
                                     </div>
                                     <button 
                                         onClick={handleClearFilters}
-                                        className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all shadow-md cursor-pointer"
+                                        className="px-5 py-2.5 bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 dark:hover:bg-slate-600 text-white text-xs font-bold rounded-xl transition-all shadow-md cursor-pointer"
                                     >
                                         Atur Ulang Semua Filter
                                     </button>
@@ -466,26 +464,26 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             </section>
 
             {/* C-2. Blog Section */}
-            <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-200">
+            <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-200 dark:border-slate-800/80">
                 <div className="mb-8 flex items-center gap-3">
                     <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/20">
                         <Rss className="w-6 h-6 text-sky-500" />
                     </div>
-                    <h2 className="text-2xl font-black text-slate-800">Artikel Blog Terbaru</h2>
+                    <h2 className="text-2xl font-black text-slate-800 dark:text-white">Artikel Blog Terbaru</h2>
                 </div>
 
                 <div className="space-y-6">
                     {recentBlogs.map((blog) => (
-                        <div key={blog.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col md:flex-row group hover:shadow-md transition-shadow">
+                        <div key={blog.id} className="bg-white dark:bg-slate-900/60 dark:backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800/80 shadow-sm overflow-hidden flex flex-col md:flex-row group hover:shadow-md transition-shadow">
                             <div className="md:w-64 flex-shrink-0 relative overflow-hidden">
                                 <img src={blog.image} alt={blog.title} className="w-full h-full object-cover min-h-[160px] group-hover:scale-105 transition-transform duration-500" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent md:hidden"></div>
                             </div>
                             <div className="p-6 md:p-8 flex flex-col justify-center flex-1">
-                                <h3 className="text-lg md:text-xl font-extrabold text-sky-600 hover:text-sky-700 cursor-pointer mb-2 transition-colors">
+                                <h3 className="text-lg md:text-xl font-extrabold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 cursor-pointer mb-2 transition-colors">
                                     {blog.title}
                                 </h3>
-                                <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-400 mb-4">
+                                <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-4">
                                     <div className="flex items-center gap-1.5">
                                         <Clock className="w-3.5 h-3.5" />
                                         {blog.date}
@@ -495,11 +493,11 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                         {blog.category}
                                     </div>
                                 </div>
-                                <p className="text-sm text-slate-500 leading-relaxed mb-4 line-clamp-3">
+                                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4 line-clamp-3">
                                     {blog.excerpt}
                                 </p>
                                 <div>
-                                    <button className="inline-flex items-center gap-1 text-sm font-bold text-sky-500 hover:text-sky-600 transition-colors">
+                                    <button className="inline-flex items-center gap-1 text-sm font-bold text-sky-500 dark:text-sky-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors">
                                         Selengkapnya
                                         <ChevronRight className="w-4 h-4" />
                                     </button>
@@ -513,19 +511,19 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             {/* D. ClassifiedDetailModal Popup */}
             {selectedAd && (
                 <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative text-left">
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative text-left border border-slate-100 dark:border-slate-800">
                         {/* Close button */}
                         <button 
                             onClick={() => setSelectedAd(null)}
-                            className="absolute top-4 right-4 p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition-colors z-10 cursor-pointer"
+                            className="absolute top-4 right-4 p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full transition-colors z-10 cursor-pointer shadow-sm"
                         >
                             <X className="w-4 h-4" />
                         </button>
 
                         {/* Image banner */}
-                        <div className="aspect-[16/9] w-full bg-slate-100 relative">
+                        <div className="aspect-[16/9] w-full bg-slate-100 dark:bg-slate-800 relative">
                             <img src={selectedAd.image} alt={selectedAd.title} className="w-full h-full object-cover" />
-                            <span className="absolute top-4 left-4 bg-amber-500 text-xs font-black text-slate-900 px-3 py-1 rounded-full shadow">
+                            <span className="absolute top-4 left-4 bg-amber-500 text-xs font-black text-slate-900 dark:text-slate-100 px-3 py-1 rounded-full shadow">
                                 {selectedAd.category}
                             </span>
                         </div>
@@ -533,40 +531,40 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                         {/* Modal Body content */}
                         <div className="p-6 sm:p-8 space-y-6">
                             <div className="space-y-2">
-                                <span className="inline-block bg-slate-100 text-[10px] font-extrabold uppercase text-slate-500 px-2.5 py-1 rounded-md">
+                                <span className="inline-block bg-slate-100 dark:bg-slate-800 text-[10px] font-extrabold uppercase text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-md">
                                     Kondisi: {selectedAd.condition}
                                 </span>
-                                <h3 className="text-lg sm:text-xl font-black text-slate-800 leading-snug">
+                                <h3 className="text-lg sm:text-xl font-black text-slate-800 dark:text-slate-200 leading-snug">
                                     {selectedAd.title}
                                 </h3>
                                 <div className="flex flex-wrap gap-4 text-xs text-slate-400 pt-1">
-                                    <span className="font-semibold text-slate-600">Pengiklan: {selectedAd.advertiser}</span>
+                                    <span className="font-semibold text-slate-600 dark:text-slate-400">Pengiklan: {selectedAd.advertiser}</span>
                                     <span className="flex items-center gap-1">
-                                        <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                                        <MapPin className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                                         {selectedAd.location}
                                     </span>
                                 </div>
                             </div>
 
                             {/* Price block */}
-                            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-between">
-                                <span className="text-xs font-bold text-amber-800">Harga Penawaran:</span>
-                                <span className="text-xl font-black text-amber-600">
+                            <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 flex items-center justify-between">
+                                <span className="text-xs font-bold text-amber-800 dark:text-amber-500">Harga Penawaran:</span>
+                                <span className="text-xl font-black text-amber-600 dark:text-amber-400">
                                     {selectedAd.price > 0 ? `Rp${new Intl.NumberFormat('id-ID').format(selectedAd.price)}` : 'Hubungi Kontak'}
                                 </span>
                             </div>
 
                             {/* Description block */}
                             <div className="space-y-2">
-                                <h5 className="font-extrabold text-xs uppercase tracking-wider text-slate-500">Deskripsi Lengkap</h5>
-                                <p className="text-slate-600 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
+                                <h5 className="font-extrabold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Deskripsi Lengkap</h5>
+                                <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
                                     {selectedAd.desc}
                                 </p>
                             </div>
 
                             {/* Action block */}
-                            <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row gap-3 items-center justify-between">
-                                <span className="text-[10px] text-slate-400">Dipublikasikan pada: {selectedAd.date}</span>
+                            <div className="pt-6 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row gap-3 items-center justify-between">
+                                <span className="text-[10px] text-slate-400 dark:text-slate-500">Dipublikasikan pada: {selectedAd.date}</span>
                                 
                                 <a 
                                     href={`https://wa.me/${selectedAd.whatsapp}`}

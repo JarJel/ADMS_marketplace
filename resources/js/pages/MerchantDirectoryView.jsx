@@ -156,7 +156,7 @@ export default function MerchantDirectoryView({ user, token, onNavigate, darkMod
 
                                     {/* Bottom Info Bar */}
                                     <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 mt-auto flex items-center justify-between gap-4">
-                                        <div className="flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-550 min-w-0">
+                                        <div className="flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500 min-w-0">
                                             <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-slate-400 dark:text-slate-500" />
                                             <span className="truncate">{merchant.location || 'Indonesia'}</span>
                                         </div>
@@ -191,7 +191,7 @@ export default function MerchantDirectoryView({ user, token, onNavigate, darkMod
                         <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto text-slate-300 dark:text-slate-600">
                             <AlertCircle className="w-8 h-8" />
                         </div>
-                        <h3 className="font-extrabold text-slate-850 dark:text-slate-200 text-base">Toko Tidak Ditemukan</h3>
+                        <h3 className="font-extrabold text-slate-800 dark:text-slate-200 text-base">Toko Tidak Ditemukan</h3>
                         <p className="text-xs text-slate-500 dark:text-slate-500 max-w-sm mx-auto leading-relaxed">
                             Maaf, kami tidak dapat menemukan merchant dengan kata kunci pencarian Anda saat ini.
                         </p>

@@ -421,25 +421,45 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                 </div>
 
-                {/* Social Stats footer */}
-                <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
-                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
+                {/* Social Stats footer - Enhanced with Interactivity (Resized smaller & responsive) */}
+                <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 relative z-10 max-w-5xl mx-auto">
+                    <div className={`group relative p-6 rounded-xl overflow-hidden transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl cursor-default ${
+                        darkMode ? 'bg-[#0B1B33]/60 border border-slate-700/50 hover:border-teal-500/50 hover:shadow-teal-500/10' : 'bg-white border border-slate-200 hover:border-teal-400 hover:shadow-teal-500/10'
                     }`}>
-                        <span className="block text-3xl font-black text-teal-400">15.4K+</span>
-                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Iklan Baris Aktif</span>
+                        <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="relative flex flex-col items-center text-center">
+                            <div className="w-10 h-10 mb-3 rounded-lg bg-teal-500/10 flex items-center justify-center border border-teal-500/20 group-hover:scale-110 transition-transform duration-500">
+                                <Megaphone className="w-5 h-5 text-teal-400" />
+                            </div>
+                            <span className="block text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-300 drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">15.4K+</span>
+                            <span className={`text-[11px] uppercase tracking-wider font-bold mt-1.5 ${darkMode ? 'text-slate-400 group-hover:text-slate-300' : 'text-slate-500 group-hover:text-slate-700'} transition-colors`}>Iklan Baris Aktif</span>
+                        </div>
                     </div>
-                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
-                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
+                    
+                    <div className={`group relative p-6 rounded-xl overflow-hidden transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl cursor-default ${
+                        darkMode ? 'bg-[#0B1B33]/60 border border-slate-700/50 hover:border-indigo-500/50 hover:shadow-indigo-500/10' : 'bg-white border border-slate-200 hover:border-indigo-400 hover:shadow-indigo-500/10'
                     }`}>
-                        <span className="block text-3xl font-black text-indigo-400">9.8K+</span>
-                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Aset Digital Terverifikasi</span>
+                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="relative flex flex-col items-center text-center">
+                            <div className="w-10 h-10 mb-3 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition-transform duration-500">
+                                <CheckCircle className="w-5 h-5 text-indigo-400" />
+                            </div>
+                            <span className="block text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-sky-400 drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">9.8K+</span>
+                            <span className={`text-[11px] uppercase tracking-wider font-bold mt-1.5 ${darkMode ? 'text-slate-400 group-hover:text-slate-300' : 'text-slate-500 group-hover:text-slate-700'} transition-colors`}>Aset Terverifikasi</span>
+                        </div>
                     </div>
-                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
-                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
+
+                    <div className={`group relative p-6 rounded-xl overflow-hidden transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl cursor-default ${
+                        darkMode ? 'bg-[#0B1B33]/60 border border-slate-700/50 hover:border-amber-500/50 hover:shadow-amber-500/10' : 'bg-white border border-slate-200 hover:border-amber-400 hover:shadow-amber-500/10'
                     }`}>
-                        <span className="block text-3xl font-black text-white">25K+</span>
-                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Pengguna & Merchant Aktif</span>
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="relative flex flex-col items-center text-center">
+                            <div className="w-10 h-10 mb-3 rounded-lg bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-110 transition-transform duration-500">
+                                <Users className="w-5 h-5 text-amber-400" />
+                            </div>
+                            <span className="block text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-400 drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300">25K+</span>
+                            <span className={`text-[11px] uppercase tracking-wider font-bold mt-1.5 ${darkMode ? 'text-slate-400 group-hover:text-slate-300' : 'text-slate-500 group-hover:text-slate-700'} transition-colors`}>Pengguna & Merchant</span>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1085,44 +1105,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                 )}
             </div>
 
-            {/* G. CTA Banner Section (Sebelum Footer) */}
-            <ScrollFadeIn>
-            <section className="py-16 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-[#0A1B33] rounded-3xl p-8 sm:p-12 md:p-16 text-left relative overflow-hidden shadow-2xl">
-                        <div className="relative z-10 space-y-6 max-w-3xl">
-                            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-3.5 py-1.5 rounded-full uppercase tracking-wider">
-                                <Star className="w-3.5 h-3.5 fill-current text-sky-400" />
-                                Siap Mengembangkan Bisnis Anda?
-                            </span>
-                            <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-                                Mulai Temukan Produk Digital & Pasang Iklan Anda Hari Ini!
-                            </h2>
-                            <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                                Bergabunglah bersama ribuan pengguna, merchant, dan advertiser di ADMS (PT. Armada Digital Marketing Syariah).
-                            </p>
-                            
-                            <div className="flex flex-wrap items-center gap-4 pt-4">
-                                <button 
-                                    onClick={() => onNavigateToDashboard ? onNavigateToDashboard() : onNavigateToLogin()}
-                                    className="bg-[#0EA5E9] hover:bg-[#0284c7] text-white text-xs font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-sky-500/20 transition-all flex items-center gap-2 group"
-                                >
-                                    <span>Jelajahi Marketplace</span>
-                                    <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
-                                </button>
-                                <button 
-                                    onClick={onNavigateToClassifieds}
-                                    className="bg-transparent border border-emerald-500/30 hover:border-emerald-500/50 hover:bg-emerald-500/5 text-emerald-400 text-xs font-bold py-3.5 px-6 rounded-xl cursor-pointer transition-all flex items-center gap-2"
-                                >
-                                    <CheckCircle className="w-4 h-4 text-emerald-400" />
-                                    <span>Pasang Iklan Gratis Rp0</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            </ScrollFadeIn>
+
 
             {/* H. Redesigned Premium Footer */}
             <footer className="bg-[#071324] text-slate-100 pt-20 pb-10 border-t border-slate-900">
@@ -1133,8 +1116,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         
                         {/* Company logo/info block (5 cols) */}
                         <div className="md:col-span-5 space-y-6">
-                            <div className="inline-block bg-white p-2.5 rounded-xl border border-slate-800 max-w-[160px]">
-                                <img src="/assets/Images/adms-logo.png" alt="ADMS Logo" className="h-9 object-contain" />
+                            <div className="inline-block mb-2">
+                                <img src="/assets/Images/adms-logo-transparent.png" alt="ADMS Logo" className="h-10 object-contain invert opacity-90" />
                             </div>
                             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
                                 Platform terpadu Marketplace Produk Digital, Multi-Vendor Merchant, dan Platform Pemasangan Iklan Gratis & Promosi Berbayar untuk mengembangkan bisnis Anda.
@@ -1205,12 +1188,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     </div>
 
                     {/* Bottom Status bar (with divider line) */}
-                    <div className="pt-8 border-t border-slate-900/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                    <div className="pt-8 border-t border-slate-900/60 flex flex-col items-center justify-center gap-4 text-xs text-slate-500 text-center">
                         <p>&copy; 2026 ADMS (PT. Armada Digital Marketing Syariah). All rights reserved.</p>
-                        <p className="flex items-center gap-1.5 font-medium text-slate-400">
-                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
-                            Platform Status: <span className="text-emerald-500 font-bold">Operational & Verified</span>
-                        </p>
                     </div>
                 </div>
             </footer>

@@ -152,7 +152,7 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode, setD
                                 </div>
                                 <div className="flex justify-between font-extrabold text-lg pt-4 border-t border-slate-100 dark:border-slate-800">
                                     <span>Total Tagihan</span>
-                                    <span className="text-indigo-600">Rp{total.toLocaleString('id-ID')}</span>
+                                    <span clas1sName="text-indigo-600">Rp{total.toLocaleString('id-ID')}</span>
                                 </div>
                             </div>
                             <button 

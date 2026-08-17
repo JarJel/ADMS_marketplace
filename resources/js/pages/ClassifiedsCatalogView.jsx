@@ -12,6 +12,21 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
     const [ads, setAds] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Slideshow backgrounds
+    const backgroundImages = [
+        "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80",
+        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1920&q=80",
+        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80"
+    ];
+    const [currentBgIndex, setCurrentBgIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentBgIndex((prev) => (prev + 1) % backgroundImages.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
     useEffect(() => {
         fetchAds();
     }, []);
@@ -58,17 +73,17 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
 
     // Categories configurations
     const categories = [
-        { name: 'Semua Kategori', icon: '🌐' },
-        { name: 'Mobil', icon: '🚗' },
-        { name: 'Motor', icon: '🏍' },
-        { name: 'Handphone', icon: '📱' },
-        { name: 'Elektronik', icon: '💻' },
-        { name: 'Properti', icon: '🏠' },
-        { name: 'Tanah', icon: '🏷' },
-        { name: 'Jasa', icon: '🛠' },
-        { name: 'Lowongan Kerja', icon: '💼' },
-        { name: 'Fashion', icon: '👕' },
-        { name: 'Rumah Tangga', icon: '🛋' }
+        { name: 'Semua Kategori' },
+        { name: 'Mobil' },
+        { name: 'Motor' },
+        { name: 'Handphone' },
+        { name: 'Elektronik' },
+        { name: 'Properti' },
+        { name: 'Tanah' },
+        { name: 'Jasa' },
+        { name: 'Lowongan Kerja' },
+        { name: 'Fashion' },
+        { name: 'Rumah Tangga' }
     ];
 
     // Reset all active filters
@@ -145,16 +160,24 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                 currentView="create_ad"
             />
 
-            {/* A. Hero Portal Banner (Navy Gelap) */}
-            <section className="bg-[#071324] text-white py-16 relative overflow-hidden">
+            {/* A. Hero Portal Banner (Image Slideshow Background) */}
+            <section 
+                className="relative text-white py-16 overflow-hidden bg-[#071324]"
+                style={{
+                    backgroundImage: `url('${backgroundImages[currentBgIndex]}')`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    transition: 'background-image 1.5s ease-in-out'
+                }}
+            >
+                {/* Dark Overlay untuk memastikan teks terbaca jelas */}
+                <div className="absolute inset-0 bg-[#071324]/85 mix-blend-multiply pointer-events-none"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#071324]/50 to-[#071324] pointer-events-none"></div>
                 {/* Glow effects decoration */}
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
                 <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3.5 py-1.5 rounded-full uppercase tracking-wider">
-                        🌐 Portal Iklan Baris Modern Indonesia
-                    </span>
                     <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight max-w-3xl mx-auto">
                         Cari Barang Bekas, Jasa & Properti Terdekat
                     </h1>
@@ -214,7 +237,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                         : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                                 }`}
                             >
-                                <span>{cat.icon}</span>
+                                {cat.icon && <span>{cat.icon}</span>}
                                 <span>{cat.name}</span>
                             </button>
                         ))}

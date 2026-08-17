@@ -69,6 +69,22 @@ Route::get('/public/ads', function () {
     ]);
 });
 
+Route::get('/public/categories', function () {
+    return response()->json([
+        'success' => true,
+        'message' => 'Daftar kategori berhasil diambil.',
+        'data' => \App\Models\Category::all()
+    ]);
+});
+
+Route::get('/public/packages', function () {
+    return response()->json([
+        'success' => true,
+        'message' => 'Daftar paket promosi berhasil diambil.',
+        'data' => \App\Models\Package::where('is_active', true)->get()
+    ]);
+});
+
 // Public Auth Routes (With Rate Limiting)
 Route::middleware('throttle:10,1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);

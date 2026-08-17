@@ -19,6 +19,7 @@ function App() {
     const [token, setToken] = useState(localStorage.getItem('auth_token'));
     const [user, setUser] = useState(null);
     const [view, setView] = useState('homepage'); 
+    const [productFilter, setProductFilter] = useState('all');
     const [loading, setLoading] = useState(true);
     const [darkMode, setDarkMode] = useState(true);
     
@@ -128,7 +129,7 @@ function App() {
         }
     };
 
-    const handleNavigation = (targetView) => {
+    const handleNavigation = (targetView, filter = 'all') => {
         if (targetView === 'homepage') {
             navigateTo('homepage', '/');
         } else if (targetView === 'login') {
@@ -138,6 +139,7 @@ function App() {
         } else if (targetView === 'classifieds') {
             navigateTo('classifieds', '/iklan-gratis');
         } else if (targetView === 'products') {
+            setProductFilter(filter);
             navigateTo('products', '/produk');
         } else if (targetView === 'merchants') {
             navigateTo('merchants', '/merchants');
@@ -214,7 +216,7 @@ function App() {
             case 'classifieds':
                 return <ClassifiedsCatalogView {...dashboardProps} />;
             case 'products':
-                return <ProductsCatalogView {...dashboardProps} />;
+                return <ProductsCatalogView {...dashboardProps} initialFilter={productFilter} />;
             case 'merchants':
                 return <MerchantDirectoryView {...dashboardProps} />;
             case 'login':

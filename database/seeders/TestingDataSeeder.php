@@ -94,6 +94,77 @@ class TestingDataSeeder extends Seeder
             'status' => 'active',
         ]);
 
+        // Get digital product categories
+        $catCanva = Category::where('slug', 'template-canva')->first();
+        $catCode = Category::where('slug', 'source-code-web')->first();
+        $catEbook = Category::where('slug', 'ebook-buku-digital')->first();
+        $catPrompt = Category::where('slug', 'ai-prompt-kit')->first();
+
+        // Seed digital products
+        if ($catCanva) {
+            Product::create([
+                'merchant_id' => $store->id,
+                'category_id' => $catCanva->id,
+                'title' => 'Template Bundling Social Media Canva untuk UMKM 2026',
+                'slug' => 'template-bundling-social-media-canva-untuk-umkm-2026',
+                'price' => 49000.00,
+                'price_type' => 'starting_from',
+                'short_description' => 'Paket lengkap berisi 500+ template Canva siap pakai untuk promosi produk kuliner, fashion, jasa, dan edukasi.',
+                'full_description' => 'Paket lengkap berisi 500+ template Canva siap pakai untuk promosi produk kuliner, fashion, jasa, dan edukasi. Membantu UMKM meningkatkan branding secara profesional dalam hitungan menit.',
+                'stock' => 999,
+                'thumbnail' => 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=600&auto=format&fit=crop',
+                'status' => 'active',
+            ]);
+        }
+
+        if ($catCode) {
+            Product::create([
+                'merchant_id' => $store->id,
+                'category_id' => $catCode->id,
+                'title' => 'Source Code Aplikasi Kasir Web Laravel 11 & React',
+                'slug' => 'source-code-aplikasi-kasir-web-laravel-11-react',
+                'price' => 199000.00,
+                'price_type' => 'starting_from',
+                'short_description' => 'Aplikasi kasir web modern berbasis Laravel 11 (backend API) dan ReactJS (frontend SPA).',
+                'full_description' => 'Aplikasi kasir web modern berbasis Laravel 11 (backend API) dan ReactJS (frontend SPA). Dilengkapi dengan fitur multi-cabang, laporan penjualan realtime, cetak struk thermal, dan manajemen inventori barang.',
+                'stock' => 999,
+                'thumbnail' => 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop',
+                'status' => 'active',
+            ]);
+        }
+
+        if ($catEbook) {
+            Product::create([
+                'merchant_id' => $store->id,
+                'category_id' => $catEbook->id,
+                'title' => 'Ebook Panduan Sukses Jualan Produk Digital Dari Nol',
+                'slug' => 'ebook-panduan-sukses-jualan-produk-digital-dari-nol',
+                'price' => 29000.00,
+                'price_type' => 'starting_from',
+                'short_description' => 'Ebook panduan praktis setebal 150 halaman yang membahas strategi riset pasar, pembuatan aset digital bernilai tinggi.',
+                'full_description' => 'Ebook panduan praktis setebal 150 halaman yang membahas strategi riset pasar, pembuatan aset digital bernilai tinggi, hingga cara memasarkannya menggunakan taktik organik dan iklan berbayar.',
+                'stock' => 999,
+                'thumbnail' => 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=600&auto=format&fit=crop',
+                'status' => 'active',
+            ]);
+        }
+
+        if ($catPrompt) {
+            Product::create([
+                'merchant_id' => $store->id,
+                'category_id' => $catPrompt->id,
+                'title' => 'Mega Prompt Generator ChatGPT untuk Copywriting Iklan',
+                'slug' => 'mega-prompt-generator-chatgpt-untuk-copywriting-iklan',
+                'price' => 15000.00,
+                'price_type' => 'starting_from',
+                'short_description' => 'Koleksi 1000+ prompt ChatGPT super spesifik untuk menghasilkan naskah iklan, landing page copy, email marketing.',
+                'full_description' => 'Koleksi 1000+ prompt ChatGPT super spesifik untuk menghasilkan naskah iklan, landing page copy, email marketing, dan ide konten kreatif secara instan yang terbukti mendatangkan pembeli.',
+                'stock' => 999,
+                'thumbnail' => 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&auto=format&fit=crop',
+                'status' => 'active',
+            ]);
+        }
+
         // Seed multiple classified advertisements
         $freePackage = Package::where('type', 'free')->first();
 

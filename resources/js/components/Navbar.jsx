@@ -56,7 +56,7 @@ export default function Navbar({
                         Home
                     </button>
                     <button 
-                        onClick={() => onNavigate('products')}
+                        onClick={() => onNavigate('products', 'digital')}
                         className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${
                             currentView === 'products' 
                                 ? 'bg-slate-200/80 dark:bg-slate-700/80 text-slate-900 dark:text-white shadow-sm' 
@@ -237,7 +237,7 @@ export default function Navbar({
                     ) : (
                         <>
                             <button onClick={() => { setShowSidebar(false); onNavigate('homepage'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Home</button>
-                            <button onClick={() => { setShowSidebar(false); onNavigate('products'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Produk Digital</button>
+                            <button onClick={() => { setShowSidebar(false); onNavigate('products', 'digital'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Produk Digital</button>
                             <button onClick={() => { setShowSidebar(false); onNavigate('merchants'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Mitra Merchant</button>
                             <button onClick={() => { setShowSidebar(false); onNavigate('classifieds'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Iklan Gratis</button>
                             <button onClick={() => { setShowSidebar(false); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Bantuan</button>

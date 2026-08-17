@@ -678,24 +678,15 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                             )}
                                         </div>
 
-                                        {/* Price display inside body */}
-                                        <div className="mt-4 text-center">
-                                            <span className="font-extrabold text-base sm:text-lg text-teal-600 dark:text-teal-400">Rp{numberFormat(prod.price)}</span>
-                                        </div>
                                     </div>
                                 </div>
 
                                 {/* Buy action */}
-                                <div className="p-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-2">
-                                    <button 
-                                        onClick={(e) => { e.stopPropagation(); setSelectedProduct(prod); }}
-                                        className="flex-1 border border-slate-300 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs py-2.5 rounded-xl transition-all active:scale-95 cursor-pointer shadow-sm text-center"
-                                    >
-                                        Detail
-                                    </button>
+                                <div className="p-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                    <span className="font-extrabold text-base text-teal-600 dark:text-teal-400">Rp{numberFormat(prod.price)}</span>
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); handleAddToCart(prod.id); }}
-                                        className="flex-1 bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5"
+                                        className="bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5"
                                     >
                                         <ShoppingCart className="w-3.5 h-3.5" />
                                         <span>Keranjang</span>
@@ -1353,11 +1344,11 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             <div>
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-6">Platform</h4>
                                 <ul className="space-y-3.5 text-xs text-slate-400">
-                                    <li><a href="#marketplace" className="hover:text-white transition-colors">Marketplace</a></li>
-                                    <li><a href="#marketplace" className="hover:text-white transition-colors">Produk Digital</a></li>
-                                    <li><a href="#ads" className="hover:text-white transition-colors">Iklan & Promosi</a></li>
-                                    <li><a href="#merchants" className="hover:text-white transition-colors">Merchant Vendor</a></li>
-                                    <li><a href="#ads" className="hover:text-white transition-colors">Paket Iklan</a></li>
+                                    <li><button onClick={() => onNavigate('products', 'all')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Marketplace</button></li>
+                                    <li><button onClick={() => onNavigate('products', 'digital')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Produk Digital</button></li>
+                                    <li><button onClick={() => onNavigate('classifieds')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Iklan & Promosi</button></li>
+                                    <li><button onClick={() => onNavigate('merchants')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Merchant Vendor</button></li>
+                                    <li><button onClick={() => onNavigate('create_ad')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Paket Iklan</button></li>
                                 </ul>
                             </div>
                             

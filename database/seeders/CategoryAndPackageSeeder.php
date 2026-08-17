@@ -110,6 +110,46 @@ class CategoryAndPackageSeeder extends Seeder
             'icon' => 'mosque',
         ]);
 
+        // Digital Product Categories
+        $asetDigital = Category::create([
+            'name' => 'Aset Digital & Software',
+            'slug' => 'aset-digital-software',
+            'type' => 'product',
+            'icon' => 'code',
+        ]);
+
+        Category::create([
+            'name' => 'Template Canva',
+            'slug' => 'template-canva',
+            'parent_id' => $asetDigital->id,
+            'type' => 'product',
+            'icon' => 'layout-template',
+        ]);
+
+        Category::create([
+            'name' => 'Source Code Web',
+            'slug' => 'source-code-web',
+            'parent_id' => $asetDigital->id,
+            'type' => 'product',
+            'icon' => 'code',
+        ]);
+
+        Category::create([
+            'name' => 'Ebook & Buku Digital',
+            'slug' => 'ebook-buku-digital',
+            'parent_id' => $asetDigital->id,
+            'type' => 'product',
+            'icon' => 'book-open',
+        ]);
+
+        Category::create([
+            'name' => 'AI Prompt Kit',
+            'slug' => 'ai-prompt-kit',
+            'parent_id' => $asetDigital->id,
+            'type' => 'product',
+            'icon' => 'sparkles',
+        ]);
+
         // Advertisement categories
         $jasaSyariah = Category::create([
             'name' => 'Jasa & Layanan Syariah',

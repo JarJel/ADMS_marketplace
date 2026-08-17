@@ -24,7 +24,7 @@ const SkeletonCard = () => (
     </div>
 );
 
-export default function ProductsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout }) {
+export default function ProductsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout, initialFilter }) {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -53,11 +53,11 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
     // Fetch categories and initial products
     useEffect(() => {
         fetchCategories();
-    }, []);
+    }, [initialFilter]);
 
     useEffect(() => {
         fetchProducts();
-    }, [selectedCategoryId, sortOption, currentPage]);
+    }, [selectedCategoryId, sortOption, currentPage, initialFilter]);
 
     const fetchCategories = async () => {
         try {
@@ -65,7 +65,12 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             const response = await fetch('/api/public/categories?type=product');
             const data = await response.json();
             if (response.ok && data.success) {
-                setCategories(data.data);
+                if (initialFilter === 'digital') {
+                    const digitalSlugs = ['template-canva', 'source-code-web', 'ebook-buku-digital', 'ai-prompt-kit', 'aset-digital-software'];
+                    setCategories(data.data.filter(cat => digitalSlugs.includes(cat.slug)));
+                } else {
+                    setCategories(data.data);
+                }
             }
         } catch (err) {
             console.error("Gagal mengambil kategori:", err);
@@ -95,7 +100,12 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             const response = await fetch(url);
             const data = await response.json();
             if (response.ok && data.success) {
-                setProducts(data.data.data || []);
+                let fetchedProducts = data.data.data || [];
+                if (initialFilter === 'digital' && !selectedCategoryId) {
+                    const digitalSlugs = ['template-canva', 'source-code-web', 'ebook-buku-digital', 'ai-prompt-kit', 'aset-digital-software'];
+                    fetchedProducts = fetchedProducts.filter(p => p.category && digitalSlugs.includes(p.category.slug));
+                }
+                setProducts(fetchedProducts);
                 setPaginationData(data.data);
             }
         } catch (err) {
@@ -514,7 +524,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                         </div>
 
                                         {/* Buy action */}
-                                        <div className="p-5 pt-0 border-t border-slate-100 dark:border-slate-800/80 mt-4 flex items-center justify-between">
+                                        <div className="p-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
                                             <span className="font-extrabold text-base text-teal-600 dark:text-teal-400">Rp{numberFormat(prod.price)}</span>
                                             <button 
                                                 onClick={(e) => { e.stopPropagation(); handleAddToCart(prod.id); }}

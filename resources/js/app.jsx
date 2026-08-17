@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
+import '../css/app.css';
 import Homepage from './pages/Homepage';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -12,6 +13,7 @@ import ProductsCatalogView from './pages/ProductsCatalogView';
 import MerchantDirectoryView from './pages/MerchantDirectoryView';
 import Toast from './components/Toast';
 import Cart from './pages/Customer/Cart';
+import AdmsChatWidget from './components/Chatbot/AdmsChatWidget';
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem('auth_token'));
@@ -259,6 +261,7 @@ function App() {
                 onClose={() => setToastMessage('')} 
             />
             {renderContent()}
+            <AdmsChatWidget darkMode={darkMode} />
         </>
     );
 }

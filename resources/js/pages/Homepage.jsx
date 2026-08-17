@@ -469,24 +469,25 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                 </div>
 
-                {/* Stats bar */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 relative z-10">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="relative bg-gradient-to-br from-teal-900/20 to-teal-950/10 border border-teal-500/10 rounded-2xl p-6 text-center overflow-hidden group hover:border-teal-500/30 hover:-translate-y-0.5 transition-all duration-300">
-                            <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <span className="block text-3xl font-black text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text">15.4K+</span>
-                            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-1 block">Iklan Baris Aktif</span>
-                        </div>
-                        <div className="relative bg-gradient-to-br from-indigo-900/20 to-indigo-950/10 border border-indigo-500/10 rounded-2xl p-6 text-center overflow-hidden group hover:border-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300">
-                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <span className="block text-3xl font-black text-transparent bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text">9.8K+</span>
-                            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-1 block">Aset Digital Terverifikasi</span>
-                        </div>
-                        <div className="relative bg-gradient-to-br from-slate-800/20 to-slate-900/10 border border-slate-700/20 rounded-2xl p-6 text-center overflow-hidden group hover:border-slate-600/40 hover:-translate-y-0.5 transition-all duration-300">
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <span className="block text-3xl font-black text-transparent bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text">25K+</span>
-                            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-1 block">Pengguna & Merchant Aktif</span>
-                        </div>
+                {/* Social Stats footer */}
+                <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
+                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
+                    }`}>
+                        <span className="block text-3xl font-black text-teal-400">15.4K+</span>
+                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Iklan Baris Aktif</span>
+                    </div>
+                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
+                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
+                    }`}>
+                        <span className="block text-3xl font-black text-indigo-400">9.8K+</span>
+                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Aset Digital Terverifikasi</span>
+                    </div>
+                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
+                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
+                    }`}>
+                        <span className="block text-3xl font-black text-white">25K+</span>
+                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Pengguna & Merchant Aktif</span>
                     </div>
                 </div>
             </section>
@@ -1313,19 +1314,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         
                         {/* Company logo/info block (5 cols) */}
                         <div className="md:col-span-5 space-y-6">
-                            {/* Footer logo - real PNG (transparent bg) + wordmark */}
-                            <div className="flex items-center gap-3">
-                                <img 
-                                    src="/assets/Images/adms-symbol.png" 
-                                    alt="ADMS" 
-                                    className="h-14 w-auto object-contain drop-shadow-lg" 
-                                />
-                                <div className="flex flex-col leading-none">
-                                    <span className="font-black text-2xl tracking-tight text-white leading-none">
-                                        ADM<span className="text-transparent bg-gradient-to-r from-indigo-400 to-teal-400 bg-clip-text">S</span>
-                                    </span>
-                                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] mt-1">Digital Marketplace</span>
-                                </div>
+                            <div className="inline-flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-800 max-w-[180px]">
+                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-8 object-contain" />
+                                <img src="/assets/Images/adms-text.png" alt="ADMS Text" className="h-6 object-contain" />
                             </div>
                             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
                                 Platform terpadu Marketplace Produk Digital, Multi-Vendor Merchant, dan Platform Pemasangan Iklan Gratis & Promosi Berbayar untuk mengembangkan bisnis Anda.

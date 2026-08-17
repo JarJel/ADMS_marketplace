@@ -58,12 +58,16 @@ export default function Navbar({
                     >
                         Iklan Gratis
                     </button>
-                    <a 
-                        href="#how" 
-                        className="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-4 py-2 rounded-full transition-colors"
+                    <button 
+                        onClick={() => onNavigate('help_center')} 
+                        className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${
+                            currentView === 'help_center' 
+                                ? 'bg-slate-200/80 dark:bg-slate-700/80 text-slate-900 dark:text-white shadow-sm' 
+                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        }`}
                     >
                         Bantuan
-                    </a>
+                    </button>
                 </nav>
 
                 {/* Sisi Kanan: Conditional render based on Auth status */}

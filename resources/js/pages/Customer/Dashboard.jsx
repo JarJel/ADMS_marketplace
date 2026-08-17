@@ -15,6 +15,53 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
     const [wishlist, setWishlist] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const recommendedProducts = [
+        {
+            id: 1,
+            title: "Template Bundling Social Media Canva untuk UMKM 2026",
+            category: "Template Canva",
+            merchant: "Amanah Creative",
+            isSyariah: true,
+            rating: 4.9,
+            reviewsCount: 142,
+            price: 49000,
+            image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+            id: 2,
+            title: "Source Code Aplikasi Kasir Web Laravel 11 & React",
+            category: "Source Code",
+            merchant: "Afifah Tech",
+            isSyariah: true,
+            rating: 4.8,
+            reviewsCount: 89,
+            price: 199000,
+            image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+            id: 3,
+            title: "Ebook Panduan Sukses Jualan Produk Digital Dari Nol",
+            category: "E-Book",
+            merchant: "Deni Book Store",
+            isSyariah: false,
+            rating: 4.7,
+            reviewsCount: 54,
+            price: 89000,
+            image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+            id: 4,
+            title: "Landing Page Event Organizer Elementor Pro",
+            category: "Template Web",
+            merchant: "Berkah Desain",
+            isSyariah: true,
+            rating: 5.0,
+            reviewsCount: 21,
+            price: 129000,
+            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop"
+        }
+    ];
+
     useEffect(() => {
         if (!token) return;
 
@@ -230,6 +277,69 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             <span className="block text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-1">Pengeluaran</span>
                                             <span className="text-xl font-black text-slate-800 dark:text-slate-100">{formatCurrency(purchases.filter(p => p.status === 'completed' || p.status === 'PAID').reduce((sum, p) => sum + parseFloat(p.total_amount || p.total || 0), 0))}</span>
                                         </div>
+                                    </div>
+                                </div>
+
+                                {/* Recommended Products */}
+                                <div className="mb-10">
+                                    <div className="flex items-center justify-between mb-5">
+                                        <h3 className="font-extrabold text-lg text-slate-800 dark:text-white">Rekomendasi Spesial Untuk Anda</h3>
+                                        <button 
+                                            onClick={() => onNavigate('classifieds')}
+                                            className="text-sm font-bold text-indigo-600 hover:text-indigo-500 transition-colors"
+                                        >
+                                            Lihat Semua &rarr;
+                                        </button>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+                                        {recommendedProducts.map((prod) => (
+                                            <div 
+                                                key={prod.id}
+                                                className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden flex flex-col justify-between group transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/10 hover:border-indigo-500/30 relative"
+                                            >
+                                                <button 
+                                                    className="absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-full text-slate-400 dark:text-slate-500 hover:text-rose-500 shadow-sm transition-colors"
+                                                >
+                                                    <Heart className="w-4 h-4" />
+                                                </button>
+                                                <div>
+                                                    <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
+                                                        <img 
+                                                            src={prod.image} 
+                                                            alt={prod.title} 
+                                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                        />
+                                                        <span className="absolute top-3 left-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur text-[10px] font-bold text-teal-600 dark:text-teal-400 px-2.5 py-0.5 rounded border border-slate-100 dark:border-slate-700 shadow-sm">
+                                                            {prod.category}
+                                                        </span>
+                                                    </div>
+                                                    <div className="p-4 flex flex-col gap-2">
+                                                        <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 min-h-[40px] group-hover:text-indigo-500 transition-colors">{prod.title}</h4>
+                                                        
+                                                        <div className="flex items-center gap-1.5 text-xs text-amber-500">
+                                                            <Star className="w-3.5 h-3.5 fill-current" />
+                                                            <span className="font-semibold text-slate-700 dark:text-slate-300">{prod.rating}</span>
+                                                            <span className="text-[10px] text-slate-400 dark:text-slate-500">({prod.reviewsCount})</span>
+                                                        </div>
+
+                                                        <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400">
+                                                            <span>Toko:</span>
+                                                            <strong className="text-slate-700 dark:text-slate-300 font-bold">{prod.merchant}</strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="p-4 pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/50 mt-2">
+                                                    <span className="font-black text-sm text-teal-600 dark:text-teal-400">{formatCurrency(prod.price)}</span>
+                                                    <button 
+                                                        className="bg-indigo-600 hover:bg-indigo-700 text-white p-1.5 rounded-lg transition-colors shadow-md shadow-indigo-500/20"
+                                                        title="Tambah ke Keranjang"
+                                                    >
+                                                        <ShoppingBag className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
 

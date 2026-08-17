@@ -760,24 +760,39 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         {stepsData[activeTab].map((step, idx) => (
                             <div 
                                 key={`${activeTab}-${idx}`}
-                                className="p-6 bg-white border border-slate-400/80 rounded-2xl hover:shadow-md transition-all flex flex-col justify-between min-h-[220px]"
+                                className={`group relative p-6 bg-white border border-slate-200 rounded-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-xl flex flex-col justify-between min-h-[220px] overflow-hidden cursor-default ${
+                                    activeTab === 'buyer' ? 'hover:border-amber-400 hover:shadow-amber-500/10' :
+                                    activeTab === 'merchant' ? 'hover:border-indigo-400 hover:shadow-indigo-500/10' :
+                                    'hover:border-sky-400 hover:shadow-sky-500/10'
+                                }`}
                             >
-                                <div>
-                                    <span className={`block text-xl font-bold mb-4 ${
+                                {/* Efek Gradient saat Hover */}
+                                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-br ${
+                                    activeTab === 'buyer' ? 'from-amber-500/10' :
+                                    activeTab === 'merchant' ? 'from-indigo-500/10' :
+                                    'from-sky-500/10'
+                                } to-transparent`}></div>
+
+                                <div className="relative z-10">
+                                    <span className={`block text-2xl font-black mb-4 transition-transform duration-500 group-hover:scale-110 origin-left ${
                                         activeTab === 'buyer' 
                                             ? 'text-amber-500' 
                                             : activeTab === 'merchant' 
                                                 ? 'text-indigo-500' 
                                                 : 'text-sky-500'
                                     }`}>{step.num}</span>
-                                    <h4 className="font-extrabold text-sm text-slate-800 leading-tight mb-2">{step.title}</h4>
-                                    <p className="text-[10px] text-slate-400 leading-relaxed">
+                                    <h4 className="font-extrabold text-sm text-slate-800 leading-tight mb-2 group-hover:text-slate-900">{step.title}</h4>
+                                    <p className="text-[10px] text-slate-500 leading-relaxed group-hover:text-slate-600">
                                         {step.desc}
                                     </p>
                                 </div>
-                                <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-semibold">
+                                <div className={`relative z-10 pt-4 border-t border-slate-100 flex items-center justify-between text-[10px] font-semibold transition-colors duration-300 ${
+                                    activeTab === 'buyer' ? 'group-hover:text-amber-600 group-hover:border-amber-100' :
+                                    activeTab === 'merchant' ? 'group-hover:text-indigo-600 group-hover:border-indigo-100' :
+                                    'group-hover:text-sky-600 group-hover:border-sky-100'
+                                } text-slate-400`}>
                                     <span>{step.step}</span>
-                                    {step.arrow && <span className="text-slate-400">&rarr;</span>}
+                                    {step.arrow && <span className="group-hover:translate-x-1 transition-transform duration-300">&rarr;</span>}
                                 </div>
                             </div>
                         ))}

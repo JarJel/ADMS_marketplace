@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { 
     Search, MapPin, Zap, Filter, ArrowUpDown, LayoutGrid, List,
-    Phone, ExternalLink, X, HelpCircle, Star, MessageSquare, AlertCircle
+    Phone, ExternalLink, X, HelpCircle, Star, MessageSquare, AlertCircle,
+    Rss, Clock, Tag, ChevronRight
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
@@ -19,6 +20,26 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
         "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80"
     ];
     const [currentBgIndex, setCurrentBgIndex] = useState(0);
+
+    // Mock Blog Data
+    const recentBlogs = [
+        {
+            id: 1,
+            title: "Tips Jitu Pasang Iklan Baris di ADMS Agar Cepat Laku",
+            date: "15 Agustus 2026",
+            category: "Edukasi",
+            excerpt: "Memasang iklan baris memang gratis dan mudah, tapi bagaimana caranya agar iklan Anda dilirik oleh banyak pembeli potensial? Di artikel ini, kita akan membahas 5 tips rahasia mulai dari pemilihan judul yang menarik, kualitas foto produk, hingga deskripsi yang persuasif. Mari tingkatkan konversi jualan Anda di ADMS Marketplace...",
+            image: "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=300&auto=format&fit=crop"
+        },
+        {
+            id: 2,
+            title: "Pentingnya Memilih Produk Digital Berbasis Syariah untuk Bisnis",
+            date: "12 Agustus 2026",
+            category: "Info ADMS",
+            excerpt: "Sebagai platform jual-beli yang mengedepankan prinsip Syariah, ADMS Marketplace selalu memastikan setiap produk digital (e-book, template, source code) bebas dari unsur penipuan, pelanggaran hak cipta, dan konten negatif. Ketahui mengapa menggunakan produk halal dan legal sangat penting untuk keberkahan bisnis digital Anda...",
+            image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=300&auto=format&fit=crop"
+        }
+    ];
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -484,6 +505,51 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                             )}
                         </div>
                     </main>
+                </div>
+            </section>
+
+            {/* C-2. Blog Section */}
+            <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-200">
+                <div className="mb-8 flex items-center gap-3">
+                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/20">
+                        <Rss className="w-6 h-6 text-sky-500" />
+                    </div>
+                    <h2 className="text-2xl font-black text-slate-800">Artikel Blog Terbaru</h2>
+                </div>
+
+                <div className="space-y-6">
+                    {recentBlogs.map((blog) => (
+                        <div key={blog.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col md:flex-row group hover:shadow-md transition-shadow">
+                            <div className="md:w-64 flex-shrink-0 relative overflow-hidden">
+                                <img src={blog.image} alt={blog.title} className="w-full h-full object-cover min-h-[160px] group-hover:scale-105 transition-transform duration-500" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent md:hidden"></div>
+                            </div>
+                            <div className="p-6 md:p-8 flex flex-col justify-center flex-1">
+                                <h3 className="text-lg md:text-xl font-extrabold text-sky-600 hover:text-sky-700 cursor-pointer mb-2 transition-colors">
+                                    {blog.title}
+                                </h3>
+                                <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-400 mb-4">
+                                    <div className="flex items-center gap-1.5">
+                                        <Clock className="w-3.5 h-3.5" />
+                                        {blog.date}
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <Tag className="w-3.5 h-3.5" />
+                                        {blog.category}
+                                    </div>
+                                </div>
+                                <p className="text-sm text-slate-500 leading-relaxed mb-4 line-clamp-3">
+                                    {blog.excerpt}
+                                </p>
+                                <div>
+                                    <button className="inline-flex items-center gap-1 text-sm font-bold text-sky-500 hover:text-sky-600 transition-colors">
+                                        Selengkapnya
+                                        <ChevronRight className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </section>
 

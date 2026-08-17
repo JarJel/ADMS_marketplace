@@ -11,6 +11,7 @@ import ClassifiedsCatalogView from './pages/ClassifiedsCatalogView';
 import MerchantDirectoryView from './pages/MerchantDirectoryView';
 import Toast from './components/Toast';
 import Cart from './pages/Customer/Cart';
+import HelpCenter from './pages/HelpCenter';
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem('auth_token'));
@@ -134,6 +135,8 @@ function App() {
             navigateTo('classifieds', '/iklan-gratis');
         } else if (targetView === 'create_ad') {
             navigateTo('create_ad', '/pasang-iklan');
+        } else if (targetView === 'help_center') {
+            navigateTo('help_center', '/bantuan');
         } else if (targetView === 'dashboard') {
             routeUser(user);
         }
@@ -198,6 +201,8 @@ function App() {
                 return <AdminDashboard {...dashboardProps} />;
             case 'create_ad':
                 return <CreateAd {...dashboardProps} />;
+            case 'help_center':
+                return <HelpCenter {...dashboardProps} />;
             case 'classifieds':
                 return <ClassifiedsCatalogView {...dashboardProps} />;
             case 'login':

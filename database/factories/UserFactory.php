@@ -24,12 +24,11 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = \Faker\Factory::create();
         return [
             'id' => (string) Str::uuid(),
-            'name' => $faker->name(),
-            'email' => $faker->unique()->safeEmail(),
-            'phone' => $faker->phoneNumber(),
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'phone' => fake()->phoneNumber(),
             'role' => 'user',
             'status' => 'active',
             'email_verified_at' => now(),

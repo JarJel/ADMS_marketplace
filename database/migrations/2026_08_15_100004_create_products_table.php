@@ -26,7 +26,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->index('slug');
-            // $table->fullText('title');
+            $table->fullText('title');
         });
     }
 

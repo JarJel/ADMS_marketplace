@@ -24,10 +24,6 @@ use App\Http\Controllers\Admin\CategoryAndPackageController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController;
 
-use App\Http\Controllers\Public\ProductController as PublicProductController;
-use App\Http\Controllers\Public\CategoryController as PublicCategoryController;
-use App\Http\Controllers\Public\AdController as PublicAdController;
-
 use Illuminate\Support\Facades\Route;
 use App\Models\Merchant;
 
@@ -37,13 +33,6 @@ Route::get('/hello', function () {
         'status' => 'success'
     ]);
 });
-
-Route::get('/public/categories', [PublicCategoryController::class, 'index']);
-Route::get('/public/products', [PublicProductController::class, 'index']);
-Route::get('/public/products/{id}', [PublicProductController::class, 'show']);
-
-Route::get('/public/ads', [PublicAdController::class, 'index']);
-Route::post('/public/ads/{id}/click', [PublicAdController::class, 'trackClick']);
 
 Route::get('/public/merchants', function () {
     $merchants = Merchant::where('is_verified', true)->with('owner')->get();
@@ -77,6 +66,22 @@ Route::get('/public/ads', function () {
         'success' => true,
         'message' => 'Daftar iklan baris berhasil diambil.',
         'data' => $ads
+    ]);
+});
+
+Route::get('/public/categories', function () {
+    return response()->json([
+        'success' => true,
+        'message' => 'Daftar kategori berhasil diambil.',
+        'data' => \App\Models\Category::all()
+    ]);
+});
+
+Route::get('/public/packages', function () {
+    return response()->json([
+        'success' => true,
+        'message' => 'Daftar paket promosi berhasil diambil.',
+        'data' => \App\Models\Package::where('is_active', true)->get()
     ]);
 });
 
@@ -117,7 +122,6 @@ Route::middleware('auth.custom')->group(function () {
     Route::post('/customer/reviews', [ReviewController::class, 'storeReview']);
 
     // Advertisements
-    Route::get('/customer/ads', [AdController::class, 'getAds']);
     Route::post('/customer/ads', [AdController::class, 'createAd']);
     Route::post('/customer/ads/{id}/upgrade', [AdController::class, 'upgradeAd']);
 

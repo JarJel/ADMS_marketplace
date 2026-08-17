@@ -387,15 +387,10 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                             %
                                         </div>
                                         <div>
-                                            <span className="block text-xs font-bold text-white">Promo Spesial Member</span>
-                                            <span className="block text-[9px] text-slate-400 mt-0.5">Cashback & Diskon Terbatas</span>
+                                            <span className="block text-xs font-bold text-white">Spesial Buat Member Baru</span>
+                                            <span className="block text-[9px] text-slate-400 mt-0.5">Klaim sebelum kehabisan!</span>
                                         </div>
                                     </div>
-<<<<<<< HEAD
-                                    <div>
-                                        <span className="block text-xs font-bold text-slate-100">Spesial Buat Member Baru</span>
-                                        <span className="block text-[9px] text-slate-400">Klaim sebelum kehabisan!</span>
-=======
                                     <span className="text-[8px] font-black bg-gradient-to-r from-amber-500/20 to-orange-500/10 text-amber-400 px-2.5 py-1 rounded-lg border border-amber-400/25 uppercase tracking-wider">
                                         🔥 Promo
                                     </span>
@@ -409,9 +404,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     <span className="relative z-10 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[9px] font-black tracking-widest px-3 py-1 rounded-full mb-3 shadow-lg shadow-emerald-500/30">
                                         ✦ DISKON 50%
                                     </span>
-                                    <h4 className="relative z-10 font-extrabold text-sm text-white mb-1.5 tracking-tight">Source Code & Canva Kit</h4>
+                                    <h4 className="relative z-10 font-extrabold text-sm text-white mb-1.5 tracking-tight">Diskon Source Code & Template</h4>
                                     <p className="relative z-10 text-[10px] text-slate-400 leading-relaxed max-w-[220px]">
-                                        Pembelian pertama dengan kode promo: <strong className="text-emerald-400 font-black tracking-wider">ADMSBARU</strong>
+                                        Pakai kode promo <strong className="text-emerald-400 font-black tracking-wider">ADMSBARU</strong> pas checkout buat dapetin potongan harga 50% di transaksi pertamamu!
                                     </p>
                                     <button className="relative z-10 mt-3 text-[9px] font-black text-emerald-300 border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 px-3.5 py-1 rounded-lg transition-all">
                                         Klaim Sekarang &rarr;
@@ -436,47 +431,19 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 <div className="flex items-center gap-3 bg-indigo-500/8 border border-indigo-500/15 rounded-2xl p-3">
                                     <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-600/30 to-purple-600/20 flex items-center justify-center border border-indigo-400/20 flex-shrink-0">
                                         <Megaphone className="w-4 h-4 text-indigo-400" />
->>>>>>> 439337f5f999822a2395ec25024ae9c425cc705f
                                     </div>
                                     <div className="flex-grow min-w-0">
-                                        <span className="block text-xs font-bold text-white truncate">Ads Exchange Premium</span>
-                                        <span className="block text-[9px] text-slate-400 mt-0.5 truncate">Tayang 30 hari · Prioritas pencarian teratas.</span>
+                                        <span className="block text-xs font-bold text-white truncate">Boost Iklan Premium</span>
+                                        <span className="block text-[9px] text-slate-400 mt-0.5 truncate">Bikin iklanmu nangkring di halaman utama selama 30 hari penuh.</span>
                                     </div>
                                     <span className="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/60 animate-pulse"></span>
                                 </div>
-<<<<<<< HEAD
-                                <span className="text-[9px] font-bold bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/25">
-                                    Voucher Merchant
-                                </span>
-                            </div>
-
-                            {/* Inner Green Display Box */}
-                            <div className="bg-[#072522] border border-emerald-500/20 rounded-xl p-5 flex flex-col items-center text-center mb-5">
-                                <span className="bg-emerald-500 text-white text-[9px] font-black tracking-wider px-2.5 py-0.5 rounded-full mb-2">
-                                    DISKON 50%
-                                </span>
-                                <h4 className="font-extrabold text-sm text-slate-100 mb-1">Diskon Source Code & Template</h4>
-                                <p className="text-[10px] text-slate-400 leading-normal max-w-[240px]">
-                                    Pakai kode promo <strong className="text-emerald-400">ADMSBARU</strong> pas checkout buat dapetin potongan harga 50% di transaksi pertamamu!
-                                </p>
-                            </div>
-
-                            {/* Bottom row block */}
-                            <div className="flex items-center gap-3 bg-[#0B1B33]/50 border border-slate-700/30 rounded-xl p-3">
-                                <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-                                    <Megaphone className="w-4 h-4 text-indigo-400" />
-                                </div>
-                                <div className="flex-grow">
-                                    <span className="block text-xs font-bold text-slate-200">Boost Iklan Premium</span>
-                                    <span className="block text-[9px] text-slate-400 mt-0.5">Bikin iklanmu nangkring di halaman utama selama 30 hari penuh.</span>
-=======
 
                                 {/* Pagination dots */}
                                 <div className="flex items-center justify-center gap-1.5 mt-5">
                                     <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
                                     <span className="w-5 h-1.5 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 shadow-sm shadow-emerald-400/40"></span>
                                     <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
->>>>>>> 439337f5f999822a2395ec25024ae9c425cc705f
                                 </div>
                             </div>
 
@@ -486,23 +453,14 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-600/30 to-emerald-600/20 flex items-center justify-center border border-teal-400/20 text-teal-400 text-sm font-black flex-shrink-0">
                                     ↑
                                 </div>
-<<<<<<< HEAD
-                                <div>
-                                    <span className="block text-[10px] font-bold text-slate-200">Performa Iklan Meroket</span>
-                                    <span className="block text-[8px] text-slate-500 mt-0.5">Dilihat: 12.5K &bull; Klik: 5.4%</span>
-                                    <div className="flex gap-2 mt-1">
-                                        <span className="text-[8px] font-semibold text-emerald-400">&bull; Aktif</span>
-                                        <span className="text-[8px] font-semibold text-indigo-400">VIP Boost</span>
-=======
                                 <div className="min-w-0">
-                                    <span className="block text-[10px] font-bold text-white truncate">Iklan Premium Baru</span>
-                                    <span className="block text-[8px] text-slate-500 mt-0.5">Impr: 12.5K · CTR: 5.4%</span>
+                                    <span className="block text-[10px] font-bold text-white truncate">Performa Iklan Meroket</span>
+                                    <span className="block text-[8px] text-slate-500 mt-0.5">Dilihat: 12.5K · Klik: 5.4%</span>
                                     <div className="flex gap-2 mt-1.5">
                                         <span className="text-[8px] font-bold text-emerald-400 flex items-center gap-1">
                                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span> Aktif
                                         </span>
-                                        <span className="text-[8px] font-bold text-indigo-400 bg-indigo-400/10 px-1.5 rounded">VIP</span>
->>>>>>> 439337f5f999822a2395ec25024ae9c425cc705f
+                                        <span className="text-[8px] font-bold text-indigo-400 bg-indigo-400/10 px-1.5 rounded">VIP Boost</span>
                                     </div>
                                 </div>
                             </div>

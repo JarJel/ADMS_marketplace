@@ -77,11 +77,18 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                     
                     {/* Brand Logo & Name */}
                     <div className="text-center mb-6">
-                        <img 
-                            src="/assets/Images/adms-logo.png" 
-                            alt="ADMS Logo" 
-                            className="h-14 mx-auto mb-3 hover:scale-105 transition-transform duration-300"
-                        />
+                        <div className="flex items-center justify-center gap-2.5 mb-3 hover:scale-105 transition-transform duration-300">
+                            <img 
+                                src="/assets/Images/adms-symbol.png" 
+                                alt="ADMS Symbol" 
+                                className="h-12 w-auto object-contain"
+                            />
+                            <img 
+                                src="/assets/Images/adms-text.png" 
+                                alt="ADMS Text" 
+                                className="h-8 w-auto object-contain invert mix-blend-screen"
+                            />
+                        </div>
                         <h2 className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-indigo-400 bg-clip-text text-transparent">
                             Daftar Akun Baru
                         </h2>

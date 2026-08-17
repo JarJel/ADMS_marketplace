@@ -6,7 +6,7 @@ import {
     Shield, CheckCircle, Smartphone, ExternalLink, HelpCircle,
     LayoutGrid, Share2, ShoppingBag, Store, Download, Zap, Users, Quote, ChevronDown,
     LayoutTemplate, Book, Globe, Video, Headphones, GraduationCap, TrendingUp, Wrench, Handshake, MoreHorizontal,
-    Heart, ShoppingCart
+    Heart, ShoppingCart, X, Phone
 } from 'lucide-react';
 
 // Reusable scroll fade-in animation component using Intersection Observer
@@ -46,13 +46,14 @@ function ScrollFadeIn({ children, className = '' }) {
     );
 }
 
-export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, onNavigateToRegister, onNavigateToDashboard, onNavigateToCreateAd, onNavigateToClassifieds, onLogout, darkMode, setDarkMode }) {
+export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, onNavigateToRegister, onNavigateToDashboard, onNavigateToCreateAd, onNavigateToClassifieds, onNavigateToProducts, onNavigate, onLogout, darkMode, setDarkMode }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [showAssistant, setShowAssistant] = useState(false);
     const [assistantResponse, setAssistantResponse] = useState(null);
     const [merchants, setMerchants] = useState([]);
     const [loadingMerchants, setLoadingMerchants] = useState(true);
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
     useEffect(() => {
         fetchMerchants();
@@ -145,44 +146,52 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             title: "Template Bundling Social Media Canva untuk UMKM 2026",
             category: "Template Canva",
             merchant: "Amanah Creative",
+            merchantObj: { store_name: "Amanah Creative", whatsapp: "6281234567890", is_verified: true },
             isSyariah: true,
             rating: 4.9,
             reviewsCount: 142,
             price: 49000,
-            image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=600&auto=format&fit=crop"
+            image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=600&auto=format&fit=crop",
+            description: "Paket lengkap berisi 500+ template Canva siap pakai untuk promosi produk kuliner, fashion, jasa, dan edukasi. Membantu UMKM meningkatkan branding secara profesional dalam hitungan menit."
         },
         {
             id: 2,
             title: "Source Code Aplikasi Kasir Web Laravel 11 & React",
             category: "Source Code",
             merchant: "Afifah Tech",
+            merchantObj: { store_name: "Afifah Tech", whatsapp: "6281298765432", is_verified: true },
             isSyariah: true,
             rating: 4.8,
             reviewsCount: 89,
             price: 199000,
-            image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop"
+            image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop",
+            description: "Aplikasi kasir web modern berbasis Laravel 11 (backend API) dan ReactJS (frontend SPA). Dilengkapi dengan fitur multi-cabang, laporan penjualan realtime, cetak struk thermal, dan manajemen inventori barang."
         },
         {
             id: 3,
             title: "Ebook Panduan Sukses Jualan Produk Digital Dari Nol",
             category: "E-Book",
             merchant: "Deni Book Store",
+            merchantObj: { store_name: "Deni Book Store", whatsapp: "6281355556666", is_verified: false },
             isSyariah: false,
             rating: 4.7,
             reviewsCount: 54,
             price: 29000,
-            image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=600&auto=format&fit=crop"
+            image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=600&auto=format&fit=crop",
+            description: "Ebook panduan praktis setebal 150 halaman yang membahas strategi riset pasar, pembuatan aset digital bernilai tinggi, hingga cara memasarkannya menggunakan taktik organik dan iklan berbayar."
         },
         {
             id: 4,
             title: "Mega Prompt Generator ChatGPT untuk Copywriting Iklan",
             category: "AI Prompt",
             merchant: "AI Studio Bandung",
+            merchantObj: { store_name: "AI Studio Bandung", whatsapp: "6281244449999", is_verified: true },
             isSyariah: true,
             rating: 5.0,
             reviewsCount: 30,
             price: 15000,
-            image: "https://images.unsplash.com/photo-1675557009875-436f09780264?q=80&w=600&auto=format&fit=crop"
+            image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&auto=format&fit=crop",
+            description: "Koleksi 1000+ prompt ChatGPT super spesifik untuk menghasilkan naskah iklan, landing page copy, email marketing, dan ide konten kreatif secara instan yang terbukti mendatangkan pembeli."
         }
     ];
 
@@ -447,16 +456,30 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* C. Quick Categories Grid */}
             <ScrollFadeIn>
-            <section className="py-20 bg-white border-y border-slate-200 text-slate-900">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className="py-20 bg-[#FBFDFE] dark:bg-slate-950 border-y border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
+                {/* Decorative background shapes */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                    {/* Subtle dotted grid matrix */}
+                    <div className="absolute inset-0 opacity-[0.25] dark:opacity-[0.08] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                    {/* Soft colored mesh gradient glowing circles */}
+                    <div className="absolute top-[-10%] left-[-10%] w-[350px] h-[350px] rounded-full bg-emerald-400/5 dark:bg-emerald-500/5 blur-[80px]"></div>
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[350px] h-[350px] rounded-full bg-indigo-400/5 dark:bg-indigo-500/5 blur-[80px]"></div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
-                    {/* Header */}
-                    <div className="text-center mb-16 space-y-3">
-                        <span className="inline-block text-[10px] font-bold text-[#0284c7] bg-sky-50 border border-sky-100 px-3 py-1 rounded-full uppercase tracking-wider">
+                    {/* Premium Creative Header */}
+                    <div className="text-center mb-16 space-y-4">
+                        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-[10px] font-bold uppercase tracking-wider text-indigo-600 shadow-sm shadow-indigo-100/50">
+                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
                             Kategori Pilihan
-                        </span>
-                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">Jelajahi Kategori Layanan</h2>
-                        <p className="text-slate-500 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                        </div>
+                        <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+                            Jelajahi <span className="bg-gradient-to-r from-[#10B981] to-indigo-600 bg-clip-text text-transparent">Kategori Layanan</span>
+                        </h2>
+                        {/* Elegant under-title visual divider */}
+                        <div className="w-16 h-1 bg-gradient-to-r from-[#10B981] to-indigo-50 rounded-full mx-auto"></div>
+                        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed font-medium pt-1">
                             Temukan berbagai kebutuhan digital marketing, website, pembuatan legalitas usaha, hingga layanan offline dalam satu platform.
                         </p>
                     </div>
@@ -465,28 +488,60 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
                         {categories.map((cat, idx) => {
                             const IconComponent = cat.icon;
+                            const colorThemes = [
+                                // Template (Emerald)
+                                { bg: 'bg-emerald-50 text-emerald-600', border: 'hover:border-emerald-500 hover:shadow-emerald-500/10', text: 'group-hover:text-emerald-700', textLight: 'group-hover:text-emerald-500', bar: 'group-hover:bg-emerald-500', overlay: 'from-emerald-50/50' },
+                                // Ebook (Indigo)
+                                { bg: 'bg-indigo-50 text-indigo-600', border: 'hover:border-indigo-500 hover:shadow-indigo-500/10', text: 'group-hover:text-indigo-700', textLight: 'group-hover:text-indigo-500', bar: 'group-hover:bg-indigo-500', overlay: 'from-indigo-50/50' },
+                                // Software (Sky)
+                                { bg: 'bg-sky-50 text-sky-600', border: 'hover:border-sky-500 hover:shadow-sky-500/10', text: 'group-hover:text-sky-700', textLight: 'group-hover:text-sky-500', bar: 'group-hover:bg-sky-500', overlay: 'from-sky-50/50' },
+                                // Website (Blue)
+                                { bg: 'bg-blue-50 text-blue-600', border: 'hover:border-blue-500 hover:shadow-blue-500/10', text: 'group-hover:text-blue-700', textLight: 'group-hover:text-blue-500', bar: 'group-hover:bg-blue-500', overlay: 'from-blue-50/50' },
+                                // Design (Purple)
+                                { bg: 'bg-purple-50 text-purple-600', border: 'hover:border-purple-500 hover:shadow-purple-500/10', text: 'group-hover:text-purple-700', textLight: 'group-hover:text-purple-500', bar: 'group-hover:bg-purple-500', overlay: 'from-purple-50/50' },
+                                // Video (Rose)
+                                { bg: 'bg-rose-50 text-rose-600', border: 'hover:border-rose-500 hover:shadow-rose-500/10', text: 'group-hover:text-rose-700', textLight: 'group-hover:text-rose-500', bar: 'group-hover:bg-rose-500', overlay: 'from-rose-50/50' },
+                                // Audio (Cyan)
+                                { bg: 'bg-cyan-50 text-cyan-600', border: 'hover:border-cyan-500 hover:shadow-cyan-500/10', text: 'group-hover:text-cyan-700', textLight: 'group-hover:text-cyan-500', bar: 'group-hover:bg-cyan-500', overlay: 'from-cyan-50/50' },
+                                // Course (Teal)
+                                { bg: 'bg-teal-50 text-teal-600', border: 'hover:border-teal-500 hover:shadow-teal-500/10', text: 'group-hover:text-teal-700', textLight: 'group-hover:text-teal-500', bar: 'group-hover:bg-teal-500', overlay: 'from-teal-50/50' },
+                                // Social Media (Violet)
+                                { bg: 'bg-violet-50 text-violet-600', border: 'hover:border-violet-500 hover:shadow-violet-500/10', text: 'group-hover:text-violet-700', textLight: 'group-hover:text-violet-500', bar: 'group-hover:bg-violet-500', overlay: 'from-violet-50/50' },
+                                // Digital Marketing (Amber)
+                                { bg: 'bg-amber-50 text-amber-600', border: 'hover:border-amber-500 hover:shadow-amber-500/10', text: 'group-hover:text-amber-700', textLight: 'group-hover:text-amber-500', bar: 'group-hover:bg-amber-500', overlay: 'from-amber-50/50' },
+                                // Business (Lime)
+                                { bg: 'bg-lime-50 text-lime-600', border: 'hover:border-lime-500 hover:shadow-lime-500/10', text: 'group-hover:text-lime-700', textLight: 'group-hover:text-lime-500', bar: 'group-hover:bg-lime-500', overlay: 'from-lime-50/50' },
+                                // Education (Fuchsia)
+                                { bg: 'bg-fuchsia-50 text-fuchsia-600', border: 'hover:border-fuchsia-500 hover:shadow-fuchsia-500/10', text: 'group-hover:text-fuchsia-700', textLight: 'group-hover:text-fuchsia-500', bar: 'group-hover:bg-fuchsia-500', overlay: 'from-fuchsia-50/50' },
+                                // Tools (Orange)
+                                { bg: 'bg-orange-50 text-orange-600', border: 'hover:border-orange-500 hover:shadow-orange-500/10', text: 'group-hover:text-orange-700', textLight: 'group-hover:text-orange-500', bar: 'group-hover:bg-orange-500', overlay: 'from-orange-50/50' },
+                                // Jasa (Pink)
+                                { bg: 'bg-pink-50 text-pink-600', border: 'hover:border-pink-500 hover:shadow-pink-500/10', text: 'group-hover:text-pink-700', textLight: 'group-hover:text-pink-500', bar: 'group-hover:bg-pink-500', overlay: 'from-pink-50/50' },
+                                // Lainnya (Slate)
+                                { bg: 'bg-slate-100 text-slate-700', border: 'hover:border-slate-500 hover:shadow-slate-500/10', text: 'group-hover:text-slate-800', textLight: 'group-hover:text-slate-600', bar: 'group-hover:bg-slate-500', overlay: 'from-slate-100/50' }
+                            ];
+                            const theme = colorThemes[idx % colorThemes.length];
                             return (
                                 <div 
                                     key={idx}
-                                    className="p-6 bg-white border border-slate-200 hover:border-sky-300 hover:shadow-xl hover:shadow-sky-500/10 rounded-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer text-left flex flex-col justify-between min-h-[140px] group relative overflow-hidden"
+                                    className={`p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer text-left flex flex-col justify-between min-h-[140px] group relative overflow-hidden shadow-sm hover:shadow-lg dark:backdrop-blur-md ${theme.border}`}
                                 >
                                     {/* Hover overlay gradient */}
-                                    <div className="absolute inset-0 bg-gradient-to-br from-sky-50/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${theme.overlay} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
+                                    
+                                    {/* Top colored accent line on hover */}
+                                    <div className={`absolute top-0 left-0 w-full h-[4px] bg-transparent transition-all duration-300 ${theme.bar}`}></div>
                                     
                                     <div className="relative z-10">
                                         {/* Icon container top left */}
-                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md ${
-                                            cat.isBlueIcon 
-                                                ? 'bg-sky-100 text-sky-600' 
-                                                : 'bg-slate-100 text-slate-700 group-hover:text-sky-600 group-hover:bg-sky-50'
-                                        }`}>
+                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md ${theme.bg}`}>
                                             <IconComponent className="w-6 h-6 transition-transform duration-300" strokeWidth={2} />
                                         </div>
-
+ 
                                         {/* Left-aligned titles and count */}
                                         <div>
-                                            <h4 className="font-extrabold text-sm text-slate-800 leading-tight mb-1 group-hover:text-sky-700 transition-colors duration-300">{cat.name}</h4>
-                                            <span className="text-[10px] text-slate-400 font-semibold group-hover:text-sky-500 transition-all duration-300 flex items-center gap-1">
+                                            <h4 className={`font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-1 transition-colors duration-300 ${theme.text}`}>{cat.name}</h4>
+                                            <span className={`text-[10px] text-slate-400 dark:text-slate-500 font-semibold transition-all duration-300 flex items-center gap-1 ${theme.textLight}`}>
                                                 {cat.count} 
                                                 <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
                                             </span>
@@ -502,84 +557,106 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* D. Marketplace Featured Products with light theme and side-by-side header */}
             <ScrollFadeIn>
-            <section id="marketplace" className="py-20 bg-white border-b border-slate-200 text-slate-900">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section id="marketplace" className="py-20 bg-white dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
+                {/* Decorative background shapes */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                    {/* Subtle diagonal lines pattern */}
+                    <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03] bg-[linear-gradient(135deg,#4f46e5_10%,transparent_10%,transparent_50%,#4f46e5_50%,#4f46e5_60%,transparent_60%,transparent)] bg-[size:40px_40px]"></div>
+                    {/* Soft colored mesh gradient glowing circles */}
+                    <div className="absolute top-[20%] right-[-10%] w-[400px] h-[400px] rounded-full bg-indigo-400/5 dark:bg-indigo-500/5 blur-[100px]"></div>
+                    <div className="absolute bottom-[20%] left-[-10%] w-[400px] h-[400px] rounded-full bg-teal-400/5 dark:bg-teal-500/5 blur-[100px]"></div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
                     {/* Header */}
-                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4 border-b border-slate-100 pb-6">
                         <div>
-                            <div className="flex items-center gap-1.5 text-sky-600 text-xs font-bold uppercase tracking-wider mb-2">
-                                <Star className="w-3.5 h-3.5 fill-current text-sky-500" />
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-3 shadow-sm shadow-emerald-50/50">
+                                <Star className="w-3 h-3 fill-current text-emerald-500 animate-pulse" />
                                 Rekomendasi Utama
                             </div>
-                            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">Produk Digital Pilihan</h2>
-                            <p className="text-slate-500 text-xs sm:text-sm mt-1">
+                            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+                                Produk Digital <span className="bg-gradient-to-r from-emerald-500 to-indigo-600 bg-clip-text text-transparent">Pilihan</span>
+                            </h2>
+                            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-2 font-medium">
                                 Aset digital terlaris dan berkualitas tinggi yang diverifikasi oleh tim ADMS.
                             </p>
                         </div>
-                        <a 
-                            href="#marketplace" 
-                            className="text-xs font-bold text-indigo-600 hover:text-indigo-500 transition-colors flex items-center gap-1.5"
+                        <button 
+                            onClick={onNavigateToProducts}
+                            className="inline-flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-500 bg-slate-50 hover:bg-slate-100 border border-slate-200/60 px-4 py-2 rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer"
                         >
                             <span>Lihat Semua Produk</span>
                             <span className="text-sm font-semibold">&rarr;</span>
-                        </a>
+                        </button>
                     </div>
 
                     {/* Products Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                         {products.map((prod) => (
                             <div 
-                                key={prod.id}
-                                className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden flex flex-col justify-between group transition-all hover:translate-y-[-4px] hover:shadow-md relative"
-                            >
+                                    key={prod.id}
+                                    onClick={() => setSelectedProduct(prod)}
+                                    className="rounded-2xl border border-slate-300 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-xl hover:shadow-indigo-500/5 relative dark:backdrop-blur-md cursor-pointer"
+                                >
                                 <button 
-                                    onClick={() => toggleWishlist(prod.id)}
-                                    className="absolute top-3 right-3 z-10 p-2 bg-white/90 backdrop-blur-sm rounded-full text-slate-400 hover:text-rose-500 shadow-sm transition-colors"
+                                    onClick={(e) => { e.stopPropagation(); toggleWishlist(prod.id); }}
+                                    className="absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 hover:scale-110 active:scale-95 shadow-md border border-slate-100/50 dark:border-slate-800/50 transition-all duration-300"
                                 >
                                     <Heart className="w-4 h-4" />
                                 </button>
                                 <div>
                                     {/* Product Image */}
-                                    <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100 relative">
+                                    <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
                                         <img 
                                             src={prod.image} 
                                             alt={prod.title} 
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                                         />
-                                        <span className="absolute top-3 left-3 bg-white/95 backdrop-blur text-[10px] font-bold text-teal-600 px-2.5 py-0.5 rounded border border-slate-100 shadow-sm">
+                                        <span className="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-[9px] font-bold text-teal-600 dark:text-teal-400 px-3 py-1 rounded-full border border-white/50 dark:border-slate-700 shadow-sm uppercase tracking-wider">
                                             {prod.category}
                                         </span>
                                     </div>
 
                                     {/* Body */}
                                     <div className="p-5">
-                                        <h4 className="font-extrabold text-sm text-slate-800 leading-snug line-clamp-2 h-10 mb-3">{prod.title}</h4>
+                                        <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-snug line-clamp-2 h-10 mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">{prod.title}</h4>
                                         
-                                        <div className="flex items-center gap-1.5 text-xs mb-3 text-amber-500">
+                                        <div className="flex items-center gap-1 text-xs mb-3 text-amber-500">
                                             <Star className="w-3.5 h-3.5 fill-current" />
-                                            <span className="font-semibold text-slate-700">{prod.rating}</span>
-                                            <span className="text-[10px] text-slate-400">({prod.reviewsCount} Ulasan)</span>
+                                            <span className="font-semibold text-slate-700 dark:text-slate-300">{prod.rating}</span>
+                                            <span className="text-[10px] text-slate-400 dark:text-slate-500">({prod.reviewsCount} Ulasan)</span>
                                         </div>
 
-                                        <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
+                                        <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                                             <span>Toko:</span>
-                                            <strong className="text-slate-700 font-bold">{prod.merchant}</strong>
+                                            <strong className="text-slate-700 dark:text-slate-300 font-bold">{prod.merchant}</strong>
                                             {prod.isSyariah && (
-                                                <span className="inline-flex items-center bg-emerald-50 text-emerald-600 font-bold px-1.5 py-0.5 rounded border border-emerald-100 text-[9px] uppercase tracking-wide">
+                                                <span className="inline-flex items-center bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-500/20 text-[8px] uppercase tracking-wider">
                                                     Syariah Certified
                                                 </span>
                                             )}
+                                        </div>
+
+                                        {/* Price display inside body */}
+                                        <div className="mt-4 text-center">
+                                            <span className="font-extrabold text-base sm:text-lg text-teal-600 dark:text-teal-400">Rp{numberFormat(prod.price)}</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Buy action */}
-                                <div className="p-5 pt-0 border-t border-slate-100 mt-4 flex items-center justify-between">
-                                    <span className="font-extrabold text-base text-teal-600">Rp{numberFormat(prod.price)}</span>
+                                <div className="p-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-2">
                                     <button 
-                                        onClick={() => handleAddToCart(prod.id)}
-                                        className="bg-[#10B981] hover:bg-[#059669] text-white font-bold text-xs py-2 px-3 rounded-lg shadow-sm transition-colors flex items-center gap-1.5"
+                                        onClick={(e) => { e.stopPropagation(); setSelectedProduct(prod); }}
+                                        className="flex-1 border border-slate-300 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs py-2.5 rounded-xl transition-all active:scale-95 cursor-pointer shadow-sm text-center"
+                                    >
+                                        Detail
+                                    </button>
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); handleAddToCart(prod.id); }}
+                                        className="flex-1 bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5"
                                     >
                                         <ShoppingCart className="w-3.5 h-3.5" />
                                         <span>Keranjang</span>
@@ -594,8 +671,13 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* D.2 Merchant Terverifikasi Section with light theme */}
             <ScrollFadeIn>
-            <section id="merchants" className="py-20 bg-slate-50 border-b border-slate-200 text-slate-900">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section id="merchants" className="py-20 bg-slate-50/70 dark:bg-slate-900/40 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
+                {/* Decorative background shapes */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                    <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:24px_24px]"></div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
@@ -603,18 +685,18 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             <div className="text-sky-600 text-xs font-bold uppercase tracking-wider mb-2">
                                 Mitra Vendor
                             </div>
-                            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">Merchant Terverifikasi</h2>
-                            <p className="text-slate-500 text-xs sm:text-sm mt-1">
+                            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Merchant Terverifikasi</h2>
+                            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">
                                 Daftar kreator dan penyedia aset digital terpercaya di ADMS.
                             </p>
                         </div>
-                        <a 
-                            href="#merchants" 
-                            className="text-xs font-bold text-indigo-600 hover:text-indigo-500 transition-colors flex items-center gap-1.5"
+                        <button 
+                            onClick={() => onNavigate('merchants')}
+                            className="text-xs font-extrabold bg-white hover:bg-slate-100 text-indigo-600 px-4.5 py-2.5 rounded-xl border border-slate-200/80 dark:border-transparent shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
                         >
                             <span>Lihat Semua Merchant</span>
                             <span className="text-sm font-semibold">&rarr;</span>
-                        </a>
+                        </button>
                     </div>
 
                     {/* Merchants Grid */}
@@ -627,12 +709,12 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             {merchants.map((merchant) => (
                                 <div 
                                     key={merchant.id}
-                                    className="p-6 bg-white border border-slate-200/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[160px] group"
+                                    className="p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[160px] group dark:backdrop-blur-md"
                                 >
                                     <div>
                                         {/* Top profile row */}
                                         <div className="flex items-start gap-3.5 mb-4">
-                                            <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden flex-shrink-0">
                                                 <img 
                                                     src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?q=80&w=150&auto=format&fit=crop" 
                                                     alt={merchant.name} 
@@ -640,34 +722,34 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                                 />
                                             </div>
                                             <div>
-                                                <h4 className="font-extrabold text-sm text-slate-800 flex items-center gap-1 leading-snug">
+                                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 flex items-center gap-1 leading-snug">
                                                     {merchant.name}
                                                     <CheckCircle className="w-3.5 h-3.5 text-amber-500 fill-amber-500/10 flex-shrink-0" />
                                                 </h4>
-                                                <div className="flex items-center gap-1 text-[10px] text-slate-400 mt-1">
+                                                <div className="flex items-center gap-1 text-[10px] text-slate-400 dark:text-slate-500 mt-1">
                                                     <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                                                    <span className="font-semibold text-slate-600">5.0</span>
+                                                    <span className="font-semibold text-slate-600 dark:text-slate-300">5.0</span>
                                                     <span>&bull;</span>
-                                                    <span className="text-emerald-600 font-bold">Verified</span>
+                                                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">Verified</span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Description */}
-                                        <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-6 italic">
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-6 italic">
                                             "{merchant.slug || 'Penyedia aset digital profesional di platform ADMS.'}"
                                         </p>
                                     </div>
 
                                     {/* Bottom Info Row */}
-                                    <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-                                        <span className="text-[10px] text-slate-400 flex items-center gap-1 font-semibold uppercase tracking-wide">
-                                            <Shield className="w-3.5 h-3.5 text-slate-300" />
+                                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                                        <span className="text-[10px] text-slate-400 dark:text-slate-550 flex items-center gap-1 font-semibold uppercase tracking-wide">
+                                            <Shield className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />
                                             Official Merchant
                                         </span>
                                         <button 
                                             onClick={onNavigateToLogin}
-                                            className="text-xs font-bold text-indigo-600 hover:text-indigo-500 transition-colors flex items-center gap-0.5"
+                                            className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors flex items-center gap-0.5"
                                         >
                                             Kunjungi Toko &rarr;
                                         </button>
@@ -682,29 +764,38 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* F. How It Works (Tabbed interactive guide) */}
             <ScrollFadeIn>
-            <section id="how" className="py-20 bg-white border-b border-slate-200 text-slate-900">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section id="how" className="py-20 bg-[#FBFDFE] dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
+                {/* Decorative background shapes */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                    {/* Subtle dotted grid matrix */}
+                    <div className="absolute inset-0 opacity-[0.25] dark:opacity-[0.08] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                    {/* Soft colored mesh gradient glowing circles */}
+                    <div className="absolute top-[-10%] right-[-10%] w-[350px] h-[350px] rounded-full bg-sky-400/5 dark:bg-sky-500/5 blur-[80px]"></div>
+                    <div className="absolute bottom-[-10%] left-[-10%] w-[350px] h-[350px] rounded-full bg-indigo-400/5 dark:bg-indigo-500/5 blur-[80px]"></div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
                     {/* Section Header */}
                     <div className="text-center mb-10 space-y-3">
                         <span className="inline-block text-[10px] font-bold text-[#0284c7] bg-sky-50 border border-sky-100 px-3 py-1 rounded-full uppercase tracking-wider">
                             Panduan Platform
                         </span>
-                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">Cara Kerja ADMS</h2>
-                        <p className="text-slate-500 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Cara Kerja ADMS</h2>
+                        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
                             Proses mudah dan transparan untuk Pembeli, Merchant, maupun Pengiklan.
                         </p>
                     </div>
 
                     {/* Role Tabs */}
                     <div className="flex justify-center mb-16">
-                        <div className="inline-flex bg-slate-100/80 border border-slate-200/50 p-1 rounded-xl gap-1">
+                        <div className="inline-flex bg-slate-100/80 dark:bg-slate-800/85 border border-slate-200/50 dark:border-slate-700/50 p-1 rounded-xl gap-1">
                             <button
                                 onClick={() => setActiveTab('buyer')}
                                 className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
                                     activeTab === 'buyer' 
-                                        ? 'bg-white text-slate-900 shadow-sm border border-slate-200/30' 
-                                        : 'text-slate-500 hover:text-slate-900'
+                                        ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200/30 dark:border-slate-600/30' 
+                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-255'
                                 }`}
                             >
                                 <ShoppingBag className="w-3.5 h-3.5" />
@@ -714,8 +805,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 onClick={() => setActiveTab('merchant')}
                                 className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
                                     activeTab === 'merchant' 
-                                        ? 'bg-white text-slate-900 shadow-sm border border-slate-200/30' 
-                                        : 'text-slate-500 hover:text-slate-900'
+                                        ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200/30 dark:border-slate-600/30' 
+                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                             >
                                 <Store className="w-3.5 h-3.5" />
@@ -725,8 +816,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 onClick={() => setActiveTab('advertiser')}
                                 className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
                                     activeTab === 'advertiser' 
-                                        ? 'bg-white text-slate-900 shadow-sm border border-slate-200/30' 
-                                        : 'text-slate-500 hover:text-slate-900'
+                                        ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200/30 dark:border-slate-600/30' 
+                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                                 }`}
                             >
                                 <Megaphone className="w-3.5 h-3.5" />
@@ -737,30 +828,62 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                     {/* Steps Showcase Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-                        {stepsData[activeTab].map((step, idx) => (
-                            <div 
-                                key={`${activeTab}-${idx}`}
-                                className="p-6 bg-white border border-slate-400/80 rounded-2xl hover:shadow-md transition-all flex flex-col justify-between min-h-[220px]"
-                            >
-                                <div>
-                                    <span className={`block text-xl font-bold mb-4 ${
-                                        activeTab === 'buyer' 
-                                            ? 'text-amber-500' 
-                                            : activeTab === 'merchant' 
-                                                ? 'text-indigo-500' 
-                                                : 'text-sky-500'
-                                    }`}>{step.num}</span>
-                                    <h4 className="font-extrabold text-sm text-slate-800 leading-tight mb-2">{step.title}</h4>
-                                    <p className="text-[10px] text-slate-400 leading-relaxed">
-                                        {step.desc}
-                                    </p>
+                        {stepsData[activeTab].map((step, idx) => {
+                            const hoverOutlineClass = activeTab === 'buyer' 
+                                ? 'hover:border-amber-400/70 hover:shadow-amber-500/5 dark:hover:border-amber-500/30 dark:hover:bg-amber-500/5' 
+                                : activeTab === 'merchant'
+                                    ? 'hover:border-indigo-400/70 hover:shadow-indigo-500/5 dark:hover:border-indigo-500/30 dark:hover:bg-indigo-500/5'
+                                    : 'hover:border-sky-400/70 hover:shadow-sky-500/5 dark:hover:border-sky-500/30 dark:hover:bg-sky-500/5';
+                                    
+                            const numberColorClass = activeTab === 'buyer' 
+                                ? 'text-amber-500' 
+                                : activeTab === 'merchant' 
+                                    ? 'text-indigo-500' 
+                                    : 'text-sky-500';
+
+                            const badgeColorClass = activeTab === 'buyer' 
+                                ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-500/20' 
+                                : activeTab === 'merchant' 
+                                    ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-100 dark:border-indigo-500/20' 
+                                    : 'bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-100 dark:border-sky-500/20';
+
+                            return (
+                                <div 
+                                    key={`${activeTab}-${idx}`}
+                                    className={`p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl flex flex-col justify-between min-h-[220px] dark:backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg relative overflow-hidden group ${hoverOutlineClass}`}
+                                >
+                                    {/* Giant Watermark Step Number at top right */}
+                                    <div className={`absolute top-3 right-4 text-5xl font-black select-none opacity-20 dark:opacity-10 group-hover:opacity-40 group-hover:scale-110 transition-all duration-300 font-sans ${numberColorClass}`}>
+                                        {step.num}
+                                    </div>
+
+                                    <div className="relative z-10 space-y-3">
+                                        {/* Step badge */}
+                                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-[8px] font-extrabold uppercase tracking-wider border ${badgeColorClass}`}>
+                                            {step.step}
+                                        </span>
+
+                                        <h4 className="font-extrabold text-sm text-slate-850 dark:text-slate-200 leading-tight mb-2 pr-6 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                            {step.title}
+                                        </h4>
+                                        
+                                        <p className="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed font-medium">
+                                            {step.desc}
+                                        </p>
+                                    </div>
+
+                                    {/* Footer with connection indicator */}
+                                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider relative z-10 mt-4">
+                                        <span>Panduan</span>
+                                        {step.arrow && (
+                                            <span className="text-slate-400 dark:text-slate-500 group-hover:translate-x-1.5 transition-transform duration-300">
+                                                &rarr;
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-semibold">
-                                    <span>{step.step}</span>
-                                    {step.arrow && <span className="text-slate-400">&rarr;</span>}
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </section>
@@ -768,16 +891,25 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* F.2 Why Choose ADMS (Keunggulan ADMS) */}
             <ScrollFadeIn>
-            <section className="py-20 bg-white border-b border-slate-200 text-slate-900">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className="py-20 bg-white dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
+                {/* Decorative background shapes */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                    {/* Subtle grid pattern */}
+                    <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:30px_30px]"></div>
+                    {/* Soft colored mesh gradient glowing circles */}
+                    <div className="absolute top-[30%] left-[20%] w-[300px] h-[300px] rounded-full bg-emerald-400/5 dark:bg-emerald-500/5 blur-[90px]"></div>
+                    <div className="absolute bottom-[20%] right-[20%] w-[300px] h-[300px] rounded-full bg-sky-400/5 dark:bg-sky-500/5 blur-[90px]"></div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
                     {/* Header */}
                     <div className="text-center mb-16 space-y-3">
                         <span className="inline-block text-[10px] font-bold text-[#0284c7] bg-sky-50 border border-sky-100 px-3 py-1 rounded-full uppercase tracking-wider">
                             Keunggulan ADMS
                         </span>
-                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">Mengapa Memilih Platform ADMS?</h2>
-                        <p className="text-slate-500 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Mengapa Memilih Platform ADMS?</h2>
+                        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
                             Platform modern yang dirancang khusus untuk mempercepat pertumbuhan produk digital dan promosi bisnis Anda.
                         </p>
                     </div>
@@ -785,52 +917,52 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     {/* Features Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                         {/* Card 1 */}
-                        <div className="p-6 bg-white border border-slate-200/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px]">
+                        <div className="p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px] dark:backdrop-blur-md">
                             <div>
-                                <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-500 mb-6">
+                                <div className="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 flex items-center justify-center text-sky-500 mb-6">
                                     <Download className="w-5 h-5" />
                                 </div>
-                                <h4 className="font-extrabold text-sm text-slate-800 leading-tight mb-3">Akses Instant Digital Download</h4>
-                                <p className="text-xs text-slate-400 leading-relaxed">
+                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Akses Instant Digital Download</h4>
+                                <p className="text-xs text-slate-400 dark:text-slate-505 leading-relaxed">
                                     Setelah pembayaran berhasil terkonfirmasi, file digital langsung siap diunduh tanpa perlu menunggu konfirmasi manual.
                                 </p>
                             </div>
                         </div>
 
                         {/* Card 2 */}
-                        <div className="p-6 bg-white border border-slate-200/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px]">
+                        <div className="p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px] dark:backdrop-blur-md">
                             <div>
-                                <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-500 mb-6">
+                                <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 flex items-center justify-center text-amber-500 mb-6">
                                     <Zap className="w-5 h-5" />
                                 </div>
-                                <h4 className="font-extrabold text-sm text-slate-800 leading-tight mb-3">Iklan Gratis & Promosi Berbayar</h4>
-                                <p className="text-xs text-slate-400 leading-relaxed">
+                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Iklan Gratis & Promosi Berbayar</h4>
+                                <p className="text-xs text-slate-400 dark:text-slate-505 leading-relaxed">
                                     Dukungan penuh untuk pelaku UMKM dan kreator memasang iklan gratis atau memilih paket boost posisi teratas.
                                 </p>
                             </div>
                         </div>
 
                         {/* Card 3 */}
-                        <div className="p-6 bg-white border border-slate-200/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px]">
+                        <div className="p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px] dark:backdrop-blur-md">
                             <div>
-                                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-500 mb-6">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-center text-emerald-500 mb-6">
                                     <Shield className="w-5 h-5" />
                                 </div>
-                                <h4 className="font-extrabold text-sm text-slate-800 leading-tight mb-3">Keamanan Transaksi Terjamin</h4>
-                                <p className="text-xs text-slate-400 leading-relaxed">
+                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Keamanan Transaksi Terjamin</h4>
+                                <p className="text-xs text-slate-400 dark:text-slate-550 leading-relaxed">
                                     Sistem proteksi transaksi dan opsi Payment Gateway terintegrasi untuk menjamin keamanan dana pembeli dan merchant.
                                 </p>
                             </div>
                         </div>
 
                         {/* Card 4 */}
-                        <div className="p-6 bg-white border border-slate-200/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px]">
+                        <div className="p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px] dark:backdrop-blur-md">
                             <div>
-                                <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-500 mb-6">
+                                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center text-indigo-500 mb-6">
                                     <Users className="w-5 h-5" />
                                 </div>
-                                <h4 className="font-extrabold text-sm text-slate-800 leading-tight mb-3">Sistem Multi-Vendor Merchant</h4>
-                                <p className="text-xs text-slate-400 leading-relaxed">
+                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Sistem Multi-Vendor Merchant</h4>
+                                <p className="text-xs text-slate-400 dark:text-slate-505 leading-relaxed">
                                     Siapapun dapat membuka toko digital, mengunggah karya, serta mengelola pesanan dan laporan pendapatan secara mandiri.
                                 </p>
                             </div>
@@ -842,16 +974,21 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* F.3 Testimonial Section with light theme */}
             <ScrollFadeIn>
-            <section className="py-20 bg-slate-50 border-b border-slate-200 text-slate-900">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className="py-20 bg-slate-50/70 dark:bg-slate-900/40 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
+                {/* Decorative background shapes */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                    <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:24px_24px]"></div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
                     {/* Header */}
                     <div className="text-center mb-16 space-y-3">
                         <span className="inline-block text-[10px] font-bold text-[#0284c7] bg-sky-50 border border-sky-100 px-3 py-1 rounded-full uppercase tracking-wider">
                             Testiomoni Pengguna
                         </span>
-                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">Kata Mereka Tentang ADMS</h2>
-                        <p className="text-slate-500 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Kata Mereka Tentang ADMS</h2>
+                        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
                             Pengalaman nyata dari para pembeli, merchant, dan pengiklan di platform ADMS.
                         </p>
                     </div>
@@ -859,79 +996,79 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     {/* Testimonials Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {/* Card 1 */}
-                        <div className="p-8 bg-white border border-slate-200/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px]">
+                        <div className="p-8 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px] dark:backdrop-blur-md">
                             <div>
-                                <Quote className="w-8 h-8 text-slate-300 mb-4" />
+                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-4" />
                                 <div className="flex items-center gap-1 mb-4">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
                                     ))}
                                 </div>
-                                <p className="text-xs text-slate-600 leading-relaxed italic mb-6">
+                                <p className="text-xs text-slate-600 dark:text-slate-305 leading-relaxed italic mb-6">
                                     "ADMS membantu agensi saya mendapatkan ratusan calon klien dari iklan promosi gratis dan berbayarnya. Konversinya tinggi banget!"
                                 </p>
                             </div>
-                            <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
+                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
                                 <img 
                                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop" 
                                     alt="Rian Prasetya" 
-                                    className="w-10 h-10 rounded-full border border-slate-200 object-cover"
+                                    className="w-10 h-10 rounded-full border border-slate-250 dark:border-slate-700 object-cover"
                                 />
                                 <div>
-                                    <h5 className="font-extrabold text-xs text-slate-800">Rian Prasetya</h5>
-                                    <span className="text-[10px] text-slate-400">Digital Marketer & Agency Owner</span>
+                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-205">Rian Prasetya</h5>
+                                    <span className="text-[10px] text-slate-400 dark:text-slate-500">Digital Marketer & Agency Owner</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Card 2 */}
-                        <div className="p-8 bg-white border border-slate-200/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px]">
+                        <div className="p-8 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px] dark:backdrop-blur-md">
                             <div>
-                                <Quote className="w-8 h-8 text-slate-300 mb-4" />
+                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-4" />
                                 <div className="flex items-center gap-1 mb-4">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
                                     ))}
                                 </div>
-                                <p className="text-xs text-slate-600 leading-relaxed italic mb-6">
+                                <p className="text-xs text-slate-600 dark:text-slate-350 leading-relaxed italic mb-6">
                                     "Sebagai merchant di ADMS, penjualan template Canva saya meningkat drastis. Penarikan dana cepat dan pembeli bisa download otomatis."
                                 </p>
                             </div>
-                            <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
+                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
                                 <img 
                                     src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop" 
                                     alt="Siti Rahmawati" 
-                                    className="w-10 h-10 rounded-full border border-slate-200 object-cover"
+                                    className="w-10 h-10 rounded-full border border-slate-250 dark:border-slate-700 object-cover"
                                 />
                                 <div>
-                                    <h5 className="font-extrabold text-xs text-slate-800">Siti Rahmawati</h5>
-                                    <span className="text-[10px] text-slate-400">Merchant Template Canva</span>
+                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-205">Siti Rahmawati</h5>
+                                    <span className="text-[10px] text-slate-400 dark:text-slate-500">Merchant Template Canva</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Card 3 */}
-                        <div className="p-8 bg-white border border-slate-200/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px]">
+                        <div className="p-8 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px] dark:backdrop-blur-md">
                             <div>
-                                <Quote className="w-8 h-8 text-slate-300 mb-4" />
+                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-4" />
                                 <div className="flex items-center gap-1 mb-4">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
                                     ))}
                                 </div>
-                                <p className="text-xs text-slate-600 leading-relaxed italic mb-6">
+                                <p className="text-xs text-slate-600 dark:text-slate-350 leading-relaxed italic mb-6">
                                     "Source code Next.js yang saya beli di marketplace ADMS sangat memuaskan. Lengkap dengan panduan dan penjual sangat responsif."
                                 </p>
                             </div>
-                            <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
+                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
                                 <img 
                                     src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop" 
                                     alt="Deni Kurniawan" 
-                                    className="w-10 h-10 rounded-full border border-slate-200 object-cover"
+                                    className="w-10 h-10 rounded-full border border-slate-250 dark:border-slate-700 object-cover"
                                 />
                                 <div>
-                                    <h5 className="font-extrabold text-xs text-slate-800">Deni Kurniawan</h5>
-                                    <span className="text-[10px] text-slate-400">Pembeli Aset Web Developer</span>
+                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-205">Deni Kurniawan</h5>
+                                    <span className="text-[10px] text-slate-400 dark:text-slate-500">Pembeli Aset Web Developer</span>
                                 </div>
                             </div>
                         </div>
@@ -942,8 +1079,13 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* F.4 FAQ Section (Frequently Asked Questions) with light theme */}
             <ScrollFadeIn>
-            <section className="py-20 bg-white border-b border-slate-200 text-slate-900">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className="py-20 bg-white dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
+                {/* Decorative background shapes */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                    <div className="absolute inset-0 opacity-[0.25] dark:opacity-[0.08] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                </div>
+
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
                     {/* Header */}
                     <div className="text-center mb-12 space-y-3">
@@ -951,8 +1093,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             <HelpCircle className="w-3.5 h-3.5 text-sky-500" />
                             Pertanyaan Umum
                         </span>
-                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">Frequently Asked Questions (FAQ)</h2>
-                        <p className="text-slate-500 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Frequently Asked Questions (FAQ)</h2>
+                        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
                             Jawaban lengkap atas pertanyaan yang sering diajukan mengenai platform ADMS.
                         </p>
                     </div>
@@ -985,11 +1127,11 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             return (
                                 <div 
                                     key={index}
-                                    className="border border-slate-200 rounded-2xl bg-white overflow-hidden transition-all duration-200"
+                                    className="border border-slate-300 dark:border-slate-800/80 rounded-2xl bg-white dark:bg-slate-900/60 overflow-hidden transition-all duration-200 dark:backdrop-blur-md"
                                 >
                                     <button
                                         onClick={() => setExpandedFaq(isOpen ? null : index)}
-                                        className="w-full p-6 text-left flex items-center justify-between gap-4 font-bold text-xs sm:text-sm text-slate-800 hover:bg-slate-50/50 transition-colors"
+                                        className="w-full p-6 text-left flex items-center justify-between gap-4 font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-250 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
                                     >
                                         <span>{faq.q}</span>
                                         <ChevronDown 
@@ -1001,10 +1143,10 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     
                                     <div 
                                         className={`transition-all duration-200 ease-in-out overflow-hidden ${
-                                            isOpen ? 'max-h-40 border-t border-slate-100' : 'max-h-0'
+                                            isOpen ? 'max-h-40 border-t border-slate-100 dark:border-slate-800/60' : 'max-h-0'
                                         }`}
                                     >
-                                        <div className="p-6 text-xs sm:text-sm text-slate-500 leading-relaxed bg-white">
+                                        <div className="p-6 text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed bg-white dark:bg-slate-900/40">
                                             {faq.a}
                                         </div>
                                     </div>
@@ -1133,8 +1275,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         
                         {/* Company logo/info block (5 cols) */}
                         <div className="md:col-span-5 space-y-6">
-                            <div className="inline-block bg-white p-2.5 rounded-xl border border-slate-800 max-w-[160px]">
-                                <img src="/assets/Images/adms-logo.png" alt="ADMS Logo" className="h-9 object-contain" />
+                            <div className="inline-flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-800 max-w-[180px]">
+                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-8 object-contain" />
+                                <img src="/assets/Images/adms-text.png" alt="ADMS Text" className="h-6 object-contain" />
                             </div>
                             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
                                 Platform terpadu Marketplace Produk Digital, Multi-Vendor Merchant, dan Platform Pemasangan Iklan Gratis & Promosi Berbayar untuk mengembangkan bisnis Anda.
@@ -1214,6 +1357,96 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     </div>
                 </div>
             </footer>
+
+            {/* Product Detail Modal Popup */}
+            {selectedProduct && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative border border-slate-100 dark:border-slate-800 p-6 flex flex-col animate-in fade-in zoom-in-95 duration-200">
+                        <button 
+                            onClick={() => setSelectedProduct(null)}
+                            className="absolute top-4 right-4 z-10 p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full transition-all active:scale-95 cursor-pointer"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            {/* Product Image preview */}
+                            <div className="aspect-video md:aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
+                                <img 
+                                    src={selectedProduct.image} 
+                                    alt={selectedProduct.title} 
+                                    className="w-full h-full object-cover" 
+                                />
+                            </div>
+                            
+                            {/* Product description & actions */}
+                            <div className="flex flex-col justify-between">
+                                <div className="space-y-3">
+                                    <span className="inline-block bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider border border-teal-100 dark:border-teal-500/20">
+                                        {selectedProduct.category}
+                                    </span>
+                                    <h3 className="font-extrabold text-lg text-slate-800 dark:text-slate-100 leading-snug">{selectedProduct.title}</h3>
+                                    
+                                    <div className="flex items-center gap-1 text-xs text-amber-500">
+                                        <Star className="w-4 h-4 fill-current" />
+                                        <span className="font-bold text-slate-700 dark:text-slate-300">{selectedProduct.rating}</span>
+                                        <span className="text-slate-400 dark:text-slate-500">({selectedProduct.reviewsCount} Ulasan)</span>
+                                    </div>
+                                    
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed whitespace-pre-line max-h-[160px] overflow-y-auto pr-1 scrollbar-thin">
+                                        {selectedProduct.description || 'Tidak ada deskripsi lengkap untuk produk digital ini.'}
+                                    </p>
+                                </div>
+                                
+                                <div className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl space-y-3 mt-6">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs text-slate-500 dark:text-slate-400">Harga Aset</span>
+                                        <span className="font-black text-xl text-teal-600 dark:text-teal-400">Rp{numberFormat(selectedProduct.price)}</span>
+                                    </div>
+                                    
+                                    {/* Store Details info */}
+                                    <div className="flex items-center justify-between pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
+                                        <div>
+                                            <span className="text-[10px] text-slate-400 dark:text-slate-550 block uppercase font-bold">Penjual</span>
+                                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{selectedProduct.merchantObj?.store_name || selectedProduct.merchant}</span>
+                                        </div>
+                                        {selectedProduct.merchantObj?.is_verified && (
+                                            <span className="inline-flex bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded-full text-[8px] uppercase tracking-wider border border-blue-100 dark:border-blue-500/20">
+                                                Terverifikasi
+                                            </span>
+                                        )}
+                                    </div>
+                                    
+                                    <div className="flex gap-2 pt-2">
+                                        <button 
+                                            onClick={() => {
+                                                handleAddToCart(selectedProduct.id);
+                                                setSelectedProduct(null);
+                                            }}
+                                            className="flex-1 bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                                        >
+                                            <ShoppingCart className="w-4 h-4" />
+                                            <span>Tambah Keranjang</span>
+                                        </button>
+                                        
+                                        {selectedProduct.merchantObj?.whatsapp && (
+                                            <a 
+                                                href={`https://wa.me/${selectedProduct.merchantObj.whatsapp}?text=Halo%20${selectedProduct.merchantObj.store_name},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(selectedProduct.title)}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="p-2.5 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-500/30 rounded-xl transition-all active:scale-95 flex items-center justify-center"
+                                                title="Hubungi WhatsApp"
+                                            >
+                                                <Phone className="w-4 h-4" />
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

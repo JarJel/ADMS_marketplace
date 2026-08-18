@@ -8,6 +8,7 @@ use App\Http\Controllers\Customer\ReviewController;
 use App\Http\Controllers\Customer\AdController;
 use App\Http\Controllers\Customer\MerchantRegistrationController;
 use App\Http\Controllers\Customer\CartController;
+use App\Http\Controllers\Customer\NotificationController;
 
 use App\Http\Controllers\Merchant\StoreController as MerchantStoreController;
 use App\Http\Controllers\Merchant\ProductController as MerchantProductController;
@@ -40,6 +41,7 @@ Route::get('/hello', function () {
 
 Route::get('/public/categories', [PublicCategoryController::class, 'index']);
 Route::get('/public/products', [PublicProductController::class, 'index']);
+Route::get('/public/products/recommended', [PublicProductController::class, 'recommended']);
 Route::get('/public/products/{id}', [PublicProductController::class, 'show']);
 
 Route::get('/public/ads', [PublicAdController::class, 'index']);
@@ -101,6 +103,11 @@ Route::middleware('auth.custom')->group(function () {
     // Wishlist
     Route::get('/customer/wishlist', [WishlistController::class, 'getWishlist']);
     Route::post('/customer/wishlist/toggle', [WishlistController::class, 'toggleWishlist']);
+
+    // Notifications
+    Route::get('/customer/notifications', [NotificationController::class, 'index']);
+    Route::post('/customer/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/customer/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
 
     // Cart management
     Route::get('/customer/cart', [CartController::class, 'getCart']);

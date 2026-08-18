@@ -29,8 +29,7 @@ class OrderController extends Controller
         if ($request->filled('payment_status')) {
             $query->where('payment_status', $request->payment_status);
         }
-
-        $orders = $query->orderBy('created_at', 'desc')->get();
+        $orders = $query->latest()->get();
 
         return response()->json([
             'success' => true,
@@ -77,6 +76,15 @@ class OrderController extends Controller
         }
 
         $order->save();
+
+        // Kirim notifikasi ke customer
+        \App\Models\Notification::create([
+            'user_id' => $order->user_id,
+            'title' => 'Status Pesanan Diperbarui',
+            'message' => "Status pesanan Anda #{$order->id} telah diperbarui menjadi '{$request->status}'.",
+            'type' => 'order',
+            'is_read' => false
+        ]);
 
         return response()->json([
             'success' => true,

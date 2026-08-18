@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
+import ProductDetailModal from '../components/ProductDetailModal';
 import { 
     Search, Palette, BookOpen, Code, Cpu, Megaphone, 
     Briefcase, Star, MessageSquare, Sun, Moon, ArrowRight, 
@@ -47,7 +48,7 @@ function ScrollFadeIn({ children, className = '' }) {
     );
 }
 
-export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, onNavigateToRegister, onNavigateToDashboard, onNavigateToCreateAd, onNavigateToClassifieds, onNavigateToProducts, onNavigate, onLogout, darkMode, setDarkMode }) {
+export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, onNavigateToRegister, onNavigateToDashboard, onNavigateToCreateAd, onNavigateToClassifieds, onNavigateToProducts, onNavigate, onLogout, darkMode, setDarkMode, onAddToCart, onToggleWishlist, cartCount, wishlistCount, notifications }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchInput, setSearchInput] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Semua');
@@ -89,44 +90,33 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
         }
     };
 
-    const handleAddToCart = async (productId) => {
-        if (!isLoggedIn) {
-            alert('Silakan login terlebih dahulu untuk menambah ke keranjang');
-            onNavigateToLogin();
-            return;
+    const handleAddToCart = async (prod) => {
+        const productObj = typeof prod === 'object' ? prod : { id: prod, title: 'Produk Digital ADMS', price: 0 };
+        if (onAddToCart) {
+            onAddToCart(productObj);
+        } else {
+            const pId = productObj.id;
+            const existingCart = JSON.parse(localStorage.getItem('adms_guest_cart') || '[]');
+            existingCart.push({ id: pId, product_id: pId, quantity: 1, product: productObj });
+            localStorage.setItem('adms_guest_cart', JSON.stringify(existingCart));
         }
-        try {
-            const res = await fetch('/api/customer/cart', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ product_id: productId, quantity: 1 })
-            });
-            const data = await res.json();
-            if (data.success) {
-                alert('Berhasil ditambahkan ke keranjang!');
-            } else {
-                alert(data.message || 'Gagal menambahkan ke keranjang');
-            }
-        } catch (error) { console.error(error); }
     };
 
+    const [userWishlist, setUserWishlist] = useState([]);
+
     const toggleWishlist = async (productId) => {
-        if (!isLoggedIn) {
-            alert('Silakan login terlebih dahulu untuk menyimpan wishlist');
-            onNavigateToLogin();
-            return;
+        const isFavorited = userWishlist.includes(productId);
+        let updatedWishlist = [];
+        if (isFavorited) {
+            updatedWishlist = userWishlist.filter(id => id !== productId);
+        } else {
+            updatedWishlist = [...userWishlist, productId];
         }
-        try {
-            const res = await fetch('/api/customer/wishlist/toggle', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ product_id: productId })
-            });
-            const data = await res.json();
-            if (data.success) {
-                alert(data.message);
-            }
-        } catch (error) { console.error(error); }
+        setUserWishlist(updatedWishlist);
+
+        if (onToggleWishlist) {
+            onToggleWishlist(productId);
+        }
     };
 
     const [activeTab, setActiveTab] = useState('buyer');
@@ -289,53 +279,74 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                 setDarkMode={setDarkMode} 
                 onLogout={onLogout} 
                 onNavigate={onNavigate}
+                cartCount={cartCount}
+                wishlistCount={wishlistCount}
+                notifications={notifications}
                 currentView="homepage"
             />
 
-            {/* B. Hero Section with dark blue background wrapper */}
+            {/* B. Hero Section */}
             <ScrollFadeIn>
-            <section className="bg-[#0A1B33] text-slate-100 py-16 transition-colors duration-300 relative overflow-hidden">
+            <section className={`py-16 transition-colors duration-300 relative overflow-hidden ${
+                darkMode ? 'bg-[#0A1B33] text-slate-100' : 'bg-gradient-to-br from-indigo-50/90 via-slate-50 to-white text-slate-900 border-b border-slate-200/80'
+            }`}>
                 {/* Background ambient glow effects */}
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-700/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/4"></div>
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-600/8 rounded-full blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/4"></div>
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,rgba(99,102,241,0.05)_0%,transparent_60%)] pointer-events-none"></div>
+                <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/4 ${
+                    darkMode ? 'bg-indigo-700/10' : 'bg-indigo-500/10'
+                }`}></div>
+                <div className={`absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/4 ${
+                    darkMode ? 'bg-emerald-600/8' : 'bg-teal-400/15'
+                }`}></div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
                     
                     {/* Copywriting (7 columns) */}
                     <div className="space-y-6 lg:col-span-7">
-                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-xs font-bold text-emerald-400 shadow-lg shadow-emerald-500/5">
-                            <Star className="w-3.5 h-3.5 fill-current text-emerald-400" />
+                        <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-sm ${
+                            darkMode 
+                                ? 'bg-emerald-500/10 border-emerald-500/25 text-emerald-400 shadow-emerald-500/5' 
+                                : 'bg-emerald-100/80 border-emerald-300 text-emerald-700'
+                        }`}>
+                            <Star className={`w-3.5 h-3.5 fill-current ${darkMode ? 'text-emerald-400' : 'text-emerald-600'}`} />
                             Platform #1 Digital Marketplace & Ad Exchange
                         </div>
 
-                        <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-tight text-white">
-                            Temukan <span className="text-transparent bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text">Produk Digital</span>.<br />
-                            <span className="text-transparent bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text">Pasang Iklan</span>. Kembangkan Bisnis.
+                        <h1 className={`text-4xl sm:text-5xl font-black tracking-tight leading-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            Temukan <span className="text-transparent bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-400 dark:to-teal-400 bg-clip-text">Produk Digital</span>.<br />
+                            <span className="text-transparent bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-400 dark:to-orange-400 bg-clip-text">Pasang Iklan</span>. Kembangkan Bisnis.
                         </h1>
 
-                        <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-xl">
+                        <p className={`text-sm sm:text-base leading-relaxed max-w-xl ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                             ADMS adalah platform marketplace dan digital advertising terpadu yang membantu Anda menemukan produk digital terbaik, berjualan sebagai merchant, dan mempromosikan bisnis dalam satu ekosistem.
                         </p>
 
                         {/* Search Bar inside Hero */}
-                        <div className="max-w-lg mt-8 relative flex items-center bg-white/[0.05] backdrop-blur-sm border border-white/[0.1] rounded-xl p-1.5 pl-4 shadow-2xl shadow-black/20">
-                            <Search className="w-4 h-4 text-slate-400 mr-2.5 flex-shrink-0" />
+                        <div className={`max-w-lg mt-8 relative flex items-center rounded-xl p-1.5 pl-4 shadow-xl border ${
+                            darkMode 
+                                ? 'bg-white/[0.05] backdrop-blur-sm border-white/[0.1] shadow-black/20 text-slate-100' 
+                                : 'bg-white border-slate-300/90 shadow-indigo-100/70 text-slate-800'
+                        }`}>
+                            <Search className={`w-4 h-4 mr-2.5 flex-shrink-0 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
                             <input 
                                 type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Cari produk digital, jasa, atau iklan promosi..."
-                                className="w-full bg-transparent focus:outline-none text-xs sm:text-sm text-slate-100 placeholder-slate-500"
-                                value={searchInput}
-                                onChange={handleSearchChange}
+                                className={`w-full bg-transparent focus:outline-none text-xs sm:text-sm ${
+                                    darkMode ? 'text-slate-100 placeholder-slate-500' : 'text-slate-800 placeholder-slate-400 font-medium'
+                                }`}
                             />
-                            <button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white text-xs font-bold px-5 py-2.5 rounded-lg active:scale-95 transition-all shadow-lg shadow-emerald-500/25">
+                            <button 
+                                onClick={() => onNavigate('products', 'all', searchQuery)}
+                                className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white text-xs font-bold px-5 py-2.5 rounded-lg active:scale-95 transition-all shadow-lg shadow-emerald-500/25"
+                            >
                                 Cari
                             </button>
                         </div>
 
                         {/* Popular Tags */}
-                        <p className="text-[11px] text-slate-400 font-medium">
-                            Pencarian Populer: <span className="text-slate-300">Template Canva &bull; Ebook Marketing &bull; Source Code Web</span>
+                        <p className={`text-[11px] font-medium ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                            Pencarian Populer: <span className={darkMode ? 'text-slate-300' : 'text-slate-700 font-semibold'}>Template Canva &bull; Ebook Marketing &bull; Source Code Web</span>
                         </p>
 
                         {/* CTA Buttons */}
@@ -347,24 +358,28 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 Jelajahi Marketplace &rarr;
                             </a>
                             <button 
-                                onClick={onNavigateToClassifieds}
-                                className="border border-white/[0.12] bg-white/[0.05] backdrop-blur-sm text-slate-100 hover:bg-white/[0.1] font-bold py-3.5 px-6 rounded-xl text-xs cursor-pointer active:scale-[0.98] transition-all flex items-center gap-1.5"
+                                onClick={onNavigateToCreateAd}
+                                className={`font-bold py-3.5 px-6 rounded-xl text-xs flex items-center gap-1.5 border transition-all ${
+                                    darkMode 
+                                        ? 'border-white/10 hover:border-indigo-400/40 text-slate-200 hover:bg-white/5' 
+                                        : 'border-slate-300 hover:border-slate-400 text-slate-800 bg-white hover:bg-slate-50 shadow-sm'
+                                }`}
                             >
-                                <Megaphone className="w-3.5 h-3.5 text-indigo-400" />
+                                <Megaphone className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
                                 Pasang Iklan Gratis
                             </button>
                         </div>
 
                         {/* Core benefits checklist */}
-                        <div className="flex flex-wrap items-center gap-6 pt-4 text-xs font-bold text-slate-300">
+                        <div className={`flex flex-wrap items-center gap-6 pt-4 text-xs font-bold ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                             <span className="flex items-center gap-1.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Instan Download
+                                <CheckCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> Instan Download
                             </span>
                             <span className="flex items-center gap-1.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Verified Merchant
+                                <CheckCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> Verified Merchant
                             </span>
                             <span className="flex items-center gap-1.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Iklan Gratis Rp0
+                                <CheckCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> Iklan Gratis Rp0
                             </span>
                         </div>
                     </div>
@@ -377,7 +392,11 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-emerald-500/15 rounded-full blur-[80px] pointer-events-none"></div>
 
                             {/* Main glass card */}
-                            <div className="w-full rounded-3xl bg-gradient-to-br from-[#0f1f3d] to-[#0a1528] backdrop-blur-xl border border-white/[0.07] p-5 shadow-[0_40px_100px_rgba(0,0,0,0.6)] relative overflow-hidden">
+                            <div className={`w-full rounded-3xl backdrop-blur-xl border p-5 relative overflow-hidden ${
+                                darkMode 
+                                    ? 'bg-gradient-to-br from-[#0f1f3d] to-[#0a1528] border-white/[0.07] shadow-[0_40px_100px_rgba(0,0,0,0.6)]' 
+                                    : 'bg-white/95 border-slate-200/90 shadow-2xl shadow-indigo-100/80 text-slate-800'
+                            }`}>
                                 {/* Top shimmer border */}
                                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-400/60 to-transparent"></div>
                                 <div className="absolute top-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent blur-sm"></div>
@@ -385,32 +404,44 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 {/* Card Header */}
                                 <div className="flex items-center justify-between mb-5">
                                     <div className="flex items-center gap-2.5">
-                                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500/30 to-purple-600/20 flex items-center justify-center border border-indigo-400/20 text-indigo-300 text-sm font-black shadow-inner shadow-indigo-500/10">
+                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center border text-sm font-black shadow-sm ${
+                                            darkMode 
+                                                ? 'bg-gradient-to-br from-indigo-500/30 to-purple-600/20 border-indigo-400/20 text-indigo-300' 
+                                                : 'bg-indigo-50 border-indigo-200 text-indigo-600'
+                                        }`}>
                                             %
                                         </div>
                                         <div>
-                                            <span className="block text-xs font-bold text-white">Spesial Buat Member Baru</span>
-                                            <span className="block text-[9px] text-slate-400 mt-0.5">Klaim sebelum kehabisan!</span>
+                                            <span className={`block text-xs font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>Promo Spesial Member</span>
+                                            <span className={`block text-[9px] mt-0.5 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Cashback & Diskon Terbatas</span>
                                         </div>
                                     </div>
-                                    <span className="text-[8px] font-black bg-gradient-to-r from-amber-500/20 to-orange-500/10 text-amber-400 px-2.5 py-1 rounded-lg border border-amber-400/25 uppercase tracking-wider">
+                                    <span className="text-[8px] font-black bg-gradient-to-r from-amber-500/20 to-orange-500/10 text-amber-500 dark:text-amber-400 px-2.5 py-1 rounded-lg border border-amber-400/30 uppercase tracking-wider">
                                         🔥 Promo
                                     </span>
                                 </div>
 
                                 {/* Inner Product Display Box */}
-                                <div className="relative bg-gradient-to-br from-emerald-950/80 to-teal-950/60 border border-emerald-500/20 rounded-2xl p-5 flex flex-col items-center text-center mb-4 overflow-hidden">
+                                <div className={`relative border rounded-2xl p-5 flex flex-col items-center text-center mb-4 overflow-hidden ${
+                                    darkMode 
+                                        ? 'bg-gradient-to-br from-emerald-950/80 to-teal-950/60 border-emerald-500/20' 
+                                        : 'bg-gradient-to-br from-emerald-50 via-teal-50/70 to-emerald-50 border-emerald-200/90'
+                                }`}>
                                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-24 bg-emerald-500/8 rounded-full blur-2xl pointer-events-none"></div>
                                     <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent"></div>
 
                                     <span className="relative z-10 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[9px] font-black tracking-widest px-3 py-1 rounded-full mb-3 shadow-lg shadow-emerald-500/30">
                                         ✦ DISKON 50%
                                     </span>
-                                    <h4 className="relative z-10 font-extrabold text-sm text-white mb-1.5 tracking-tight">Diskon Source Code & Template</h4>
-                                    <p className="relative z-10 text-[10px] text-slate-400 leading-relaxed max-w-[220px]">
-                                        Pakai kode promo <strong className="text-emerald-400 font-black tracking-wider">ADMSBARU</strong> pas checkout buat dapetin potongan harga 50% di transaksi pertamamu!
+                                    <h4 className={`relative z-10 font-extrabold text-sm mb-1.5 tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>Source Code & Canva Kit</h4>
+                                    <p className={`relative z-10 text-[10px] leading-relaxed max-w-[220px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                                        Pembelian pertama dengan kode promo: <strong className="text-emerald-600 dark:text-emerald-400 font-black tracking-wider">ADMSBARU</strong>
                                     </p>
-                                    <button className="relative z-10 mt-3 text-[9px] font-black text-emerald-300 border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 px-3.5 py-1 rounded-lg transition-all">
+                                    <button className={`relative z-10 mt-3 text-[9px] font-black px-3.5 py-1 rounded-lg transition-all border ${
+                                        darkMode 
+                                            ? 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20' 
+                                            : 'text-emerald-700 border-emerald-300 bg-emerald-100/80 hover:bg-emerald-200/80'
+                                    }`}>
                                         Klaim Sekarang &rarr;
                                     </button>
                                 </div>
@@ -418,51 +449,67 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 {/* Stats mini row */}
                                 <div className="grid grid-cols-3 gap-2 mb-4">
                                     {[
-                                        { value: '9.8K', label: 'Produk', color: 'text-teal-400' },
-                                        { value: '3.2K', label: 'Merchant', color: 'text-indigo-400' },
-                                        { value: '25K', label: 'User', color: 'text-amber-400' },
+                                        { value: '9.8K', label: 'Produk', color: 'text-teal-600 dark:text-teal-400' },
+                                        { value: '3.2K', label: 'Merchant', color: 'text-indigo-600 dark:text-indigo-400' },
+                                        { value: '25K', label: 'User', color: 'text-amber-600 dark:text-amber-400' },
                                     ].map((s, i) => (
-                                        <div key={i} className="bg-white/[0.04] border border-white/[0.06] rounded-xl p-2 text-center">
+                                        <div key={i} className={`border rounded-xl p-2 text-center ${
+                                            darkMode ? 'bg-white/[0.04] border-white/[0.06]' : 'bg-slate-50 border-slate-200'
+                                        }`}>
                                             <span className={`block text-xs font-black ${s.color}`}>{s.value}</span>
-                                            <span className="block text-[8px] text-slate-500 font-medium mt-0.5">{s.label}</span>
+                                            <span className={`block text-[8px] font-medium mt-0.5 ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>{s.label}</span>
                                         </div>
                                     ))}
                                 </div>
 
                                 {/* Bottom Ads Exchange block */}
-                                <div className="flex items-center gap-3 bg-indigo-500/8 border border-indigo-500/15 rounded-2xl p-3">
-                                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-600/30 to-purple-600/20 flex items-center justify-center border border-indigo-400/20 flex-shrink-0">
-                                        <Megaphone className="w-4 h-4 text-indigo-400" />
+                                <div className={`flex items-center gap-3 border rounded-2xl p-3 ${
+                                    darkMode ? 'bg-indigo-500/8 border-indigo-500/15' : 'bg-indigo-50/80 border-indigo-200/80'
+                                }`}>
+                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center border flex-shrink-0 ${
+                                        darkMode 
+                                            ? 'bg-gradient-to-br from-indigo-600/30 to-purple-600/20 border-indigo-400/20 text-indigo-400' 
+                                            : 'bg-indigo-100 border-indigo-200 text-indigo-600'
+                                    }`}>
+                                        <Megaphone className="w-4 h-4" />
                                     </div>
                                     <div className="flex-grow min-w-0">
-                                        <span className="block text-xs font-bold text-white truncate">Boost Iklan Premium</span>
-                                        <span className="block text-[9px] text-slate-400 mt-0.5 truncate">Bikin iklanmu nangkring di halaman utama selama 30 hari penuh.</span>
+                                        <span className={`block text-xs font-bold truncate ${darkMode ? 'text-white' : 'text-slate-900'}`}>Ads Exchange Premium</span>
+                                        <span className={`block text-[9px] mt-0.5 truncate ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Tayang 30 hari · Prioritas pencarian teratas.</span>
                                     </div>
-                                    <span className="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/60 animate-pulse"></span>
+                                    <span className="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-500 shadow-sm animate-pulse"></span>
                                 </div>
 
                                 {/* Pagination dots */}
                                 <div className="flex items-center justify-center gap-1.5 mt-5">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
-                                    <span className="w-5 h-1.5 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 shadow-sm shadow-emerald-400/40"></span>
-                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+                                    <span className={`w-1.5 h-1.5 rounded-full ${darkMode ? 'bg-slate-700' : 'bg-slate-300'}`}></span>
+                                    <span className="w-5 h-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 shadow-sm"></span>
+                                    <span className={`w-1.5 h-1.5 rounded-full ${darkMode ? 'bg-slate-700' : 'bg-slate-300'}`}></span>
                                 </div>
                             </div>
 
                             {/* Floating Stats Card */}
-                            <div className="bg-[#080f1e]/95 backdrop-blur-xl border border-white/[0.07] rounded-2xl p-3.5 absolute bottom-10 -left-14 w-56 shadow-[0_20px_50px_rgba(0,0,0,0.7)] flex items-center gap-3 overflow-hidden">
+                            <div className={`backdrop-blur-xl border rounded-2xl p-3.5 absolute bottom-10 -left-14 w-56 flex items-center gap-3 overflow-hidden z-20 ${
+                                darkMode 
+                                    ? 'bg-[#080f1e]/95 border-white/[0.07] text-white shadow-[0_20px_50px_rgba(0,0,0,0.7)]' 
+                                    : 'bg-white/95 border-slate-200 text-slate-800 shadow-xl shadow-indigo-100/90'
+                            }`}>
                                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-teal-400/40 to-transparent"></div>
-                                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-600/30 to-emerald-600/20 flex items-center justify-center border border-teal-400/20 text-teal-400 text-sm font-black flex-shrink-0">
+                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center border text-sm font-black flex-shrink-0 ${
+                                    darkMode 
+                                        ? 'bg-gradient-to-br from-teal-600/30 to-emerald-600/20 border-teal-400/20 text-teal-400' 
+                                        : 'bg-teal-50 border-teal-200 text-teal-600'
+                                }`}>
                                     ↑
                                 </div>
                                 <div className="min-w-0">
-                                    <span className="block text-[10px] font-bold text-white truncate">Performa Iklan Meroket</span>
-                                    <span className="block text-[8px] text-slate-500 mt-0.5">Dilihat: 12.5K · Klik: 5.4%</span>
+                                    <span className={`block text-[10px] font-bold truncate ${darkMode ? 'text-white' : 'text-slate-900'}`}>Iklan Premium Baru</span>
+                                    <span className={`block text-[8px] mt-0.5 ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>Impr: 12.5K · CTR: 5.4%</span>
                                     <div className="flex gap-2 mt-1.5">
-                                        <span className="text-[8px] font-bold text-emerald-400 flex items-center gap-1">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span> Aktif
+                                        <span className="text-[8px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block"></span> Aktif
                                         </span>
-                                        <span className="text-[8px] font-bold text-indigo-400 bg-indigo-400/10 px-1.5 rounded">VIP Boost</span>
+                                        <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-400/10 px-1.5 rounded">VIP</span>
                                     </div>
                                 </div>
                             </div>
@@ -650,9 +697,14 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 >
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); toggleWishlist(prod.id); }}
-                                    className="absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 hover:scale-110 active:scale-95 shadow-md border border-slate-100/50 dark:border-slate-800/50 transition-all duration-300"
+                                    className={`absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full shadow-md border border-slate-100/50 dark:border-slate-800/50 transition-all duration-300 cursor-pointer ${
+                                        userWishlist.includes(prod.id)
+                                            ? 'text-rose-500 fill-rose-500 scale-110'
+                                            : 'text-slate-400 hover:text-rose-500 hover:scale-110 active:scale-95'
+                                    }`}
+                                    title={userWishlist.includes(prod.id) ? "Hapus dari Favorit" : "Tambah ke Favorit"}
                                 >
-                                    <Heart className="w-4 h-4" />
+                                    <Heart className={`w-4 h-4 ${userWishlist.includes(prod.id) ? 'fill-current text-rose-500' : ''}`} />
                                 </button>
                                 <div>
                                     {/* Product Image */}
@@ -694,8 +746,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 <div className="p-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
                                     <span className="font-extrabold text-base text-teal-600 dark:text-teal-400">Rp{numberFormat(prod.price)}</span>
                                     <button 
-                                        onClick={(e) => { e.stopPropagation(); handleAddToCart(prod.id); }}
-                                        className="bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5"
+                                        onClick={(e) => { e.stopPropagation(); setSelectedProduct(prod); }}
+                                        className="bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
                                     >
                                         <ShoppingCart className="w-3.5 h-3.5" />
                                         <span>Keranjang</span>
@@ -1288,95 +1340,20 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                 </div>
             </footer>
 
-            {/* Product Detail Modal Popup */}
-            {selectedProduct && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative border border-slate-100 dark:border-slate-800 p-6 flex flex-col animate-in fade-in zoom-in-95 duration-200">
-                        <button 
-                            onClick={() => setSelectedProduct(null)}
-                            className="absolute top-4 right-4 z-10 p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full transition-all active:scale-95 cursor-pointer"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                            {/* Product Image preview */}
-                            <div className="aspect-video md:aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
-                                <img 
-                                    src={selectedProduct.image} 
-                                    alt={selectedProduct.title} 
-                                    className="w-full h-full object-cover" 
-                                />
-                            </div>
-                            
-                            {/* Product description & actions */}
-                            <div className="flex flex-col justify-between">
-                                <div className="space-y-3">
-                                    <span className="inline-block bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider border border-teal-100 dark:border-teal-500/20">
-                                        {selectedProduct.category}
-                                    </span>
-                                    <h3 className="font-extrabold text-lg text-slate-800 dark:text-slate-100 leading-snug">{selectedProduct.title}</h3>
-                                    
-                                    <div className="flex items-center gap-1 text-xs text-amber-500">
-                                        <Star className="w-4 h-4 fill-current" />
-                                        <span className="font-bold text-slate-700 dark:text-slate-300">{selectedProduct.rating}</span>
-                                        <span className="text-slate-400 dark:text-slate-500">({selectedProduct.reviewsCount} Ulasan)</span>
-                                    </div>
-                                    
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed whitespace-pre-line max-h-[160px] overflow-y-auto pr-1 scrollbar-thin">
-                                        {selectedProduct.description || 'Tidak ada deskripsi lengkap untuk produk digital ini.'}
-                                    </p>
-                                </div>
-                                
-                                <div className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl space-y-3 mt-6">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs text-slate-500 dark:text-slate-400">Harga Aset</span>
-                                        <span className="font-black text-xl text-teal-600 dark:text-teal-400">Rp{numberFormat(selectedProduct.price)}</span>
-                                    </div>
-                                    
-                                    {/* Store Details info */}
-                                    <div className="flex items-center justify-between pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
-                                        <div>
-                                            <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-bold">Penjual</span>
-                                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{selectedProduct.merchantObj?.store_name || selectedProduct.merchant}</span>
-                                        </div>
-                                        {selectedProduct.merchantObj?.is_verified && (
-                                            <span className="inline-flex bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded-full text-[8px] uppercase tracking-wider border border-blue-100 dark:border-blue-500/20">
-                                                Terverifikasi
-                                            </span>
-                                        )}
-                                    </div>
-                                    
-                                    <div className="flex gap-2 pt-2">
-                                        <button 
-                                            onClick={() => {
-                                                handleAddToCart(selectedProduct.id);
-                                                setSelectedProduct(null);
-                                            }}
-                                            className="flex-1 bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-1.5"
-                                        >
-                                            <ShoppingCart className="w-4 h-4" />
-                                            <span>Tambah Keranjang</span>
-                                        </button>
-                                        
-                                        {selectedProduct.merchantObj?.whatsapp && (
-                                            <a 
-                                                href={`https://wa.me/6281121211933?text=Halo%20${selectedProduct.merchantObj.store_name},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(selectedProduct.title)}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="p-2.5 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-500/30 rounded-xl transition-all active:scale-95 flex items-center justify-center"
-                                                title="Hubungi WhatsApp"
-                                            >
-                                                <Phone className="w-4 h-4" />
-                                            </a>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Product Detail Modal */}
+            <ProductDetailModal 
+                product={selectedProduct}
+                isOpen={!!selectedProduct}
+                onClose={() => setSelectedProduct(null)}
+                darkMode={darkMode}
+                onAddToCart={(prod) => {
+                    if (onAddToCart) {
+                        onAddToCart(prod);
+                    } else {
+                        handleAddToCart(prod.id);
+                    }
+                }}
+            />
         </div>
     );
 }

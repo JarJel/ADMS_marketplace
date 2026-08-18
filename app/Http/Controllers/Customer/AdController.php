@@ -99,6 +99,15 @@ class AdController extends Controller
                 $ad->media()->save($media);
             }
 
+            // Kirim notifikasi ke user
+            \App\Models\Notification::create([
+                'user_id' => $user->id,
+                'title' => 'Pengajuan Iklan Baru',
+                'message' => "Iklan Anda yang berjudul '{$ad->title}' telah berhasil diajukan dan sedang menunggu moderasi tim ADMS.",
+                'type' => 'ad_status',
+                'is_read' => false
+            ]);
+
             DB::commit();
 
             return response()->json([

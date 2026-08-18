@@ -38,22 +38,48 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
     // Form errors
     const [errors, setErrors] = useState({});
 
-    // Categories list map
-    const categoriesMap = {
-        'Jasa & Layanan': ['Jasa Web & Coding', 'Desain Grafis', 'Konsultasi Syariah', 'Jasa Offline', 'Lainnya'],
-        'Digital Product': ['Template Canva', 'Ebook', 'Source Code', 'AI Prompt', 'Lainnya'],
-        'Elektronik': ['Smartphone', 'Laptop', 'Kamera', 'Aksesoris'],
-        'Properti': ['Rumah Kontrak', 'Tanah', 'Ruko'],
-        'Kendaraan': ['Motor', 'Mobil', 'Suku Cadang'],
-        'Fashion': ['Busana Muslim', 'Hijab', 'Alat Ibadah', 'Lainnya'],
-        'Lainnya': ['Lain-lain']
-    };
+    // Kategori dinamis dari database
+    const [dbCategories, setDbCategories] = useState([]);
+    const [selectedCategoryId, setSelectedCategoryId] = useState('');
+    const [selectedSubCategoryId, setSelectedSubCategoryId] = useState('');
 
     useEffect(() => {
-        // Set default subcategory on category change
-        const subs = categoriesMap[kategori] || [];
-        setSubKategori(subs[0] || '');
-    }, [kategori]);
+        const fetchAdCategories = async () => {
+            try {
+                const res = await fetch('/api/public/categories?type=advertisement');
+                const data = await res.json();
+                if (data.success && data.data) {
+                    setDbCategories(data.data);
+                    if (data.data.length > 0) {
+                        setSelectedCategoryId(data.data[0].id.toString());
+                        if (data.data[0].children && data.data[0].children.length > 0) {
+                            setSelectedSubCategoryId(data.data[0].children[0].id.toString());
+                        } else {
+                            setSelectedSubCategoryId(data.data[0].id.toString());
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Gagal memuat kategori iklan gratis:", err);
+            }
+        };
+        fetchAdCategories();
+    }, []);
+
+    useEffect(() => {
+        const parentId = parseInt(selectedCategoryId);
+        const parentCat = dbCategories.find(c => c.id === parentId);
+        if (parentCat) {
+            if (parentCat.children && parentCat.children.length > 0) {
+                setSelectedSubCategoryId(parentCat.children[0].id.toString());
+            } else {
+                setSelectedSubCategoryId(parentCat.id.toString());
+            }
+        }
+    }, [selectedCategoryId, dbCategories]);
+
+    const activeCategoryName = dbCategories.find(c => c.id === parseInt(selectedCategoryId))?.name || '';
+    const isJasa = activeCategoryName.toLowerCase().includes('jasa');
 
     // Slide variants for multi-step transitions
     const slideVariants = {
@@ -131,7 +157,8 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                         const newPhotos = files.map((file, idx) => ({
                             id: Date.now() + idx,
                             name: file.name,
-                            url: URL.createObjectURL(file)
+                            url: URL.createObjectURL(file),
+                            file: file
                         }));
                         setPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
                         setIsUploading(false);
@@ -153,13 +180,49 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
         if (!validateStep(3)) return;
 
         setLoading(true);
-        // Simulate database submission timeout
-        setTimeout(() => {
-            const randomCode = 'ADMS-AD-' + Math.floor(10000 + Math.random() * 90000);
-            setGeneratedAdId(randomCode);
+        setErrors({});
+
+        try {
+            const formData = new FormData();
+            formData.append('title', judul);
+            formData.append('category_id', selectedSubCategoryId);
+            formData.append('description', deskripsi);
+            formData.append('price', tipeHarga === 'Harga Tetap' ? harga : 0);
+            formData.append('location', lokasi);
+            formData.append('whatsapp', whatsapp);
+
+            photos.forEach(photo => {
+                if (photo.file) {
+                    formData.append('images[]', photo.file);
+                }
+            });
+
+            const res = await fetch('/api/customer/ads', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                setGeneratedAdId('ADMS-AD-' + data.data.id);
+                setSuccess(true);
+            } else {
+                alert(data.message || 'Gagal menyimpan iklan.');
+                if (data.errors) {
+                    setErrors(data.errors);
+                }
+            }
+        } catch (err) {
+            console.error("Error submitting ad:", err);
+            alert("Terjadi kesalahan jaringan saat mempublikasikan iklan.");
+        } finally {
             setLoading(false);
-            setSuccess(true);
-        }, 2000);
+        }
     };
 
     return (
@@ -257,12 +320,12 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                 <div className="space-y-1.5">
                                                     <label className="block text-xs font-bold text-slate-700">Kategori Iklan <span className="text-red-500">*</span></label>
                                                     <select
-                                                        value={kategori}
-                                                        onChange={(e) => setKategori(e.target.value)}
+                                                        value={selectedCategoryId}
+                                                        onChange={(e) => setSelectedCategoryId(e.target.value)}
                                                         className="w-full text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl outline-none bg-white"
                                                     >
-                                                        {Object.keys(categoriesMap).map((cat) => (
-                                                            <option key={cat} value={cat}>{cat}</option>
+                                                        {dbCategories.map((cat) => (
+                                                            <option key={cat.id} value={cat.id}>{cat.name}</option>
                                                         ))}
                                                     </select>
                                                 </div>
@@ -270,19 +333,25 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                 <div className="space-y-1.5">
                                                     <label className="block text-xs font-bold text-slate-700">Sub-Kategori <span className="text-red-500">*</span></label>
                                                     <select
-                                                        value={subKategori}
-                                                        onChange={(e) => setSubKategori(e.target.value)}
+                                                        value={selectedSubCategoryId}
+                                                        onChange={(e) => setSelectedSubCategoryId(e.target.value)}
                                                         className="w-full text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl outline-none bg-white"
                                                     >
-                                                        {(categoriesMap[kategori] || []).map((sub) => (
-                                                            <option key={sub} value={sub}>{sub}</option>
-                                                        ))}
+                                                        {(() => {
+                                                            const parent = dbCategories.find(c => c.id === parseInt(selectedCategoryId));
+                                                            if (parent && parent.children && parent.children.length > 0) {
+                                                                return parent.children.map((sub) => (
+                                                                    <option key={sub.id} value={sub.id}>{sub.name}</option>
+                                                                ));
+                                                            }
+                                                            return parent ? <option value={parent.id}>Semua {parent.name}</option> : null;
+                                                        })()}
                                                     </select>
                                                 </div>
                                             </div>
 
                                             {/* Kondisi (Radio) */}
-                                            {kategori !== 'Jasa & Layanan' && (
+                                            {!isJasa && (
                                                 <div className="space-y-2 text-left">
                                                     <label className="block text-xs font-bold text-slate-700">Kondisi Barang <span className="text-red-500">*</span></label>
                                                     <div className="flex gap-4">

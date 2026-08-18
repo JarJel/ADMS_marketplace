@@ -43,7 +43,24 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
 
     // Search states
     const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [searchLocation, setSearchLocation] = useState('');
+    const [debouncedSearchLocation, setDebouncedSearchLocation] = useState('');
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 400);
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchLocation(searchLocation);
+        }, 400);
+        return () => clearTimeout(handler);
+    }, [searchLocation]);
+
     const [selectedCategory, setSelectedCategory] = useState('Semua Kategori');
 
     // Sidebar filter states
@@ -73,6 +90,25 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
         { name: 'Rumah Tangga', icon: <Sofa className="w-4 h-4" /> }
     ];
 
+    const recentBlogs = [
+        {
+            id: 1,
+            title: "Panduan Memilih Properti Syariah Bebas Riba",
+            date: "15 Agustus 2026",
+            category: "Properti",
+            image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600&auto=format&fit=crop",
+            excerpt: "Memiliki rumah sendiri adalah impian setiap keluarga. Pelajari cara membeli rumah dengan skema KPR Syariah murni tanpa riba dan tanpa denda."
+        },
+        {
+            id: 2,
+            title: "Tips Sukses Menawarkan Jasa Secara Online bagi UMKM",
+            date: "12 Agustus 2026",
+            category: "Jasa & Layanan",
+            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop",
+            excerpt: "Bagaimana cara mempromosikan jasa Anda agar menarik calon klien? Simak rahasia copywriting dan optimasi profil iklan Anda di ADMS."
+        }
+    ];
+
     // Reset all active filters
     const handleClearFilters = () => {
         setSearchQuery('');
@@ -97,16 +133,16 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             }
 
             // Keyword Match
-            if (searchQuery.trim() !== '') {
-                const keyword = searchQuery.toLowerCase();
+            if (debouncedSearchQuery.trim() !== '') {
+                const keyword = debouncedSearchQuery.toLowerCase();
                 const titleMatch = ad.title?.toLowerCase().includes(keyword);
                 const descMatch = ad.desc?.toLowerCase().includes(keyword);
                 if (!titleMatch && !descMatch) return false;
             }
 
             // Location Match
-            if (searchLocation.trim() !== '') {
-                const loc = searchLocation.toLowerCase();
+            if (debouncedSearchLocation.trim() !== '') {
+                const loc = debouncedSearchLocation.toLowerCase();
                 if (!ad.location?.toLowerCase().includes(loc)) return false;
             }
 
@@ -132,7 +168,8 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                 return dateB - dateA;
             }
         });
-    }, [ads, searchQuery, searchLocation, selectedCategory, filterCondition, minPrice, maxPrice, sortBy]);
+    }, [ads, debouncedSearchQuery, debouncedSearchLocation, selectedCategory, filterCondition, minPrice, maxPrice, sortBy]);
+
     const recentBlogs = [
         {
             id: 1,
@@ -159,7 +196,6 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             excerpt: "Tanah kavling masih menjadi primadona investasi jangka panjang. Simak lokasi-lokasi strategis yang diprediksi mengalami kenaikan harga signifikan tahun ini."
         }
     ];
-
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300 font-sans pb-20">

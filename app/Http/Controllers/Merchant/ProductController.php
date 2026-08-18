@@ -32,7 +32,7 @@ class ProductController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        $products = $query->with('category')->get();
+        $products = $query->with('category')->latest()->get();
 
         return response()->json([
             'success' => true,

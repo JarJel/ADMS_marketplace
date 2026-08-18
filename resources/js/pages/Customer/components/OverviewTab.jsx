@@ -24,7 +24,10 @@ export default function OverviewTab({
 
             {/* Mini stats widgets grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4 text-left">
+                <div 
+                    onClick={() => setActiveTab('purchases')}
+                    className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-all flex items-center gap-4 text-left cursor-pointer active:scale-95"
+                >
                     <div className="p-3 bg-indigo-50 rounded-xl text-indigo-600">
                         <ShoppingBag className="w-5 h-5" />
                     </div>
@@ -34,7 +37,10 @@ export default function OverviewTab({
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4 text-left">
+                <div 
+                    onClick={() => setActiveTab('purchases')}
+                    className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-all flex items-center gap-4 text-left cursor-pointer active:scale-95"
+                >
                     <div className="p-3 bg-emerald-50 rounded-xl text-emerald-600">
                         <CreditCard className="w-5 h-5" />
                     </div>
@@ -44,23 +50,29 @@ export default function OverviewTab({
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4 text-left">
+                <div 
+                    onClick={() => setActiveTab('downloads')}
+                    className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-all flex items-center gap-4 text-left cursor-pointer active:scale-95"
+                >
                     <div className="p-3 bg-amber-50 rounded-xl text-amber-600">
                         <Download className="w-5 h-5" />
                     </div>
                     <div>
                         <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Siap Unduh</span>
-                        <span className="text-sm font-black text-slate-800">3 File</span>
+                        <span className="text-sm font-black text-slate-800">File Unduhan</span>
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4 text-left">
+                <div 
+                    onClick={() => setActiveTab('ads')}
+                    className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-all flex items-center gap-4 text-left cursor-pointer active:scale-95"
+                >
                     <div className="p-3 bg-sky-50 rounded-xl text-sky-600">
                         <Megaphone className="w-5 h-5" />
                     </div>
                     <div>
                         <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Iklan Aktif</span>
-                        <span className="text-sm font-black text-slate-800">1 Iklan</span>
+                        <span className="text-sm font-black text-slate-800">Iklan Saya</span>
                     </div>
                 </div>
             </div>

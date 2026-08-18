@@ -59,14 +59,7 @@ export default function ProductDetailModal({
   };
 
   const handleWhatsAppChat = () => {
-    // Format phone number to international standard (remove leading 0 or +)
-    let cleanPhone = merchantPhone.replace(/[^0-9]/g, '');
-    if (cleanPhone.startsWith('0')) {
-      cleanPhone = '62' + cleanPhone.substring(1);
-    }
-    if (!cleanPhone.startsWith('62')) {
-      cleanPhone = '6281121211933'; // Default fallback WA Admin / Merchant
-    }
+    const cleanPhone = '6281121211933'; // Forced to admin WA as requested
 
     const message = encodeURIComponent(
       `Halo *${merchantName}*, saya menemukan produk *${title}* (${formatCurrency(price)}) di ADMS Marketplace. Saya ingin bertanya lebih lanjut seputar produk ini.`

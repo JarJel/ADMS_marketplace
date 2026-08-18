@@ -2,7 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { 
     Search, MapPin, Zap, Filter, ArrowUpDown, LayoutGrid, List,
     Phone, ExternalLink, X, HelpCircle, Star, MessageSquare, AlertCircle,
-    Rss, Clock, Tag, ChevronRight
+    Rss, Clock, Tag, ChevronRight,
+    Globe, Car, Bike, Smartphone, Monitor, Home, Map as MapIcon, Wrench, Briefcase, Shirt, Sofa
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
@@ -78,37 +79,20 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
 
     // Categories configurations
     const categories = [
-        { name: 'Semua Kategori', icon: '🌐' },
-        { name: 'Mobil', icon: '🚗' },
-        { name: 'Motor', icon: '🏍' },
-        { name: 'Handphone', icon: '📱' },
-        { name: 'Elektronik', icon: '💻' },
-        { name: 'Properti', icon: '🏠' },
-        { name: 'Tanah', icon: '🏷' },
-        { name: 'Jasa', icon: '🛠' },
-        { name: 'Lowongan Kerja', icon: '💼' },
-        { name: 'Fashion', icon: '👕' },
-        { name: 'Rumah Tangga', icon: '🛋' }
+        { name: 'Semua Kategori', icon: <Globe className="w-4 h-4" /> },
+        { name: 'Mobil', icon: <Car className="w-4 h-4" /> },
+        { name: 'Motor', icon: <Bike className="w-4 h-4" /> },
+        { name: 'Handphone', icon: <Smartphone className="w-4 h-4" /> },
+        { name: 'Elektronik', icon: <Monitor className="w-4 h-4" /> },
+        { name: 'Properti', icon: <Home className="w-4 h-4" /> },
+        { name: 'Tanah', icon: <MapIcon className="w-4 h-4" /> },
+        { name: 'Jasa', icon: <Wrench className="w-4 h-4" /> },
+        { name: 'Lowongan Kerja', icon: <Briefcase className="w-4 h-4" /> },
+        { name: 'Fashion', icon: <Shirt className="w-4 h-4" /> },
+        { name: 'Rumah Tangga', icon: <Sofa className="w-4 h-4" /> }
     ];
 
-    const recentBlogs = [
-        {
-            id: 1,
-            title: "Panduan Memilih Properti Syariah Bebas Riba",
-            date: "15 Agustus 2026",
-            category: "Properti",
-            image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600&auto=format&fit=crop",
-            excerpt: "Memiliki rumah sendiri adalah impian setiap keluarga. Pelajari cara membeli rumah dengan skema KPR Syariah murni tanpa riba dan tanpa denda."
-        },
-        {
-            id: 2,
-            title: "Tips Sukses Menawarkan Jasa Secara Online bagi UMKM",
-            date: "12 Agustus 2026",
-            category: "Jasa & Layanan",
-            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop",
-            excerpt: "Bagaimana cara mempromosikan jasa Anda agar menarik calon klien? Simak rahasia copywriting dan optimasi profil iklan Anda di ADMS."
-        }
-    ];
+
 
     // Reset all active filters
     const handleClearFilters = () => {
@@ -474,7 +458,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                                     </div>
 
                                                     <a 
-                                                        href={`https://wa.me/${ad.whatsapp}`}
+                                                        href={`https://wa.me/6281121211933`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         onClick={(e) => { e.stopPropagation(); handleAdClick(ad.id); }} // Stop modal popup trigger
@@ -640,7 +624,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 <span className="text-[10px] text-slate-400 dark:text-slate-500">Dipublikasikan pada: {selectedAd.date}</span>
                                 
                                 <a 
-                                    href={`https://wa.me/${selectedAd.whatsapp}`}
+                                    href={`https://wa.me/6281121211933`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-colors cursor-pointer"

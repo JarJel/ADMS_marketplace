@@ -36,24 +36,58 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
     // Kategori dinamis dari database
     const [dbCategories, setDbCategories] = useState([]);
 
+    const FALLBACK_CATEGORIES = [
+        {
+            id: 1,
+            name: 'Jasa & Layanan',
+            children: [
+                { id: 101, name: 'Desain Grafis & Logo' },
+                { id: 102, name: 'Pembuatan Website' },
+                { id: 103, name: 'Digital Marketing & SEO' }
+            ]
+        },
+        {
+            id: 2,
+            name: 'Produk Digital',
+            children: [
+                { id: 201, name: 'Source Code & Script' },
+                { id: 202, name: 'Template & Tema' },
+                { id: 203, name: 'E-Book & Panduan' }
+            ]
+        },
+        {
+            id: 3,
+            name: 'Akun & Sosial Media',
+            children: [
+                { id: 301, name: 'Akun Game & Topup' },
+                { id: 302, name: 'Jasa Followers & Likes' }
+            ]
+        }
+    ];
+
     useEffect(() => {
         const fetchAdCategories = async () => {
             try {
                 const res = await fetch('/api/public/categories?type=advertisement');
                 const data = await res.json();
-                if (data.success && data.data) {
+                if (data.success && data.data && data.data.length > 0) {
                     setDbCategories(data.data);
-                    if (data.data.length > 0) {
-                        setSelectedCategoryId(data.data[0].id.toString());
-                        if (data.data[0].children && data.data[0].children.length > 0) {
-                            setSelectedSubCategoryId(data.data[0].children[0].id.toString());
-                        } else {
-                            setSelectedSubCategoryId(data.data[0].id.toString());
-                        }
+                    setSelectedCategoryId(data.data[0].id.toString());
+                    if (data.data[0].children && data.data[0].children.length > 0) {
+                        setSelectedSubCategoryId(data.data[0].children[0].id.toString());
+                    } else {
+                        setSelectedSubCategoryId(data.data[0].id.toString());
                     }
+                } else {
+                    setDbCategories(FALLBACK_CATEGORIES);
+                    setSelectedCategoryId(FALLBACK_CATEGORIES[0].id.toString());
+                    setSelectedSubCategoryId(FALLBACK_CATEGORIES[0].children[0].id.toString());
                 }
             } catch (err) {
                 console.error("Gagal memuat kategori iklan gratis:", err);
+                setDbCategories(FALLBACK_CATEGORIES);
+                setSelectedCategoryId(FALLBACK_CATEGORIES[0].id.toString());
+                setSelectedSubCategoryId(FALLBACK_CATEGORIES[0].children[0].id.toString());
             }
         };
         fetchAdCategories();

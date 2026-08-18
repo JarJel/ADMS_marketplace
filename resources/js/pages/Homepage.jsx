@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
 import ProductDetailModal from '../components/ProductDetailModal';
 import { 
@@ -7,8 +7,9 @@ import {
     Shield, CheckCircle, Smartphone, ExternalLink, HelpCircle,
     LayoutGrid, Share2, ShoppingBag, Store, Download, Zap, Users, Quote, ChevronDown,
     LayoutTemplate, Book, Globe, Video, Headphones, GraduationCap, TrendingUp, Wrench, Handshake, MoreHorizontal,
-    Heart, ShoppingCart, X, Phone
+    Heart, ShoppingCart, X, Phone, ChevronLeft, ChevronRight
 } from 'lucide-react';
+import debounce from 'lodash.debounce';
 
 // Reusable scroll fade-in animation component using Intersection Observer
 function ScrollFadeIn({ children, className = '' }) {
@@ -49,12 +50,43 @@ function ScrollFadeIn({ children, className = '' }) {
 
 export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, onNavigateToRegister, onNavigateToDashboard, onNavigateToCreateAd, onNavigateToClassifieds, onNavigateToProducts, onNavigate, onLogout, darkMode, setDarkMode, onAddToCart, onToggleWishlist, cartCount, wishlistCount, notifications }) {
     const [searchQuery, setSearchQuery] = useState('');
+    const [searchInput, setSearchInput] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Semua');
-    const [showAssistant, setShowAssistant] = useState(false);
-    const [assistantResponse, setAssistantResponse] = useState(null);
     const [merchants, setMerchants] = useState([]);
     const [loadingMerchants, setLoadingMerchants] = useState(true);
     const [selectedProduct, setSelectedProduct] = useState(null);
+
+    const [currentPromoSlide, setCurrentPromoSlide] = useState(0);
+    const promoSlides = [
+        {
+            title: "ADMS Social Panel",
+            desc: "Pusat Layanan SMM Termurah & Tercepat untuk Kebutuhan Sosial Media Anda.",
+            image: "/images/banners/adms_social_panel.jpg",
+            link: "https://panel.armadadigitalmarketing.top/",
+            domain: "panel.armadadigitalmarketing.top"
+        },
+        {
+            title: "ADMS Whatsapp Blast",
+            desc: "Kirim pesan masal ke ribuan kontak dengan sekali klik. Solusi broadcast terbaik.",
+            image: "/images/banners/adms_blast.jpg",
+            link: "https://blast.armadadigitalmarketing.top/",
+            domain: "blast.armadadigitalmarketing.top"
+        },
+        {
+            title: "ADMS Marketplace",
+            desc: "Jual beli produk digital dan jasa freelancer terpercaya dengan sistem rekening bersama.",
+            image: "/images/banners/adms_marketplace.jpg",
+            link: "https://adms-marketplace.armadadigitalmarketing.top/",
+            domain: "adms-marketplace.armadadigitalmarketing.top"
+        }
+    ];
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentPromoSlide((prev) => (prev + 1) % promoSlides.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, [promoSlides.length]);
 
     const [recommendedProducts, setRecommendedProducts] = useState([]);
     const [loadingProducts, setLoadingProducts] = useState(true);
@@ -155,7 +187,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             advertiser: "Arta Media Jasa",
             price: "Mulai Rp350.000",
             location: "Sleman, Yogyakarta",
-            whatsapp: "6281234567890",
+            whatsapp: "6281121211933",
             image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop"
         },
         {
@@ -164,7 +196,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             advertiser: "Budi Santoso",
             price: "Rp14.500.000",
             location: "Jakarta Selatan",
-            whatsapp: "6281299998888",
+            whatsapp: "6281121211933",
             image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=600&auto=format&fit=crop"
         },
         {
@@ -173,7 +205,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             advertiser: "Citra Solusindo",
             price: "Hubungi Kami",
             location: "Surabaya, Jawa Timur",
-            whatsapp: "6281277776666",
+            whatsapp: "6281121211933",
             image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop"
         },
         {
@@ -182,7 +214,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             advertiser: "Deni Workspace",
             price: "Rp50.000/Hari",
             location: "Bandung, Jawa Barat",
-            whatsapp: "6281255554444",
+            whatsapp: "6281121211933",
             image: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600&auto=format&fit=crop"
         }
     ];
@@ -204,16 +236,6 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
         { name: "Jasa", count: "29+ Layanan", icon: Handshake },
         { name: "Lainnya", count: "12+ Layanan", icon: MoreHorizontal }
     ];
-
-    const handleAssistantQuery = (query) => {
-        if (query === 'merchant') {
-            setAssistantResponse("Untuk mendaftar menjadi merchant resmi, masuk ke akun Anda, klik 'Daftar Toko/Merchant', lalu lengkapi informasi toko dan sertifikasi halal (jika ada). Pendaftaran akan ditinjau dalam 24 jam.");
-        } else if (query === 'ad') {
-            setAssistantResponse("Pasang iklan gratis sangat mudah! Buka bagian Iklan Baris, buat postingan iklan dengan paket 'Berkah' (Gratis), masukkan deskripsi, harga, dan nomor WhatsApp Anda.");
-        } else if (query === 'package') {
-            setAssistantResponse("Kami menyediakan 3 paket: Paket Berkah (Gratis, aktif 7 hari), Paket Amanah (Premium, aktif 30 hari + lencana syariah + headline), dan Paket Muamalah (Pro, aktif 90 hari + WA Broadcast).");
-        }
-    };
 
     return (
         <div className={`min-h-screen transition-colors duration-300 font-sans ${
@@ -258,14 +280,6 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     
                     {/* Copywriting (7 columns) */}
                     <div className="space-y-6 lg:col-span-7">
-                        <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-sm ${
-                            darkMode 
-                                ? 'bg-emerald-500/10 border-emerald-500/25 text-emerald-400 shadow-emerald-500/5' 
-                                : 'bg-emerald-100/80 border-emerald-300 text-emerald-700'
-                        }`}>
-                            <Star className={`w-3.5 h-3.5 fill-current ${darkMode ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                            Platform #1 Digital Marketplace & Ad Exchange
-                        </div>
 
                         <h1 className={`text-4xl sm:text-5xl font-black tracking-tight leading-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                             Temukan <span className="text-transparent bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-400 dark:to-teal-400 bg-clip-text">Produk Digital</span>.<br />
@@ -342,7 +356,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                     {/* Visual Card Showcase (5 columns) */}
                     <div className="relative flex justify-center lg:justify-end lg:col-span-5 pt-8 lg:pt-0">
-                        <div className="relative w-full max-w-[400px]">
+                        <div className="relative w-full max-w-[600px]">
                             {/* Ambient glow blobs behind card */}
                             <div className="absolute -top-16 -right-16 w-64 h-64 bg-indigo-600/20 rounded-full blur-[80px] pointer-events-none"></div>
                             <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-emerald-500/15 rounded-full blur-[80px] pointer-events-none"></div>
@@ -357,116 +371,67 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-400/60 to-transparent"></div>
                                 <div className="absolute top-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent blur-sm"></div>
 
-                                {/* Card Header */}
-                                <div className="flex items-center justify-between mb-5">
-                                    <div className="flex items-center gap-2.5">
-                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center border text-sm font-black shadow-sm ${
-                                            darkMode 
-                                                ? 'bg-gradient-to-br from-indigo-500/30 to-purple-600/20 border-indigo-400/20 text-indigo-300' 
-                                                : 'bg-indigo-50 border-indigo-200 text-indigo-600'
-                                        }`}>
-                                            %
-                                        </div>
-                                        <div>
-                                            <span className={`block text-xs font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>Promo Spesial Member</span>
-                                            <span className={`block text-[9px] mt-0.5 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Cashback & Diskon Terbatas</span>
-                                        </div>
+                                {/* Slider Image container */}
+                                <div className="relative w-full rounded-2xl overflow-hidden shadow-lg group">
+                                    <div className="block relative aspect-[4/3] md:aspect-[16/10] overflow-hidden bg-slate-900">
+                                        <img 
+                                            src={promoSlides[currentPromoSlide].image} 
+                                            alt={promoSlides[currentPromoSlide].title}
+                                            className="w-full h-full object-cover opacity-40 transition-transform duration-1000 group-hover:scale-110 group-hover:opacity-30"
+                                        />
+                                        
+                                        {/* Overlay Content */}
+                                        <a href={promoSlides[currentPromoSlide].link} target="_blank" rel="noreferrer" className="absolute inset-0 p-6 flex flex-col justify-center items-center text-center z-10 cursor-pointer">
+                                            <span className="bg-emerald-500/90 backdrop-blur text-white text-[9px] font-black tracking-widest px-3 py-1 rounded-full mb-3 shadow-lg shadow-emerald-500/30 uppercase">
+                                                Featured Website
+                                            </span>
+                                            <h3 className="text-white font-black text-2xl md:text-3xl mb-1 shadow-sm drop-shadow-lg">
+                                                {promoSlides[currentPromoSlide].title}
+                                            </h3>
+                                            <p className="text-emerald-300 font-medium text-xs md:text-sm mb-4 drop-shadow-md">
+                                                {promoSlides[currentPromoSlide].desc}
+                                            </p>
+                                            
+                                            {/* Domain badge */}
+                                            <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 transition-colors px-4 py-2 rounded-xl shadow-2xl">
+                                                <Globe className="w-3.5 h-3.5 text-slate-300" />
+                                                <span className="text-slate-100 text-[10px] md:text-xs font-semibold tracking-wide">
+                                                    {promoSlides[currentPromoSlide].domain}
+                                                </span>
+                                                <ExternalLink className="w-3.5 h-3.5 text-emerald-400 ml-1" />
+                                            </div>
+                                        </a>
+
+                                        {/* Manual Navigation Arrows */}
+                                        <button 
+                                            onClick={(e) => { e.preventDefault(); setCurrentPromoSlide((prev) => (prev === 0 ? promoSlides.length - 1 : prev - 1)); }}
+                                            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/60 text-white backdrop-blur-sm border border-white/10 transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
+                                        >
+                                            <ChevronLeft className="w-5 h-5" />
+                                        </button>
+                                        <button 
+                                            onClick={(e) => { e.preventDefault(); setCurrentPromoSlide((prev) => (prev + 1) % promoSlides.length); }}
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/60 text-white backdrop-blur-sm border border-white/10 transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0"
+                                        >
+                                            <ChevronRight className="w-5 h-5" />
+                                        </button>
                                     </div>
-                                    <span className="text-[8px] font-black bg-gradient-to-r from-amber-500/20 to-orange-500/10 text-amber-500 dark:text-amber-400 px-2.5 py-1 rounded-lg border border-amber-400/30 uppercase tracking-wider">
-                                        🔥 Promo
-                                    </span>
-                                </div>
-
-                                {/* Inner Product Display Box */}
-                                <div className={`relative border rounded-2xl p-5 flex flex-col items-center text-center mb-4 overflow-hidden ${
-                                    darkMode 
-                                        ? 'bg-gradient-to-br from-emerald-950/80 to-teal-950/60 border-emerald-500/20' 
-                                        : 'bg-gradient-to-br from-emerald-50 via-teal-50/70 to-emerald-50 border-emerald-200/90'
-                                }`}>
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-24 bg-emerald-500/8 rounded-full blur-2xl pointer-events-none"></div>
-                                    <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent"></div>
-
-                                    <span className="relative z-10 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[9px] font-black tracking-widest px-3 py-1 rounded-full mb-3 shadow-lg shadow-emerald-500/30">
-                                        ✦ DISKON 50%
-                                    </span>
-                                    <h4 className={`relative z-10 font-extrabold text-sm mb-1.5 tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>Source Code & Canva Kit</h4>
-                                    <p className={`relative z-10 text-[10px] leading-relaxed max-w-[220px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                                        Pembelian pertama dengan kode promo: <strong className="text-emerald-600 dark:text-emerald-400 font-black tracking-wider">ADMSBARU</strong>
-                                    </p>
-                                    <button className={`relative z-10 mt-3 text-[9px] font-black px-3.5 py-1 rounded-lg transition-all border ${
-                                        darkMode 
-                                            ? 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20' 
-                                            : 'text-emerald-700 border-emerald-300 bg-emerald-100/80 hover:bg-emerald-200/80'
-                                    }`}>
-                                        Klaim Sekarang &rarr;
-                                    </button>
-                                </div>
-
-                                {/* Stats mini row */}
-                                <div className="grid grid-cols-3 gap-2 mb-4">
-                                    {[
-                                        { value: '9.8K', label: 'Produk', color: 'text-teal-600 dark:text-teal-400' },
-                                        { value: '3.2K', label: 'Merchant', color: 'text-indigo-600 dark:text-indigo-400' },
-                                        { value: '25K', label: 'User', color: 'text-amber-600 dark:text-amber-400' },
-                                    ].map((s, i) => (
-                                        <div key={i} className={`border rounded-xl p-2 text-center ${
-                                            darkMode ? 'bg-white/[0.04] border-white/[0.06]' : 'bg-slate-50 border-slate-200'
-                                        }`}>
-                                            <span className={`block text-xs font-black ${s.color}`}>{s.value}</span>
-                                            <span className={`block text-[8px] font-medium mt-0.5 ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>{s.label}</span>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {/* Bottom Ads Exchange block */}
-                                <div className={`flex items-center gap-3 border rounded-2xl p-3 ${
-                                    darkMode ? 'bg-indigo-500/8 border-indigo-500/15' : 'bg-indigo-50/80 border-indigo-200/80'
-                                }`}>
-                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center border flex-shrink-0 ${
-                                        darkMode 
-                                            ? 'bg-gradient-to-br from-indigo-600/30 to-purple-600/20 border-indigo-400/20 text-indigo-400' 
-                                            : 'bg-indigo-100 border-indigo-200 text-indigo-600'
-                                    }`}>
-                                        <Megaphone className="w-4 h-4" />
-                                    </div>
-                                    <div className="flex-grow min-w-0">
-                                        <span className={`block text-xs font-bold truncate ${darkMode ? 'text-white' : 'text-slate-900'}`}>Ads Exchange Premium</span>
-                                        <span className={`block text-[9px] mt-0.5 truncate ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Tayang 30 hari · Prioritas pencarian teratas.</span>
-                                    </div>
-                                    <span className="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-500 shadow-sm animate-pulse"></span>
                                 </div>
 
                                 {/* Pagination dots */}
-                                <div className="flex items-center justify-center gap-1.5 mt-5">
-                                    <span className={`w-1.5 h-1.5 rounded-full ${darkMode ? 'bg-slate-700' : 'bg-slate-300'}`}></span>
-                                    <span className="w-5 h-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 shadow-sm"></span>
-                                    <span className={`w-1.5 h-1.5 rounded-full ${darkMode ? 'bg-slate-700' : 'bg-slate-300'}`}></span>
-                                </div>
-                            </div>
-
-                            {/* Floating Stats Card */}
-                            <div className={`backdrop-blur-xl border rounded-2xl p-3.5 absolute bottom-10 -left-14 w-56 flex items-center gap-3 overflow-hidden z-20 ${
-                                darkMode 
-                                    ? 'bg-[#080f1e]/95 border-white/[0.07] text-white shadow-[0_20px_50px_rgba(0,0,0,0.7)]' 
-                                    : 'bg-white/95 border-slate-200 text-slate-800 shadow-xl shadow-indigo-100/90'
-                            }`}>
-                                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-teal-400/40 to-transparent"></div>
-                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center border text-sm font-black flex-shrink-0 ${
-                                    darkMode 
-                                        ? 'bg-gradient-to-br from-teal-600/30 to-emerald-600/20 border-teal-400/20 text-teal-400' 
-                                        : 'bg-teal-50 border-teal-200 text-teal-600'
-                                }`}>
-                                    ↑
-                                </div>
-                                <div className="min-w-0">
-                                    <span className={`block text-[10px] font-bold truncate ${darkMode ? 'text-white' : 'text-slate-900'}`}>Iklan Premium Baru</span>
-                                    <span className={`block text-[8px] mt-0.5 ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>Impr: 12.5K · CTR: 5.4%</span>
-                                    <div className="flex gap-2 mt-1.5">
-                                        <span className="text-[8px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block"></span> Aktif
-                                        </span>
-                                        <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-400/10 px-1.5 rounded">VIP</span>
-                                    </div>
+                                <div className="flex items-center justify-center gap-2 mt-5">
+                                    {promoSlides.map((_, idx) => (
+                                        <button 
+                                            key={idx}
+                                            onClick={() => setCurrentPromoSlide(idx)}
+                                            className={`transition-all duration-300 rounded-full ${
+                                                idx === currentPromoSlide 
+                                                    ? 'w-6 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 shadow-md' 
+                                                    : `w-2 h-2 ${darkMode ? 'bg-slate-700 hover:bg-slate-500' : 'bg-slate-300 hover:bg-slate-400'}`
+                                            }`}
+                                            aria-label={`Go to slide ${idx + 1}`}
+                                        />
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -643,7 +608,16 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         <div className="text-center py-10 text-slate-500">Belum ada produk digital pilihan saat ini.</div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {recommendedProducts.map((prod) => (
+                            {(() => {
+                                const filtered = searchQuery ? recommendedProducts.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.description?.toLowerCase().includes(searchQuery.toLowerCase())) : recommendedProducts;
+                                if (filtered.length === 0) {
+                                    return (
+                                        <div className="col-span-full py-12 text-center text-slate-500 font-medium">
+                                            Tidak ada produk yang sesuai dengan pencarian "{searchQuery}".
+                                        </div>
+                                    );
+                                }
+                                return filtered.map((prod) => (
                                 <div 
                                         key={prod.id}
                                     onClick={() => setSelectedProduct(prod)}
@@ -708,7 +682,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                         </button>
                                     </div>
                                 </div>
-                            ))}
+                                ));
+                            })()}
                         </div>
                     )}
                 </div>
@@ -1125,7 +1100,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* F.4 FAQ Section (Frequently Asked Questions) with light theme */}
             <ScrollFadeIn>
-            <section className="py-20 bg-white dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
+            <section id="faq" className="py-20 bg-white dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
                 {/* Decorative background shapes */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
                     <div className="absolute inset-0 opacity-[0.25] dark:opacity-[0.08] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:20px_20px]"></div>
@@ -1203,77 +1178,6 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                 </div>
             </section>
             </ScrollFadeIn>
-
-            {/* G. Floating AI Chatbot Widget */}
-            <div className="fixed bottom-6 right-6 z-40">
-                {/* Floating Action Button */}
-                <button 
-                    onClick={() => setShowAssistant(!showAssistant)}
-                    className="bg-[#0A1B33] hover:bg-[#071324] border border-slate-700/60 text-white text-xs font-bold py-3.5 px-6 rounded-full flex items-center gap-2.5 shadow-2xl hover:scale-105 active:scale-95 transition-all"
-                >
-                    <MessageSquare className="w-4 h-4 text-teal-400" />
-                    <span>Bantuan ADMS</span>
-                </button>
-
-                {/* Pop-up Mini Chatbox */}
-                {showAssistant && (
-                    <div className={`absolute bottom-16 right-0 w-80 rounded-2xl border shadow-2xl overflow-hidden transition-colors ${
-                        darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 text-slate-900'
-                    }`}>
-                        {/* Header */}
-                        <div className="bg-gradient-to-r from-teal-500 to-indigo-600 p-4 text-white">
-                            <span className="block font-bold text-sm">ADMS Assistant</span>
-                            <span className="block text-[10px] opacity-80 flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                                Online &bull; Siap Membantu
-                            </span>
-                        </div>
-
-                        {/* Body */}
-                        <div className="p-4 space-y-4 max-h-72 overflow-y-auto">
-                            <div className={`p-3 rounded-lg text-xs ${darkMode ? 'bg-slate-950' : 'bg-slate-100'}`}>
-                                Halo! Saya ADMS Assistant. Ada yang bisa saya bantu terkait platform digital syariah kami?
-                            </div>
-
-                            {assistantResponse && (
-                                <div className="p-3 rounded-lg text-xs bg-teal-500/10 border border-teal-500/20 text-teal-400">
-                                    {assistantResponse}
-                                </div>
-                            )}
-
-                            <div className="space-y-2 pt-2">
-                                <span className="block text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Pertanyaan Cepat:</span>
-                                <button 
-                                    onClick={() => handleAssistantQuery('merchant')}
-                                    className={`w-full text-left p-2 rounded-lg text-[10px] border transition-colors ${
-                                        darkMode ? 'border-slate-800 bg-slate-950/40 hover:bg-slate-800' : 'border-slate-200 bg-slate-50 hover:bg-slate-100'
-                                    }`}
-                                >
-                                    Bagaimana cara daftar merchant?
-                                </button>
-                                <button 
-                                    onClick={() => handleAssistantQuery('ad')}
-                                    className={`w-full text-left p-2 rounded-lg text-[10px] border transition-colors ${
-                                        darkMode ? 'border-slate-800 bg-slate-950/40 hover:bg-slate-800' : 'border-slate-200 bg-slate-50 hover:bg-slate-100'
-                                    }`}
-                                >
-                                    Bagaimana pasang iklan gratis?
-                                </button>
-                                <button 
-                                    onClick={() => handleAssistantQuery('package')}
-                                    className={`w-full text-left p-2 rounded-lg text-[10px] border transition-colors ${
-                                        darkMode ? 'border-slate-800 bg-slate-950/40 hover:bg-slate-800' : 'border-slate-200 bg-slate-50 hover:bg-slate-100'
-                                    }`}
-                                >
-                                    Daftar paket promosi iklan
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-
             {/* H. Redesigned Premium Footer */}
             <footer className="bg-[#071324] text-slate-100 pt-20 pb-10 border-t border-slate-900">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1283,9 +1187,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         
                         {/* Company logo/info block (5 cols) */}
                         <div className="md:col-span-5 space-y-6">
-                            <div className="inline-flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-800 max-w-[180px]">
-                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-8 object-contain" />
-                                <img src="/assets/Images/adms-text.png" alt="ADMS Text" className="h-6 object-contain" />
+                            <div className="inline-flex items-center gap-2 mb-2">
+                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-12 object-contain" />
                             </div>
                             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
                                 Platform terpadu Marketplace Produk Digital, Multi-Vendor Merchant, dan Platform Pemasangan Iklan Gratis & Promosi Berbayar untuk mengembangkan bisnis Anda.
@@ -1293,25 +1196,26 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             
                             {/* Social Media icons in rounded cards */}
                             <div className="flex items-center gap-3">
-                                <a href="#" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
+                                {/* Instagram */}
+                                <a href="https://www.instagram.com/adms.group?igsh=MWVtdWZ6NGF5NWI2Ng==" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                                         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
                                         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
                                     </svg>
                                 </a>
-                                <a href="#" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
-                                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                                        <path d="M9 8H7v3h2v9h3v-9h2.72l.42-3H12V6.5c0-.82.18-1 1-1h1.5V2H12c-2.3 0-3 1.2-3 3.5V8z"/>
+                                {/* Email */}
+                                <a href="mailto:Info@armadadigitalmarketing.top" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                        <polyline points="22,6 12,13 2,6"/>
                                     </svg>
                                 </a>
-                                <a href="#" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
-                                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                                        <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.107C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.388.511a3.002 3.002 0 0 0-2.11 2.107C0 8.053 0 12 0 12s0 3.947.502 5.837a3.003 3.003 0 0 0 2.11 2.107C4.495 20.455 12 20.455 12 20.455s7.505 0 9.388-.511a3.002 3.002 0 0 0 2.11-2.107C24 15.947 24 12 24 12s0-3.947-.502-5.837z"/>
+                                {/* WhatsApp */}
+                                <a href="https://wa.me/6281121211933" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
                                     </svg>
-                                </a>
-                                <a href="#" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
-                                    <MessageSquare className="w-4 h-4" />
                                 </a>
                             </div>
                         </div>
@@ -1322,9 +1226,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             <div>
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-6">Platform</h4>
                                 <ul className="space-y-3.5 text-xs text-slate-400">
-                                    <li><button onClick={() => onNavigate('products', 'all')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Marketplace</button></li>
+                                    <li><button onClick={() => document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Marketplace</button></li>
                                     <li><button onClick={() => onNavigate('products', 'digital')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Produk Digital</button></li>
-                                    <li><button onClick={() => onNavigate('classifieds')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Iklan & Promosi</button></li>
+                                    <li><button onClick={() => onNavigate('classifieds')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Iklan Gratis</button></li>
                                     <li><button onClick={() => onNavigate('merchants')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Merchant Vendor</button></li>
                                     <li><button onClick={() => onNavigate('create_ad')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Paket Iklan</button></li>
                                 </ul>
@@ -1334,11 +1238,11 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             <div>
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-6">Bantuan</h4>
                                 <ul className="space-y-3.5 text-xs text-slate-400">
-                                    <li><a href="#faq" className="hover:text-white transition-colors">FAQ & Pertanyaan</a></li>
-                                    <li><a href="#how" className="hover:text-white transition-colors">Customer Support (AI Assistant)</a></li>
-                                    <li><a href="#how" className="hover:text-white transition-colors">Cara Pembelian Produk</a></li>
-                                    <li><a href="#how" className="hover:text-white transition-colors">Cara Menjadi Merchant</a></li>
-                                    <li><a href="#how" className="hover:text-white transition-colors">Panduan Iklan Gratis</a></li>
+                                    <li><button onClick={() => onNavigate('help_center')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Pusat Bantuan</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat'))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Customer Support (AI Assistant)</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'buka katalog' } }))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Cara Pembelian Produk</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'info legalitas' } }))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Cara Menjadi Merchant</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'pasang iklan online' } }))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Panduan Iklan Gratis</button></li>
                                 </ul>
                             </div>
                             
@@ -1346,10 +1250,10 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             <div>
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-6">Legal & Kebijakan</h4>
                                 <ul className="space-y-3.5 text-xs text-slate-400">
-                                    <li><a href="#" className="hover:text-white transition-colors">Terms & Conditions</a></li>
-                                    <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                                    <li><a href="#" className="hover:text-white transition-colors">Refund Policy</a></li>
-                                    <li><a href="#" className="hover:text-white transition-colors">Advertising Policy</a></li>
+                                    <li><button onClick={() => onNavigate('terms')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Terms & Conditions</button></li>
+                                    <li><button onClick={() => onNavigate('privacy')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Privacy Policy</button></li>
+                                    <li><button onClick={() => onNavigate('refund')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Refund Policy</button></li>
+                                    <li><button onClick={() => onNavigate('advertising')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Advertising Policy</button></li>
                                 </ul>
                             </div>
                         </div>

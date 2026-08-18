@@ -136,17 +136,26 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
         }
     };
 
-    const [userWishlist, setUserWishlist] = useState([]);
+    const [userWishlist, setUserWishlist] = useState(() => {
+        return JSON.parse(localStorage.getItem('adms_guest_wishlist') || '[]');
+    });
+
+    useEffect(() => {
+        const savedWishlist = JSON.parse(localStorage.getItem('adms_guest_wishlist') || '[]');
+        setUserWishlist(savedWishlist);
+    }, []);
 
     const toggleWishlist = async (productId) => {
-        const isFavorited = userWishlist.includes(productId);
+        const pIdStr = productId?.toString();
+        const isFavorited = userWishlist.some(id => id?.toString() === pIdStr);
         let updatedWishlist = [];
         if (isFavorited) {
-            updatedWishlist = userWishlist.filter(id => id !== productId);
+            updatedWishlist = userWishlist.filter(id => id?.toString() !== pIdStr);
         } else {
             updatedWishlist = [...userWishlist, productId];
         }
         setUserWishlist(updatedWishlist);
+        localStorage.setItem('adms_guest_wishlist', JSON.stringify(updatedWishlist));
 
         if (onToggleWishlist) {
             onToggleWishlist(productId);
@@ -625,14 +634,14 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 >
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); toggleWishlist(prod.id); }}
-                                    className={`absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full shadow-md border border-slate-100/50 dark:border-slate-800/50 transition-all duration-300 cursor-pointer ${
-                                        userWishlist.includes(prod.id)
-                                            ? 'text-rose-500 fill-rose-500 scale-110'
-                                            : 'text-slate-400 hover:text-rose-500 hover:scale-110 active:scale-95'
+                                    className={`absolute top-3 right-3 z-10 p-2 backdrop-blur-md rounded-full shadow-md border transition-all duration-300 cursor-pointer ${
+                                        userWishlist.some(id => id?.toString() === prod.id?.toString())
+                                            ? 'bg-rose-50 dark:bg-rose-950/80 border-rose-300 dark:border-rose-700 text-rose-500 fill-rose-500 scale-110 shadow-rose-500/20'
+                                            : 'bg-white/90 dark:bg-slate-900/90 border-slate-100/50 dark:border-slate-800/50 text-slate-400 hover:text-rose-500 hover:scale-110 active:scale-95'
                                     }`}
-                                    title={userWishlist.includes(prod.id) ? "Hapus dari Favorit" : "Tambah ke Favorit"}
+                                    title={userWishlist.some(id => id?.toString() === prod.id?.toString()) ? "Hapus dari Favorit" : "Tambah ke Favorit"}
                                 >
-                                    <Heart className={`w-4 h-4 ${userWishlist.includes(prod.id) ? 'fill-current text-rose-500' : ''}`} />
+                                    <Heart className={`w-4 h-4 ${userWishlist.some(id => id?.toString() === prod.id?.toString()) ? 'fill-current text-rose-500' : ''}`} />
                                 </button>
                                 <div>
                                     {/* Product Image */}

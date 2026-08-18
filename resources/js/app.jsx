@@ -138,7 +138,7 @@ function App() {
                 const cartRes = await fetch('/api/customer/cart', { headers: { 'Authorization': `Bearer ${token}` } });
                 const cartData = await cartRes.json();
                 if (cartData.success && Array.isArray(cartData.data)) {
-                    setCartCount(cartData.data.length + existingCart.length);
+                    setCartCount(cartData.data.length);
                 }
             } catch (err) {
                 console.error("Gagal menambah ke keranjang API:", err);
@@ -169,7 +169,7 @@ function App() {
                 const wishlistRes = await fetch('/api/customer/wishlist', { headers: { 'Authorization': `Bearer ${token}` } });
                 const wishlistData = await wishlistRes.json();
                 if (wishlistData.success) {
-                    setWishlistCount(wishlistData.data.length + updated.length);
+                    setWishlistCount(wishlistData.data.length);
                     return;
                 }
             } catch (err) {

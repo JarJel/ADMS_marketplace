@@ -170,9 +170,9 @@ export default function MerchantDirectoryView({ user, token, onNavigate, darkMod
                                         </div>
                                         
                                         <div className="flex items-center gap-2 flex-shrink-0">
-                                            {merchant.whatsapp && (
+                                            {merchant.contact_whatsapp && (
                                                 <a 
-                                                    href={`https://wa.me/${merchant.whatsapp}?text=Halo%20${encodeURIComponent(merchant.store_name || merchant.name)},%20saya%2520menemukan%20toko%20Anda%20di%20ADMS%20Marketplace`}
+                                                    href={`https://wa.me/${merchant.contact_whatsapp}?text=Halo%20${encodeURIComponent(merchant.store_name || merchant.name)},%20saya%2520menemukan%20toko%20Anda%20di%20ADMS%20Marketplace`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="p-2 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-250/30 rounded-xl transition-all active:scale-95 flex items-center justify-center"

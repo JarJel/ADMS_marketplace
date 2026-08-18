@@ -75,7 +75,7 @@ class AdController extends Controller
                 'condition' => 'baru',
                 'duration_days' => $package->duration_days,
                 'package_id' => $package->id,
-                'status' => 'pending', // Waiting admin approval
+                'status' => 'approved', // Immediately approved based on user request
                 'merchant_id' => $merchant->id,
                 'owner_id' => $user->id,
             ]);
@@ -96,7 +96,7 @@ class AdController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Iklan baris merchant berhasil diajukan.',
+                'message' => 'Iklan baris merchant berhasil ditambahkan dan sudah live.',
                 'data' => $ad->load('media')
             ], 200);
 

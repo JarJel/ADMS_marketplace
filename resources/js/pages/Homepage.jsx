@@ -56,9 +56,27 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
     const [loadingMerchants, setLoadingMerchants] = useState(true);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
+    const [recommendedProducts, setRecommendedProducts] = useState([]);
+    const [loadingProducts, setLoadingProducts] = useState(true);
+
     useEffect(() => {
         fetchMerchants();
+        fetchRecommendedProducts();
     }, []);
+
+    const fetchRecommendedProducts = async () => {
+        try {
+            const response = await fetch('/api/public/products/recommended?limit=4');
+            const data = await response.json();
+            if (response.ok && data.success) {
+                setRecommendedProducts(data.data);
+            }
+        } catch (err) {
+            console.error("Gagal mengambil produk rekomendasi:", err);
+        } finally {
+            setLoadingProducts(false);
+        }
+    };
 
     const fetchMerchants = async () => {
         try {
@@ -128,62 +146,6 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             { num: "04", title: "Tayang & Dapatkan Kontak", desc: "Iklan tayang di halaman utama dan pembeli dapat menghubungi langsung via WA.", step: "Langkah 4", arrow: false }
         ]
     };
-
-    // Mock Products
-    const products = [
-        {
-            id: 1,
-            title: "Template Bundling Social Media Canva untuk UMKM 2026",
-            category: "Template Canva",
-            merchant: "Amanah Creative",
-            merchantObj: { store_name: "Amanah Creative", whatsapp: "6281234567890", is_verified: true },
-            isSyariah: true,
-            rating: 4.9,
-            reviewsCount: 142,
-            price: 49000,
-            image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=600&auto=format&fit=crop",
-            description: "Paket lengkap berisi 500+ template Canva siap pakai untuk promosi produk kuliner, fashion, jasa, dan edukasi. Membantu UMKM meningkatkan branding secara profesional dalam hitungan menit."
-        },
-        {
-            id: 2,
-            title: "Source Code Aplikasi Kasir Web Laravel 11 & React",
-            category: "Source Code",
-            merchant: "Afifah Tech",
-            merchantObj: { store_name: "Afifah Tech", whatsapp: "6281298765432", is_verified: true },
-            isSyariah: true,
-            rating: 4.8,
-            reviewsCount: 89,
-            price: 199000,
-            image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop",
-            description: "Aplikasi kasir web modern berbasis Laravel 11 (backend API) dan ReactJS (frontend SPA). Dilengkapi dengan fitur multi-cabang, laporan penjualan realtime, cetak struk thermal, dan manajemen inventori barang."
-        },
-        {
-            id: 3,
-            title: "Ebook Panduan Sukses Jualan Produk Digital Dari Nol",
-            category: "E-Book",
-            merchant: "Deni Book Store",
-            merchantObj: { store_name: "Deni Book Store", whatsapp: "6281355556666", is_verified: false },
-            isSyariah: false,
-            rating: 4.7,
-            reviewsCount: 54,
-            price: 29000,
-            image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=600&auto=format&fit=crop",
-            description: "Ebook panduan praktis setebal 150 halaman yang membahas strategi riset pasar, pembuatan aset digital bernilai tinggi, hingga cara memasarkannya menggunakan taktik organik dan iklan berbayar."
-        },
-        {
-            id: 4,
-            title: "Mega Prompt Generator ChatGPT untuk Copywriting Iklan",
-            category: "AI Prompt",
-            merchant: "AI Studio Bandung",
-            merchantObj: { store_name: "AI Studio Bandung", whatsapp: "6281244449999", is_verified: true },
-            isSyariah: true,
-            rating: 5.0,
-            reviewsCount: 30,
-            price: 15000,
-            image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&auto=format&fit=crop",
-            description: "Koleksi 1000+ prompt ChatGPT super spesifik untuk menghasilkan naskah iklan, landing page copy, email marketing, dan ide konten kreatif secara instan yang terbukti mendatangkan pembeli."
-        }
-    ];
 
     // Mock VIP Ads
     const vipAds = [
@@ -675,10 +637,15 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     </div>
 
                     {/* Products Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {products.map((prod) => (
-                            <div 
-                                    key={prod.id}
+                    {loadingProducts ? (
+                        <div className="text-center py-10 text-slate-500">Memuat produk rekomendasi...</div>
+                    ) : recommendedProducts.length === 0 ? (
+                        <div className="text-center py-10 text-slate-500">Belum ada produk digital pilihan saat ini.</div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {recommendedProducts.map((prod) => (
+                                <div 
+                                        key={prod.id}
                                     onClick={() => setSelectedProduct(prod)}
                                     className="rounded-2xl border border-slate-300 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-xl hover:shadow-indigo-500/5 relative dark:backdrop-blur-md cursor-pointer"
                                 >
@@ -729,20 +696,21 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     </div>
                                 </div>
 
-                                {/* Buy action */}
-                                <div className="p-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                                    <span className="font-extrabold text-base text-teal-600 dark:text-teal-400">Rp{numberFormat(prod.price)}</span>
-                                    <button 
-                                        onClick={(e) => { e.stopPropagation(); setSelectedProduct(prod); }}
-                                        className="bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
-                                    >
-                                        <ShoppingCart className="w-3.5 h-3.5" />
-                                        <span>Keranjang</span>
-                                    </button>
+                                    {/* Buy action */}
+                                    <div className="p-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                        <span className="font-extrabold text-base text-teal-600 dark:text-teal-400">Rp{prod.price.toLocaleString('id-ID')}</span>
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); setSelectedProduct(prod); }}
+                                            className="bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+                                        >
+                                            <ShoppingCart className="w-3.5 h-3.5" />
+                                            <span>Keranjang</span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
             </ScrollFadeIn>
@@ -815,7 +783,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                                         {/* Description */}
                                         <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-6 italic">
-                                            "{merchant.slug || 'Penyedia aset digital profesional di platform ADMS.'}"
+                                            "{merchant.description || 'Penyedia aset digital profesional di platform ADMS.'}"
                                         </p>
                                     </div>
 

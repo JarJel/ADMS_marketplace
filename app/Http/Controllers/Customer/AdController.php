@@ -80,12 +80,12 @@ class AdController extends Controller
                 'description' => $request->description,
                 'price' => $request->price,
                 'location' => $request->location,
-                'contact_name' => $user->name,
+                'contact_name' => $request->input('contact_name', $user->name),
                 'whatsapp' => $request->whatsapp,
-                'condition' => 'baru',
+                'condition' => strtolower($request->input('condition', 'baru')),
                 'duration_days' => $freePackage->duration_days,
                 'package_id' => $freePackage->id,
-                'status' => 'pending',
+                'status' => 'approved',
                 'owner_id' => $user->id,
             ]);
 

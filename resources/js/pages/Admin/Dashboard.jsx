@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from '../../components/Navbar';
+import AdminSidebar from './AdminSidebar';
+import { AdminOverview } from './AdminOverview';
 
 export default function AdminDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode, cartCount, wishlistCount, notifications }) {
-    const [activeTab, setActiveTab] = useState('overview');
+    const [activeTab, setActiveTab] = useState('dashboard');
     const [pendingMerchants, setPendingMerchants] = useState([]);
     const [pendingProducts, setPendingProducts] = useState([]);
     const [pendingAds, setPendingAds] = useState([]);
@@ -13,16 +14,16 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
     const [actionMsg, setActionMsg] = useState(null);
 
     useEffect(() => {
-        if (activeTab === 'overview') {
+        if (activeTab === 'dashboard' || activeTab === 'overview') {
             fetchAuditLogs();
             fetchPendingMerchants();
         } else if (activeTab === 'merchants') {
             fetchPendingMerchants();
         } else if (activeTab === 'products') {
             fetchPendingProducts();
-        } else if (activeTab === 'ads') {
+        } else if (activeTab === 'ads' || activeTab === 'ads-moderation') {
             fetchPendingAds();
-        } else if (activeTab === 'withdrawals') {
+        } else if (activeTab === 'withdrawals' || activeTab === 'payouts') {
             fetchPendingWithdrawals();
         }
     }, [activeTab]);
@@ -184,52 +185,34 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
-            {/* Header */}
-            <Navbar 
-                user={user} 
-                token={token} 
-                darkMode={darkMode} 
-                setDarkMode={setDarkMode} 
-                onLogout={onLogout} 
-                onNavigate={onNavigate}
-                currentView="admin_dashboard"
-                cartCount={cartCount}
-                wishlistCount={wishlistCount}
-                notifications={notifications}
-            />
+        <div className="h-screen bg-slate-950 text-slate-100 font-sans flex overflow-hidden">
+            {/* Sidebar Baru */}
+            <AdminSidebar activeItem={activeTab} onNavigate={setActiveTab} />
 
-            {/* Dashboard Contents */}
-            <main className="max-w-6xl mx-auto px-6 py-10">
-                <h1 className="text-3xl font-extrabold text-white mb-2">Dasbor Administrator</h1>
-                <p className="text-slate-400 mb-8 text-sm">Kelola verifikasi merchant, moderasi produk, dan audit sistem secara terpusat.</p>
+            <div className="flex-1 flex flex-col h-screen overflow-hidden">
 
-                {/* Tab Navigation */}
-                <div className="flex border-b border-slate-800 mb-8 overflow-x-auto">
-                    {['overview', 'merchants', 'products', 'ads', 'withdrawals'].map(tab => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            className={`px-6 py-3 font-bold text-sm uppercase tracking-wider transition-colors border-b-2 whitespace-nowrap ${
-                                activeTab === tab ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-300'
-                            }`}
-                        >
-                            {tab === 'overview' ? 'Ringkasan' : tab === 'merchants' ? 'Merchant' : tab === 'products' ? 'Produk' : tab === 'ads' ? 'Iklan' : 'Penarikan'}
-                        </button>
-                    ))}
-                </div>
+                {/* Dashboard Contents */}
+                <main className="flex-1 overflow-y-auto px-6 py-10 bg-slate-50 dark:bg-slate-900/40 text-slate-900 dark:text-slate-100">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="mb-8">
+                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">Dasbor Administrator</h1>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm">Kelola verifikasi merchant, moderasi produk, dan audit sistem secara terpusat.</p>
+                        </div>
 
-                {actionMsg && (
-                    <div className={`mb-6 p-4 rounded-lg text-sm border ${
-                        actionMsg.type === 'success' 
-                            ? 'bg-emerald-950/50 border-emerald-800/40 text-emerald-400' 
-                            : 'bg-red-950/50 border-red-800/40 text-red-400'
-                    }`}>
-                        {actionMsg.text}
-                    </div>
-                )}
+                        {actionMsg && (
+                            <div className={`mb-6 p-4 rounded-lg text-sm border ${
+                                actionMsg.type === 'success' 
+                                    ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800/40 text-emerald-600 dark:text-emerald-400' 
+                                    : 'bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800/40 text-red-600 dark:text-red-400'
+                            }`}>
+                                {actionMsg.text}
+                            </div>
+                        )}
 
-                {activeTab === 'merchants' ? (
+                        {/* Rendering Content Berdasarkan activeTab */}
+                        {activeTab === 'dashboard' || activeTab === 'overview' ? (
+                            <AdminOverview onNavigate={setActiveTab} />
+                        ) : activeTab === 'merchants' ? (
                     <div className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-6">
                         <h2 className="text-lg font-bold text-slate-200 mb-4 flex items-center gap-2">
                             🏪 Pengajuan Toko Baru (Pending)
@@ -281,7 +264,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                             </div>
                         )}
                     </div>
-                ) : activeTab === 'ads' ? (
+                        ) : activeTab === 'ads' || activeTab === 'ads-moderation' ? (
                     <div className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-6">
                         <h2 className="text-lg font-bold text-slate-200 mb-4 flex items-center gap-2">
                             📢 Moderasi Iklan Baris (Pending)
@@ -307,7 +290,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                             </div>
                         )}
                     </div>
-                ) : activeTab === 'withdrawals' ? (
+                        ) : activeTab === 'withdrawals' || activeTab === 'payouts' ? (
                     <div className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-6">
                         <h2 className="text-lg font-bold text-slate-200 mb-4 flex items-center gap-2">
                             💸 Moderasi Penarikan Dana (Pending)
@@ -370,8 +353,9 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                         )}
                     </div>
                 )}
-
-            </main>
+                    </div>
+                </main>
+            </div>
         </div>
     );
 }

@@ -152,12 +152,11 @@ const SidebarUserProfile = () => (
 );
 
 // --- 5. AdminSidebar (Parent Component) ---
-export default function AdminSidebar() {
-    const [activeItem, setActiveItem] = useState('dashboard');
-
+export default function AdminSidebar({ activeItem = 'dashboard', onNavigate }) {
     const handleNavigate = (id) => {
-        setActiveItem(id);
-        // Implementasi routing/navigasi sebenarnya dapat diletakkan di sini
+        if (onNavigate) {
+            onNavigate(id);
+        }
     };
 
     return (

@@ -1187,7 +1187,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             </section>
             </ScrollFadeIn>
             {/* H. Redesigned Premium Footer */}
-            <footer className="bg-[#071324] text-slate-100 pt-20 pb-10 border-t border-slate-900">
+            <footer className={`pt-20 pb-10 border-t transition-colors ${
+                darkMode ? 'bg-[#071324] text-slate-100 border-slate-900' : 'bg-white text-slate-800 border-slate-200'
+            }`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     
                     {/* Upper column links grid */}
@@ -1198,14 +1200,16 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             <div className="inline-flex items-center gap-2 mb-2">
                                 <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-12 object-contain" />
                             </div>
-                            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+                            <p className={`text-xs leading-relaxed max-w-sm ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                                 Platform terpadu Marketplace Produk Digital, Multi-Vendor Merchant, dan Platform Pemasangan Iklan Gratis & Promosi Berbayar untuk mengembangkan bisnis Anda.
                             </p>
                             
                             {/* Social Media icons in rounded cards */}
                             <div className="flex items-center gap-3">
                                 {/* Instagram */}
-                                <a href="https://www.instagram.com/adms.group?igsh=MWVtdWZ6NGF5NWI2Ng==" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
+                                <a href="https://www.instagram.com/adms.group?igsh=MWVtdWZ6NGF5NWI2Ng==" target="_blank" rel="noopener noreferrer" className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
+                                    darkMode ? 'border-slate-800 text-slate-400 hover:text-white hover:border-slate-700' : 'border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-500'
+                                }`}>
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                                         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
@@ -1213,14 +1217,18 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     </svg>
                                 </a>
                                 {/* Email */}
-                                <a href="mailto:Info@armadadigitalmarketing.top" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
+                                <a href="mailto:Info@armadadigitalmarketing.top" className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
+                                    darkMode ? 'border-slate-800 text-slate-400 hover:text-white hover:border-slate-700' : 'border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-500'
+                                }`}>
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                                         <polyline points="22,6 12,13 2,6"/>
                                     </svg>
                                 </a>
                                 {/* WhatsApp */}
-                                <a href="https://wa.me/6281121211933" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
+                                <a href="https://wa.me/6281121211933" target="_blank" rel="noopener noreferrer" className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
+                                    darkMode ? 'border-slate-800 text-slate-400 hover:text-white hover:border-slate-700' : 'border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-500'
+                                }`}>
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
                                     </svg>
@@ -1232,43 +1240,43 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8">
                             {/* Col 1 */}
                             <div>
-                                <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-6">Platform</h4>
-                                <ul className="space-y-3.5 text-xs text-slate-400">
-                                    <li><button onClick={() => document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Marketplace</button></li>
-                                    <li><button onClick={() => onNavigate('products', 'digital')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Produk Digital</button></li>
-                                    <li><button onClick={() => onNavigate('classifieds')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Iklan Gratis</button></li>
-                                    <li><button onClick={() => onNavigate('merchants')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Merchant Vendor</button></li>
-                                    <li><button onClick={() => onNavigate('create_ad')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Paket Iklan</button></li>
+                                <h4 className={`text-xs font-bold uppercase tracking-wider mb-6 ${darkMode ? 'text-white' : 'text-slate-900'}`}>Platform</h4>
+                                <ul className={`space-y-3.5 text-xs ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                                    <li><button onClick={() => document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' })} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Marketplace</button></li>
+                                    <li><button onClick={() => onNavigate('products', 'digital')} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Produk Digital</button></li>
+                                    <li><button onClick={() => onNavigate('classifieds')} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Iklan Gratis</button></li>
+                                    <li><button onClick={() => onNavigate('merchants')} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Merchant Vendor</button></li>
+                                    <li><button onClick={() => onNavigate('create_ad')} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Paket Iklan</button></li>
                                 </ul>
                             </div>
                             
                             {/* Col 2 */}
                             <div>
-                                <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-6">Bantuan</h4>
-                                <ul className="space-y-3.5 text-xs text-slate-400">
-                                    <li><button onClick={() => onNavigate('help_center')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Pusat Bantuan</button></li>
-                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat'))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Customer Support (AI Assistant)</button></li>
-                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'buka katalog' } }))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Cara Pembelian Produk</button></li>
-                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'info legalitas' } }))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Cara Menjadi Merchant</button></li>
-                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'pasang iklan online' } }))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Panduan Iklan Gratis</button></li>
+                                <h4 className={`text-xs font-bold uppercase tracking-wider mb-6 ${darkMode ? 'text-white' : 'text-slate-900'}`}>Bantuan</h4>
+                                <ul className={`space-y-3.5 text-xs ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                                    <li><button onClick={() => onNavigate('help_center')} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Pusat Bantuan</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat'))} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Customer Support (AI Assistant)</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'buka katalog' } }))} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Cara Pembelian Produk</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'info legalitas' } }))} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Cara Menjadi Merchant</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'pasang iklan online' } }))} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Panduan Iklan Gratis</button></li>
                                 </ul>
                             </div>
                             
                             {/* Col 3 */}
                             <div>
-                                <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-6">Legal & Kebijakan</h4>
-                                <ul className="space-y-3.5 text-xs text-slate-400">
-                                    <li><button onClick={() => onNavigate('terms')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Terms & Conditions</button></li>
-                                    <li><button onClick={() => onNavigate('privacy')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Privacy Policy</button></li>
-                                    <li><button onClick={() => onNavigate('refund')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Refund Policy</button></li>
-                                    <li><button onClick={() => onNavigate('advertising')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Advertising Policy</button></li>
+                                <h4 className={`text-xs font-bold uppercase tracking-wider mb-6 ${darkMode ? 'text-white' : 'text-slate-900'}`}>Legal & Kebijakan</h4>
+                                <ul className={`space-y-3.5 text-xs ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                                    <li><button onClick={() => onNavigate('terms')} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Terms & Conditions</button></li>
+                                    <li><button onClick={() => onNavigate('privacy')} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Privacy Policy</button></li>
+                                    <li><button onClick={() => onNavigate('refund')} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Refund Policy</button></li>
+                                    <li><button onClick={() => onNavigate('advertising')} className={`transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium ${darkMode ? 'hover:text-white' : 'hover:text-teal-600'}`}>Advertising Policy</button></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
 
                     {/* Bottom Status bar (with divider line) */}
-                    <div className="pt-8 border-t border-slate-900/60 flex flex-col items-center justify-center gap-4 text-xs text-slate-500 text-center">
+                    <div className={`pt-8 border-t flex flex-col items-center justify-center gap-4 text-xs text-center ${darkMode ? 'border-slate-900/60 text-slate-500' : 'border-slate-200 text-slate-400'}`}>
                         <p>&copy; 2026 ADMS (PT. Armada Digital Marketing Syariah). All rights reserved.</p>
                     </div>
                 </div>

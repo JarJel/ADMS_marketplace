@@ -155,11 +155,34 @@ export default function MerchantDirectoryView({ user, token, onNavigate, darkMod
                                         </div>
 
                                         {/* Description */}
-                                        <div className="mb-5">
-                                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
+                                        <div className="mb-4">
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
                                                 {merchant.description || 'Belum ada deskripsi lengkap untuk merchant mitra ini.'}
                                             </p>
                                         </div>
+
+                                        {/* Mini Product Showcase */}
+                                        {merchant.products && merchant.products.length > 0 && (
+                                            <div className="mb-5 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                                                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 mb-2 uppercase tracking-wider">Produk Unggulan</p>
+                                                <div className="flex gap-2 overflow-hidden">
+                                                    {merchant.products.map(product => (
+                                                        <div key={product.id} className="relative group/prod flex-shrink-0 w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden border border-slate-200 dark:border-slate-700">
+                                                            <img 
+                                                                src={product.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop'} 
+                                                                alt={product.title} 
+                                                                className="w-full h-full object-cover group-hover/prod:scale-110 transition-transform"
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                    {merchant.products.length >= 3 && (
+                                                        <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 border-dashed flex items-center justify-center text-slate-400 text-xs font-bold">
+                                                            +
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Bottom Info Bar */}
@@ -183,7 +206,7 @@ export default function MerchantDirectoryView({ user, token, onNavigate, darkMod
                                             )}
                                             <button 
                                                 onClick={() => {
-                                                    onNavigate('products');
+                                                    onNavigate('products', 'semua', '', merchant.id);
                                                 }}
                                                 className="bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-bold text-[10px] px-3.5 py-2 rounded-xl border border-indigo-100 dark:border-indigo-500/20 transition-all active:scale-95"
                                             >

@@ -7,7 +7,7 @@ Nada Bicara: Professional, Ramah, Solutif, Persuasif, dan Edukatif (Bahasa Indon
 
 DATA RESMI KONTAK ADMS:
 - WhatsApp 1 (Utama & Order / CS Langsung): +6281121211933
-- WhatsApp 2: +6281121191933
+- WhatsApp 2: +6281121211933
 - Email: armadasaktin@gmail.com
 - Keunggulan: Server Google Cloud Platform, Gratis Domain & SSL, Garansi Maintenance Rutin.
 

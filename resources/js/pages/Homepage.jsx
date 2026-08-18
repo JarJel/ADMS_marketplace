@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
 import { 
     Search, Palette, BookOpen, Code, Cpu, Megaphone, 
@@ -8,6 +8,7 @@ import {
     LayoutTemplate, Book, Globe, Video, Headphones, GraduationCap, TrendingUp, Wrench, Handshake, MoreHorizontal,
     Heart, ShoppingCart, X, Phone
 } from 'lucide-react';
+import debounce from 'lodash.debounce';
 
 // Reusable scroll fade-in animation component using Intersection Observer
 function ScrollFadeIn({ children, className = '' }) {
@@ -48,12 +49,27 @@ function ScrollFadeIn({ children, className = '' }) {
 
 export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, onNavigateToRegister, onNavigateToDashboard, onNavigateToCreateAd, onNavigateToClassifieds, onNavigateToProducts, onNavigate, onLogout, darkMode, setDarkMode }) {
     const [searchQuery, setSearchQuery] = useState('');
+    const [searchInput, setSearchInput] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Semua');
-    const [showAssistant, setShowAssistant] = useState(false);
-    const [assistantResponse, setAssistantResponse] = useState(null);
     const [merchants, setMerchants] = useState([]);
     const [loadingMerchants, setLoadingMerchants] = useState(true);
     const [selectedProduct, setSelectedProduct] = useState(null);
+
+    // Debounced search handler
+    const debouncedSearch = useCallback(
+        debounce((query) => {
+            setSearchQuery(query);
+            // You can add an API call or filter logic here based on the query
+            console.log("Searching for:", query); 
+        }, 500), // 500ms debounce delay
+        []
+    );
+
+    const handleSearchChange = (e) => {
+        const query = e.target.value;
+        setSearchInput(query); // Update local input state instantly
+        debouncedSearch(query); // Call debounced function
+    };
 
     useEffect(() => {
         fetchMerchants();
@@ -146,7 +162,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             title: "Template Bundling Social Media Canva untuk UMKM 2026",
             category: "Template Canva",
             merchant: "Amanah Creative",
-            merchantObj: { store_name: "Amanah Creative", whatsapp: "6281234567890", is_verified: true },
+            merchantObj: { store_name: "Amanah Creative", whatsapp: "6281121211933", is_verified: true },
             isSyariah: true,
             rating: 4.9,
             reviewsCount: 142,
@@ -159,7 +175,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             title: "Source Code Aplikasi Kasir Web Laravel 11 & React",
             category: "Source Code",
             merchant: "Afifah Tech",
-            merchantObj: { store_name: "Afifah Tech", whatsapp: "6281298765432", is_verified: true },
+            merchantObj: { store_name: "Afifah Tech", whatsapp: "6281121211933", is_verified: true },
             isSyariah: true,
             rating: 4.8,
             reviewsCount: 89,
@@ -172,7 +188,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             title: "Ebook Panduan Sukses Jualan Produk Digital Dari Nol",
             category: "E-Book",
             merchant: "Deni Book Store",
-            merchantObj: { store_name: "Deni Book Store", whatsapp: "6281355556666", is_verified: false },
+            merchantObj: { store_name: "Deni Book Store", whatsapp: "6281121211933", is_verified: false },
             isSyariah: false,
             rating: 4.7,
             reviewsCount: 54,
@@ -185,7 +201,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             title: "Mega Prompt Generator ChatGPT untuk Copywriting Iklan",
             category: "AI Prompt",
             merchant: "AI Studio Bandung",
-            merchantObj: { store_name: "AI Studio Bandung", whatsapp: "6281244449999", is_verified: true },
+            merchantObj: { store_name: "AI Studio Bandung", whatsapp: "6281121211933", is_verified: true },
             isSyariah: true,
             rating: 5.0,
             reviewsCount: 30,
@@ -203,7 +219,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             advertiser: "Arta Media Jasa",
             price: "Mulai Rp350.000",
             location: "Sleman, Yogyakarta",
-            whatsapp: "6281234567890",
+            whatsapp: "6281121211933",
             image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop"
         },
         {
@@ -212,7 +228,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             advertiser: "Budi Santoso",
             price: "Rp14.500.000",
             location: "Jakarta Selatan",
-            whatsapp: "6281299998888",
+            whatsapp: "6281121211933",
             image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=600&auto=format&fit=crop"
         },
         {
@@ -221,7 +237,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             advertiser: "Citra Solusindo",
             price: "Hubungi Kami",
             location: "Surabaya, Jawa Timur",
-            whatsapp: "6281277776666",
+            whatsapp: "6281121211933",
             image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop"
         },
         {
@@ -230,7 +246,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             advertiser: "Deni Workspace",
             price: "Rp50.000/Hari",
             location: "Bandung, Jawa Barat",
-            whatsapp: "6281255554444",
+            whatsapp: "6281121211933",
             image: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600&auto=format&fit=crop"
         }
     ];
@@ -253,16 +269,6 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
         { name: "Lainnya", count: "12+ Layanan", icon: MoreHorizontal }
     ];
 
-    const handleAssistantQuery = (query) => {
-        if (query === 'merchant') {
-            setAssistantResponse("Untuk mendaftar menjadi merchant resmi, masuk ke akun Anda, klik 'Daftar Toko/Merchant', lalu lengkapi informasi toko dan sertifikasi halal (jika ada). Pendaftaran akan ditinjau dalam 24 jam.");
-        } else if (query === 'ad') {
-            setAssistantResponse("Pasang iklan gratis sangat mudah! Buka bagian Iklan Baris, buat postingan iklan dengan paket 'Berkah' (Gratis), masukkan deskripsi, harga, dan nomor WhatsApp Anda.");
-        } else if (query === 'package') {
-            setAssistantResponse("Kami menyediakan 3 paket: Paket Berkah (Gratis, aktif 7 hari), Paket Amanah (Premium, aktif 30 hari + lencana syariah + headline), dan Paket Muamalah (Pro, aktif 90 hari + WA Broadcast).");
-        }
-    };
-
     return (
         <div className={`min-h-screen transition-colors duration-300 font-sans ${
             darkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
@@ -282,13 +288,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                 darkMode={darkMode} 
                 setDarkMode={setDarkMode} 
                 onLogout={onLogout} 
-                onNavigate={(v) => {
-                    if (v === 'dashboard') onNavigateToDashboard();
-                    else if (v === 'login') onNavigateToLogin();
-                    else if (v === 'register') onNavigateToRegister();
-                    else if (v === 'create_ad') onNavigateToCreateAd();
-                    else if (v === 'classifieds') onNavigateToClassifieds();
-                }}
+                onNavigate={onNavigate}
                 currentView="homepage"
             />
 
@@ -325,6 +325,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 type="text"
                                 placeholder="Cari produk digital, jasa, atau iklan promosi..."
                                 className="w-full bg-transparent focus:outline-none text-xs sm:text-sm text-slate-100 placeholder-slate-500"
+                                value={searchInput}
+                                onChange={handleSearchChange}
                             />
                             <button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white text-xs font-bold px-5 py-2.5 rounded-lg active:scale-95 transition-all shadow-lg shadow-emerald-500/25">
                                 Cari
@@ -633,8 +635,15 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                     {/* Products Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {products.map((prod) => (
-                            <div 
+                        {products.filter(p => 
+                            p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            p.category.toLowerCase().includes(searchQuery.toLowerCase())
+                        ).length > 0 ? (
+                            products.filter(p => 
+                                p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                p.category.toLowerCase().includes(searchQuery.toLowerCase())
+                            ).map((prod) => (
+                                <div 
                                     key={prod.id}
                                     onClick={() => setSelectedProduct(prod)}
                                     className="rounded-2xl border border-slate-300 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-xl hover:shadow-indigo-500/5 relative dark:backdrop-blur-md cursor-pointer"
@@ -693,7 +702,11 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     </button>
                                 </div>
                             </div>
-                        ))}
+                        ))) : (
+                            <div className="col-span-full py-12 text-center text-slate-500 font-medium">
+                                Tidak ada produk yang sesuai dengan pencarian "{searchQuery}".
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>
@@ -1109,7 +1122,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* F.4 FAQ Section (Frequently Asked Questions) with light theme */}
             <ScrollFadeIn>
-            <section className="py-20 bg-white dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
+            <section id="faq" className="py-20 bg-white dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
                 {/* Decorative background shapes */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
                     <div className="absolute inset-0 opacity-[0.25] dark:opacity-[0.08] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:20px_20px]"></div>
@@ -1187,77 +1200,6 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                 </div>
             </section>
             </ScrollFadeIn>
-
-            {/* G. Floating AI Chatbot Widget */}
-            <div className="fixed bottom-6 right-6 z-40">
-                {/* Floating Action Button */}
-                <button 
-                    onClick={() => setShowAssistant(!showAssistant)}
-                    className="bg-[#0A1B33] hover:bg-[#071324] border border-slate-700/60 text-white text-xs font-bold py-3.5 px-6 rounded-full flex items-center gap-2.5 shadow-2xl hover:scale-105 active:scale-95 transition-all"
-                >
-                    <MessageSquare className="w-4 h-4 text-teal-400" />
-                    <span>Bantuan ADMS</span>
-                </button>
-
-                {/* Pop-up Mini Chatbox */}
-                {showAssistant && (
-                    <div className={`absolute bottom-16 right-0 w-80 rounded-2xl border shadow-2xl overflow-hidden transition-colors ${
-                        darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 text-slate-900'
-                    }`}>
-                        {/* Header */}
-                        <div className="bg-gradient-to-r from-teal-500 to-indigo-600 p-4 text-white">
-                            <span className="block font-bold text-sm">ADMS Assistant</span>
-                            <span className="block text-[10px] opacity-80 flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                                Online &bull; Siap Membantu
-                            </span>
-                        </div>
-
-                        {/* Body */}
-                        <div className="p-4 space-y-4 max-h-72 overflow-y-auto">
-                            <div className={`p-3 rounded-lg text-xs ${darkMode ? 'bg-slate-950' : 'bg-slate-100'}`}>
-                                Halo! Saya ADMS Assistant. Ada yang bisa saya bantu terkait platform digital syariah kami?
-                            </div>
-
-                            {assistantResponse && (
-                                <div className="p-3 rounded-lg text-xs bg-teal-500/10 border border-teal-500/20 text-teal-400">
-                                    {assistantResponse}
-                                </div>
-                            )}
-
-                            <div className="space-y-2 pt-2">
-                                <span className="block text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Pertanyaan Cepat:</span>
-                                <button 
-                                    onClick={() => handleAssistantQuery('merchant')}
-                                    className={`w-full text-left p-2 rounded-lg text-[10px] border transition-colors ${
-                                        darkMode ? 'border-slate-800 bg-slate-950/40 hover:bg-slate-800' : 'border-slate-200 bg-slate-50 hover:bg-slate-100'
-                                    }`}
-                                >
-                                    Bagaimana cara daftar merchant?
-                                </button>
-                                <button 
-                                    onClick={() => handleAssistantQuery('ad')}
-                                    className={`w-full text-left p-2 rounded-lg text-[10px] border transition-colors ${
-                                        darkMode ? 'border-slate-800 bg-slate-950/40 hover:bg-slate-800' : 'border-slate-200 bg-slate-50 hover:bg-slate-100'
-                                    }`}
-                                >
-                                    Bagaimana pasang iklan gratis?
-                                </button>
-                                <button 
-                                    onClick={() => handleAssistantQuery('package')}
-                                    className={`w-full text-left p-2 rounded-lg text-[10px] border transition-colors ${
-                                        darkMode ? 'border-slate-800 bg-slate-950/40 hover:bg-slate-800' : 'border-slate-200 bg-slate-50 hover:bg-slate-100'
-                                    }`}
-                                >
-                                    Daftar paket promosi iklan
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-
             {/* H. Redesigned Premium Footer */}
             <footer className="bg-[#071324] text-slate-100 pt-20 pb-10 border-t border-slate-900">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1267,9 +1209,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         
                         {/* Company logo/info block (5 cols) */}
                         <div className="md:col-span-5 space-y-6">
-                            <div className="inline-flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-800 max-w-[180px]">
-                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-8 object-contain" />
-                                <img src="/assets/Images/adms-text.png" alt="ADMS Text" className="h-6 object-contain" />
+                            <div className="inline-flex items-center gap-2 mb-2">
+                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-12 object-contain" />
                             </div>
                             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
                                 Platform terpadu Marketplace Produk Digital, Multi-Vendor Merchant, dan Platform Pemasangan Iklan Gratis & Promosi Berbayar untuk mengembangkan bisnis Anda.
@@ -1277,25 +1218,26 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             
                             {/* Social Media icons in rounded cards */}
                             <div className="flex items-center gap-3">
-                                <a href="#" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
+                                {/* Instagram */}
+                                <a href="https://www.instagram.com/adms.group?igsh=MWVtdWZ6NGF5NWI2Ng==" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                                         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
                                         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
                                     </svg>
                                 </a>
-                                <a href="#" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
-                                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                                        <path d="M9 8H7v3h2v9h3v-9h2.72l.42-3H12V6.5c0-.82.18-1 1-1h1.5V2H12c-2.3 0-3 1.2-3 3.5V8z"/>
+                                {/* Email */}
+                                <a href="mailto:Info@armadadigitalmarketing.top" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                        <polyline points="22,6 12,13 2,6"/>
                                     </svg>
                                 </a>
-                                <a href="#" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
-                                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                                        <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.107C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.388.511a3.002 3.002 0 0 0-2.11 2.107C0 8.053 0 12 0 12s0 3.947.502 5.837a3.003 3.003 0 0 0 2.11 2.107C4.495 20.455 12 20.455 12 20.455s7.505 0 9.388-.511a3.002 3.002 0 0 0 2.11-2.107C24 15.947 24 12 24 12s0-3.947-.502-5.837z"/>
+                                {/* WhatsApp */}
+                                <a href="https://wa.me/6281121211933" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
                                     </svg>
-                                </a>
-                                <a href="#" className="w-8 h-8 rounded-lg border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 transition-colors">
-                                    <MessageSquare className="w-4 h-4" />
                                 </a>
                             </div>
                         </div>
@@ -1306,9 +1248,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             <div>
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-6">Platform</h4>
                                 <ul className="space-y-3.5 text-xs text-slate-400">
-                                    <li><button onClick={() => onNavigate('products', 'all')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Marketplace</button></li>
+                                    <li><button onClick={() => document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Marketplace</button></li>
                                     <li><button onClick={() => onNavigate('products', 'digital')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Produk Digital</button></li>
-                                    <li><button onClick={() => onNavigate('classifieds')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Iklan & Promosi</button></li>
+                                    <li><button onClick={() => onNavigate('classifieds')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Iklan Gratis</button></li>
                                     <li><button onClick={() => onNavigate('merchants')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Merchant Vendor</button></li>
                                     <li><button onClick={() => onNavigate('create_ad')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Paket Iklan</button></li>
                                 </ul>
@@ -1318,11 +1260,11 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             <div>
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-6">Bantuan</h4>
                                 <ul className="space-y-3.5 text-xs text-slate-400">
-                                    <li><a href="#faq" className="hover:text-white transition-colors">FAQ & Pertanyaan</a></li>
-                                    <li><a href="#how" className="hover:text-white transition-colors">Customer Support (AI Assistant)</a></li>
-                                    <li><a href="#how" className="hover:text-white transition-colors">Cara Pembelian Produk</a></li>
-                                    <li><a href="#how" className="hover:text-white transition-colors">Cara Menjadi Merchant</a></li>
-                                    <li><a href="#how" className="hover:text-white transition-colors">Panduan Iklan Gratis</a></li>
+                                    <li><button onClick={() => onNavigate('help_center')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Pusat Bantuan</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat'))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Customer Support (AI Assistant)</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'buka katalog' } }))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Cara Pembelian Produk</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'info legalitas' } }))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Cara Menjadi Merchant</button></li>
+                                    <li><button onClick={() => window.dispatchEvent(new CustomEvent('openAdmsChat', { detail: { query: 'pasang iklan online' } }))} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Panduan Iklan Gratis</button></li>
                                 </ul>
                             </div>
                             
@@ -1330,10 +1272,10 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             <div>
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-6">Legal & Kebijakan</h4>
                                 <ul className="space-y-3.5 text-xs text-slate-400">
-                                    <li><a href="#" className="hover:text-white transition-colors">Terms & Conditions</a></li>
-                                    <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                                    <li><a href="#" className="hover:text-white transition-colors">Refund Policy</a></li>
-                                    <li><a href="#" className="hover:text-white transition-colors">Advertising Policy</a></li>
+                                    <li><button onClick={() => onNavigate('terms')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Terms & Conditions</button></li>
+                                    <li><button onClick={() => onNavigate('privacy')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Privacy Policy</button></li>
+                                    <li><button onClick={() => onNavigate('refund')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Refund Policy</button></li>
+                                    <li><button onClick={() => onNavigate('advertising')} className="hover:text-white transition-colors cursor-pointer text-left bg-transparent border-0 p-0 font-medium">Advertising Policy</button></li>
                                 </ul>
                             </div>
                         </div>
@@ -1419,7 +1361,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                         
                                         {selectedProduct.merchantObj?.whatsapp && (
                                             <a 
-                                                href={`https://wa.me/${selectedProduct.merchantObj.whatsapp}?text=Halo%20${selectedProduct.merchantObj.store_name},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(selectedProduct.title)}`}
+                                                href={`https://wa.me/6281121211933?text=Halo%20${selectedProduct.merchantObj.store_name},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(selectedProduct.title)}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="p-2.5 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-500/30 rounded-xl transition-all active:scale-95 flex items-center justify-center"

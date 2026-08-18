@@ -724,7 +724,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                         
                                         {selectedProduct.merchant?.whatsapp && (
                                             <a 
-                                                href={`https://wa.me/${selectedProduct.merchant.whatsapp}?text=Halo%20${selectedProduct.merchant.store_name},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(selectedProduct.title)}`}
+                                                href={`https://wa.me/6281121211933?text=Halo%20${selectedProduct.merchant.store_name},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(selectedProduct.title)}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="p-2.5 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-500/30 rounded-xl transition-all active:scale-95 flex items-center justify-center"

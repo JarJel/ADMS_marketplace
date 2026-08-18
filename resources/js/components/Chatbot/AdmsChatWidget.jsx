@@ -28,6 +28,7 @@ export default function AdmsChatWidget({ darkMode = true }) {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedServiceForOrder, setSelectedServiceForOrder] = useState('');
   const [unreadCount, setUnreadCount] = useState(1);
+  const [pendingQuery, setPendingQuery] = useState(null);
 
   const messagesEndRef = useRef(null);
 
@@ -58,6 +59,30 @@ export default function AdmsChatWidget({ darkMode = true }) {
 
     setMessages([initialBotMsg]);
   }, []);
+
+  // Global event listener for external triggers
+  useEffect(() => {
+    const handleOpenChat = (e) => {
+      setIsOpen(true);
+      setUnreadCount(0);
+      if (e.detail && e.detail.query) {
+        setPendingQuery(e.detail.query);
+      }
+    };
+    window.addEventListener('openAdmsChat', handleOpenChat);
+    return () => window.removeEventListener('openAdmsChat', handleOpenChat);
+  }, []);
+
+  // Execute pending queries when opened
+  useEffect(() => {
+    if (pendingQuery && isOpen) {
+       // Timeout ensures UI has settled before scrolling / typing begins
+       setTimeout(() => {
+         handleSendMessage(pendingQuery, true);
+       }, 300);
+       setPendingQuery(null);
+    }
+  }, [pendingQuery, isOpen]);
 
   // Scroll to bottom on new message
   useEffect(() => {
@@ -443,7 +468,7 @@ export default function AdmsChatWidget({ darkMode = true }) {
                             </div>
                             <div className="flex items-center gap-1.5">
                               <span className="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
-                              <span>WhatsApp 2: <strong className="text-slate-300 font-mono">+6281121191933</strong></span>
+                              <span>WhatsApp 2: <strong className="text-slate-300 font-mono">+6281121211933</strong></span>
                             </div>
                           </div>
                         </div>
@@ -555,7 +580,7 @@ export default function AdmsChatWidget({ darkMode = true }) {
                 <span className="flex items-center gap-1.5 font-mono">
                   <span>WA 1: <strong className="text-amber-400 font-semibold">+6281121211933</strong></span>
                   <span className="text-slate-600">&bull;</span>
-                  <span>WA 2: <strong className="text-slate-300 font-semibold">+6281121191933</strong></span>
+                  <span>WA 2: <strong className="text-slate-300 font-semibold">+6281121211933</strong></span>
                 </span>
               </div>
             </div>

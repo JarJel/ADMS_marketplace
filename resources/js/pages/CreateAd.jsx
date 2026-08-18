@@ -481,7 +481,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                                 type="text" 
                                                                 value={whatsapp}
                                                                 onChange={(e) => setWhatsapp(e.target.value)}
-                                                                placeholder="+62812345678"
+                                                                placeholder="+6281121211933"
                                                                 className="w-full text-xs sm:text-sm p-3.5 pl-11 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
                                                             />
                                                         </div>

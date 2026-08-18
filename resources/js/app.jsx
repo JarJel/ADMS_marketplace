@@ -12,8 +12,10 @@ import ClassifiedsCatalogView from './pages/ClassifiedsCatalogView';
 import ProductsCatalogView from './pages/ProductsCatalogView';
 import MerchantDirectoryView from './pages/MerchantDirectoryView';
 import Toast from './components/Toast';
+import HelpCenter from './pages/HelpCenter';
 import Cart from './pages/Customer/Cart';
 import AdmsChatWidget from './components/Chatbot/AdmsChatWidget';
+import LegalPage from './pages/LegalPage';
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem('auth_token'));
@@ -78,6 +80,16 @@ function App() {
             setView('merchants');
         } else if (path === '/cart') {
             setView('cart');
+        } else if (path === '/terms-and-conditions') {
+            setView('terms');
+        } else if (path === '/privacy-policy') {
+            setView('privacy');
+        } else if (path === '/refund-policy') {
+            setView('refund');
+        } else if (path === '/advertising-policy') {
+            setView('advertising');
+        } else if (path === '/help' || path === '/bantuan') {
+            setView('help_center');
         } else {
             setView('homepage');
         }
@@ -86,6 +98,7 @@ function App() {
     const navigateTo = (newView, path) => {
         window.history.pushState(null, '', path);
         setView(newView);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const checkSession = async (authToken, currentPath) => {
@@ -147,6 +160,14 @@ function App() {
             navigateTo('create_ad', '/pasang-iklan');
         } else if (targetView === 'help_center') {
             navigateTo('help_center', '/bantuan');
+        } else if (targetView === 'terms') {
+            navigateTo('terms', '/terms-and-conditions');
+        } else if (targetView === 'privacy') {
+            navigateTo('privacy', '/privacy-policy');
+        } else if (targetView === 'refund') {
+            navigateTo('refund', '/refund-policy');
+        } else if (targetView === 'advertising') {
+            navigateTo('advertising', '/advertising-policy');
         } else if (targetView === 'dashboard') {
             routeUser(user);
         }
@@ -219,6 +240,11 @@ function App() {
                 return <ProductsCatalogView {...dashboardProps} initialFilter={productFilter} />;
             case 'merchants':
                 return <MerchantDirectoryView {...dashboardProps} />;
+            case 'terms':
+            case 'privacy':
+            case 'refund':
+            case 'advertising':
+                return <LegalPage type={view} {...dashboardProps} />;
             case 'login':
                 return (
                     <Login 

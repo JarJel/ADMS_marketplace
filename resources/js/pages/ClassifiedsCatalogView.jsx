@@ -2,7 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { 
     Search, MapPin, Zap, Filter, ArrowUpDown, LayoutGrid, List,
     Phone, ExternalLink, X, HelpCircle, Star, MessageSquare, AlertCircle,
-    Rss, Clock, Tag, ChevronRight
+    Rss, Clock, Tag, ChevronRight,
+    Globe, Car, Bike, Smartphone, Monitor, Home, Map as MapIcon, Wrench, Briefcase, Shirt, Sofa
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
@@ -59,17 +60,17 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
 
     // Categories configurations
     const categories = [
-        { name: 'Semua Kategori', icon: '🌐' },
-        { name: 'Mobil', icon: '🚗' },
-        { name: 'Motor', icon: '🏍' },
-        { name: 'Handphone', icon: '📱' },
-        { name: 'Elektronik', icon: '💻' },
-        { name: 'Properti', icon: '🏠' },
-        { name: 'Tanah', icon: '🏷' },
-        { name: 'Jasa', icon: '🛠' },
-        { name: 'Lowongan Kerja', icon: '💼' },
-        { name: 'Fashion', icon: '👕' },
-        { name: 'Rumah Tangga', icon: '🛋' }
+        { name: 'Semua Kategori', icon: <Globe className="w-4 h-4" /> },
+        { name: 'Mobil', icon: <Car className="w-4 h-4" /> },
+        { name: 'Motor', icon: <Bike className="w-4 h-4" /> },
+        { name: 'Handphone', icon: <Smartphone className="w-4 h-4" /> },
+        { name: 'Elektronik', icon: <Monitor className="w-4 h-4" /> },
+        { name: 'Properti', icon: <Home className="w-4 h-4" /> },
+        { name: 'Tanah', icon: <MapIcon className="w-4 h-4" /> },
+        { name: 'Jasa', icon: <Wrench className="w-4 h-4" /> },
+        { name: 'Lowongan Kerja', icon: <Briefcase className="w-4 h-4" /> },
+        { name: 'Fashion', icon: <Shirt className="w-4 h-4" /> },
+        { name: 'Rumah Tangga', icon: <Sofa className="w-4 h-4" /> }
     ];
 
     // Reset all active filters
@@ -132,6 +133,33 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             }
         });
     }, [ads, searchQuery, searchLocation, selectedCategory, filterCondition, minPrice, maxPrice, sortBy]);
+    const recentBlogs = [
+        {
+            id: 1,
+            title: "Tips Sukses Memulai Bisnis Thrift Shop Modal Kecil",
+            category: "Bisnis & Usaha",
+            date: "12 Ags 2026",
+            image: "https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?q=80&w=600&auto=format&fit=crop",
+            excerpt: "Bisnis barang bekas (thrift) kini semakin diminati. Pelajari cara mencari supplier, strategi pemasaran di media sosial, dan tips mengatur modal untuk pemula."
+        },
+        {
+            id: 2,
+            title: "Panduan Lengkap Membeli Mobil Bekas Bebas Banjir",
+            category: "Otomotif",
+            date: "10 Ags 2026",
+            image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=600&auto=format&fit=crop",
+            excerpt: "Membeli mobil bekas butuh ketelitian ekstra. Ketahui tanda-tanda mobil bekas banjir atau tabrakan agar tidak menyesal di kemudian hari."
+        },
+        {
+            id: 3,
+            title: "Tren Properti 2026: Investasi Tanah Kavling Menguntungkan",
+            category: "Properti",
+            date: "08 Ags 2026",
+            image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600&auto=format&fit=crop",
+            excerpt: "Tanah kavling masih menjadi primadona investasi jangka panjang. Simak lokasi-lokasi strategis yang diprediksi mengalami kenaikan harga signifikan tahun ini."
+        }
+    ];
+
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300 font-sans pb-20">
@@ -424,7 +452,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                                     </div>
 
                                                     <a 
-                                                        href={`https://wa.me/${ad.whatsapp}`}
+                                                        href={`https://wa.me/6281121211933`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         onClick={(e) => { e.stopPropagation(); handleAdClick(ad.id); }} // Stop modal popup trigger
@@ -567,7 +595,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 <span className="text-[10px] text-slate-400 dark:text-slate-500">Dipublikasikan pada: {selectedAd.date}</span>
                                 
                                 <a 
-                                    href={`https://wa.me/${selectedAd.whatsapp}`}
+                                    href={`https://wa.me/6281121211933`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-colors cursor-pointer"

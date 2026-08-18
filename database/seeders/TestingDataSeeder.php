@@ -150,7 +150,7 @@ class TestingDataSeeder extends Seeder
         }
 
         if ($catPrompt) {
-            Product::create([
+            Product::create([   
                 'merchant_id' => $store->id,
                 'category_id' => $catPrompt->id,
                 'title' => 'Mega Prompt Generator ChatGPT untuk Copywriting Iklan',
@@ -359,6 +359,44 @@ class TestingDataSeeder extends Seeder
             'quantity' => 2,
             'price_at_purchase' => $product1->price,
             'subtotal' => 250000.00,
+        ]);
+
+        // Create pending order 1
+        $pendingOrder1 = Order::create([
+            'user_id' => $customerUser->id,
+            'merchant_id' => $store->id,
+            'total_amount' => 85000.00,
+            'status' => 'pending',
+            'payment_method' => 'Transfer Bank Syariah',
+            'payment_status' => 'unpaid',
+            'shipping_address' => 'Jl. Kebahagiaan No 2, Jakarta',
+        ]);
+
+        OrderItem::create([
+            'order_id' => $pendingOrder1->id,
+            'product_id' => $product2->id,
+            'quantity' => 1,
+            'price_at_purchase' => $product2->price,
+            'subtotal' => 85000.00,
+        ]);
+
+        // Create pending order 2
+        $pendingOrder2 = Order::create([
+            'user_id' => $customerUser->id,
+            'merchant_id' => $store->id,
+            'total_amount' => 125000.00,
+            'status' => 'pending',
+            'payment_method' => 'E-Wallet',
+            'payment_status' => 'unpaid',
+            'shipping_address' => 'Perumahan Alam Indah Blok B/10',
+        ]);
+
+        OrderItem::create([
+            'order_id' => $pendingOrder2->id,
+            'product_id' => $product1->id,
+            'quantity' => 1,
+            'price_at_purchase' => $product1->price,
+            'subtotal' => 125000.00,
         ]);
 
         // Write a review for the product

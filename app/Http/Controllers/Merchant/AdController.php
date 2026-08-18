@@ -21,8 +21,8 @@ class AdController extends Controller
         $user = $request->user();
         $merchant = $user->merchant;
 
-        // Ads associated with the merchant
-        $ads = Advertisement::where('merchant_id', $merchant->id)->with(['category', 'package'])->get();
+        // Ads associated with the merchant, ordered by newest first
+        $ads = Advertisement::where('merchant_id', $merchant->id)->with(['category', 'package'])->latest()->get();
 
         return response()->json([
             'success' => true,

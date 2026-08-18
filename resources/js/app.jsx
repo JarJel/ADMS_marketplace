@@ -62,11 +62,11 @@ function App() {
             setView('login');
         } else if (path === '/register') {
             setView('register');
-        } else if (path === '/customer') {
+        } else if (path === '/customer' || path.startsWith('/customer/')) {
             setView('customer_dashboard');
-        } else if (path === '/merchant') {
+        } else if (path === '/merchant' || path.startsWith('/merchant/')) {
             setView('merchant_dashboard');
-        } else if (path === '/admin') {
+        } else if (path === '/admin' || path.startsWith('/admin/')) {
             setView('admin_dashboard');
         } else if (path === '/pasang-iklan') {
             setView('create_ad');

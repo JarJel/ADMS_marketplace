@@ -13,6 +13,8 @@ import Navbar from '../components/Navbar';
 export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout }) {
     const [ads, setAds] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 12;
 
     useEffect(() => {
         fetchAds();
@@ -153,32 +155,16 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
         });
     }, [ads, debouncedSearchQuery, debouncedSearchLocation, selectedCategory, filterCondition, minPrice, maxPrice, sortBy]);
 
-    const recentBlogs = [
-        {
-            id: 1,
-            title: "Tips Sukses Memulai Bisnis Thrift Shop Modal Kecil",
-            category: "Bisnis & Usaha",
-            date: "12 Ags 2026",
-            image: "https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?q=80&w=600&auto=format&fit=crop",
-            excerpt: "Bisnis barang bekas (thrift) kini semakin diminati. Pelajari cara mencari supplier, strategi pemasaran di media sosial, dan tips mengatur modal untuk pemula."
-        },
-        {
-            id: 2,
-            title: "Panduan Lengkap Membeli Mobil Bekas Bebas Banjir",
-            category: "Otomotif",
-            date: "10 Ags 2026",
-            image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=600&auto=format&fit=crop",
-            excerpt: "Membeli mobil bekas butuh ketelitian ekstra. Ketahui tanda-tanda mobil bekas banjir atau tabrakan agar tidak menyesal di kemudian hari."
-        },
-        {
-            id: 3,
-            title: "Tren Properti 2026: Investasi Tanah Kavling Menguntungkan",
-            category: "Properti",
-            date: "08 Ags 2026",
-            image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600&auto=format&fit=crop",
-            excerpt: "Tanah kavling masih menjadi primadona investasi jangka panjang. Simak lokasi-lokasi strategis yang diprediksi mengalami kenaikan harga signifikan tahun ini."
-        }
-    ];
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [debouncedSearchQuery, debouncedSearchLocation, selectedCategory, filterCondition, minPrice, maxPrice, sortBy]);
+
+    const totalPages = Math.ceil(filteredAds.length / itemsPerPage);
+    
+    const paginatedAds = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return filteredAds.slice(startIndex, startIndex + itemsPerPage);
+    }, [filteredAds, currentPage]);
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300 font-sans pb-20">
@@ -406,12 +392,13 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                     ))}
                                 </div>
                             ) : filteredAds.length > 0 ? (
+                                <>
                                 <div key={`results-${viewMode}`} className={
                                     viewMode === 'grid' 
-                                        ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'
-                                        : 'space-y-4'
+                                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" 
+                                        : "flex flex-col gap-4"
                                 }>
-                                    {filteredAds.map((ad) => (
+                                    {paginatedAds.map((ad) => (
                                         <div 
                                             key={ad.id}
                                             onClick={() => { setSelectedAd(ad); handleAdClick(ad.id); }}
@@ -483,9 +470,32 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                         </div>
                                     ))}
                                 </div>
+                                
+                                {totalPages > 1 && (
+                                    <div className="mt-8 flex justify-center items-center gap-2">
+                                        <button 
+                                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                            disabled={currentPage === 1}
+                                            className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-bold disabled:opacity-50"
+                                        >
+                                            Sebelumnya
+                                        </button>
+                                        <div className="text-sm font-bold px-4 py-2">
+                                            Halaman {currentPage} dari {totalPages}
+                                        </div>
+                                        <button 
+                                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                            disabled={currentPage === totalPages}
+                                            className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-bold disabled:opacity-50"
+                                        >
+                                            Selanjutnya
+                                        </button>
+                                    </div>
+                                )}
+                                </>
                             ) : (
                                 /* Empty State */
-                                <div key="empty-state" className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-16 text-center shadow-sm space-y-4 dark:backdrop-blur-md">
+                                <div key="empty-state" className="bg-white dark:bg-slate-900/60 rounded-3xl border border-slate-200 dark:border-slate-800/80 p-12 text-center shadow-sm space-y-4 dark:backdrop-blur-md">
                                     <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto text-slate-300 dark:text-slate-600">
                                         <HelpCircle className="w-8 h-8" />
                                     </div>

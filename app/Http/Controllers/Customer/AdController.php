@@ -87,7 +87,7 @@ class AdController extends Controller
                 'website_url' => $request->website_url,
                 'duration_days' => $freePackage->duration_days,
                 'package_id' => $freePackage->id,
-                'status' => 'pending',
+                'status' => 'approved',
                 'owner_id' => $user->id,
             ]);
 

@@ -509,7 +509,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                             {/* Product Image */}
                                             <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
                                                 <img 
-                                                    src={prod.image || 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop'} 
+                                                    src={prod.image || prod.thumbnail || 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop'} 
                                                     alt={prod.title} 
                                                     className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                                                 />
@@ -566,7 +566,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                         {/* Left Side: Product Image */}
                                         <div className="w-full sm:w-[200px] aspect-[16/10] sm:aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800 rounded-xl relative flex-shrink-0">
                                             <img 
-                                                src={prod.image || 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop'} 
+                                                src={prod.image || prod.thumbnail || 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop'} 
                                                 alt={prod.title} 
                                                 className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                                             />

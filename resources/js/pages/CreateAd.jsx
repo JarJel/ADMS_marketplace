@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-    ChevronLeft, ChevronRight, Upload, Camera, CheckCircle, 
+    Upload, Camera, CheckCircle, 
     ArrowLeft, Home, FileText, Settings, ShieldCheck, Info,
-    Coins, Star, MapPin, Phone, Globe, Trash2, ChevronDown
+    Coins, Star, MapPin, Phone, Globe, Trash2, Rocket, Volume2, Megaphone, Map, Search, User, UserSquare2
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
@@ -15,33 +15,26 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
 
     // Form fields state
     const [judul, setJudul] = useState('');
-    const [kategori, setKategori] = useState('Jasa & Layanan');
-    const [subKategori, setSubKategori] = useState('');
+    const [selectedCategoryId, setSelectedCategoryId] = useState('');
+    const [selectedSubCategoryId, setSelectedSubCategoryId] = useState('');
     const [kondisi, setKondisi] = useState('Baru');
     const [deskripsi, setDeskripsi] = useState('');
     const [tipeHarga, setTipeHarga] = useState('Harga Tetap');
     const [harga, setHarga] = useState('');
-    const [tags, setTags] = useState('');
     
     // Media & Contact
     const [photos, setPhotos] = useState([]);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
-    const [namaKontak, setNamaKontak] = useState(user?.name || '');
-    const [whatsapp, setWhatsapp] = useState('+62');
     const [lokasi, setLokasi] = useState('');
-    const [website, setWebsite] = useState('');
-
-    // Package Upgrade
-    const [paket, setPaket] = useState('berkah'); // 'berkah' or 'vip'
+    const [whatsapp, setWhatsapp] = useState('');
+    const [namaKontak, setNamaKontak] = useState(user?.name || '');
 
     // Form errors
     const [errors, setErrors] = useState({});
 
     // Kategori dinamis dari database
     const [dbCategories, setDbCategories] = useState([]);
-    const [selectedCategoryId, setSelectedCategoryId] = useState('');
-    const [selectedSubCategoryId, setSelectedSubCategoryId] = useState('');
 
     const FALLBACK_CATEGORIES = [
         {
@@ -112,10 +105,6 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
         }
     }, [selectedCategoryId, dbCategories]);
 
-    const activeCategoryName = dbCategories.find(c => c.id === parseInt(selectedCategoryId))?.name || '';
-    const isJasa = activeCategoryName.toLowerCase().includes('jasa');
-
-    // Slide variants for multi-step transitions
     const slideVariants = {
         enter: (direction) => ({
             x: direction > 0 ? 100 : -100,
@@ -130,7 +119,6 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
             opacity: 0
         })
     };
-
     const [direction, setDirection] = useState(1);
 
     const validateStep = (s) => {
@@ -140,14 +128,17 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
             else if (judul.length > 100) errs.judul = 'Judul iklan maksimal 100 karakter';
             if (!selectedCategoryId) errs.kategori = 'Kategori wajib dipilih';
             if (!selectedSubCategoryId) errs.subKategori = 'Sub-kategori wajib dipilih';
+            if (!harga) errs.harga = 'Harga wajib diisi';
         } else if (s === 2) {
             if (!deskripsi.trim()) errs.deskripsi = 'Deskripsi iklan wajib diisi';
-            if (tipeHarga === 'Harga Tetap' && !harga) errs.harga = 'Harga wajib diisi untuk pilihan Harga Tetap';
         } else if (s === 3) {
-            if (!namaKontak.trim()) errs.namaKontak = 'Nama kontak penjual wajib diisi';
-            if (!whatsapp.trim() || whatsapp === '+62') errs.whatsapp = 'Nomor WhatsApp wajib diisi';
-            else if (!/^\+62\d{8,15}$/.test(whatsapp)) errs.whatsapp = 'Nomor WhatsApp harus berformat internasional (+62xxxxxxxx)';
+            // Photos are optional? Let's make at least 1 required
+            if (photos.length === 0) errs.photos = 'Minimal 1 foto wajib diunggah';
+        } else if (s === 4) {
             if (!lokasi.trim()) errs.lokasi = 'Lokasi penjualan wajib diisi';
+        } else if (s === 5) {
+            if (!namaKontak.trim()) errs.namaKontak = 'Nama kontak wajib diisi';
+            if (!whatsapp.trim()) errs.whatsapp = 'Nomor WhatsApp wajib diisi';
         }
         setErrors(errs);
         return Object.keys(errs).length === 0;
@@ -169,20 +160,18 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
         const files = Array.from(e.target.files);
         if (!files.length) return;
 
-        // Validation based on Package
-        const maxFiles = paket === 'berkah' ? 2 : 10;
+        const maxFiles = 5;
         const currentCount = photos.length;
         const remaining = maxFiles - currentCount;
 
         if (files.length > remaining) {
-            alert(`Batas maksimal foto untuk paket saat ini adalah ${maxFiles} file.`);
+            alert(`Batas maksimal foto adalah ${maxFiles} file.`);
             return;
         }
 
         setIsUploading(true);
         setUploadProgress(10);
 
-        // Simulate progress bar loading animation
         const interval = setInterval(() => {
             setUploadProgress((prev) => {
                 if (prev >= 100) {
@@ -211,7 +200,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateStep(3)) return;
+        if (!validateStep(6)) return;
 
         setLoading(true);
         setErrors({});
@@ -221,16 +210,16 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
             formData.append('title', judul);
             formData.append('category_id', selectedSubCategoryId);
             formData.append('description', deskripsi);
-            formData.append('price', tipeHarga === 'Harga Tetap' ? harga : 0);
+            formData.append('price', harga);
             formData.append('location', lokasi);
-            formData.append('whatsapp', whatsapp);
+            
+            let finalWhatsapp = whatsapp;
+            if (!finalWhatsapp.startsWith('+62')) {
+                finalWhatsapp = '+62' + finalWhatsapp.replace(/^0+/, '');
+            }
+            formData.append('whatsapp', finalWhatsapp);
             formData.append('contact_name', namaKontak);
-            if (!isJasa) {
-                formData.append('condition', kondisi);
-            }
-            if (website) {
-                formData.append('website_url', website);
-            }
+            formData.append('condition', kondisi);
 
             photos.forEach(photo => {
                 if (photo.file) {
@@ -266,9 +255,20 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
         }
     };
 
+    const stepTitles = [
+        "INFORMASI DASAR IKLAN",
+        "DESKRIPSI LENGKAP IKLAN",
+        "FOTO PRODUK / JASA",
+        "LOKASI PENJUALAN",
+        "KONTAK PENJUAL",
+        "PRATINJAU AKHIR IKLAN"
+    ];
+
+    const activeCategoryName = dbCategories.find(c => c.id === parseInt(selectedCategoryId))?.name || '';
+    const isJasa = activeCategoryName.toLowerCase().includes('jasa');
+
     return (
-        <div className="min-h-screen bg-slate-50 transition-colors duration-300 font-sans pb-20">
-            {/* Header Navbar */}
+        <div className="min-h-screen bg-[#F8FAFC] font-sans pb-20">
             <Navbar 
                 user={user} 
                 token={token} 
@@ -279,252 +279,197 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                 currentView="create_ad"
             />
 
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-                {!success ? (
-                    <>
-                        {/* A. Header Halaman */}
-                        <div className="text-center mb-8 space-y-2">
-                            <h1 className="text-3xl font-black text-slate-800 tracking-tight">Pasang Iklan Baru Anda</h1>
-                            <p className="text-slate-500 text-sm">
-                                Isi detail iklan untuk mulai mempromosikan produk, jasa, atau bisnis Anda secara gratis.
-                            </p>
+            {!success ? (
+                <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+                    {/* Header Back Button */}
+                    <div className="mb-6 flex items-center">
+                        <button 
+                            onClick={() => onNavigate('homepage')}
+                            className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-[#0f172a] transition-colors"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            Kembali ke Beranda
+                        </button>
+                        <div className="ml-auto text-right">
+                            <h2 className="text-sm font-extrabold text-slate-800">Pembuat Iklan Gratis</h2>
+                            <p className="text-xs text-slate-400">Halaman Khusus Iklan Baris Klasifikasi</p>
+                        </div>
+                    </div>
 
-                            {/* Alert Box Syariah */}
-                            <div className="mt-4 p-4 rounded-xl border border-amber-200 bg-amber-50 text-left text-xs sm:text-sm text-amber-800 flex items-start gap-2.5 shadow-sm">
-                                <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                        {/* Kolom Kiri: Form & Stepper (8 Kolom) */}
+                        <div className="lg:col-span-8 bg-white rounded-[20px] shadow-sm border border-slate-200 overflow-hidden">
+                            {/* Dark Header Banner */}
+                            <div className="bg-[#0f172a] p-6 sm:p-8 flex items-center gap-4 text-white">
+                                <div className="w-14 h-14 rounded-2xl bg-amber-400 flex flex-shrink-0 items-center justify-center text-[#0f172a]">
+                                    <Megaphone className="w-7 h-7" />
+                                </div>
                                 <div>
-                                    <strong>Pemberitahuan:</strong> Semua iklan yang masuk akan ditinjau oleh Admin dalam waktu maksimal 24 jam untuk memastikan kesesuaian dengan panduan syariah (bebas dari konten riba, judi, pornografi, penipuan, atau produk non-halal).
+                                    <h1 className="text-xl sm:text-2xl font-black">Buat Iklan Baris Baru</h1>
+                                    <p className="text-sm text-slate-300 mt-1 opacity-90">Isi semua detail di bawah untuk mempromosikan produk Anda gratis.</p>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* B. Stepper */}
-                        <div className="mb-10 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                            <div className="flex items-center justify-between">
+                            {/* Stepper Navbar */}
+                            <div className="flex border-b border-slate-100 px-6 py-4 overflow-x-auto hide-scrollbar gap-8 text-xs font-bold whitespace-nowrap">
                                 {[
-                                    { stepNum: 1, label: "Informasi Dasar" },
-                                    { stepNum: 2, label: "Detail & Harga" },
-                                    { stepNum: 3, label: "Media & Kontak" }
-                                ].map((item) => (
-                                    <div key={item.stepNum} className="flex-1 flex flex-col items-center relative">
-                                        <div className={`w-8 h-8 rounded-full font-bold text-xs flex items-center justify-center border z-10 transition-all ${
-                                            step >= item.stepNum 
-                                                ? 'bg-teal-600 border-teal-600 text-white shadow-md shadow-teal-600/10' 
-                                                : 'bg-white border-slate-200 text-slate-400'
-                                        }`}>
-                                            {item.stepNum}
+                                    { id: 1, label: 'Informasi' },
+                                    { id: 2, label: 'Deskripsi' },
+                                    { id: 3, label: 'Foto' },
+                                    { id: 4, label: 'Lokasi' },
+                                    { id: 5, label: 'Kontak' },
+                                    { id: 6, label: 'Pratinjau' }
+                                ].map((s) => (
+                                    <div key={s.id} className="flex items-center gap-2">
+                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step === s.id ? 'bg-[#0f172a] text-white' : step > s.id ? 'bg-[#0f172a] text-white opacity-40' : 'bg-slate-100 text-slate-400'}`}>
+                                            {s.id}
                                         </div>
-                                        <span className={`text-[10px] sm:text-xs font-bold mt-2 transition-colors ${
-                                            step >= item.stepNum ? 'text-slate-800' : 'text-slate-400'
-                                        }`}>{item.label}</span>
+                                        <span className={`${step === s.id ? 'text-[#0f172a]' : step > s.id ? 'text-[#0f172a] opacity-40' : 'text-slate-400'}`}>
+                                            {s.label}
+                                        </span>
                                     </div>
                                 ))}
                             </div>
-                        </div>
 
-                        {/* Form Panel Container */}
-                        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-10 relative overflow-hidden">
-                            <form onSubmit={handleSubmit} className="space-y-6">
+                            {/* Form Step Content */}
+                            <div className="p-6 sm:p-8 min-h-[400px]">
+                                <div className="flex items-center gap-2 mb-8 text-[#3b82f6] text-sm font-black uppercase tracking-wide">
+                                    <Info className="w-5 h-5" />
+                                    LANGKAH {step}: {stepTitles[step-1]}
+                                </div>
+
                                 <AnimatePresence mode="wait" custom={direction}>
-                                    {step === 1 && (
-                                        <motion.div 
-                                            key="step1"
-                                            custom={direction}
-                                            variants={slideVariants}
-                                            initial="enter"
-                                            animate="center"
-                                            exit="exit"
-                                            transition={{ duration: 0.2 }}
-                                            className="space-y-6"
-                                        >
-                                            <h3 className="font-extrabold text-lg text-slate-800 border-b border-slate-100 pb-3">Langkah 1: Informasi Dasar</h3>
-                                            
-                                            {/* Judul Iklan */}
-                                            <div className="space-y-1.5 text-left">
-                                                <label className="block text-xs font-bold text-slate-700">Judul Iklan <span className="text-red-500">*</span></label>
-                                                <input 
-                                                    type="text" 
-                                                    maxLength={100}
-                                                    value={judul}
-                                                    onChange={(e) => setJudul(e.target.value)}
-                                                    placeholder="Jasa Pembuatan Website Company Profile UMKM Cepat"
-                                                    className="w-full text-slate-800 text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
-                                                />
-                                                <div className="flex items-center justify-between text-[10px]">
-                                                    <span className="text-rose-500 font-semibold">{errors.judul}</span>
-                                                    <span className="text-slate-400">{judul.length}/100 Karakter</span>
-                                                </div>
-                                            </div>
-
-                                            {/* Kategori & Sub-Kategori (Row) */}
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+                                    <motion.div
+                                        key={`step-${step}`}
+                                        custom={direction}
+                                        variants={slideVariants}
+                                        initial="enter"
+                                        animate="center"
+                                        exit="exit"
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        {/* STEP 1: INFORMASI DASAR */}
+                                        {step === 1 && (
+                                            <div className="space-y-6">
                                                 <div className="space-y-1.5">
-                                                    <label className="block text-xs font-bold text-slate-700">Kategori Iklan <span className="text-red-500">*</span></label>
-                                                    <select
-                                                        value={selectedCategoryId}
-                                                        onChange={(e) => setSelectedCategoryId(e.target.value)}
-                                                        className="w-full text-slate-800 text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl outline-none bg-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-                                                    >
-                                                        {dbCategories.map((cat) => (
-                                                            <option key={cat.id} value={cat.id}>{cat.name}</option>
-                                                        ))}
-                                                    </select>
-                                                    <span className="text-[10px] text-rose-500 font-semibold">{errors.kategori}</span>
+                                                    <label className="block text-sm font-bold text-slate-700">Judul Iklan *</label>
+                                                    <input 
+                                                        type="text" 
+                                                        value={judul}
+                                                        onChange={(e) => setJudul(e.target.value)}
+                                                        placeholder="Contoh: Toyota Avanza 2022 Siap Pakai Murah"
+                                                        className="w-full text-sm p-4 border border-slate-200 rounded-2xl focus:border-[#0f172a] focus:ring-1 focus:ring-[#0f172a] outline-none text-slate-900 bg-white"
+                                                    />
+                                                    {errors.judul && <span className="text-xs text-rose-500 font-bold">{errors.judul}</span>}
                                                 </div>
 
-                                                <div className="space-y-1.5">
-                                                    <label className="block text-xs font-bold text-slate-700">Sub-Kategori <span className="text-red-500">*</span></label>
-                                                    <select
-                                                        value={selectedSubCategoryId}
-                                                        onChange={(e) => setSelectedSubCategoryId(e.target.value)}
-                                                        className="w-full text-slate-800 text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl outline-none bg-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-                                                    >
-                                                        {(() => {
-                                                            const parent = dbCategories.find(c => c.id === parseInt(selectedCategoryId));
-                                                            if (parent && parent.children && parent.children.length > 0) {
-                                                                return parent.children.map((sub) => (
-                                                                    <option key={sub.id} value={sub.id}>{sub.name}</option>
-                                                                ));
-                                                            }
-                                                            return parent ? <option value={parent.id}>Semua {parent.name}</option> : null;
-                                                        })()}
-                                                    </select>
-                                                    <span className="text-[10px] text-rose-500 font-semibold">{errors.subKategori}</span>
-                                                </div>
-                                            </div>
-
-                                            {/* Kondisi (Radio) */}
-                                            {!isJasa && (
-                                                <div className="space-y-2 text-left">
-                                                    <label className="block text-xs font-bold text-slate-700">Kondisi Barang <span className="text-red-500">*</span></label>
-                                                    <div className="flex gap-4">
-                                                        {['Baru', 'Bekas'].map((cond) => (
-                                                            <label key={cond} className="flex items-center gap-2 text-xs font-semibold cursor-pointer text-slate-800">
-                                                                <input 
-                                                                    type="radio" 
-                                                                    name="kondisi" 
-                                                                    value={cond}
-                                                                    checked={kondisi === cond}
-                                                                    onChange={() => setKondisi(cond)}
-                                                                    className="w-4 h-4 text-teal-600 focus:ring-teal-500 border-slate-300"
-                                                                />
-                                                                {cond}
-                                                            </label>
-                                                        ))}
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                                    <div className="space-y-1.5">
+                                                        <label className="block text-sm font-bold text-slate-700">Kategori *</label>
+                                                        <select
+                                                            value={selectedCategoryId}
+                                                            onChange={(e) => setSelectedCategoryId(e.target.value)}
+                                                            className="w-full text-sm p-4 border border-slate-200 rounded-2xl focus:border-[#0f172a] focus:ring-1 focus:ring-[#0f172a] outline-none appearance-none bg-white text-slate-900"
+                                                            style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%236b7280\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
+                                                        >
+                                                            {dbCategories.map((cat) => (
+                                                                <option key={cat.id} value={cat.id} className="text-slate-900 bg-white">{cat.name}</option>
+                                                            ))}
+                                                        </select>
                                                     </div>
-                                                </div>
-                                            )}
-                                        </motion.div>
-                                    )}
 
-                                    {step === 2 && (
-                                        <motion.div 
-                                            key="step2"
-                                            custom={direction}
-                                            variants={slideVariants}
-                                            initial="enter"
-                                            animate="center"
-                                            exit="exit"
-                                            transition={{ duration: 0.2 }}
-                                            className="space-y-6"
-                                        >
-                                            <h3 className="font-extrabold text-lg text-slate-800 border-b border-slate-100 pb-3">Langkah 2: Detail & Harga</h3>
-
-                                            {/* Deskripsi Lengkap */}
-                                            <div className="space-y-1.5 text-left">
-                                                <label className="block text-xs font-bold text-slate-700">Deskripsi Lengkap <span className="text-red-500">*</span></label>
-                                                
-                                                {/* Simulated Rich Text Toolbar */}
-                                                <div className="flex items-center gap-1.5 p-2 bg-slate-50 border border-b-0 border-slate-200 rounded-t-xl text-slate-500">
-                                                    <button type="button" onClick={() => setDeskripsi(prev => prev + ' **Tebal** ')} className="px-2 py-1 text-xs font-bold hover:bg-slate-200 rounded">B</button>
-                                                    <button type="button" onClick={() => setDeskripsi(prev => prev + ' *Miring* ')} className="px-2 py-1 text-xs italic hover:bg-slate-200 rounded">I</button>
-                                                    <button type="button" onClick={() => setDeskripsi(prev => prev + '\n- Item List ')} className="px-2 py-1 text-xs hover:bg-slate-200 rounded">&bull; List</button>
-                                                </div>
-                                                
-                                                <textarea 
-                                                    rows={6}
-                                                    value={deskripsi}
-                                                    onChange={(e) => setDeskripsi(e.target.value)}
-                                                    placeholder="Tuliskan spesifikasi produk, keunggulan jasa, dan detail lengkap penawaran Anda di sini..."
-                                                    className="w-full text-slate-800 text-xs sm:text-sm p-4 border border-slate-200 rounded-b-xl focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none resize-none"
-                                                />
-                                                <span className="text-[10px] text-rose-500 font-semibold">{errors.deskripsi}</span>
-                                            </div>
-
-                                            {/* Tipe Harga & Nilai Harga (Row) */}
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left items-end">
-                                                <div className="space-y-2">
-                                                    <label className="block text-xs font-bold text-slate-700">Tipe Harga <span className="text-red-500">*</span></label>
-                                                    <div className="flex gap-4 p-3 border border-slate-200 rounded-xl bg-white">
-                                                        {['Harga Tetap', 'Hubungi Kontak'].map((tPrice) => (
-                                                            <label key={tPrice} className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-slate-800">
-                                                                <input 
-                                                                    type="radio" 
-                                                                    name="tipeHarga"
-                                                                    value={tPrice}
-                                                                    checked={tipeHarga === tPrice}
-                                                                    onChange={() => setTipeHarga(tPrice)}
-                                                                    className="w-4 h-4 text-teal-600 focus:ring-teal-500"
-                                                                />
-                                                                {tPrice}
-                                                            </label>
-                                                        ))}
+                                                    <div className="space-y-1.5">
+                                                        <label className="block text-sm font-bold text-slate-700">Subkategori</label>
+                                                        <select
+                                                            value={selectedSubCategoryId}
+                                                            onChange={(e) => setSelectedSubCategoryId(e.target.value)}
+                                                            className="w-full text-sm p-4 border border-slate-200 rounded-2xl focus:border-[#0f172a] focus:ring-1 focus:ring-[#0f172a] outline-none appearance-none bg-white text-slate-900"
+                                                            style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%236b7280\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
+                                                        >
+                                                            {(() => {
+                                                                const parent = dbCategories.find(c => c.id === parseInt(selectedCategoryId));
+                                                                if (parent && parent.children && parent.children.length > 0) {
+                                                                    return parent.children.map((sub) => (
+                                                                        <option key={sub.id} value={sub.id} className="text-slate-900 bg-white">{sub.name}</option>
+                                                                    ));
+                                                                }
+                                                                return parent ? <option value={parent.id} className="text-slate-900 bg-white">Semua {parent.name}</option> : <option className="text-slate-900 bg-white">Pilih Subkategori</option>;
+                                                            })()}
+                                                        </select>
                                                     </div>
                                                 </div>
 
-                                                <div className="space-y-1.5">
-                                                    <label className="block text-xs font-bold text-slate-700">Harga (Rupiah)</label>
-                                                    <div className="relative">
-                                                        <span className="absolute left-4 top-3.5 text-xs sm:text-sm font-bold text-slate-400">Rp</span>
+                                                {!isJasa && (
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+                                                        <div className="space-y-1.5">
+                                                            <label className="block text-sm font-bold text-slate-700">Kondisi Barang *</label>
+                                                            <div className="flex gap-2">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => setKondisi('Baru')}
+                                                                    className={`flex-1 py-4 text-sm font-bold rounded-2xl transition-all border ${kondisi === 'Baru' ? 'bg-[#0f172a] text-white border-[#0f172a]' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'}`}
+                                                                >
+                                                                    Baru
+                                                                </button>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => setKondisi('Bekas')}
+                                                                    className={`flex-1 py-4 text-sm font-bold rounded-2xl transition-all border ${kondisi === 'Bekas' ? 'bg-[#0f172a] text-white border-[#0f172a]' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'}`}
+                                                                >
+                                                                    Bekas
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div className="space-y-1.5 mt-6 sm:mt-0">
+                                                            <label className="block text-sm font-bold text-slate-700">Harga (Rupiah) *</label>
+                                                            <input 
+                                                                type="number" 
+                                                                value={harga}
+                                                                onChange={(e) => setHarga(e.target.value)}
+                                                                placeholder="Contoh: 185000000"
+                                                                className="w-full text-sm p-4 border border-slate-200 rounded-2xl focus:border-[#0f172a] focus:ring-1 focus:ring-[#0f172a] outline-none text-slate-900 bg-white"
+                                                            />
+                                                            {errors.harga && <span className="text-xs text-rose-500 font-bold">{errors.harga}</span>}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {isJasa && (
+                                                    <div className="space-y-1.5">
+                                                        <label className="block text-sm font-bold text-slate-700">Harga (Rupiah) *</label>
                                                         <input 
                                                             type="number" 
-                                                            disabled={tipeHarga === 'Hubungi Kontak'}
-                                                            value={tipeHarga === 'Hubungi Kontak' ? '' : harga}
+                                                            value={harga}
                                                             onChange={(e) => setHarga(e.target.value)}
-                                                            placeholder="50000"
-                                                            className={`w-full text-slate-800 text-xs sm:text-sm p-3.5 pl-10 border rounded-xl outline-none ${
-                                                                tipeHarga === 'Hubungi Kontak' 
-                                                                    ? 'bg-slate-100/70 border-slate-200 text-slate-400 cursor-not-allowed' 
-                                                                    : 'border-slate-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-500'
-                                                            }`}
+                                                            placeholder="Contoh: 185000000"
+                                                            className="w-full text-sm p-4 border border-slate-200 rounded-2xl focus:border-[#0f172a] focus:ring-1 focus:ring-[#0f172a] outline-none text-slate-900 bg-white"
                                                         />
+                                                        {errors.harga && <span className="text-xs text-rose-500 font-bold">{errors.harga}</span>}
                                                     </div>
-                                                    <span className="text-[10px] text-rose-500 font-semibold">{errors.harga}</span>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* STEP 2: DESKRIPSI */}
+                                        {step === 2 && (
+                                            <div className="space-y-6">
+                                                <div className="space-y-1.5">
+                                                    <label className="block text-sm font-bold text-slate-700">Deskripsi Lengkap *</label>
+                                                    <textarea 
+                                                        rows={8}
+                                                        value={deskripsi}
+                                                        onChange={(e) => setDeskripsi(e.target.value)}
+                                                        placeholder="Jelaskan secara detail spesifikasi, keunggulan, kondisi fisik (jika barang), alasan dijual, dll."
+                                                        className="w-full text-sm p-4 border border-slate-200 rounded-2xl focus:border-[#0f172a] focus:ring-1 focus:ring-[#0f172a] outline-none resize-none text-slate-900 bg-white"
+                                                    />
+                                                    {errors.deskripsi && <span className="text-xs text-rose-500 font-bold">{errors.deskripsi}</span>}
                                                 </div>
                                             </div>
+                                        )}
 
-                                            {/* Tag / Kata Kunci */}
-                                            <div className="space-y-1.5 text-left">
-                                                <label className="block text-xs font-bold text-slate-700">Tag / Kata Kunci (Dipisahkan koma)</label>
-                                                <input 
-                                                    type="text" 
-                                                    value={tags}
-                                                    onChange={(e) => setTags(e.target.value)}
-                                                    placeholder="website, jasa landing page, coding"
-                                                    className="w-full text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
-                                                />
-                                            </div>
-                                        </motion.div>
-                                    )}
-
-                                    {step === 3 && (
-                                        <motion.div 
-                                            key="step3"
-                                            custom={direction}
-                                            variants={slideVariants}
-                                            initial="enter"
-                                            animate="center"
-                                            exit="exit"
-                                            transition={{ duration: 0.2 }}
-                                            className="space-y-6"
-                                        >
-                                            <h3 className="font-extrabold text-lg text-slate-800 border-b border-slate-100 pb-3">Langkah 3: Media & Kontak</h3>
-
-                                            {/* Media Dropzone */}
-                                            <div className="space-y-2 text-left">
-                                                <label className="block text-xs font-bold text-slate-700">Foto Iklan <span className="text-red-500">*</span></label>
-                                                
-                                                <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 bg-slate-50 hover:bg-slate-100/50 transition-colors flex flex-col items-center justify-center text-center cursor-pointer relative group">
+                                        {/* STEP 3: FOTO */}
+                                        {step === 3 && (
+                                            <div className="space-y-6">
+                                                <div className="border-2 border-dashed border-slate-300 hover:border-[#0f172a] rounded-2xl p-8 bg-slate-50 hover:bg-slate-100/50 transition-colors flex flex-col items-center justify-center text-center cursor-pointer relative group">
                                                     <input 
                                                         type="file" 
                                                         multiple
@@ -533,271 +478,261 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                         className="absolute inset-0 opacity-0 cursor-pointer"
                                                         disabled={isUploading}
                                                     />
-                                                    <Camera className="w-8 h-8 text-slate-400 group-hover:text-teal-500 transition-colors mb-2" />
-                                                    <span className="text-xs font-bold text-slate-700">Tarik atau Pilih Foto</span>
-                                                    <span className="text-[10px] text-slate-400 mt-1">Maksimal {paket === 'berkah' ? '2 foto' : '10 foto'} (Format JPG/PNG, Max 2MB per file)</span>
+                                                    <Camera className="w-12 h-12 text-slate-400 group-hover:text-[#0f172a] transition-colors mb-3" />
+                                                    <span className="text-sm font-bold text-slate-700">Klik atau Tarik Foto ke Sini</span>
+                                                    <span className="text-xs text-slate-500 mt-1">Maksimal 5 foto (Format JPG/PNG)</span>
                                                 </div>
 
-                                                {/* Uploading progress bar simulation */}
+                                                {errors.photos && <span className="text-xs text-rose-500 font-bold">{errors.photos}</span>}
+
                                                 {isUploading && (
-                                                    <div className="space-y-1.5">
-                                                        <div className="flex items-center justify-between text-[10px] text-slate-500">
+                                                    <div className="mt-4 space-y-2">
+                                                        <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
                                                             <span>Mengunggah file...</span>
                                                             <span>{uploadProgress}%</span>
                                                         </div>
-                                                        <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                                            <div className="bg-teal-600 h-1.5 transition-all duration-200" style={{ width: `${uploadProgress}%` }}></div>
+                                                        <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                                            <div className="bg-[#0f172a] h-2 transition-all duration-200" style={{ width: `${uploadProgress}%` }}></div>
                                                         </div>
                                                     </div>
                                                 )}
 
-                                                {/* Photo list preview */}
                                                 {photos.length > 0 && (
-                                                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-4">
+                                                    <div className="grid grid-cols-4 sm:grid-cols-5 gap-4 mt-6">
                                                         {photos.map((p) => (
                                                             <div key={p.id} className="relative aspect-square rounded-xl border border-slate-200 overflow-hidden bg-slate-50 group">
-                                                                <img src={p.url} alt="upload" className="w-full h-full object-cover" />
+                                                                <img src={p.url} alt="upload preview" className="w-full h-full object-cover" />
                                                                 <button 
                                                                     type="button" 
                                                                     onClick={() => handleRemovePhoto(p.id)}
-                                                                    className="absolute top-1 right-1 p-1 bg-rose-500 hover:bg-rose-600 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+                                                                    className="absolute top-1 right-1 p-1 bg-rose-500 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
                                                                 >
-                                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                                    <Trash2 className="w-4 h-4" />
                                                                 </button>
                                                             </div>
                                                         ))}
                                                     </div>
                                                 )}
                                             </div>
+                                        )}
 
-                                            {/* Contacts Input Form Block */}
-                                            <div className="space-y-4">
-                                                {/* Nama & WA (Row) */}
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
-                                                    <div className="space-y-1.5">
-                                                        <label className="block text-xs font-bold text-slate-700">Nama Kontak Penjual <span className="text-red-500">*</span></label>
+                                        {/* STEP 4: LOKASI */}
+                                        {step === 4 && (
+                                            <div className="space-y-6">
+                                                <div className="space-y-1.5">
+                                                    <label className="block text-sm font-bold text-slate-700">Kota & Provinsi Penjualan *</label>
+                                                    <div className="relative">
+                                                        <Map className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
                                                         <input 
                                                             type="text" 
-                                                            value={namaKontak}
-                                                            onChange={(e) => setNamaKontak(e.target.value)}
-                                                            className="w-full text-slate-800 text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
+                                                            value={lokasi}
+                                                            onChange={(e) => setLokasi(e.target.value)}
+                                                            placeholder="Contoh: Bandung, Jawa Barat"
+                                                            className="w-full text-sm p-4 pl-12 border border-slate-200 rounded-2xl focus:border-[#0f172a] focus:ring-1 focus:ring-[#0f172a] outline-none text-slate-900 bg-white"
                                                         />
-                                                        <span className="text-[10px] text-rose-500 font-semibold">{errors.namaKontak}</span>
                                                     </div>
+                                                    {errors.lokasi && <span className="text-xs text-rose-500 font-bold">{errors.lokasi}</span>}
+                                                </div>
+                                                <div className="aspect-[21/9] bg-slate-100 rounded-2xl border border-slate-200 flex flex-col items-center justify-center text-slate-400">
+                                                    <MapPin className="w-10 h-10 mb-2 opacity-50" />
+                                                    <span className="text-sm font-bold">Peta Lokasi Area</span>
+                                                </div>
+                                            </div>
+                                        )}
 
+                                        {/* STEP 5: KONTAK */}
+                                        {step === 5 && (
+                                            <div className="space-y-6">
+                                                <div className="grid grid-cols-1 gap-6">
                                                     <div className="space-y-1.5">
-                                                        <label className="block text-xs font-bold text-slate-700">Nomor WhatsApp <span className="text-red-500">*</span></label>
+                                                        <label className="block text-sm font-bold text-slate-700">Nama Lengkap Penjual *</label>
                                                         <div className="relative">
-                                                            <Phone className="absolute left-4 top-3.5 w-4 h-4 text-slate-400" />
+                                                            <UserSquare2 className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
+                                                            <input 
+                                                                type="text" 
+                                                                value={namaKontak}
+                                                                onChange={(e) => setNamaKontak(e.target.value)}
+                                                                placeholder="Budi Santoso"
+                                                                className="w-full text-sm p-4 pl-12 border border-slate-200 rounded-2xl focus:border-[#0f172a] focus:ring-1 focus:ring-[#0f172a] outline-none text-slate-900 bg-white"
+                                                            />
+                                                        </div>
+                                                        {errors.namaKontak && <span className="text-xs text-rose-500 font-bold">{errors.namaKontak}</span>}
+                                                    </div>
+                                                    <div className="space-y-1.5">
+                                                        <label className="block text-sm font-bold text-slate-700">Nomor WhatsApp *</label>
+                                                        <div className="flex">
+                                                            <div className="px-4 border border-r-0 border-slate-200 rounded-l-2xl bg-slate-50 flex items-center justify-center text-sm font-bold text-slate-500">
+                                                                +62
+                                                            </div>
                                                             <input 
                                                                 type="text" 
                                                                 value={whatsapp}
                                                                 onChange={(e) => setWhatsapp(e.target.value)}
-                                                                placeholder="+6281121211933"
-                                                                className="w-full text-slate-800 text-xs sm:text-sm p-3.5 pl-11 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
+                                                                placeholder="812345678"
+                                                                className="flex-1 text-sm p-4 border border-slate-200 rounded-r-2xl focus:border-[#0f172a] focus:ring-1 focus:ring-[#0f172a] outline-none text-slate-900 bg-white"
                                                             />
                                                         </div>
-                                                        <span className="text-[10px] text-rose-500 font-semibold">{errors.whatsapp}</span>
-                                                    </div>
-                                                </div>
-
-                                                {/* Lokasi & Web (Row) */}
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
-                                                    <div className="space-y-1.5">
-                                                        <label className="block text-xs font-bold text-slate-700">Lokasi Penjualan <span className="text-red-500">*</span></label>
-                                                        <div className="relative">
-                                                            <MapPin className="absolute left-4 top-3.5 w-4 h-4 text-slate-400" />
-                                                            <input 
-                                                                type="text" 
-                                                                value={lokasi}
-                                                                onChange={(e) => setLokasi(e.target.value)}
-                                                                placeholder="Misal: Jakarta Timur atau Sleman, Yogyakarta"
-                                                                className="w-full text-slate-800 text-xs sm:text-sm p-3.5 pl-11 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
-                                                            />
-                                                        </div>
-                                                        <span className="text-[10px] text-rose-500 font-semibold">{errors.lokasi}</span>
-                                                    </div>
-
-                                                    <div className="space-y-1.5">
-                                                        <label className="block text-xs font-bold text-slate-700">Tautan Website (Opsional)</label>
-                                                        <div className="relative">
-                                                            <Globe className="absolute left-4 top-3.5 w-4 h-4 text-slate-400" />
-                                                            <input 
-                                                                type="url" 
-                                                                value={website}
-                                                                onChange={(e) => setWebsite(e.target.value)}
-                                                                placeholder="https://tokoanda.com"
-                                                                className="w-full text-slate-800 text-xs sm:text-sm p-3.5 pl-11 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
-                                                            />
-                                                        </div>
+                                                        {errors.whatsapp && <span className="text-xs text-rose-500 font-bold">{errors.whatsapp}</span>}
                                                     </div>
                                                 </div>
                                             </div>
+                                        )}
 
-                                            {/* Langkah 4: Opsi Peningkatan Iklan (Upgrade Options inside step 3) */}
-                                            <div className="border-t border-slate-100 pt-6 text-left space-y-4">
-                                                <label className="block text-xs font-bold text-slate-700">Pilih Paket Penayangan Iklan <span className="text-red-500">*</span></label>
-                                                
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                    {/* Paket Berkah */}
-                                                    <div 
-                                                        onClick={() => setPaket('berkah')}
-                                                        className={`p-5 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between min-h-[140px] relative overflow-hidden ${
-                                                            paket === 'berkah' 
-                                                                ? 'border-teal-600 bg-teal-50/10 shadow-sm' 
-                                                                : 'border-slate-200 hover:border-slate-300'
-                                                        }`}
-                                                    >
-                                                        <div className="space-y-2">
-                                                            <div className="flex items-center justify-between">
-                                                                <span className="text-xs font-extrabold text-slate-800">Paket Berkah (Gratis)</span>
-                                                                <span className="text-xs font-black text-teal-600">Rp0</span>
-                                                            </div>
-                                                            <p className="text-[10px] text-slate-400 leading-relaxed">
-                                                                Cocok untuk UMKM lokal. Iklan reguler ditinjau secara manual oleh tim.
-                                                            </p>
-                                                        </div>
-                                                        <ul className="text-[9px] text-slate-500 space-y-1 mt-4">
-                                                            <li>&bull; Masa aktif 7 hari</li>
-                                                            <li>&bull; Maksimal 2 foto</li>
-                                                            <li>&bull; Moderasi admin 24 jam</li>
-                                                        </ul>
-                                                    </div>
-
-                                                    {/* Paket VIP Premium */}
-                                                    <div 
-                                                        onClick={() => setPaket('vip')}
-                                                        className={`p-5 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between min-h-[140px] relative overflow-hidden ${
-                                                            paket === 'vip' 
-                                                                ? 'border-indigo-600 bg-indigo-50/10 shadow-sm shadow-indigo-600/5' 
-                                                                : 'border-slate-200 hover:border-slate-300'
-                                                        }`}
-                                                    >
-                                                        <div className="space-y-2">
-                                                            <div className="flex items-center justify-between">
-                                                                <span className="text-xs font-extrabold text-slate-800 flex items-center gap-1">
-                                                                    Paket VIP Premium
-                                                                    <span className="bg-amber-400 text-slate-900 text-[8px] font-bold px-1 py-0.5 rounded shadow">VIP</span>
-                                                                </span>
-                                                                <span className="text-xs font-black text-indigo-600">Rp10.000</span>
-                                                            </div>
-                                                            <p className="text-[10px] text-slate-400 leading-relaxed">
-                                                                Maksimalkan prospek Anda. Tayang di baris teratas hasil pencarian & beranda.
-                                                            </p>
-                                                        </div>
-                                                        <ul className="text-[9px] text-slate-500 space-y-1 mt-4">
-                                                            <li>&bull; Masa aktif 30 hari</li>
-                                                            <li>&bull; Maksimal 10 foto</li>
-                                                            <li>&bull; Tayang instan tanpa antrean</li>
-                                                        </ul>
-                                                    </div>
+                                        {/* STEP 6: PRATINJAU AKHIR */}
+                                        {step === 6 && (
+                                            <div className="space-y-6 text-center py-6">
+                                                <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mx-auto text-teal-600 mb-4">
+                                                    <CheckCircle className="w-8 h-8" />
                                                 </div>
+                                                <h3 className="text-xl font-black text-slate-800">Selesai! Tinjau Iklan Anda</h3>
+                                                <p className="text-sm text-slate-500 max-w-sm mx-auto">
+                                                    Periksa kembali tampilan kartu pratinjau di sebelah kanan. Jika sudah sesuai, klik <strong>Kirim Iklan</strong> di bawah ini.
+                                                </p>
                                             </div>
-                                        </motion.div>
-                                    )}
+                                        )}
+                                    </motion.div>
                                 </AnimatePresence>
-
-                                {/* Action Buttons */}
-                                <div className="border-t border-slate-100 pt-6 flex items-center justify-between">
+                                
+                                {/* Form Footer Buttons */}
+                                <div className="mt-12 flex items-center justify-between pt-6 border-t border-slate-100">
                                     {step > 1 ? (
                                         <button 
-                                            type="button" 
+                                            type="button"
                                             onClick={handlePrev}
-                                            className="px-5 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center gap-1 transition-colors"
+                                            className="text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors"
                                         >
-                                            <ChevronLeft className="w-4 h-4" />
-                                            Kembali
+                                            &larr; Kembali
                                         </button>
-                                    ) : (
-                                        <button 
-                                            type="button" 
-                                            onClick={() => onNavigate('homepage', '/')}
-                                            className="px-5 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center gap-1 transition-colors"
-                                        >
-                                            <Home className="w-4 h-4" />
-                                            Kembali ke Beranda
-                                        </button>
-                                    )}
+                                    ) : <div></div>}
 
-                                    {step < 3 ? (
+                                    {step < 6 ? (
                                         <button 
-                                            type="button" 
+                                            type="button"
                                             onClick={handleNext}
-                                            className="px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold flex items-center gap-1 transition-colors shadow-md shadow-teal-600/10"
+                                            className="px-8 py-3.5 bg-[#0f172a] hover:bg-slate-800 active:scale-95 text-white text-sm font-bold rounded-2xl shadow-lg transition-all flex items-center gap-2"
                                         >
-                                            Lanjut
-                                            <ChevronRight className="w-4 h-4" />
+                                            Lanjutkan &rarr;
                                         </button>
                                     ) : (
                                         <button 
-                                            type="submit" 
+                                            type="button"
+                                            onClick={handleSubmit}
                                             disabled={loading}
-                                            className="px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-md shadow-teal-600/10 disabled:opacity-50"
+                                            className="px-8 py-3.5 bg-teal-600 hover:bg-teal-700 active:scale-95 text-white text-sm font-bold rounded-2xl shadow-lg shadow-teal-600/30 flex items-center gap-2 transition-all disabled:opacity-70 disabled:scale-100"
                                         >
-                                            {loading ? (
-                                                <>
-                                                    <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                                    <span>Memproses Iklan...</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <CheckCircle className="w-4 h-4" />
-                                                    <span>Pasang Iklan Sekarang</span>
-                                                </>
-                                            )}
+                                            {loading ? 'Memproses...' : 'Kirim Iklan Sekarang'}
                                         </button>
                                     )}
                                 </div>
-                            </form>
+                            </div>
                         </div>
-                    </>
-                ) : (
-                    /* 3. HALAMAN KONDISI SUKSES */
-                    <motion.div 
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ type: "spring", stiffness: 100 }}
-                        className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-16 text-center space-y-6"
-                    >
-                        {/* Bouncing/Rotating checkmark */}
-                        <motion.div 
-                            animate={{ rotate: 360, scale: [1, 1.2, 1] }}
-                            transition={{ duration: 0.6 }}
-                            className="w-20 h-20 bg-emerald-50 rounded-full border-2 border-emerald-100 flex items-center justify-center mx-auto text-emerald-500"
-                        >
+
+                        {/* Kolom Kanan: Live Preview (4 Kolom) */}
+                        <div className="lg:col-span-4 sticky top-6">
+                            <div className="bg-white rounded-[20px] shadow-lg border border-slate-200 p-6">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h3 className="text-xs font-black text-slate-800 flex items-center gap-2 tracking-widest uppercase">
+                                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                                        Pratinjau Langsung
+                                    </h3>
+                                    <span className="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-500 font-bold">Live Card</span>
+                                </div>
+
+                                {/* Preview Card */}
+                                <div className="border border-slate-200 rounded-[16px] overflow-hidden bg-white hover:shadow-xl transition-shadow duration-300">
+                                    {/* Image Area */}
+                                    <div className="aspect-[4/3] bg-slate-100 relative">
+                                        {/* Badge Gratis */}
+                                        <div className="absolute top-3 left-3 z-10">
+                                            <span className="bg-[#0f172a] text-white text-[10px] font-black px-2.5 py-1 rounded-md tracking-wider">
+                                                GRATIS
+                                            </span>
+                                        </div>
+                                        
+                                        {photos.length > 0 ? (
+                                            <img src={photos[0].url} alt="preview" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center h-full text-slate-300">
+                                                <Camera className="w-12 h-12 mb-2 opacity-50" />
+                                                <span className="text-[10px] font-bold">Belum ada foto</span>
+                                            </div>
+                                        )}
+                                        
+                                        {!isJasa && (
+                                            <div className="absolute bottom-3 right-3 z-10 bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-800 text-[10px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+                                                Kondisi: {kondisi}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Content Area */}
+                                    <div className="p-4 sm:p-5">
+                                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                                            TEMPLATE
+                                        </div>
+                                        <h4 className="font-extrabold text-slate-800 text-base sm:text-lg mb-2 line-clamp-2 leading-snug">
+                                            {judul || 'Judul Iklan Anda'}
+                                        </h4>
+                                        <div className="font-black text-[#0f172a] text-xl mb-6">
+                                            Rp{harga ? parseInt(harga).toLocaleString('id-ID') : '0'}
+                                        </div>
+
+                                        <div className="flex items-center justify-between text-xs text-slate-500 pb-4 border-b border-slate-100">
+                                            <div className="flex items-center gap-1.5 truncate pr-2">
+                                                <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                                                <span className="truncate">{lokasi || 'Kota, Provinsi'}</span>
+                                            </div>
+                                            <div className="font-bold text-[#3b82f6] whitespace-nowrap text-[10px] uppercase tracking-wider">
+                                                Iklan Baris
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Footer Contact area of card */}
+                                    <div className="bg-[#0f172a] p-4 m-2 rounded-2xl flex items-center justify-between mt-auto">
+                                        <div className="text-white min-w-0 pr-2">
+                                            <div className="text-[10px] text-slate-400">Hubungi</div>
+                                            <div className="font-bold text-sm truncate">{namaKontak || 'Nama Penjual'}</div>
+                                        </div>
+                                        <div className="bg-[#059669] text-white text-[10px] font-bold px-3 py-1.5 rounded-lg flex-shrink-0">
+                                            WhatsApp Aktif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-32">
+                    <div className="bg-white rounded-[20px] border border-slate-200 shadow-xl p-8 sm:p-16 text-center space-y-6">
+                        <div className="w-20 h-20 bg-emerald-50 rounded-full border-2 border-emerald-100 flex items-center justify-center mx-auto text-emerald-500 mb-6">
                             <CheckCircle className="w-12 h-12" />
-                        </motion.div>
-
-                        <div className="space-y-2">
-                            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-800">Iklan Anda Berhasil Dikirim!</h2>
-                            <p className="text-slate-500 text-xs sm:text-sm max-w-lg mx-auto leading-relaxed">
-                                Iklan Anda saat ini sedang berada dalam antrean moderasi oleh Tim ADMS. Kami akan segera memberi tahu Anda melalui notifikasi dan email setelah iklan disetujui untuk tayang.
-                            </p>
                         </div>
-
-                        {/* Ad ID Code block */}
-                        <div className="inline-block bg-slate-50 border border-slate-200 rounded-xl px-6 py-3 font-mono text-xs sm:text-sm text-slate-600 font-bold">
-                            Kode ID Iklan: <span className="text-teal-600">{generatedAdId}</span>
+                        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-800">Iklan Berhasil Dikirim!</h2>
+                        <p className="text-slate-500 text-sm max-w-lg mx-auto leading-relaxed">
+                            Iklan Anda saat ini sedang berada dalam antrean moderasi oleh Tim ADMS. Kami akan segera memberi tahu Anda setelah iklan disetujui untuk tayang.
+                        </p>
+                        <div className="inline-block bg-slate-50 border border-slate-200 rounded-xl px-6 py-3 font-mono text-sm text-slate-600 font-bold">
+                            Kode ID Iklan: <span className="text-[#0f172a]">{generatedAdId}</span>
                         </div>
-
-                        {/* Navigation buttons */}
-                        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+                        <div className="flex flex-wrap items-center justify-center gap-4 pt-6">
                             <button 
                                 onClick={() => onNavigate('dashboard', '/customer')}
-                                className="px-6 py-3 bg-[#0D9488] hover:bg-[#0b7d72] text-white text-xs font-bold rounded-xl shadow-md transition-colors"
+                                className="px-6 py-3 bg-[#0f172a] hover:bg-slate-800 text-white text-sm font-bold rounded-xl shadow-md transition-colors"
                             >
                                 Lihat Daftar Iklan Saya
                             </button>
                             <button 
                                 onClick={() => onNavigate('homepage', '/')}
-                                className="px-6 py-3 bg-white border border-slate-300 hover:bg-slate-50 text-xs font-bold text-slate-700 rounded-xl transition-colors"
+                                className="px-6 py-3 bg-white border border-slate-300 hover:bg-slate-50 text-sm font-bold text-slate-700 rounded-xl transition-colors"
                             >
                                 Kembali ke Beranda
                             </button>
                         </div>
-                    </motion.div>
-                )}
-            </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

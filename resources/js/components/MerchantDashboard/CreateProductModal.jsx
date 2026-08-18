@@ -79,7 +79,7 @@ export default function CreateProductModal({ token, isOpen, onClose, fetchProduc
       const result = await res.json();
 
       if (res.ok && result.success) {
-        setMsg({ type: 'success', text: 'Produk digital berhasil ditambahkan dan menunggu persetujuan admin!' });
+        setMsg({ type: 'success', text: 'Produk digital berhasil ditambahkan dan sudah live!' });
         setTimeout(() => {
           fetchProducts();
           onClose();

@@ -4,6 +4,7 @@ import {
     Zap, Store, CheckCircle, Tag, Plus, Minus, Lock, Sparkles, CheckSquare, Square
 } from 'lucide-react';
 import Navbar from '../../components/Navbar';
+import ConfirmModal from '../../components/ConfirmModal';
 
 export default function Cart({ user, token, onNavigate, onLogout, darkMode = true, setDarkMode, cartCount, wishlistCount, notifications }) {
     const [cartItems, setCartItems] = useState([]);
@@ -12,6 +13,7 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
     const [promoCode, setPromoCode] = useState('');
     const [discount, setDiscount] = useState(0);
     const [promoApplied, setPromoApplied] = useState(false);
+    const [confirmModal, setConfirmModal] = useState({ isOpen: false, type: '', id: null, title: '', message: '' });
 
     useEffect(() => {
         fetchCart();
@@ -107,7 +109,36 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
         );
     };
 
-    const handleRemove = async (id) => {
+    const triggerRemove = (id) => {
+        setConfirmModal({
+            isOpen: true,
+            type: 'single',
+            id: id,
+            title: 'Hapus Produk',
+            message: 'Apakah Anda yakin ingin menghapus produk ini dari keranjang?'
+        });
+    };
+
+    const triggerClearAll = () => {
+        setConfirmModal({
+            isOpen: true,
+            type: 'all',
+            id: null,
+            title: 'Kosongkan Keranjang',
+            message: 'Apakah Anda yakin ingin mengosongkan semua produk dari keranjang?'
+        });
+    };
+
+    const confirmAction = () => {
+        if (confirmModal.type === 'single') {
+            executeRemove(confirmModal.id);
+        } else if (confirmModal.type === 'all') {
+            executeClearAll();
+        }
+        setConfirmModal({ ...confirmModal, isOpen: false });
+    };
+
+    const executeRemove = async (id) => {
         const key = id?.toString();
         setSelectedItemIds(prev => prev.filter(k => k !== key));
 
@@ -136,7 +167,7 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
         fetchCart();
     };
 
-    const handleClearAll = () => {
+    const executeClearAll = () => {
         localStorage.removeItem('adms_guest_cart');
         setCartItems([]);
         setSelectedItemIds([]);
@@ -158,41 +189,14 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
     });
 
     const handleCheckout = async () => {
-        try {
-            if (selectedItemsList.length === 0) {
-                alert('Pilih setidaknya 1 produk untuk di-checkout.');
-                return;
-            }
-            const firstItem = selectedItemsList[0];
-            const merchantId = firstItem.product?.merchant_id || 1;
-            
-            const res = await fetch('/api/customer/orders', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    checkout_from_cart: true,
-                    merchant_id: merchantId,
-                    payment_method: 'transfer_bank'
-                })
-            });
-            const data = await res.json();
-            if (data.success) {
-                localStorage.removeItem('adms_guest_cart');
-                alert(`Checkout ${selectedItemsList.length} produk berhasil! Menuju ke Dashboard.`);
-                onNavigate('customer');
-            } else {
-                alert(data.message || `Checkout ${selectedItemsList.length} produk berhasil diproses!`);
-                localStorage.removeItem('adms_guest_cart');
-                onNavigate('customer');
-            }
-        } catch (err) {
-            console.error(err);
-            localStorage.removeItem('adms_guest_cart');
-            alert('Pesanan berhasil dibuat!');
-            onNavigate('customer');
+        if (selectedItemsList.length === 0) {
+            alert('Pilih setidaknya 1 produk untuk di-checkout.');
+            return;
+        }
+        localStorage.setItem('adms_checkout_items', JSON.stringify(selectedItemsList));
+        localStorage.setItem('adms_checkout_discount', discount.toString());
+        if (onNavigate) {
+            onNavigate('checkout');
         }
     };
 
@@ -280,7 +284,7 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
                                 {cartItems.length} Produk Digital
                             </span>
                             <button 
-                                onClick={handleClearAll}
+                                onClick={triggerClearAll}
                                 className="text-xs text-rose-500 hover:text-rose-600 font-semibold hover:underline cursor-pointer flex items-center gap-1"
                             >
                                 <Trash2 className="w-3.5 h-3.5" /> Kosongkan
@@ -446,7 +450,7 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
                                                     </div>
 
                                                     <button 
-                                                        onClick={() => handleRemove(item.id || item.product_id)}
+                                                        onClick={() => triggerRemove(item.id || item.product_id)}
                                                         className="p-2 text-rose-500 hover:bg-rose-500/10 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-rose-500/20"
                                                         title="Hapus Produk"
                                                     >
@@ -475,40 +479,6 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
                                 }`}>
                                     <ShoppingCart className="w-5 h-5 text-teal-500" /> Ringkasan Belanja
                                 </h3>
-
-                                {/* Promo Code Form */}
-                                <form onSubmit={handleApplyPromo} className="mb-6">
-                                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                                        Voucher Diskon / Promo
-                                    </label>
-                                    <div className="flex gap-2">
-                                        <div className="relative flex-1">
-                                            <Tag className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                                            <input 
-                                                type="text"
-                                                placeholder="Contoh: ADMSBARU"
-                                                value={promoCode}
-                                                onChange={(e) => setPromoCode(e.target.value)}
-                                                className={`w-full text-xs pl-9 pr-3 py-2.5 rounded-xl border focus:outline-none focus:ring-1 uppercase font-mono ${
-                                                    darkMode 
-                                                        ? 'bg-slate-950 border-slate-800 text-white placeholder-slate-600 focus:border-teal-500 focus:ring-teal-500' 
-                                                        : 'bg-slate-50 border-slate-300 text-slate-800 placeholder-slate-400 font-semibold focus:border-teal-500 focus:ring-teal-500'
-                                                }`}
-                                            />
-                                        </div>
-                                        <button 
-                                            type="submit"
-                                            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer"
-                                        >
-                                            Pakai
-                                        </button>
-                                    </div>
-                                    {promoApplied && (
-                                        <span className="block text-[10px] text-emerald-500 font-bold mt-1.5 flex items-center gap-1">
-                                            <CheckCircle className="w-3 h-3" /> Diskon Rp 10.000 berhasil diterapkan!
-                                        </span>
-                                    )}
-                                </form>
 
                                 {/* Cost Breakdown */}
                                 <div className="space-y-3 text-xs mb-6 border-t border-slate-200 dark:border-slate-800/80 pt-4">
@@ -579,6 +549,15 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
                     </div>
                 )}
             </main>
+
+            {/* Confirmation Modal */}
+            <ConfirmModal 
+                isOpen={confirmModal.isOpen}
+                title={confirmModal.title}
+                message={confirmModal.message}
+                onConfirm={confirmAction}
+                onCancel={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+            />
         </div>
     );
 }

@@ -75,6 +75,7 @@ Route::get('/public/ads', function () {
                 'date' => $ad->created_at->format('Y-m-d')
             ];
         });
+
     return response()->json([
         'success' => true,
         'message' => 'Daftar iklan baris berhasil diambil.',

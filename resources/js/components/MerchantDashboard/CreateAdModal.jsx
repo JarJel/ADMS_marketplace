@@ -154,7 +154,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
         const result = await response.json();
 
         if (response.ok && result.success) {
-            setMsg({ type: 'success', text: result.message || 'Iklan berhasil diunggah!' });
+            setMsg({ type: 'success', text: result.message || 'Iklan berhasil diunggah dan sudah live!' });
             setTimeout(() => {
                 if (fetchAds) fetchAds();
                 onClose();

@@ -32,7 +32,7 @@ class ProductController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        $products = $query->with('category')->get();
+        $products = $query->with('category')->latest()->get();
 
         return response()->json([
             'success' => true,
@@ -84,12 +84,12 @@ class ProductController extends Controller
             'full_description' => $request->full_description,
             'stock' => $request->stock,
             'thumbnail' => $thumbnailUrl,
-            'status' => 'pending', // Default requires admin review
+            'status' => 'active', // Immediately active based on user request
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Produk digital berhasil diajukan dan menunggu persetujuan admin.',
+            'message' => 'Produk digital berhasil ditambahkan.',
             'data' => $product
         ], 200);
     }

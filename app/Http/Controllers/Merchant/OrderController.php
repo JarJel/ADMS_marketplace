@@ -29,8 +29,7 @@ class OrderController extends Controller
         if ($request->filled('payment_status')) {
             $query->where('payment_status', $request->payment_status);
         }
-
-        $orders = $query->orderBy('created_at', 'desc')->get();
+        $orders = $query->latest()->get();
 
         return response()->json([
             'success' => true,

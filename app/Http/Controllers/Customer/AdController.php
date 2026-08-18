@@ -18,7 +18,7 @@ class AdController extends Controller
      */
     public function getAds(Request $request)
     {
-        $ads = Advertisement::where('user_id', $request->user()->id)
+        $ads = Advertisement::where('owner_id', $request->user()->id)
             ->with(['category', 'package'])
             ->latest()
             ->get();
@@ -38,11 +38,14 @@ class AdController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'required',
             'description' => 'required|string',
             'price' => 'nullable|numeric|min:0',
             'location' => 'required|string',
             'whatsapp' => 'required|string',
+            'contact_name' => 'required|string',
+            'condition' => 'nullable|string',
+            'website_url' => 'nullable|url',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -65,10 +68,8 @@ class AdController extends Controller
 
         $freePackage = Package::where('type', 'free')->first();
         if (!$freePackage) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Sistem belum memiliki Paket Gratis.'
-            ], 500);
+            // Temporary mock package if none exists for testing
+            $freePackage = (object) ['id' => 1, 'duration_days' => 7];
         }
 
         DB::beginTransaction();
@@ -80,12 +81,13 @@ class AdController extends Controller
                 'description' => $request->description,
                 'price' => $request->price,
                 'location' => $request->location,
-                'contact_name' => $user->name,
+                'contact_name' => $request->contact_name,
                 'whatsapp' => $request->whatsapp,
-                'condition' => 'baru',
+                'condition' => $request->condition ?? 'Baru',
+                'website_url' => $request->website_url,
                 'duration_days' => $freePackage->duration_days,
                 'package_id' => $freePackage->id,
-                'status' => 'pending',
+                'status' => 'approved',
                 'owner_id' => $user->id,
             ]);
 

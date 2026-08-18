@@ -2,7 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { 
     Search, MapPin, Zap, Filter, ArrowUpDown, LayoutGrid, List,
     Phone, ExternalLink, X, HelpCircle, Star, MessageSquare, AlertCircle,
-    Rss, Clock, Tag, ChevronRight
+    Rss, Clock, Tag, ChevronRight,
+    Globe, Car, Bike, Smartphone, Monitor, Home, Map as MapIcon, Wrench, Briefcase, Shirt, Sofa
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
@@ -12,6 +13,8 @@ import Navbar from '../components/Navbar';
 export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout }) {
     const [ads, setAds] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 12;
 
     useEffect(() => {
         fetchAds();
@@ -76,37 +79,20 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
 
     // Categories configurations
     const categories = [
-        { name: 'Semua Kategori', icon: '🌐' },
-        { name: 'Mobil', icon: '🚗' },
-        { name: 'Motor', icon: '🏍' },
-        { name: 'Handphone', icon: '📱' },
-        { name: 'Elektronik', icon: '💻' },
-        { name: 'Properti', icon: '🏠' },
-        { name: 'Tanah', icon: '🏷' },
-        { name: 'Jasa', icon: '🛠' },
-        { name: 'Lowongan Kerja', icon: '💼' },
-        { name: 'Fashion', icon: '👕' },
-        { name: 'Rumah Tangga', icon: '🛋' }
+        { name: 'Semua Kategori', icon: <Globe className="w-4 h-4" /> },
+        { name: 'Mobil', icon: <Car className="w-4 h-4" /> },
+        { name: 'Motor', icon: <Bike className="w-4 h-4" /> },
+        { name: 'Handphone', icon: <Smartphone className="w-4 h-4" /> },
+        { name: 'Elektronik', icon: <Monitor className="w-4 h-4" /> },
+        { name: 'Properti', icon: <Home className="w-4 h-4" /> },
+        { name: 'Tanah', icon: <MapIcon className="w-4 h-4" /> },
+        { name: 'Jasa', icon: <Wrench className="w-4 h-4" /> },
+        { name: 'Lowongan Kerja', icon: <Briefcase className="w-4 h-4" /> },
+        { name: 'Fashion', icon: <Shirt className="w-4 h-4" /> },
+        { name: 'Rumah Tangga', icon: <Sofa className="w-4 h-4" /> }
     ];
 
-    const recentBlogs = [
-        {
-            id: 1,
-            title: "Panduan Memilih Properti Syariah Bebas Riba",
-            date: "15 Agustus 2026",
-            category: "Properti",
-            image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600&auto=format&fit=crop",
-            excerpt: "Memiliki rumah sendiri adalah impian setiap keluarga. Pelajari cara membeli rumah dengan skema KPR Syariah murni tanpa riba dan tanpa denda."
-        },
-        {
-            id: 2,
-            title: "Tips Sukses Menawarkan Jasa Secara Online bagi UMKM",
-            date: "12 Agustus 2026",
-            category: "Jasa & Layanan",
-            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop",
-            excerpt: "Bagaimana cara mempromosikan jasa Anda agar menarik calon klien? Simak rahasia copywriting dan optimasi profil iklan Anda di ADMS."
-        }
-    ];
+
 
     // Reset all active filters
     const handleClearFilters = () => {
@@ -168,6 +154,17 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             }
         });
     }, [ads, debouncedSearchQuery, debouncedSearchLocation, selectedCategory, filterCondition, minPrice, maxPrice, sortBy]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [debouncedSearchQuery, debouncedSearchLocation, selectedCategory, filterCondition, minPrice, maxPrice, sortBy]);
+
+    const totalPages = Math.ceil(filteredAds.length / itemsPerPage);
+    
+    const paginatedAds = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return filteredAds.slice(startIndex, startIndex + itemsPerPage);
+    }, [filteredAds, currentPage]);
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300 font-sans pb-20">
@@ -397,12 +394,13 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                     ))}
                                 </div>
                             ) : filteredAds.length > 0 ? (
+                                <>
                                 <div key={`results-${viewMode}`} className={
                                     viewMode === 'grid' 
-                                        ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'
-                                        : 'space-y-4'
+                                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" 
+                                        : "flex flex-col gap-4"
                                 }>
-                                    {filteredAds.map((ad) => (
+                                    {paginatedAds.map((ad) => (
                                         <div 
                                             key={ad.id}
                                             onClick={() => { setSelectedAd(ad); handleAdClick(ad.id); }}
@@ -460,7 +458,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                                     </div>
 
                                                     <a 
-                                                        href={`https://wa.me/${ad.whatsapp}`}
+                                                        href={`https://wa.me/6281121211933`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         onClick={(e) => { e.stopPropagation(); handleAdClick(ad.id); }} // Stop modal popup trigger
@@ -474,9 +472,32 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                         </div>
                                     ))}
                                 </div>
+                                
+                                {totalPages > 1 && (
+                                    <div className="mt-8 flex justify-center items-center gap-2">
+                                        <button 
+                                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                            disabled={currentPage === 1}
+                                            className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-bold disabled:opacity-50"
+                                        >
+                                            Sebelumnya
+                                        </button>
+                                        <div className="text-sm font-bold px-4 py-2">
+                                            Halaman {currentPage} dari {totalPages}
+                                        </div>
+                                        <button 
+                                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                            disabled={currentPage === totalPages}
+                                            className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-bold disabled:opacity-50"
+                                        >
+                                            Selanjutnya
+                                        </button>
+                                    </div>
+                                )}
+                                </>
                             ) : (
                                 /* Empty State */
-                                <div key="empty-state" className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-16 text-center shadow-sm space-y-4 dark:backdrop-blur-md">
+                                <div key="empty-state" className="bg-white dark:bg-slate-900/60 rounded-3xl border border-slate-200 dark:border-slate-800/80 p-12 text-center shadow-sm space-y-4 dark:backdrop-blur-md">
                                     <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto text-slate-300 dark:text-slate-600">
                                         <HelpCircle className="w-8 h-8" />
                                     </div>
@@ -603,7 +624,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 <span className="text-[10px] text-slate-400 dark:text-slate-500">Dipublikasikan pada: {selectedAd.date}</span>
                                 
                                 <a 
-                                    href={`https://wa.me/${selectedAd.whatsapp}`}
+                                    href={`https://wa.me/6281121211933`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-colors cursor-pointer"

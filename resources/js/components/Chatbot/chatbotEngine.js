@@ -93,7 +93,7 @@ export function processUserMessage(userMessage, currentContext) {
       text: `Terima kasih! Pesanan Anda telah berhasil tercatat di sistem kami.\n\n` +
         `Data Anda telah diteruskan ke WhatsApp 1 (+6281121211933) Tim Sales Admin ADMS.\n\n` +
         `• WhatsApp 1: +6281121211933 *(Utama & Terhubung)*\n` +
-        `• WhatsApp 2: +6281121191933\n\n` +
+        `• WhatsApp 2: +6281121211933\n\n` +
         `Silakan klik tombol di bawah jika WhatsApp tidak terbuka otomatis:`,
       quickReplies: ['Hubungi CS via WA', 'Buka Katalog Semua Layanan', 'Reset Konsultasi'],
       whatsappHandover: { url: waUrl },

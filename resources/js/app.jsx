@@ -12,9 +12,11 @@ import ClassifiedsCatalogView from './pages/ClassifiedsCatalogView';
 import ProductsCatalogView from './pages/ProductsCatalogView';
 import MerchantDirectoryView from './pages/MerchantDirectoryView';
 import Toast from './components/Toast';
+import HelpCenter from './pages/HelpCenter';
 import Cart from './pages/Customer/Cart';
 import Checkout from './pages/Customer/Checkout';
 import AdmsChatWidget from './components/Chatbot/AdmsChatWidget';
+import LegalPage from './pages/LegalPage';
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem('auth_token'));
@@ -222,24 +224,12 @@ function App() {
             setView('login');
         } else if (path === '/register') {
             setView('register');
-        } else if (path === '/customer') {
-            if (!currentUser) {
-                navigateTo('login', '/login');
-            } else {
-                setView('customer_dashboard');
-            }
-        } else if (path === '/merchant') {
-            if (!currentUser) {
-                navigateTo('login', '/login');
-            } else {
-                setView('merchant_dashboard');
-            }
-        } else if (path === '/admin') {
-            if (!currentUser) {
-                navigateTo('login', '/login');
-            } else {
-                setView('admin_dashboard');
-            }
+        } else if (path === '/customer' || path.startsWith('/customer/')) {
+            setView('customer_dashboard');
+        } else if (path === '/merchant' || path.startsWith('/merchant/')) {
+            setView('merchant_dashboard');
+        } else if (path === '/admin' || path.startsWith('/admin/')) {
+            setView('admin_dashboard');
         } else if (path === '/pasang-iklan') {
             setView('create_ad');
         } else if (path === '/iklan-gratis') {
@@ -260,6 +250,7 @@ function App() {
     const navigateTo = (newView, path) => {
         window.history.pushState(null, '', path);
         setView(newView);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const checkSession = async (authToken, currentPath) => {
@@ -328,6 +319,14 @@ function App() {
             navigateTo('create_ad', '/pasang-iklan');
         } else if (targetView === 'help_center') {
             navigateTo('help_center', '/bantuan');
+        } else if (targetView === 'terms') {
+            navigateTo('terms', '/terms-and-conditions');
+        } else if (targetView === 'privacy') {
+            navigateTo('privacy', '/privacy-policy');
+        } else if (targetView === 'refund') {
+            navigateTo('refund', '/refund-policy');
+        } else if (targetView === 'advertising') {
+            navigateTo('advertising', '/advertising-policy');
         } else if (targetView === 'cart') {
             navigateTo('cart', '/cart');
         } else if (targetView === 'checkout') {
@@ -418,6 +417,11 @@ function App() {
                 return <ProductsCatalogView {...dashboardProps} initialFilter={productFilter} initialSearchQuery={globalSearchQuery} />;
             case 'merchants':
                 return <MerchantDirectoryView {...dashboardProps} />;
+            case 'terms':
+            case 'privacy':
+            case 'refund':
+            case 'advertising':
+                return <LegalPage type={view} {...dashboardProps} />;
             case 'cart':
                 return <Cart {...dashboardProps} />;
             case 'checkout':

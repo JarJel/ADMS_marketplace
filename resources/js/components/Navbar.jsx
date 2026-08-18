@@ -72,11 +72,6 @@ export default function Navbar({
                             alt="ADMS Symbol" 
                             className="h-8 sm:h-10 w-auto object-contain transition-all duration-300" 
                         />
-                        <img 
-                            src="/assets/Images/adms-text.png" 
-                            alt="ADMS Text" 
-                            className="h-5 sm:h-7 w-auto object-contain dark:invert dark:mix-blend-screen transition-all duration-300 hidden sm:block" 
-                        />
                     </div>
                 </div>
 
@@ -110,7 +105,7 @@ export default function Navbar({
                                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                         }`}
                     >
-                        Mitra Merchant
+                        Merchant Vendor
                     </button>
                     <button 
                         onClick={() => onNavigate('classifieds')}
@@ -318,11 +313,6 @@ export default function Navbar({
                             alt="ADMS Symbol" 
                             className="h-8 w-auto object-contain" 
                         />
-                        <img 
-                            src="/assets/Images/adms-text.png" 
-                            alt="ADMS Text" 
-                            className="h-6 w-auto object-contain dark:invert dark:mix-blend-screen" 
-                        />
                     </div>
                     <button 
                         onClick={() => setShowSidebar(false)}
@@ -338,7 +328,7 @@ export default function Navbar({
                         <>
                             <button onClick={() => { setShowSidebar(false); onNavigate('homepage'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Home</button>
                             <button onClick={() => { setShowSidebar(false); onNavigate('products', 'digital'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Produk Digital</button>
-                            <button onClick={() => { setShowSidebar(false); onNavigate('merchants'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Mitra Merchant</button>
+                            <button onClick={() => { setShowSidebar(false); onNavigate('merchants'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Merchant Vendor</button>
                             <button onClick={() => { setShowSidebar(false); onNavigate('classifieds'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Iklan Gratis</button>
                             <button onClick={() => { setShowSidebar(false); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Bantuan</button>
                             

@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategoryAndPackageSeeder::class,
             TestingDataSeeder::class,
+            MerchantSeeder::class,
         ]);
     }
 }

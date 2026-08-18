@@ -15,6 +15,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 12;
+    const recentBlogs = [];
 
     useEffect(() => {
         fetchAds();

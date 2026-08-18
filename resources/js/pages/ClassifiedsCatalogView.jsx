@@ -200,9 +200,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                 <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3.5 py-1.5 rounded-full uppercase tracking-wider">
-                        🌐 Portal Iklan Baris Modern Indonesia
-                    </span>
+
                     <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight max-w-3xl mx-auto">
                         Cari Barang Bekas, Jasa & Properti Terdekat
                     </h1>

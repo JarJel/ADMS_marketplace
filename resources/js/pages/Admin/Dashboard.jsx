@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from '../../components/Navbar';
+import AdminSidebar from './AdminSidebar';
+import { Menu } from 'lucide-react';
 
 export default function AdminDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode, cartCount, wishlistCount, notifications }) {
     const [activeTab, setActiveTab] = useState('overview');
+    const [isMobileOpen, setMobileOpen] = useState(false);
     const [pendingMerchants, setPendingMerchants] = useState([]);
     const [pendingProducts, setPendingProducts] = useState([]);
     const [pendingAds, setPendingAds] = useState([]);
@@ -184,27 +186,30 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
-            {/* Header */}
-            <Navbar 
-                user={user} 
-                token={token} 
-                darkMode={darkMode} 
-                setDarkMode={setDarkMode} 
-                onLogout={onLogout} 
-                onNavigate={onNavigate}
-                currentView="admin_dashboard"
-                cartCount={cartCount}
-                wishlistCount={wishlistCount}
-                notifications={notifications}
-            />
+        <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex">
+            {/* Sidebar */}
+            <AdminSidebar isMobileOpen={isMobileOpen} setMobileOpen={setMobileOpen} />
 
-            {/* Dashboard Contents */}
-            <main className="max-w-6xl mx-auto px-6 py-10">
-                <h1 className="text-3xl font-extrabold text-white mb-2">Dasbor Administrator</h1>
-                <p className="text-slate-400 mb-8 text-sm">Kelola verifikasi merchant, moderasi produk, dan audit sistem secara terpusat.</p>
+            <div className="flex-1 lg:pl-72 flex flex-col min-h-screen transition-all duration-300">
+                {/* Mobile Header Toggle */}
+                <div className="lg:hidden flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900 sticky top-0 z-30">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+                            <span className="text-white font-bold text-lg leading-none">A</span>
+                        </div>
+                        <span className="text-white font-bold text-lg">ADMS Admin</span>
+                    </div>
+                    <button onClick={() => setMobileOpen(true)} className="p-2 bg-slate-800 rounded-lg text-slate-300 hover:text-white">
+                        <Menu className="w-6 h-6" />
+                    </button>
+                </div>
 
-                {/* Tab Navigation */}
+                {/* Dashboard Contents */}
+                <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">Dasbor Administrator</h1>
+                    <p className="text-slate-400 mb-8 text-xs sm:text-sm">Kelola verifikasi merchant, moderasi produk, dan audit sistem secara terpusat.</p>
+                    
+                    {/* Tab Navigation */}
                 <div className="flex border-b border-slate-800 mb-8 overflow-x-auto">
                     {['overview', 'merchants', 'products', 'ads', 'withdrawals'].map(tab => (
                         <button
@@ -372,6 +377,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                 )}
 
             </main>
+            </div>
         </div>
     );
 }

@@ -75,7 +75,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             const data = await response.json();
             if (response.ok && data.success) {
                 if (initialFilter === 'digital') {
-                    const digitalSlugs = ['template-canva', 'source-code-web', 'ebook-buku-digital', 'ai-prompt-kit', 'aset-digital-software'];
+                    const digitalSlugs = ['template-canva', 'source-code-web', 'ebook-buku-digital', 'ai-prompt-kit', 'aset-digital-software', 'digital-ads', 'website-development', 'marketing-distribution', 'automation-blast', 'social-media', 'legal-bisnis', 'layanan-offline'];
                     setCategories(data.data.filter(cat => digitalSlugs.includes(cat.slug)));
                 } else {
                     setCategories(data.data);
@@ -111,7 +111,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             if (response.ok && data.success) {
                 let fetchedProducts = data.data.data || [];
                 if (initialFilter === 'digital' && !selectedCategoryId) {
-                    const digitalSlugs = ['template-canva', 'source-code-web', 'ebook-buku-digital', 'ai-prompt-kit', 'aset-digital-software'];
+                    const digitalSlugs = ['template-canva', 'source-code-web', 'ebook-buku-digital', 'ai-prompt-kit', 'aset-digital-software', 'digital-ads', 'website-development', 'marketing-distribution', 'automation-blast', 'social-media', 'legal-bisnis', 'layanan-offline'];
                     fetchedProducts = fetchedProducts.filter(p => p.category && digitalSlugs.includes(p.category.slug));
                 }
                 setProducts(fetchedProducts);

@@ -48,7 +48,9 @@ Route::get('/public/ads', [PublicAdController::class, 'index']);
 Route::post('/public/ads/{id}/click', [PublicAdController::class, 'trackClick']);
 
 Route::get('/public/merchants', function () {
-    $merchants = Merchant::where('is_verified', true)->with('owner')->get();
+    $merchants = Merchant::where('is_verified', true)->with(['owner', 'products' => function($q) {
+        $q->where('status', 'active')->latest()->take(3);
+    }])->get();
     return response()->json([
         'success' => true,
         'message' => 'Daftar merchant terverifikasi berhasil diambil.',

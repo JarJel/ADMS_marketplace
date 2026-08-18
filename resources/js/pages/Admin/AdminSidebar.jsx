@@ -88,19 +88,19 @@ const SidebarMenuItem = ({ item, isActive, onClick }) => {
             onClick={() => onClick(item.id)}
             className={`w-full flex items-center justify-between px-6 py-3 transition-all duration-200 group ${
                 isActive 
-                    ? 'bg-indigo-600/10 border-l-4 border-indigo-500 text-indigo-400' 
-                    : 'border-l-4 border-transparent text-slate-300 hover:bg-slate-800/50 hover:text-slate-100'
+                    ? 'bg-[#15132b] border-l-4 border-indigo-500 text-indigo-400' 
+                    : 'border-l-4 border-transparent text-slate-200 hover:bg-slate-800/50 hover:text-white'
             }`}
         >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
                 <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-400' : 'text-slate-400 group-hover:text-slate-200'}`} strokeWidth={isActive ? 2.5 : 2} />
-                <span className={`text-sm ${isActive ? 'font-bold' : 'font-medium'}`}>
+                <span className={`text-sm ${isActive ? 'font-bold' : 'font-bold'}`}>
                     {item.label}
                 </span>
             </div>
             
             {item.badge && (
-                <span className={`text-[10px] font-bold text-white px-2 py-0.5 rounded-full ${item.badgeColor || 'bg-indigo-500'} shadow-sm`}>
+                <span className={`w-5 h-5 flex items-center justify-center text-[10px] font-bold text-white rounded-full ${item.badgeColor || 'bg-indigo-500'} shadow-sm`}>
                     {item.badge}
                 </span>
             )}
@@ -128,31 +128,41 @@ const SidebarMenuGroup = ({ group, activeItem, onNavigate }) => (
 );
 
 // --- 4. SidebarUserProfile ---
-const SidebarUserProfile = () => (
-    <div className="p-4 mt-auto border-t border-slate-800/60 bg-slate-900/30">
-        <div className="flex items-center gap-3 mb-4 px-2">
-            <div className="relative">
-                <img 
-                    src="https://ui-avatars.com/api/?name=Super+Admin&background=4f46e5&color=fff&bold=true" 
-                    alt="Admin Avatar" 
-                    className="w-10 h-10 rounded-full border border-slate-700 object-cover"
-                />
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-950 rounded-full"></div>
+const SidebarUserProfile = ({ user, onLogout }) => {
+    const userName = user?.name || 'Administrator';
+    const userRole = user?.role === 'admin' ? 'System Admin' : (user?.role || 'User');
+    const encodedName = encodeURIComponent(userName);
+    const avatarUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=4f46e5&color=fff&bold=true`;
+
+    return (
+        <div className="p-4 mt-auto border-t border-slate-800/60 bg-slate-900/30">
+            <div className="flex items-center gap-3 mb-4 px-2">
+                <div className="relative">
+                    <img 
+                        src={avatarUrl} 
+                        alt={`${userName} Avatar`} 
+                        className="w-10 h-10 rounded-full border border-slate-700 object-cover"
+                    />
+                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-950 rounded-full"></div>
+                </div>
+                <div className="flex-1 overflow-hidden">
+                    <p className="text-sm font-bold text-white truncate">{userName}</p>
+                    <p className="text-xs text-slate-400 truncate capitalize">{userRole}</p>
+                </div>
             </div>
-            <div className="flex-1 overflow-hidden">
-                <p className="text-sm font-bold text-white truncate">Administrator</p>
-                <p className="text-xs text-slate-400 truncate">System Admin</p>
-            </div>
+            <button 
+                onClick={onLogout}
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-bold text-slate-300 bg-slate-800/50 hover:bg-rose-500/10 hover:text-rose-400 border border-slate-700/50 transition-all duration-200"
+            >
+                <LogOut className="w-4 h-4" />
+                <span>Keluar Sistem</span>
+            </button>
         </div>
-        <button className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-bold text-slate-300 bg-slate-800/50 hover:bg-rose-500/10 hover:text-rose-400 border border-slate-700/50 transition-all duration-200">
-            <LogOut className="w-4 h-4" />
-            <span>Keluar Sistem</span>
-        </button>
-    </div>
-);
+    );
+};
 
 // --- 5. AdminSidebar (Parent Component) ---
-export default function AdminSidebar({ activeItem = 'dashboard', onNavigate }) {
+export default function AdminSidebar({ activeItem = 'dashboard', onNavigate, user, onLogout }) {
     const handleNavigate = (id) => {
         if (onNavigate) {
             onNavigate(id);
@@ -177,7 +187,7 @@ export default function AdminSidebar({ activeItem = 'dashboard', onNavigate }) {
             </div>
 
             {/* User Profile Footer */}
-            <SidebarUserProfile />
+            <SidebarUserProfile user={user} onLogout={onLogout} />
 
             {/* Global style untuk menyembunyikan scrollbar di webkit browser (opsional) */}
             <style>{`

@@ -15,6 +15,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 12;
+    const recentBlogs = [];
 
     useEffect(() => {
         fetchAds();
@@ -186,9 +187,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                 <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3.5 py-1.5 rounded-full uppercase tracking-wider">
-                        🌐 Portal Iklan Baris Modern Indonesia
-                    </span>
+
                     <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight max-w-3xl mx-auto">
                         Cari Barang Bekas, Jasa & Properti Terdekat
                     </h1>
@@ -458,7 +457,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                                     </div>
 
                                                     <a 
-                                                        href={`https://wa.me/6281121211933`}
+                                                        href={`https://wa.me/${ad.whatsapp ? String(ad.whatsapp).replace(/[^0-9]/g, '') : '6281121211933'}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         onClick={(e) => { e.stopPropagation(); handleAdClick(ad.id); }} // Stop modal popup trigger
@@ -624,7 +623,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 <span className="text-[10px] text-slate-400 dark:text-slate-500">Dipublikasikan pada: {selectedAd.date}</span>
                                 
                                 <a 
-                                    href={`https://wa.me/6281121211933`}
+                                    href={`https://wa.me/${selectedAd.whatsapp ? String(selectedAd.whatsapp).replace(/[^0-9]/g, '') : '6281121211933'}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-colors cursor-pointer"

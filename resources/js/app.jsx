@@ -24,6 +24,7 @@ function App() {
     const [view, setView] = useState('homepage'); 
     const [productFilter, setProductFilter] = useState('all');
     const [globalSearchQuery, setGlobalSearchQuery] = useState('');
+    const [merchantFilterId, setMerchantFilterId] = useState('');
     const [dashboardTab, setDashboardTab] = useState('overview');
     
     // Counts and lists for dynamic Navbar
@@ -300,7 +301,7 @@ function App() {
         }
     };
 
-    const handleNavigation = (targetView, filter = 'all', searchQuery = '') => {
+    const handleNavigation = (targetView, filter = 'all', searchQuery = '', merchantId = '') => {
         if (targetView === 'homepage') {
             navigateTo('homepage', '/');
         } else if (targetView === 'login') {
@@ -312,6 +313,7 @@ function App() {
         } else if (targetView === 'products') {
             setProductFilter(filter);
             setGlobalSearchQuery(searchQuery);
+            setMerchantFilterId(merchantId);
             navigateTo('products', '/produk');
         } else if (targetView === 'merchants') {
             navigateTo('merchants', '/merchants');
@@ -414,7 +416,7 @@ function App() {
             case 'classifieds':
                 return <ClassifiedsCatalogView {...dashboardProps} />;
             case 'products':
-                return <ProductsCatalogView {...dashboardProps} initialFilter={productFilter} initialSearchQuery={globalSearchQuery} />;
+                return <ProductsCatalogView {...dashboardProps} initialFilter={productFilter} initialSearchQuery={globalSearchQuery} initialMerchantId={merchantFilterId} />;
             case 'merchants':
                 return <MerchantDirectoryView {...dashboardProps} />;
             case 'terms':

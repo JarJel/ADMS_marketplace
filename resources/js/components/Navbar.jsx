@@ -98,9 +98,9 @@ export default function Navbar({
                         Produk Digital
                     </button>
                     <button 
-                        onClick={() => onNavigate('merchants')}
+                        onClick={() => onNavigate('products', 'vendor')}
                         className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${
-                            currentView === 'merchants' 
+                            currentView === 'products' // Simplified for now
                                 ? 'bg-slate-200/80 dark:bg-slate-700/80 text-slate-900 dark:text-white shadow-sm' 
                                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                         }`}

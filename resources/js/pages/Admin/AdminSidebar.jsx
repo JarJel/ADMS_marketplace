@@ -15,192 +15,176 @@ import {
     Settings, 
     Activity,
     LogOut,
-    ChevronDown,
-    Menu
+    ShieldCheck
 } from 'lucide-react';
 
-/**
- * Komponen: SidebarLogo
- * Fungsi: Menampilkan logo/nama aplikasi di pojok kiri atas
- */
+// --- DATA MENU ---
+const menuGroups = [
+    {
+        title: "OVERVIEW",
+        items: [
+            { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' },
+            { id: 'analytics', label: 'Analytics & Laporan', icon: BarChart3, href: '/admin/analytics' },
+        ]
+    },
+    {
+        title: "MARKETPLACE",
+        items: [
+            { id: 'products', label: 'Kelola Produk Digital', icon: Package, href: '/admin/products' },
+            { id: 'categories', label: 'Kategori & Etalase', icon: Tags, href: '/admin/categories' },
+            { id: 'transactions', label: 'Transaksi Marketplace', icon: ShoppingCart, href: '/admin/transactions', badge: '12', badgeColor: 'bg-rose-500' },
+        ]
+    },
+    {
+        title: "ADVERTISING",
+        items: [
+            { id: 'ads-moderation', label: 'Moderasi Iklan Masuk', icon: Megaphone, href: '/admin/ads/moderation', badge: '5', badgeColor: 'bg-amber-500' },
+            { id: 'ads-packages', label: 'Kelola Paket Iklan', icon: Layers, href: '/admin/ads/packages' },
+            { id: 'ads-reports', label: 'Laporan Klik & Tayang', icon: MousePointerClick, href: '/admin/ads/reports' },
+        ]
+    },
+    {
+        title: "PENGGUNA & VENDOR",
+        items: [
+            { id: 'customers', label: 'Kelola Customer', icon: Users, href: '/admin/customers' },
+            { id: 'merchants', label: 'Verifikasi Merchant/Toko', icon: Store, href: '/admin/merchants', badge: '3', badgeColor: 'bg-amber-500' },
+        ]
+    },
+    {
+        title: "KEUANGAN",
+        items: [
+            { id: 'payouts', label: 'Penarikan Dana / Payouts', icon: Wallet, href: '/admin/finance/payouts' },
+            { id: 'commissions', label: 'Komisi & Fee Platform', icon: Percent, href: '/admin/finance/commissions' },
+        ]
+    },
+    {
+        title: "SISTEM",
+        items: [
+            { id: 'settings', label: 'Pengaturan Web', icon: Settings, href: '/admin/settings' },
+            { id: 'logs', label: 'Log Aktivitas', icon: Activity, href: '/admin/logs' },
+        ]
+    }
+];
+
+// --- 1. SidebarLogo ---
 const SidebarLogo = () => (
-    <div className="h-16 flex items-center px-6 border-b border-slate-800/50 shrink-0">
-        <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                <span className="text-white font-bold text-lg leading-none">A</span>
-            </div>
-            <span className="text-white font-bold text-lg tracking-wide">ADMS Admin</span>
+    <div className="flex items-center gap-3 px-6 py-6 border-b border-slate-800/60">
+        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 shadow-lg shadow-indigo-500/20">
+            <ShieldCheck className="w-6 h-6 text-white" />
+        </div>
+        <div>
+            <h1 className="text-xl font-black text-white tracking-tight leading-none">ADMS</h1>
+            <p className="text-[10px] font-bold text-indigo-400 tracking-widest uppercase mt-0.5">Superadmin</p>
         </div>
     </div>
 );
 
-/**
- * Komponen: SidebarMenuItem
- * Fungsi: Menampilkan individual link menu dengan support icon, badge, dan active state
- */
-const SidebarMenuItem = ({ icon: Icon, label, isActive, badgeCount, onClick }) => {
+// --- 2. SidebarMenuItem ---
+const SidebarMenuItem = ({ item, isActive, onClick }) => {
+    const Icon = item.icon;
+    
     return (
         <button
-            onClick={onClick}
-            className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg mb-1 transition-all duration-200 group ${
+            onClick={() => onClick(item.id)}
+            className={`w-full flex items-center justify-between px-6 py-3 transition-all duration-200 group ${
                 isActive 
                     ? 'bg-indigo-600/10 border-l-4 border-indigo-500 text-indigo-400' 
-                    : 'text-slate-300 hover:bg-slate-800/50 hover:text-white border-l-4 border-transparent'
+                    : 'border-l-4 border-transparent text-slate-300 hover:bg-slate-800/50 hover:text-slate-100'
             }`}
         >
             <div className="flex items-center gap-3">
-                <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-500' : 'text-slate-400 group-hover:text-slate-300'}`} />
-                <span className="text-sm font-medium">{label}</span>
+                <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-400' : 'text-slate-400 group-hover:text-slate-200'}`} strokeWidth={isActive ? 2.5 : 2} />
+                <span className={`text-sm ${isActive ? 'font-bold' : 'font-medium'}`}>
+                    {item.label}
+                </span>
             </div>
-            {badgeCount && (
-                <span className="px-2 py-0.5 text-[10px] font-bold bg-pink-500/20 text-pink-400 rounded-full border border-pink-500/20">
-                    {badgeCount}
+            
+            {item.badge && (
+                <span className={`text-[10px] font-bold text-white px-2 py-0.5 rounded-full ${item.badgeColor || 'bg-indigo-500'} shadow-sm`}>
+                    {item.badge}
                 </span>
             )}
         </button>
     );
 };
 
-/**
- * Komponen: SidebarMenuGroup
- * Fungsi: Mengelompokkan menu berdasarkan label kategori
- */
-const SidebarMenuGroup = ({ title, children }) => (
+// --- 3. SidebarMenuGroup ---
+const SidebarMenuGroup = ({ group, activeItem, onNavigate }) => (
     <div className="mb-6">
-        <h3 className="px-6 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-3">
-            {title}
+        <h3 className="px-6 mb-2 text-[10px] font-black text-slate-500 uppercase tracking-wider">
+            {group.title}
         </h3>
-        <div className="px-3">
-            {children}
+        <div className="space-y-0.5">
+            {group.items.map((item) => (
+                <SidebarMenuItem 
+                    key={item.id} 
+                    item={item} 
+                    isActive={activeItem === item.id} 
+                    onClick={onNavigate} 
+                />
+            ))}
         </div>
     </div>
 );
 
-/**
- * Komponen: SidebarUserProfile
- * Fungsi: Menampilkan profil superadmin dan tombol logout di bagian bawah sidebar
- */
+// --- 4. SidebarUserProfile ---
 const SidebarUserProfile = () => (
-    <div className="p-4 border-t border-slate-800/50 bg-slate-900/30">
-        <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-800/50 transition-colors cursor-pointer group">
+    <div className="p-4 mt-auto border-t border-slate-800/60 bg-slate-900/30">
+        <div className="flex items-center gap-3 mb-4 px-2">
             <div className="relative">
                 <img 
-                    src="https://ui-avatars.com/api/?name=Super+Admin&background=6366f1&color=fff" 
-                    alt="Superadmin" 
-                    className="w-10 h-10 rounded-full border-2 border-slate-700 group-hover:border-indigo-500 transition-colors"
+                    src="https://ui-avatars.com/api/?name=Super+Admin&background=4f46e5&color=fff&bold=true" 
+                    alt="Admin Avatar" 
+                    className="w-10 h-10 rounded-full border border-slate-700 object-cover"
                 />
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-950 rounded-full"></span>
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-950 rounded-full"></div>
             </div>
-            <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-white truncate">Super Admin</p>
-                <p className="text-xs text-slate-400 truncate">System Administrator</p>
+            <div className="flex-1 overflow-hidden">
+                <p className="text-sm font-bold text-white truncate">Administrator</p>
+                <p className="text-xs text-slate-400 truncate">System Admin</p>
             </div>
-            <button className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors">
-                <LogOut className="w-4 h-4" />
-            </button>
         </div>
+        <button className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-bold text-slate-300 bg-slate-800/50 hover:bg-rose-500/10 hover:text-rose-400 border border-slate-700/50 transition-all duration-200">
+            <LogOut className="w-4 h-4" />
+            <span>Keluar Sistem</span>
+        </button>
     </div>
 );
 
-/**
- * Komponen Induk: AdminSidebar
- */
-export default function AdminSidebar({ isMobileOpen, setMobileOpen }) {
-    // State untuk demo active menu
-    const [activeMenu, setActiveMenu] = useState('Dashboard');
-
-    // Data konfigurasi Menu (Array of Objects)
-    const menuData = [
-        {
-            groupName: "Overview",
-            items: [
-                { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-                { id: "analytics", label: "Analytics & Laporan", icon: BarChart3 }
-            ]
-        },
-        {
-            groupName: "Marketplace",
-            items: [
-                { id: "kelola_produk", label: "Kelola Produk Digital", icon: Package },
-                { id: "kategori", label: "Kategori & Etalase", icon: Tags },
-                { id: "transaksi", label: "Transaksi Marketplace", icon: ShoppingCart, badgeCount: "12" }
-            ]
-        },
-        {
-            groupName: "Advertising",
-            items: [
-                { id: "moderasi_iklan", label: "Moderasi Iklan Masuk", icon: Megaphone, badgeCount: "5" },
-                { id: "paket_iklan", label: "Kelola Paket Iklan", icon: Layers },
-                { id: "laporan_iklan", label: "Laporan Klik & Tayang", icon: MousePointerClick }
-            ]
-        },
-        {
-            groupName: "Pengguna & Vendor",
-            items: [
-                { id: "customers", label: "Kelola Customer", icon: Users },
-                { id: "verifikasi", label: "Verifikasi Merchant", icon: Store, badgeCount: "3" }
-            ]
-        },
-        {
-            groupName: "Keuangan",
-            items: [
-                { id: "payouts", label: "Penarikan Dana", icon: Wallet },
-                { id: "fee", label: "Komisi & Fee Platform", icon: Percent }
-            ]
-        },
-        {
-            groupName: "Sistem",
-            items: [
-                { id: "settings", label: "Pengaturan Web", icon: Settings },
-                { id: "log", label: "Log Aktivitas", icon: Activity }
-            ]
+// --- 5. AdminSidebar (Parent Component) ---
+export default function AdminSidebar({ activeItem = 'dashboard', onNavigate }) {
+    const handleNavigate = (id) => {
+        if (onNavigate) {
+            onNavigate(id);
         }
-    ];
+    };
 
     return (
-        <>
-            {/* Mobile Overlay */}
-            {isMobileOpen && (
-                <div 
-                    className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 lg:hidden"
-                    onClick={() => setMobileOpen(false)}
-                />
-            )}
+        <aside className="w-72 h-screen bg-slate-950 border-r border-slate-800/60 flex flex-col shrink-0">
+            {/* Header / Logo */}
+            <SidebarLogo />
 
-            {/* Sidebar Container */}
-            <aside 
-                className={`fixed top-0 left-0 z-50 h-screen w-72 bg-slate-950 border-r border-slate-800/60 flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-                    isMobileOpen ? 'translate-x-0' : '-translate-x-full'
-                }`}
-            >
-                <SidebarLogo />
+            {/* Menu List dengan Custom Scrollbar Hiding tapi tetap bisa di-scroll */}
+            <div className="flex-1 overflow-y-auto py-6 hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                {menuGroups.map((group, index) => (
+                    <SidebarMenuGroup 
+                        key={index} 
+                        group={group} 
+                        activeItem={activeItem} 
+                        onNavigate={handleNavigate} 
+                    />
+                ))}
+            </div>
 
-                {/* Menu Scroll Area - hide scrollbar but allow scrolling */}
-                <div className="flex-1 overflow-y-auto py-6" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                    <style>{`
-                        .flex-1.overflow-y-auto::-webkit-scrollbar {
-                            display: none;
-                        }
-                    `}</style>
-                    
-                    {menuData.map((group, index) => (
-                        <SidebarMenuGroup key={index} title={group.groupName}>
-                            {group.items.map((item) => (
-                                <SidebarMenuItem
-                                    key={item.id}
-                                    icon={item.icon}
-                                    label={item.label}
-                                    badgeCount={item.badgeCount}
-                                    isActive={activeMenu === item.label}
-                                    onClick={() => setActiveMenu(item.label)}
-                                />
-                            ))}
-                        </SidebarMenuGroup>
-                    ))}
-                </div>
+            {/* User Profile Footer */}
+            <SidebarUserProfile />
 
-                <SidebarUserProfile />
-            </aside>
-        </>
+            {/* Global style untuk menyembunyikan scrollbar di webkit browser (opsional) */}
+            <style>{`
+                .hide-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+            `}</style>
+        </aside>
     );
 }

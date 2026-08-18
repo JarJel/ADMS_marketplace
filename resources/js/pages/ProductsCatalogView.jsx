@@ -410,7 +410,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                 className={`p-1.5 rounded-lg transition-all ${
                                     viewMode === 'grid' 
                                         ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-100 dark:border-slate-600/30' 
-                                        : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-305'
+                                        : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
                                 }`}
                                 title="Grid View"
                             >
@@ -561,7 +561,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                     <div 
                                         key={prod.id}
                                         onClick={() => setSelectedProduct(prod)}
-                                        className="rounded-2xl border border-slate-305 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 overflow-hidden flex flex-col sm:flex-row justify-between group transition-all duration-300 hover:-translate-y-1 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-lg hover:shadow-indigo-500/5 relative cursor-pointer p-4 gap-4 dark:backdrop-blur-md"
+                                        className="rounded-2xl border border-slate-300 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 overflow-hidden flex flex-col sm:flex-row justify-between group transition-all duration-300 hover:-translate-y-1 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-lg hover:shadow-indigo-500/5 relative cursor-pointer p-4 gap-4 dark:backdrop-blur-md"
                                     >
                                         {/* Left Side: Product Image */}
                                         <div className="w-full sm:w-[200px] aspect-[16/10] sm:aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800 rounded-xl relative flex-shrink-0">
@@ -579,7 +579,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                         <div className="flex-1 flex flex-col justify-between py-1">
                                             <div className="space-y-2">
                                                 <h4 className="font-extrabold text-base text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300 leading-snug">{prod.title}</h4>
-                                                <p className="text-xs text-slate-400 dark:text-slate-550 line-clamp-2 leading-relaxed">{prod.description || 'Tidak ada deskripsi singkat untuk aset digital ini.'}</p>
+                                                <p className="text-xs text-slate-400 dark:text-slate-500 line-clamp-2 leading-relaxed">{prod.description || 'Tidak ada deskripsi singkat untuk aset digital ini.'}</p>
                                             </div>
 
                                             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">
@@ -610,7 +610,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                             <div className="flex gap-2 w-auto sm:w-full">
                                                 <button 
                                                     onClick={(e) => { e.stopPropagation(); toggleWishlist(prod.id); }}
-                                                    className="p-2 border border-slate-200 dark:border-slate-700 hover:border-rose-200 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-slate-400 dark:text-slate-505 hover:text-rose-505 rounded-xl transition-all active:scale-95"
+                                                    className="p-2 border border-slate-200 dark:border-slate-700 hover:border-rose-200 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-slate-400 dark:text-slate-500 hover:text-rose-505 rounded-xl transition-all active:scale-95"
                                                     title="Simpan Wishlist"
                                                 >
                                                     <Heart className="w-4 h-4" />
@@ -636,7 +636,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                 <button
                                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                     disabled={currentPage === 1}
-                                    className="p-2.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:hover:bg-white dark:disabled:hover:bg-slate-900 text-slate-600 dark:text-slate-350 transition-all active:scale-95"
+                                    className="p-2.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:hover:bg-white dark:disabled:hover:bg-slate-900 text-slate-600 dark:text-slate-300 transition-all active:scale-95"
                                 >
                                     <ChevronLeft className="w-4 h-4" />
                                 </button>
@@ -649,7 +649,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                         className={`w-9 h-9 rounded-xl border text-xs font-bold transition-all active:scale-95 ${
                                             currentPage === pageNum
                                                 ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/10'
-                                                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-350 border-slate-300 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
+                                                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
                                         }`}
                                     >
                                         {pageNum}
@@ -660,7 +660,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                 <button
                                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, paginationData.last_page))}
                                     disabled={currentPage === paginationData.last_page}
-                                    className="p-2.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:hover:bg-white dark:disabled:hover:bg-slate-900 text-slate-600 dark:text-slate-350 transition-all active:scale-95"
+                                    className="p-2.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:hover:bg-white dark:disabled:hover:bg-slate-900 text-slate-600 dark:text-slate-300 transition-all active:scale-95"
                                 >
                                     <ChevronRight className="w-4 h-4" />
                                 </button>

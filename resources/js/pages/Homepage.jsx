@@ -512,24 +512,25 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                 </div>
 
-                {/* Stats bar */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 relative z-10">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="relative bg-gradient-to-br from-teal-900/20 to-teal-950/10 border border-teal-500/10 rounded-2xl p-6 text-center overflow-hidden group hover:border-teal-500/30 hover:-translate-y-0.5 transition-all duration-300">
-                            <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <span className="block text-3xl font-black text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text">15.4K+</span>
-                            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-1 block">Iklan Baris Aktif</span>
-                        </div>
-                        <div className="relative bg-gradient-to-br from-indigo-900/20 to-indigo-950/10 border border-indigo-500/10 rounded-2xl p-6 text-center overflow-hidden group hover:border-indigo-500/30 hover:-translate-y-0.5 transition-all duration-300">
-                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <span className="block text-3xl font-black text-transparent bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text">9.8K+</span>
-                            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-1 block">Aset Digital Terverifikasi</span>
-                        </div>
-                        <div className="relative bg-gradient-to-br from-slate-800/20 to-slate-900/10 border border-slate-700/20 rounded-2xl p-6 text-center overflow-hidden group hover:border-slate-600/40 hover:-translate-y-0.5 transition-all duration-300">
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/3 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <span className="block text-3xl font-black text-transparent bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text">25K+</span>
-                            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-1 block">Pengguna & Merchant Aktif</span>
-                        </div>
+                {/* Social Stats footer */}
+                <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
+                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
+                    }`}>
+                        <span className="block text-3xl font-black text-teal-400">15.4K+</span>
+                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Iklan Baris Aktif</span>
+                    </div>
+                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
+                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
+                    }`}>
+                        <span className="block text-3xl font-black text-indigo-400">9.8K+</span>
+                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Aset Digital Terverifikasi</span>
+                    </div>
+                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
+                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
+                    }`}>
+                        <span className="block text-3xl font-black text-white">25K+</span>
+                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Pengguna & Merchant Aktif</span>
                     </div>
                 </div>
             </section>
@@ -820,8 +821,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                                     {/* Bottom Info Row */}
                                     <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                                        <span className="text-[10px] text-slate-400 dark:text-slate-550 flex items-center gap-1 font-semibold uppercase tracking-wide">
-                                            <Shield className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />
+                                        <span className="text-[10px] text-slate-400 dark:text-slate-500 flex items-center gap-1 font-semibold uppercase tracking-wide">
+                                            <Shield className="w-3.5 h-3.5 text-slate-300 dark:text-slate-400" />
                                             Official Merchant
                                         </span>
                                         <button 
@@ -872,7 +873,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
                                     activeTab === 'buyer' 
                                         ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200/30 dark:border-slate-600/30' 
-                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-255'
+                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                                 }`}
                             >
                                 <ShoppingBag className="w-3.5 h-3.5" />
@@ -940,7 +941,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                             {step.step}
                                         </span>
 
-                                        <h4 className="font-extrabold text-sm text-slate-850 dark:text-slate-200 leading-tight mb-2 pr-6 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                        <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-2 pr-6 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                                             {step.title}
                                         </h4>
                                         
@@ -1000,7 +1001,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     <Download className="w-5 h-5" />
                                 </div>
                                 <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Akses Instant Digital Download</h4>
-                                <p className="text-xs text-slate-400 dark:text-slate-505 leading-relaxed">
+                                <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
                                     Setelah pembayaran berhasil terkonfirmasi, file digital langsung siap diunduh tanpa perlu menunggu konfirmasi manual.
                                 </p>
                             </div>
@@ -1013,7 +1014,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     <Zap className="w-5 h-5" />
                                 </div>
                                 <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Iklan Gratis & Promosi Berbayar</h4>
-                                <p className="text-xs text-slate-400 dark:text-slate-505 leading-relaxed">
+                                <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
                                     Dukungan penuh untuk pelaku UMKM dan kreator memasang iklan gratis atau memilih paket boost posisi teratas.
                                 </p>
                             </div>
@@ -1026,7 +1027,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     <Shield className="w-5 h-5" />
                                 </div>
                                 <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Keamanan Transaksi Terjamin</h4>
-                                <p className="text-xs text-slate-400 dark:text-slate-550 leading-relaxed">
+                                <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
                                     Sistem proteksi transaksi dan opsi Payment Gateway terintegrasi untuk menjamin keamanan dana pembeli dan merchant.
                                 </p>
                             </div>
@@ -1039,7 +1040,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     <Users className="w-5 h-5" />
                                 </div>
                                 <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Sistem Multi-Vendor Merchant</h4>
-                                <p className="text-xs text-slate-400 dark:text-slate-505 leading-relaxed">
+                                <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
                                     Siapapun dapat membuka toko digital, mengunggah karya, serta mengelola pesanan dan laporan pendapatan secara mandiri.
                                 </p>
                             </div>
@@ -1075,13 +1076,13 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         {/* Card 1 */}
                         <div className="p-8 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px] dark:backdrop-blur-md">
                             <div>
-                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-4" />
+                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-400 mb-4" />
                                 <div className="flex items-center gap-1 mb-4">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
                                     ))}
                                 </div>
-                                <p className="text-xs text-slate-600 dark:text-slate-305 leading-relaxed italic mb-6">
+                                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic mb-6">
                                     "ADMS membantu agensi saya mendapatkan ratusan calon klien dari iklan promosi gratis dan berbayarnya. Konversinya tinggi banget!"
                                 </p>
                             </div>
@@ -1089,10 +1090,10 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 <img 
                                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop" 
                                     alt="Rian Prasetya" 
-                                    className="w-10 h-10 rounded-full border border-slate-250 dark:border-slate-700 object-cover"
+                                    className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
                                 />
                                 <div>
-                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-205">Rian Prasetya</h5>
+                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-200">Rian Prasetya</h5>
                                     <span className="text-[10px] text-slate-400 dark:text-slate-500">Digital Marketer & Agency Owner</span>
                                 </div>
                             </div>
@@ -1101,13 +1102,13 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         {/* Card 2 */}
                         <div className="p-8 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px] dark:backdrop-blur-md">
                             <div>
-                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-4" />
+                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-400 mb-4" />
                                 <div className="flex items-center gap-1 mb-4">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
                                     ))}
                                 </div>
-                                <p className="text-xs text-slate-600 dark:text-slate-350 leading-relaxed italic mb-6">
+                                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic mb-6">
                                     "Sebagai merchant di ADMS, penjualan template Canva saya meningkat drastis. Penarikan dana cepat dan pembeli bisa download otomatis."
                                 </p>
                             </div>
@@ -1115,10 +1116,10 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 <img 
                                     src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop" 
                                     alt="Siti Rahmawati" 
-                                    className="w-10 h-10 rounded-full border border-slate-250 dark:border-slate-700 object-cover"
+                                    className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
                                 />
                                 <div>
-                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-205">Siti Rahmawati</h5>
+                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-200">Siti Rahmawati</h5>
                                     <span className="text-[10px] text-slate-400 dark:text-slate-500">Merchant Template Canva</span>
                                 </div>
                             </div>
@@ -1127,13 +1128,13 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         {/* Card 3 */}
                         <div className="p-8 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px] dark:backdrop-blur-md">
                             <div>
-                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-4" />
+                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-400 mb-4" />
                                 <div className="flex items-center gap-1 mb-4">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
                                     ))}
                                 </div>
-                                <p className="text-xs text-slate-600 dark:text-slate-350 leading-relaxed italic mb-6">
+                                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic mb-6">
                                     "Source code Next.js yang saya beli di marketplace ADMS sangat memuaskan. Lengkap dengan panduan dan penjual sangat responsif."
                                 </p>
                             </div>
@@ -1141,10 +1142,10 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 <img 
                                     src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop" 
                                     alt="Deni Kurniawan" 
-                                    className="w-10 h-10 rounded-full border border-slate-250 dark:border-slate-700 object-cover"
+                                    className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
                                 />
                                 <div>
-                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-205">Deni Kurniawan</h5>
+                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-200">Deni Kurniawan</h5>
                                     <span className="text-[10px] text-slate-400 dark:text-slate-500">Pembeli Aset Web Developer</span>
                                 </div>
                             </div>
@@ -1208,7 +1209,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 >
                                     <button
                                         onClick={() => setExpandedFaq(isOpen ? null : index)}
-                                        className="w-full p-6 text-left flex items-center justify-between gap-4 font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-250 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
+                                        className="w-full p-6 text-left flex items-center justify-between gap-4 font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
                                     >
                                         <span>{faq.q}</span>
                                         <ChevronDown 
@@ -1304,44 +1305,6 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                 )}
             </div>
 
-            {/* G. CTA Banner Section (Sebelum Footer) */}
-            <ScrollFadeIn>
-            <section className="py-16 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-[#0A1B33] rounded-3xl p-8 sm:p-12 md:p-16 text-left relative overflow-hidden shadow-2xl">
-                        <div className="relative z-10 space-y-6 max-w-3xl">
-                            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-3.5 py-1.5 rounded-full uppercase tracking-wider">
-                                <Star className="w-3.5 h-3.5 fill-current text-sky-400" />
-                                Siap Mengembangkan Bisnis Anda?
-                            </span>
-                            <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-                                Mulai Temukan Produk Digital & Pasang Iklan Anda Hari Ini!
-                            </h2>
-                            <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                                Bergabunglah bersama ribuan pengguna, merchant, dan advertiser di ADMS (PT. Armada Digital Marketing Syariah).
-                            </p>
-                            
-                            <div className="flex flex-wrap items-center gap-4 pt-4">
-                                <button 
-                                    onClick={() => onNavigateToDashboard ? onNavigateToDashboard() : onNavigateToLogin()}
-                                    className="bg-[#0EA5E9] hover:bg-[#0284c7] text-white text-xs font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-sky-500/20 transition-all flex items-center gap-2 group"
-                                >
-                                    <span>Jelajahi Marketplace</span>
-                                    <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
-                                </button>
-                                <button 
-                                    onClick={onNavigateToClassifieds}
-                                    className="bg-transparent border border-emerald-500/30 hover:border-emerald-500/50 hover:bg-emerald-500/5 text-emerald-400 text-xs font-bold py-3.5 px-6 rounded-xl cursor-pointer transition-all flex items-center gap-2"
-                                >
-                                    <CheckCircle className="w-4 h-4 text-emerald-400" />
-                                    <span>Pasang Iklan Gratis Rp0</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            </ScrollFadeIn>
 
             {/* H. Redesigned Premium Footer */}
             <footer className="bg-[#071324] text-slate-100 pt-20 pb-10 border-t border-slate-900">
@@ -1352,19 +1315,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         
                         {/* Company logo/info block (5 cols) */}
                         <div className="md:col-span-5 space-y-6">
-                            {/* Footer logo - real PNG (transparent bg) + wordmark */}
-                            <div className="flex items-center gap-3">
-                                <img 
-                                    src="/assets/Images/adms-symbol.png" 
-                                    alt="ADMS" 
-                                    className="h-14 w-auto object-contain drop-shadow-lg" 
-                                />
-                                <div className="flex flex-col leading-none">
-                                    <span className="font-black text-2xl tracking-tight text-white leading-none">
-                                        ADM<span className="text-transparent bg-gradient-to-r from-indigo-400 to-teal-400 bg-clip-text">S</span>
-                                    </span>
-                                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] mt-1">Digital Marketplace</span>
-                                </div>
+                            <div className="inline-flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-800 max-w-[180px]">
+                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-8 object-contain" />
+                                <img src="/assets/Images/adms-text.png" alt="ADMS Text" className="h-6 object-contain" />
                             </div>
                             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
                                 Platform terpadu Marketplace Produk Digital, Multi-Vendor Merchant, dan Platform Pemasangan Iklan Gratis & Promosi Berbayar untuk mengembangkan bisnis Anda.
@@ -1435,12 +1388,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     </div>
 
                     {/* Bottom Status bar (with divider line) */}
-                    <div className="pt-8 border-t border-slate-900/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                    <div className="pt-8 border-t border-slate-900/60 flex flex-col items-center justify-center gap-4 text-xs text-slate-500 text-center">
                         <p>&copy; 2026 ADMS (PT. Armada Digital Marketing Syariah). All rights reserved.</p>
-                        <p className="flex items-center gap-1.5 font-medium text-slate-400">
-                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
-                            Platform Status: <span className="text-emerald-500 font-bold">Operational & Verified</span>
-                        </p>
                     </div>
                 </div>
             </footer>

@@ -22,13 +22,14 @@ const CATEGORY_THEME_MAP = {
   'offline-const': { themeClass: 'theme-offline', labelBadge: 'Layanan Offline', color: '#f59e0b' }
 };
 
-export default function CatalogModal({ isOpen, onClose, onSelectService }) {
+export default function CatalogModal({ isOpen, onClose, onSelectService, catalog: catalogProp }) {
+  const catalog = catalogProp ?? ADMS_CATALOG;
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
 
   if (!isOpen) return null;
 
-  const filteredCategories = ADMS_CATALOG.map(cat => {
+  const filteredCategories = catalog.map(cat => {
     const matchingItems = cat.items.filter(item => 
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.desc.toLowerCase().includes(searchTerm.toLowerCase())
@@ -71,9 +72,9 @@ export default function CatalogModal({ isOpen, onClose, onSelectService }) {
               className={`chip chip-all ${activeCategory === 'all' ? 'active' : ''}`} 
               onClick={() => setActiveCategory('all')}
             >
-              Semua Paket ({ADMS_CATALOG.reduce((acc, c) => acc + c.items.length, 0)})
+              Semua Paket ({catalog.reduce((acc, c) => acc + c.items.length, 0)})
             </button>
-            {ADMS_CATALOG.map(cat => {
+            {catalog.map(cat => {
               const theme = CATEGORY_THEME_MAP[cat.id] || { themeClass: 'theme-web' };
               return (
                 <button 

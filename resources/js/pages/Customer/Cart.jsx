@@ -11,8 +11,10 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
     const [selectedItemIds, setSelectedItemIds] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [promoCode, setPromoCode] = useState('');
+    const [promoLabel, setPromoLabel] = useState('');
     const [discount, setDiscount] = useState(0);
     const [promoApplied, setPromoApplied] = useState(false);
+    const [promoError, setPromoError] = useState('');
     const [confirmModal, setConfirmModal] = useState({ isOpen: false, type: '', id: null, title: '', message: '' });
 
     useEffect(() => {
@@ -66,7 +68,6 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
             const allKeys = loadedItems.map(item => (item.id || item.product_id || item.product?.id)?.toString()).filter(Boolean);
             setSelectedItemIds(allKeys);
         } catch (err) {
-            console.error("Fetch cart error:", err);
             const guestItems = JSON.parse(localStorage.getItem('adms_guest_cart') || '[]');
             setCartItems(guestItems);
             const allKeys = guestItems.map(item => (item.id || item.product_id || item.product?.id)?.toString()).filter(Boolean);
@@ -157,7 +158,6 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
                     return;
                 }
             } catch (err) {
-                console.error(err);
             }
         }
 
@@ -173,13 +173,30 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
         setSelectedItemIds([]);
     };
 
-    const handleApplyPromo = (e) => {
+    const handleApplyPromo = async (e) => {
         e.preventDefault();
-        if (promoCode.trim().toUpperCase() === 'ADMSBARU') {
-            setDiscount(10000);
-            setPromoApplied(true);
-        } else if (promoCode.trim()) {
-            alert('Kode promo tidak valid atau telah kadaluarsa.');
+        setPromoError('');
+        if (!promoCode.trim()) return;
+        try {
+            const res = await fetch('/api/customer/promo/validate', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ code: promoCode.trim() }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setDiscount(data.data.discount);
+                setPromoLabel(data.data.label);
+                setPromoApplied(true);
+            } else {
+                setPromoError(data.message || 'Kode promo tidak valid.');
+            }
+        } catch {
+            setPromoError('Gagal menghubungi server. Coba lagi.');
         }
     };
 
@@ -466,9 +483,38 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
 
                         {/* Order Summary Sticky Panel (5 Columns) */}
                         <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-24">
+                            {/* Promo Code Form */}
+                            <form onSubmit={handleApplyPromo} className={`rounded-2xl border p-4 ${darkMode ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200 shadow-xs'}`}>
+                                <p className={`text-xs font-bold mb-2 flex items-center gap-1.5 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                                    <Tag className="w-3.5 h-3.5 text-teal-500" /> Kode Promo / Voucher
+                                </p>
+                                {promoApplied ? (
+                                    <div className="flex items-center gap-2 text-emerald-500 text-xs font-bold bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2">
+                                        <CheckCircle className="w-4 h-4 shrink-0" />
+                                        <span>{promoLabel} — {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(discount)} diterapkan!</span>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={promoCode}
+                                                onChange={(e) => { setPromoCode(e.target.value); setPromoError(''); }}
+                                                placeholder="Masukkan kode promo..."
+                                                className={`flex-1 text-xs rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 ${darkMode ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-500' : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'}`}
+                                            />
+                                            <button type="submit" className="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors">
+                                                Pakai
+                                            </button>
+                                        </div>
+                                        {promoError && <p className="mt-1.5 text-xs text-rose-500 font-medium">{promoError}</p>}
+                                    </>
+                                )}
+                            </form>
+
                             <div className={`rounded-3xl border p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl ${
-                                darkMode 
-                                    ? 'bg-gradient-to-br from-slate-900 to-[#0c162b] border-slate-800/90 shadow-black/60' 
+                                darkMode
+                                    ? 'bg-gradient-to-br from-slate-900 to-[#0c162b] border-slate-800/90 shadow-black/60'
                                     : 'bg-white border-slate-200/90 shadow-xl shadow-indigo-100/70'
                             }`}>
                                 {/* Shimmer Border Line Top */}
@@ -489,7 +535,7 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
 
                                     {discount > 0 && (
                                         <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-semibold">
-                                            <span>Potongan Voucher Promo</span>
+                                            <span>{promoLabel || 'Potongan Voucher Promo'}</span>
                                             <span>- {formatCurrency(discount)}</span>
                                         </div>
                                     )}

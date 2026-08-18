@@ -1,5 +1,5 @@
-import React from 'react';
-import { Upload, Check } from 'lucide-react';
+import React, { useRef } from 'react';
+import { Upload, Check, User } from 'lucide-react';
 
 export default function SettingsTab({
     profileName,
@@ -15,8 +15,12 @@ export default function SettingsTab({
     confirmPassword,
     setConfirmPassword,
     saveSuccess,
-    handleProfileSave
+    handleProfileSave,
+    avatarUrl,
+    onAvatarUpload,
 }) {
+    const fileInputRef = useRef(null);
+
     return (
         <form onSubmit={handleProfileSave} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-8 text-left">
             <div>
@@ -33,13 +37,16 @@ export default function SettingsTab({
 
             {/* Profile Photo Upload UI */}
             <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-slate-100">
-                <img 
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop" 
-                    alt="Profile Preview" 
-                    className="w-16 h-16 rounded-full object-cover border border-slate-100 shadow-sm"
-                />
+                {avatarUrl ? (
+                    <img src={avatarUrl} alt="Profile Preview" className="w-16 h-16 rounded-full object-cover border border-slate-100 shadow-sm" />
+                ) : (
+                    <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
+                        <User className="w-7 h-7 text-slate-400" />
+                    </div>
+                )}
                 <div className="space-y-1 text-center sm:text-left">
-                    <button type="button" className="px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
+                    <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={onAvatarUpload} />
+                    <button type="button" onClick={() => fileInputRef.current?.click()} className="px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
                         <Upload className="w-4 h-4 text-slate-500" />
                         Unggah Foto Baru
                     </button>

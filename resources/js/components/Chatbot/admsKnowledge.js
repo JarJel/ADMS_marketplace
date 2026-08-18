@@ -19,7 +19,7 @@ export const ADMS_INFO = {
   ]
 };
 
-export const ADMS_CATALOG = [
+let _catalog = [
   {
     id: "digital-ads",
     category: "1. DIGITAL ADS (IKLAN DIGITAL)",
@@ -281,6 +281,13 @@ export const ADMS_CATALOG = [
     ]
   }
 ];
+
+export let ADMS_CATALOG = _catalog;
+
+export function updateCatalog(newCatalog) {
+  _catalog = newCatalog;
+  ADMS_CATALOG = newCatalog;
+}
 
 export const CROSS_SELL_RULES = [
   {

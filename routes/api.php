@@ -9,6 +9,7 @@ use App\Http\Controllers\Customer\AdController;
 use App\Http\Controllers\Customer\MerchantRegistrationController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\NotificationController;
+use App\Http\Controllers\Customer\PromoController;
 
 use App\Http\Controllers\Merchant\StoreController as MerchantStoreController;
 use App\Http\Controllers\Merchant\ProductController as MerchantProductController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\Admin\AdModerationController;
 use App\Http\Controllers\Admin\CategoryAndPackageController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController;
+use App\Http\Controllers\Admin\OverviewController as AdminOverviewController;
 
 use App\Http\Controllers\Public\ProductController as PublicProductController;
 use App\Http\Controllers\Public\CategoryController as PublicCategoryController;
@@ -32,10 +34,44 @@ use App\Http\Controllers\Public\AdController as PublicAdController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Merchant;
 
+Route::get('/payment-config', function () {
+    return response()->json([
+        'success' => true,
+        'data'    => config('payment.bank_accounts', []),
+    ]);
+});
+
 Route::get('/hello', function () {
     return response()->json([
         'message' => 'Hello from Laravel API!',
         'status' => 'success'
+    ]);
+});
+
+Route::get('/public/service-catalog', function () {
+    $path = storage_path('app/service_catalog.json');
+    if (!file_exists($path)) {
+        return response()->json(['success' => true, 'data' => []]);
+    }
+    return response()->json(['success' => true, 'data' => json_decode(file_get_contents($path), true)]);
+});
+
+Route::get('/public/packages', function () {
+    $packages = \App\Models\Package::where('is_active', true)
+        ->where('type', 'premium')
+        ->get(['id', 'name', 'price', 'duration_days', 'benefits']);
+    return response()->json(['success' => true, 'data' => $packages]);
+});
+
+Route::get('/public/stats', function () {
+    return response()->json([
+        'success' => true,
+        'data'    => [
+            'totalUsers'    => \App\Models\User::count(),
+            'totalProducts' => \App\Models\Product::where('status', 'active')->count(),
+            'activeAds'     => \App\Models\Advertisement::where('status', 'approved')->count(),
+            'totalMerchants'=> \App\Models\Merchant::where('is_verified', true)->count(),
+        ],
     ]);
 });
 
@@ -44,7 +80,6 @@ Route::get('/public/products', [PublicProductController::class, 'index']);
 Route::get('/public/products/recommended', [PublicProductController::class, 'recommended']);
 Route::get('/public/products/{id}', [PublicProductController::class, 'show']);
 
-Route::get('/public/ads', [PublicAdController::class, 'index']);
 Route::post('/public/ads/{id}/click', [PublicAdController::class, 'trackClick']);
 
 Route::get('/public/merchants', function () {
@@ -66,8 +101,8 @@ Route::get('/public/ads', function () {
             return [
                 'id' => $ad->id,
                 'title' => $ad->title,
-                'category' => $ad->category->name,
-                'condition' => ucfirst($ad->condition),
+                'category' => $ad->category?->name ?? 'Umum',
+                'condition' => ucfirst($ad->condition ?? 'bekas'),
                 'price' => (float)$ad->price,
                 'location' => $ad->location,
                 'advertiser' => $ad->contact_name,
@@ -112,6 +147,9 @@ Route::middleware('auth.custom')->group(function () {
     Route::post('/customer/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/customer/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
 
+    // Promo code validation
+    Route::post('/customer/promo/validate', [PromoController::class, 'validate']);
+
     // Cart management
     Route::get('/customer/cart', [CartController::class, 'getCart']);
     Route::post('/customer/cart', [CartController::class, 'addToCart']);
@@ -129,6 +167,7 @@ Route::middleware('auth.custom')->group(function () {
     // Advertisements
     Route::get('/customer/ads', [AdController::class, 'getAds']);
     Route::post('/customer/ads', [AdController::class, 'createAd']);
+    Route::put('/customer/ads/{id}', [AdController::class, 'updateAd']);
     Route::post('/customer/ads/{id}/upgrade', [AdController::class, 'upgradeAd']);
 
     // Merchant Registration (from customer perspective)
@@ -200,5 +239,79 @@ Route::middleware('auth.custom')->group(function () {
         // Withdrawal Payout Moderation
         Route::get('/admin/withdrawals/pending', [AdminWithdrawalController::class, 'getPendingWithdrawals']);
         Route::post('/admin/withdrawals/{id}/verify', [AdminWithdrawalController::class, 'verifyWithdrawal']);
+
+        // Overview Stats & Analytics
+        Route::get('/admin/stats', [AdminOverviewController::class, 'getStats']);
+        Route::get('/admin/analytics', [AdminOverviewController::class, 'getAnalytics']);
+
+        // Service catalog (chatbot prices)
+        Route::get('/admin/service-catalog', function () {
+            $path = storage_path('app/service_catalog.json');
+            if (!file_exists($path)) return response()->json(['success' => true, 'data' => []]);
+            return response()->json(['success' => true, 'data' => json_decode(file_get_contents($path), true)]);
+        });
+        Route::post('/admin/service-catalog', function (\Illuminate\Http\Request $req) {
+            $catalog = $req->input('catalog');
+            if (!is_array($catalog)) return response()->json(['success' => false, 'message' => 'Format tidak valid.'], 422);
+            file_put_contents(storage_path('app/service_catalog.json'), json_encode($catalog, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            return response()->json(['success' => true, 'message' => 'Katalog layanan berhasil diperbarui.']);
+        });
+
+        // Commission settings
+        Route::get('/admin/commission', function () {
+            $path = storage_path('app/commission.json');
+            $data = file_exists($path) ? json_decode(file_get_contents($path), true) : ['fee_percent' => 5];
+            return response()->json(['success' => true, 'data' => $data]);
+        });
+        Route::post('/admin/commission', function (\Illuminate\Http\Request $req) {
+            $fee = max(0, min(100, (float) $req->input('fee_percent', 5)));
+            $data = ['fee_percent' => $fee];
+            file_put_contents(storage_path('app/commission.json'), json_encode($data, JSON_PRETTY_PRINT));
+            return response()->json(['success' => true, 'message' => 'Fee komisi berhasil disimpan', 'data' => $data]);
+        });
+
+        // Site Settings
+        Route::get('/admin/settings', function () {
+            $path = storage_path('app/settings.json');
+            $defaults = ['site_name' => 'ADMS Marketplace', 'contact_email' => 'support@adms.id', 'maintenance_mode' => false];
+            $settings = file_exists($path) ? json_decode(file_get_contents($path), true) : $defaults;
+            return response()->json(['success' => true, 'data' => $settings]);
+        });
+        Route::post('/admin/settings', function (\Illuminate\Http\Request $req) {
+            $data = $req->only(['site_name', 'contact_email', 'maintenance_mode']);
+            file_put_contents(storage_path('app/settings.json'), json_encode($data, JSON_PRETTY_PRINT));
+            return response()->json(['success' => true, 'message' => 'Pengaturan berhasil disimpan', 'data' => $data]);
+        });
+
+        // Products (all, with filter)
+        Route::get('/admin/products', [AdminOverviewController::class, 'getProducts']);
+        Route::post('/admin/products/{id}/status', [AdminOverviewController::class, 'toggleProductStatus']);
+
+        // Categories list
+        Route::get('/admin/categories', function () {
+            $cats = \App\Models\Category::withCount(['products', 'advertisements'])->orderBy('type')->get();
+            return response()->json(['success' => true, 'data' => $cats]);
+        });
+
+        // All transactions/orders
+        Route::get('/admin/transactions', function () {
+            $orders = \App\Models\Order::with(['user:id,name,email'])
+                ->latest()->take(100)->get()
+                ->map(fn($o) => [
+                    'id'             => $o->id,
+                    'buyer'          => $o->user?->name ?? '-',
+                    'email'          => $o->user?->email ?? '-',
+                    'total'          => $o->total_amount,
+                    'status'         => $o->status,
+                    'payment_status' => $o->payment_status,
+                    'created_at'     => $o->created_at->format('Y-m-d H:i'),
+                ]);
+            return response()->json(['success' => true, 'data' => $orders]);
+        });
+
+        // Ad packages list (all)
+        Route::get('/admin/packages', function () {
+            return response()->json(['success' => true, 'data' => \App\Models\Package::all()]);
+        });
     });
 });

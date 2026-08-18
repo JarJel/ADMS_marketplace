@@ -28,12 +28,21 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
         setActiveTab(initialTab);
     }, [initialTab]);
     const [saveSuccess, setSaveSuccess] = useState(false);
+    const [saveError, setSaveError] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState(user?.avatar_url || null);
+    const avatarInputRef = useRef(null);
 
     const [purchases, setPurchases] = useState([]);
     const [downloads, setDownloads] = useState([]);
     const [advertisements, setAdvertisements] = useState([]);
     const [wishlist, setWishlist] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [editingAd, setEditingAd] = useState(null);
+    const [editForm, setEditForm] = useState({});
+    const [editSaving, setEditSaving] = useState(false);
+    const [editMsg, setEditMsg] = useState(null);
 
     const toggleWishlist = async (prod) => {
         if (!prod) return;
@@ -53,52 +62,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
         }
     };
 
-    const [recommendedProducts, setRecommendedProducts] = useState([
-        {
-            id: 1,
-            title: "Template Bundling Social Media Canva untuk UMKM 2026",
-            category: "Template Canva",
-            merchant: "Amanah Creative",
-            isSyariah: true,
-            rating: 4.9,
-            reviewsCount: 142,
-            price: 49000,
-            image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=600&auto=format&fit=crop"
-        },
-        {
-            id: 2,
-            title: "Source Code Aplikasi POS Kasir Toko Laravel 11",
-            category: "Source Code Web",
-            merchant: "Syariah Tech ID",
-            isSyariah: true,
-            rating: 4.8,
-            reviewsCount: 89,
-            price: 199000,
-            image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop"
-        },
-        {
-            id: 3,
-            title: "E-Book Panduan Bisnis Digital Syariah Bebas Riba",
-            category: "E-Book",
-            merchant: "Pustaka Muamalah",
-            isSyariah: true,
-            rating: 4.9,
-            reviewsCount: 310,
-            price: 35000,
-            image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=600&auto=format&fit=crop"
-        },
-        {
-            id: 4,
-            title: "Landing Page Event Organizer Elementor Pro",
-            category: "Template Web",
-            merchant: "Berkah Desain",
-            isSyariah: true,
-            rating: 5.0,
-            reviewsCount: 21,
-            price: 129000,
-            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop"
-        }
-    ]);
+    const [recommendedProducts, setRecommendedProducts] = useState([]);
 
     useEffect(() => {
         if (!token) return;
@@ -163,7 +127,6 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                     setRecommendedProducts(recData.data);
                 }
             } catch (error) {
-                console.error("Error fetching customer dashboard data:", error);
             } finally {
                 setIsLoading(false);
             }
@@ -173,21 +136,148 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
     }, [token]);
 
     // Profile Settings States
-    const [profileName, setProfileName] = useState(user?.name || 'Citra Kirana');
-    const [profilePhone, setProfilePhone] = useState(user?.phone || '081234567890');
-    const [profileEmail, setProfileEmail] = useState(user?.email || 'citra@example.com');
+    const [profileName, setProfileName] = useState(user?.name || '');
+    const [profilePhone, setProfilePhone] = useState(user?.phone || '');
+    const [profileEmail, setProfileEmail] = useState(user?.email || '');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleProfileSave = (e) => {
+    const handleProfileSave = async (e) => {
         e.preventDefault();
-        setSaveSuccess(true);
-        setTimeout(() => setSaveSuccess(false), 3000);
+        setSaveError('');
+
+        if (newPassword && newPassword !== confirmPassword) {
+            setSaveError('Konfirmasi kata sandi tidak cocok.');
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            const body = { name: profileName, phone: profilePhone };
+            if (newPassword) {
+                body.password = newPassword;
+                body.password_confirmation = confirmPassword;
+                if (oldPassword) body.current_password = oldPassword;
+            }
+
+            const res = await fetch('/api/customer/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                setSaveSuccess(true);
+                setOldPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+                if (refreshSession) refreshSession();
+                setTimeout(() => setSaveSuccess(false), 3000);
+            } else {
+                setSaveError(data.message || 'Gagal menyimpan profil.');
+            }
+        } catch (err) {
+            setSaveError('Terjadi kesalahan jaringan.');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
-    const handleRemoveFromWishlist = (id) => {
-        setWishlist(wishlist.filter(item => item.id !== id));
+    const handleAvatarUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        try {
+            const res = await fetch('/api/customer/profile/avatar', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                setAvatarUrl(data.data.avatar_url);
+                if (refreshSession) refreshSession();
+            } else {
+                alert(data.message || 'Gagal mengunggah foto.');
+            }
+        } catch (err) {
+            alert('Terjadi kesalahan saat mengunggah foto.');
+        }
+    };
+
+    const handleRemoveFromWishlist = async (id) => {
+        setWishlist(prev => prev.filter(item => item.id !== id));
+        try {
+            await fetch('/api/customer/wishlist/toggle', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ product_id: id }),
+            });
+        } catch { /* state sudah diupdate optimistik */ }
+    };
+
+    const handleOpenEditAd = (ad) => {
+        setEditingAd(ad);
+        setEditForm({
+            title: ad.title || '',
+            description: ad.description || '',
+            price: ad.price || '',
+            location: ad.location || '',
+            whatsapp: ad.whatsapp || '',
+            contact_name: ad.contact_name || '',
+            condition: ad.condition || 'bekas',
+        });
+        setEditMsg(null);
+    };
+
+    const handleSaveEditAd = async (e) => {
+        e.preventDefault();
+        setEditSaving(true);
+        setEditMsg(null);
+        try {
+            const res = await fetch(`/api/customer/ads/${editingAd.id}`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(editForm),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setAdvertisements(prev => prev.map(a => a.id === editingAd.id ? data.data : a));
+                setEditingAd(null);
+            } else {
+                setEditMsg(data.message || 'Gagal memperbarui iklan.');
+            }
+        } catch {
+            setEditMsg('Terjadi kesalahan. Coba lagi.');
+        } finally {
+            setEditSaving(false);
+        }
+    };
+
+    const handleUpgradeAd = async (adId) => {
+        try {
+            const res = await fetch(`/api/customer/ads/${adId}/upgrade`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                setAdvertisements(prev => prev.map(ad => ad.id === adId ? { ...ad, ...data.data } : ad));
+            } else {
+                alert(data.message || 'Gagal upgrade iklan.');
+            }
+        } catch {
+            alert('Terjadi kesalahan jaringan.');
+        }
     };
 
     // Date formatting helper
@@ -250,7 +340,6 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                 if (data.errors) setRegErrors(data.errors);
             }
         } catch (err) {
-            console.error("Merchant registration error:", err);
             alert("Terjadi kesalahan jaringan.");
         } finally {
             setRegLoading(false);
@@ -706,6 +795,59 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                     </button>
                                 </div>
 
+                                {editingAd && (
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                                        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl w-full max-w-lg">
+                                            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                                                <h3 className="font-extrabold text-slate-800 dark:text-white text-base">Edit Iklan</h3>
+                                                <button onClick={() => setEditingAd(null)} className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xl font-bold leading-none">&times;</button>
+                                            </div>
+                                            <form onSubmit={handleSaveEditAd} className="p-6 space-y-4">
+                                                <div>
+                                                    <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Judul Iklan</label>
+                                                    <input type="text" value={editForm.title} onChange={e => setEditForm(p => ({ ...p, title: e.target.value }))} required className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Harga (Rp)</label>
+                                                        <input type="number" value={editForm.price} onChange={e => setEditForm(p => ({ ...p, price: e.target.value }))} className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Kondisi</label>
+                                                        <select value={editForm.condition} onChange={e => setEditForm(p => ({ ...p, condition: e.target.value }))} className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                                            <option value="baru">Baru</option>
+                                                            <option value="bekas">Bekas</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Lokasi</label>
+                                                    <input type="text" value={editForm.location} onChange={e => setEditForm(p => ({ ...p, location: e.target.value }))} required className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Nama Kontak</label>
+                                                        <input type="text" value={editForm.contact_name} onChange={e => setEditForm(p => ({ ...p, contact_name: e.target.value }))} required className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">WhatsApp</label>
+                                                        <input type="text" value={editForm.whatsapp} onChange={e => setEditForm(p => ({ ...p, whatsapp: e.target.value }))} required className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Deskripsi</label>
+                                                    <textarea value={editForm.description} onChange={e => setEditForm(p => ({ ...p, description: e.target.value }))} rows={3} required className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none" />
+                                                </div>
+                                                {editMsg && <p className="text-red-500 text-xs font-semibold">{editMsg}</p>}
+                                                <div className="flex justify-end gap-2 pt-2">
+                                                    <button type="button" onClick={() => setEditingAd(null)} className="px-5 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors">Batal</button>
+                                                    <button type="submit" disabled={editSaving} className="px-5 py-2.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-60 text-white text-xs font-bold rounded-xl transition-colors">{editSaving ? 'Menyimpan...' : 'Simpan Perubahan'}</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="space-y-4">
                                     {advertisements.map((ad) => (
                                         <div key={ad.id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -733,11 +875,11 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             </div>
 
                                             <div className="flex items-center gap-2">
-                                                <button className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors cursor-pointer">
+                                                <button onClick={() => handleOpenEditAd(ad)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors cursor-pointer">
                                                     Edit Iklan
                                                 </button>
                                                 {(ad.package?.name !== 'VIP Premium' && ad.package !== 'VIP Premium') && (
-                                                    <button className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-extrabold rounded-xl transition-colors shadow-sm cursor-pointer">
+                                                    <button onClick={() => handleUpgradeAd(ad.id)} className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-extrabold rounded-xl transition-colors shadow-sm cursor-pointer">
                                                         Upgrade ke VIP
                                                     </button>
                                                 )}
@@ -805,17 +947,25 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                         Profil Anda berhasil diperbarui dan disimpan!
                                     </div>
                                 )}
+                                {saveError && (
+                                    <div className="p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-xs font-bold">
+                                        {saveError}
+                                    </div>
+                                )}
 
                                 {/* Profile Photo Upload UI */}
                                 <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-slate-100 dark:border-slate-800">
-                                    <img 
-                                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop" 
-                                        alt="Profile Preview" 
-                                        className="w-16 h-16 rounded-full object-cover border border-slate-100 dark:border-slate-800 shadow-sm"
-                                    />
+                                    {avatarUrl ? (
+                                        <img src={avatarUrl} alt="Profile Preview" className="w-16 h-16 rounded-full object-cover border border-slate-100 dark:border-slate-800 shadow-sm" />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700">
+                                            <User className="w-8 h-8 text-slate-400" />
+                                        </div>
+                                    )}
                                     <div className="space-y-1 text-center sm:text-left">
-                                        <button type="button" className="px-4 py-2 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
-                                            <Upload className="w-4 h-4 text-slate-500 dark:text-slate-400 dark:text-slate-500" />
+                                        <input ref={avatarInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleAvatarUpload} />
+                                        <button type="button" onClick={() => avatarInputRef.current?.click()} className="px-4 py-2 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
+                                            <Upload className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                                             Unggah Foto Baru
                                         </button>
                                         <span className="block text-[10px] text-slate-400 dark:text-slate-500">JPG, PNG, atau WEBP. Maks 2MB.</span>
@@ -894,12 +1044,16 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                 </div>
 
                                 <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-end">
-                                    <button 
+                                    <button
                                         type="submit"
-                                        className="bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-xs py-3 px-6 rounded-xl flex items-center gap-1.5 transition-colors shadow-md cursor-pointer"
+                                        disabled={isSaving}
+                                        className="bg-teal-600 hover:bg-teal-500 disabled:opacity-60 text-white font-extrabold text-xs py-3 px-6 rounded-xl flex items-center gap-1.5 transition-colors shadow-md cursor-pointer"
                                     >
-                                        <Check className="w-4 h-4" />
-                                        Simpan Perubahan
+                                        {isSaving ? (
+                                            <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span><span>Menyimpan...</span></>
+                                        ) : (
+                                            <><Check className="w-4 h-4" /><span>Simpan Perubahan</span></>
+                                        )}
                                     </button>
                                 </div>
                             </form>

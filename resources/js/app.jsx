@@ -82,7 +82,6 @@ function App() {
                 const notifData = await notifRes.json();
                 if (notifData.success) setNotifications(notifData.data);
             } catch (err) {
-                console.error("Gagal mengambil data navbar:", err);
             }
         };
 
@@ -145,7 +144,6 @@ function App() {
                     apiCartCount = cartData.data.length;
                 }
             } catch (err) {
-                console.error("Gagal menambah ke keranjang API:", err);
             }
         }
 
@@ -179,7 +177,6 @@ function App() {
                     apiWishlistCount = wishlistData.data.length;
                 }
             } catch (err) {
-                console.error("Gagal toggle wishlist API:", err);
             }
         }
 
@@ -280,7 +277,6 @@ function App() {
                 routeByPath(currentPath, null);
             }
         } catch (err) {
-            console.error("Gagal memeriksa sesi login:", err);
             localStorage.removeItem('auth_token');
             setToken(null);
             setUser(null);
@@ -361,7 +357,6 @@ function App() {
                     }
                 });
             } catch (err) {
-                console.error("Logout request failed:", err);
             }
         }
         localStorage.removeItem('auth_token');

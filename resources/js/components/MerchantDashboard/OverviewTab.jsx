@@ -25,25 +25,18 @@ export default function OverviewTab({
   const adPerformance = stats.ad_performance || [];
   const demographics = stats.visitor_demographics || [];
 
-  // Dummy Recent Orders
-  const recentOrders = [
-    { id: "ORD-001", customer: "Budi Santoso", date: "Hari Ini", total: "Rp 250.000", status: "Selesai" },
-    { id: "ORD-002", customer: "Siti Aminah", date: "Hari Ini", total: "Rp 125.000", status: "Menunggu Pembayaran" },
-  ];
+  const recentOrders = stats.recent_orders || [];
 
   const getStatusBadge = (status) => {
-    switch (status) {
-      case "Selesai":
-        return <span className="px-3 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">Selesai</span>;
-      case "Dikirim":
-        return <span className="px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700 border border-blue-200">Dikirim</span>;
-      case "Diproses":
-        return <span className="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-700 border border-yellow-200">Diproses</span>;
-      case "Menunggu Pembayaran":
-        return <span className="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-700 border border-slate-200">Menunggu</span>;
-      default:
-        return <span className="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-700 border border-slate-200">{status}</span>;
-    }
+    const map = {
+      completed: { cls: 'bg-emerald-100 text-emerald-700 border-emerald-200', label: 'Selesai' },
+      shipped:   { cls: 'bg-blue-100 text-blue-700 border-blue-200',           label: 'Dikirim' },
+      processing:{ cls: 'bg-yellow-100 text-yellow-700 border-yellow-200',     label: 'Diproses' },
+      pending:   { cls: 'bg-slate-100 text-slate-700 border-slate-200',        label: 'Menunggu' },
+      cancelled: { cls: 'bg-rose-100 text-rose-700 border-rose-200',           label: 'Dibatalkan' },
+    };
+    const s = map[status] ?? { cls: 'bg-slate-100 text-slate-600 border-slate-200', label: status };
+    return <span className={`px-3 py-1 text-xs font-medium rounded-full border ${s.cls}`}>{s.label}</span>;
   };
 
   return (
@@ -240,30 +233,36 @@ export default function OverviewTab({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Orders Table (Dummy) */}
+        {/* Recent Orders Table */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
           <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
             <h2 className="text-lg font-bold text-slate-900">Pesanan Terbaru</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-slate-50/80 text-slate-600 border-b border-slate-100">
-                <tr>
-                  <th className="px-6 py-4 font-semibold text-xs uppercase tracking-wider">ID</th>
-                  <th className="px-6 py-4 font-semibold text-xs uppercase tracking-wider">Pelanggan</th>
-                  <th className="px-6 py-4 font-semibold text-xs uppercase tracking-wider">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {recentOrders.map((order, index) => (
-                  <tr key={index} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="px-6 py-4 font-semibold text-slate-900">{order.id}</td>
-                    <td className="px-6 py-4 font-medium text-slate-700">{order.customer}</td>
-                    <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
+            {recentOrders.length === 0 ? (
+              <p className="px-6 py-8 text-sm text-slate-500 text-center">Belum ada pesanan masuk.</p>
+            ) : (
+              <table className="w-full text-left text-sm whitespace-nowrap">
+                <thead className="bg-slate-50/80 text-slate-600 border-b border-slate-100">
+                  <tr>
+                    <th className="px-6 py-4 font-semibold text-xs uppercase tracking-wider">ID</th>
+                    <th className="px-6 py-4 font-semibold text-xs uppercase tracking-wider">Pelanggan</th>
+                    <th className="px-6 py-4 font-semibold text-xs uppercase tracking-wider">Total</th>
+                    <th className="px-6 py-4 font-semibold text-xs uppercase tracking-wider">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {recentOrders.map((order, index) => (
+                    <tr key={index} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="px-6 py-4 font-semibold text-slate-900 font-mono text-xs">{order.id}</td>
+                      <td className="px-6 py-4 font-medium text-slate-700">{order.customer}</td>
+                      <td className="px-6 py-4 text-slate-600">{order.total}</td>
+                      <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 

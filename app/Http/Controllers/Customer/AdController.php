@@ -128,6 +128,42 @@ class AdController extends Controller
     }
 
     /**
+     * Update an existing advertisement.
+     */
+    public function updateAd(Request $request, $id)
+    {
+        $user = $request->user();
+
+        $ad = Advertisement::where('owner_id', $user->id)->find($id);
+        if (!$ad) {
+            return response()->json(['success' => false, 'message' => 'Iklan tidak ditemukan'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'title'        => 'sometimes|required|string|max:255',
+            'category_id'  => 'sometimes|required',
+            'description'  => 'sometimes|required|string',
+            'price'        => 'nullable|numeric|min:0',
+            'location'     => 'sometimes|required|string',
+            'whatsapp'     => 'sometimes|required|string',
+            'contact_name' => 'sometimes|required|string',
+            'condition'    => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => 'Validasi gagal', 'errors' => $validator->errors()], 422);
+        }
+
+        $ad->update($request->only(['title', 'category_id', 'description', 'price', 'location', 'whatsapp', 'contact_name', 'condition']));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Iklan berhasil diperbarui',
+            'data'    => $ad->load(['category', 'package']),
+        ]);
+    }
+
+    /**
      * Request ad upgrade.
      */
     public function upgradeAd(Request $request, $id)

@@ -78,6 +78,20 @@ class DashboardController extends Controller
             ['city' => 'Lainnya', 'percentage' => 5],
         ];
 
+        // 8. Recent Orders
+        $recentOrders = Order::where('merchant_id', $merchant->id)
+            ->with('user:id,name')
+            ->latest()
+            ->limit(5)
+            ->get()
+            ->map(fn($o) => [
+                'id'         => 'ORD-' . strtoupper(substr($o->id, 0, 6)),
+                'customer'   => $o->user?->name ?? 'Anonim',
+                'date'       => $o->created_at->diffForHumans(),
+                'total'      => 'Rp ' . number_format($o->total_amount, 0, ',', '.'),
+                'status'     => $o->status,
+            ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Statistik dasbor berhasil diambil.',
@@ -91,7 +105,8 @@ class DashboardController extends Controller
                 'recent_reviews' => $recentReviews,
                 'ad_performance' => $adPerformance,
                 'top_products' => $topProducts,
-                'visitor_demographics' => $visitorDemographics
+                'visitor_demographics' => $visitorDemographics,
+                'recent_orders' => $recentOrders,
             ]
         ], 200);
     }

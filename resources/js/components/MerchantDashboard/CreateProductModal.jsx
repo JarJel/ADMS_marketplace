@@ -28,7 +28,6 @@ export default function CreateProductModal({ token, isOpen, onClose, fetchProduc
           setCategories(data.data);
         }
       } catch (err) {
-        console.error("Gagal mengambil kategori:", err);
       }
     };
     fetchCategories();

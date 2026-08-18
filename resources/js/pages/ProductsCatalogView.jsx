@@ -86,7 +86,6 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                 }
             }
         } catch (err) {
-            console.error("Gagal mengambil kategori:", err);
         } finally {
             setLoadingCategories(false);
         }
@@ -128,7 +127,6 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                 setPaginationData(data.data);
             }
         } catch (err) {
-            console.error("Gagal mengambil produk:", err);
         } finally {
             setLoading(false);
         }
@@ -187,7 +185,6 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                 alert(data.message || 'Gagal menambahkan ke keranjang');
             }
         } catch (error) { 
-            console.error("Gagal menambah ke keranjang:", error); 
         }
     };
 
@@ -212,7 +209,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                 alert(data.message);
             }
         } catch (error) { 
-            console.error("Gagal menyimpan wishlist:", error); 
+ 
         }
     };
 

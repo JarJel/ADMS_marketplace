@@ -26,11 +26,9 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             const response = await fetch('/api/public/ads');
             const data = await response.json();
             if (response.ok && data.success) {
-                console.log("Classifieds API Response Data:", data.data);
                 setAds(data.data);
             }
         } catch (err) {
-            console.error("Gagal mengambil data iklan baris:", err);
         } finally {
             setLoading(false);
         }
@@ -40,7 +38,6 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
         try {
             await fetch(`/api/public/ads/${adId}/click`, { method: 'POST' });
         } catch (err) {
-            console.error(err);
         }
     };
 

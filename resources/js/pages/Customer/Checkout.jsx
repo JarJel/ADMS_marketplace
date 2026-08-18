@@ -20,19 +20,23 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
     const [copiedText, setCopiedText] = useState('');
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [createdOrder, setCreatedOrder] = useState(null);
+    const [paymentConfig, setPaymentConfig] = useState(null);
 
     useEffect(() => {
         const savedItems = JSON.parse(localStorage.getItem('adms_checkout_items') || '[]');
         const savedDiscount = parseFloat(localStorage.getItem('adms_checkout_discount') || '0');
-        
         if (savedItems.length === 0) {
-            // Fallback to guest cart items if checkout items empty
             const guestItems = JSON.parse(localStorage.getItem('adms_guest_cart') || '[]');
             setCheckoutItems(guestItems);
         } else {
             setCheckoutItems(savedItems);
         }
         setDiscount(savedDiscount);
+
+        fetch('/api/payment-config', { headers: { 'Accept': 'application/json' } })
+            .then(r => r.json())
+            .then(d => { if (d.success) setPaymentConfig(d.data); })
+            .catch(() => {});
     }, []);
 
     const handleCopy = (text, label) => {
@@ -64,32 +68,34 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
         }
 
         setIsSubmitting(true);
-        const orderInvoice = 'INV-ADMS-' + Math.floor(100000 + Math.random() * 900000);
+        let orderInvoice = 'INV-ADMS-' + Date.now().toString(36).toUpperCase();
 
         try {
             if (token) {
                 const firstItem = checkoutItems[0];
-                const merchantId = firstItem.product?.merchant_id || 1;
-                await fetch('/api/customer/orders', {
+                const merchantId = firstItem.product?.merchant_id || firstItem.merchant_id;
+                const res = await fetch('/api/customer/orders', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         checkout_from_cart: true,
                         merchant_id: merchantId,
                         payment_method: paymentMethod,
-                        invoice_number: orderInvoice,
                         total_amount: grandTotal,
                         customer_name: customerInfo.name,
                         customer_email: customerInfo.email,
-                        customer_phone: customerInfo.phone
+                        customer_phone: customerInfo.phone,
+                        notes: customerInfo.notes,
                     })
                 });
+                const data = await res.json();
+                if (data.invoice_number) orderInvoice = data.invoice_number;
             }
         } catch (err) {
-            console.error("Order creation API error:", err);
         }
 
         // Clean up purchased items from guest cart
@@ -379,13 +385,13 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                     }`}>
                                         <div className="flex items-center justify-between p-3 bg-slate-900 border border-slate-800 rounded-xl">
                                             <div>
-                                                <span className="text-[10px] text-slate-400 block uppercase font-bold">Bank Syariah Indonesia (BSI)</span>
-                                                <strong className="text-base text-teal-400 font-mono">7198-2026-9900</strong>
-                                                <span className="block text-[10px] text-slate-400">a.n. PT. Armada Digital Marketing Syariah</span>
+                                                <span className="text-[10px] text-slate-400 block uppercase font-bold">{paymentConfig?.bsi?.name ?? 'Bank Syariah Indonesia (BSI)'}</span>
+                                                <strong className="text-base text-teal-400 font-mono">{paymentConfig?.bsi?.number ?? '...'}</strong>
+                                                <span className="block text-[10px] text-slate-400">a.n. {paymentConfig?.bsi?.account_name ?? 'PT. Armada Digital Marketing Syariah'}</span>
                                             </div>
-                                            <button 
+                                            <button
                                                 type="button"
-                                                onClick={() => handleCopy('719820269900', 'bsi')}
+                                                onClick={() => handleCopy(paymentConfig?.bsi?.number?.replace(/-/g, '') ?? '', 'bsi')}
                                                 className="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white font-bold text-[10px] rounded-lg flex items-center gap-1 transition-all"
                                             >
                                                 {copiedText === 'bsi' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
@@ -401,13 +407,13 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                     }`}>
                                         <div className="flex items-center justify-between p-3 bg-slate-900 border border-slate-800 rounded-xl">
                                             <div>
-                                                <span className="text-[10px] text-slate-400 block uppercase font-bold">Bank BCA</span>
-                                                <strong className="text-base text-blue-400 font-mono">8940-2026-1100</strong>
-                                                <span className="block text-[10px] text-slate-400">a.n. PT. Armada Digital Marketing Syariah</span>
+                                                <span className="text-[10px] text-slate-400 block uppercase font-bold">{paymentConfig?.bca?.name ?? 'Bank BCA'}</span>
+                                                <strong className="text-base text-blue-400 font-mono">{paymentConfig?.bca?.number ?? '...'}</strong>
+                                                <span className="block text-[10px] text-slate-400">a.n. {paymentConfig?.bca?.account_name ?? 'PT. Armada Digital Marketing Syariah'}</span>
                                             </div>
-                                            <button 
+                                            <button
                                                 type="button"
-                                                onClick={() => handleCopy('894020261100', 'bca')}
+                                                onClick={() => handleCopy(paymentConfig?.bca?.number?.replace(/-/g, '') ?? '', 'bca')}
                                                 className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] rounded-lg flex items-center gap-1 transition-all"
                                             >
                                                 {copiedText === 'bca' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}

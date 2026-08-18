@@ -84,7 +84,6 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                     setSelectedSubCategoryId(FALLBACK_CATEGORIES[0].children[0].id.toString());
                 }
             } catch (err) {
-                console.error("Gagal memuat kategori iklan gratis:", err);
                 setDbCategories(FALLBACK_CATEGORIES);
                 setSelectedCategoryId(FALLBACK_CATEGORIES[0].id.toString());
                 setSelectedSubCategoryId(FALLBACK_CATEGORIES[0].children[0].id.toString());
@@ -248,7 +247,6 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                 }
             }
         } catch (err) {
-            console.error("Error submitting ad:", err);
             alert("Terjadi kesalahan jaringan saat mempublikasikan iklan.");
         } finally {
             setLoading(false);

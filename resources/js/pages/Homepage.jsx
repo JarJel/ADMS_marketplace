@@ -94,6 +94,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
     useEffect(() => {
         fetchMerchants();
         fetchRecommendedProducts();
+        fetchAds();
+        fetchPlatformStats();
     }, []);
 
     const fetchRecommendedProducts = async () => {
@@ -104,10 +106,25 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                 setRecommendedProducts(data.data);
             }
         } catch (err) {
-            console.error("Gagal mengambil produk rekomendasi:", err);
         } finally {
             setLoadingProducts(false);
         }
+    };
+
+    const fetchAds = async () => {
+        try {
+            const res = await fetch('/api/public/ads', { headers: { 'Accept': 'application/json' } });
+            const data = await res.json();
+            if (data.success) setVipAds(data.data.slice(0, 4));
+        } catch (e) {}
+    };
+
+    const fetchPlatformStats = async () => {
+        try {
+            const res = await fetch('/api/public/stats', { headers: { 'Accept': 'application/json' } });
+            const data = await res.json();
+            if (data.success) setPlatformStats(data.data);
+        } catch (e) {}
     };
 
     const fetchMerchants = async () => {
@@ -118,7 +135,6 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                 setMerchants(data.data);
             }
         } catch (err) {
-            console.error("Gagal mengambil data merchant:", err);
         } finally {
             setLoadingMerchants(false);
         }
@@ -188,45 +204,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
         ]
     };
 
-    // Mock VIP Ads
-    const vipAds = [
-        {
-            id: 1,
-            title: "Jasa Pembuatan Landing Page Profesional Tercepat 24 Jam",
-            advertiser: "Arta Media Jasa",
-            price: "Mulai Rp350.000",
-            location: "Sleman, Yogyakarta",
-            whatsapp: "6281121211933",
-            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop"
-        },
-        {
-            id: 2,
-            title: "Jual Laptop Asus ROG Zephyrus G14 Bekas Mulus Nominus",
-            advertiser: "Budi Santoso",
-            price: "Rp14.500.000",
-            location: "Jakarta Selatan",
-            whatsapp: "6281121211933",
-            image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=600&auto=format&fit=crop"
-        },
-        {
-            id: 3,
-            title: "Jasa Service & Kustomisasi Database MySQL Syariah Selesai Cepat",
-            advertiser: "Citra Solusindo",
-            price: "Hubungi Kami",
-            location: "Surabaya, Jawa Timur",
-            whatsapp: "6281121211933",
-            image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop"
-        },
-        {
-            id: 4,
-            title: "Sewa Coworking Space Premium & Ruang Rapat Murah Bandung",
-            advertiser: "Deni Workspace",
-            price: "Rp50.000/Hari",
-            location: "Bandung, Jawa Barat",
-            whatsapp: "6281121211933",
-            image: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600&auto=format&fit=crop"
-        }
-    ];
+    const [vipAds, setVipAds] = useState([]);
+    const [platformStats, setPlatformStats] = useState(null);
 
     const categories = [
         { name: "Template", count: "42+ Layanan", icon: LayoutTemplate },
@@ -453,19 +432,25 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     <div className={`p-6 border rounded-2xl shadow-sm text-center ${
                         darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
                     }`}>
-                        <span className="block text-3xl font-black text-teal-400">15.4K+</span>
+                        <span className="block text-3xl font-black text-teal-400">
+                            {platformStats ? `${platformStats.activeAds.toLocaleString('id-ID')}` : '...'}
+                        </span>
                         <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Iklan Baris Aktif</span>
                     </div>
                     <div className={`p-6 border rounded-2xl shadow-sm text-center ${
                         darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
                     }`}>
-                        <span className="block text-3xl font-black text-indigo-400">9.8K+</span>
+                        <span className="block text-3xl font-black text-indigo-400">
+                            {platformStats ? `${platformStats.totalProducts.toLocaleString('id-ID')}` : '...'}
+                        </span>
                         <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Aset Digital Terverifikasi</span>
                     </div>
                     <div className={`p-6 border rounded-2xl shadow-sm text-center ${
                         darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
                     }`}>
-                        <span className="block text-3xl font-black text-white">25K+</span>
+                        <span className="block text-3xl font-black text-white">
+                            {platformStats ? `${platformStats.totalUsers.toLocaleString('id-ID')}` : '...'}
+                        </span>
                         <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Pengguna & Merchant Aktif</span>
                     </div>
                 </div>
@@ -745,9 +730,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                         {/* Top profile row */}
                                         <div className="flex items-start gap-3.5 mb-4">
                                             <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden flex-shrink-0">
-                                                <img 
-                                                    src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?q=80&w=150&auto=format&fit=crop" 
-                                                    alt={merchant.name} 
+                                                <img
+                                                    src={merchant.logo || merchant.owner?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(merchant.name)}&background=4f46e5&color=fff&bold=true&size=96`}
+                                                    alt={merchant.name}
                                                     className="w-full h-full object-cover"
                                                 />
                                             </div>
@@ -757,10 +742,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                                     <CheckCircle className="w-3.5 h-3.5 text-amber-500 fill-amber-500/10 flex-shrink-0" />
                                                 </h4>
                                                 <div className="flex items-center gap-1 text-[10px] text-slate-400 dark:text-slate-500 mt-1">
-                                                    <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                                                    <span className="font-semibold text-slate-600 dark:text-slate-300">5.0</span>
-                                                    <span>&bull;</span>
                                                     <span className="text-emerald-600 dark:text-emerald-400 font-bold">Verified</span>
+                                                    <span>&bull;</span>
+                                                    <span>{merchant.products?.length ?? 0} produk aktif</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -777,8 +761,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                             <Shield className="w-3.5 h-3.5 text-slate-300 dark:text-slate-400" />
                                             Official Merchant
                                         </span>
-                                        <button 
-                                            onClick={onNavigateToLogin}
+                                        <button
+                                            onClick={isLoggedIn ? onNavigateToProducts : onNavigateToLogin}
                                             className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors flex items-center gap-0.5"
                                         >
                                             Kunjungi Toko &rarr;
@@ -1039,9 +1023,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 </p>
                             </div>
                             <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
-                                <img 
-                                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop" 
-                                    alt="Rian Prasetya" 
+                                <img
+                                    src="https://ui-avatars.com/api/?name=Rian+Prasetya&background=4f46e5&color=fff&bold=true&size=80"
+                                    alt="Rian Prasetya"
                                     className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
                                 />
                                 <div>
@@ -1065,9 +1049,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 </p>
                             </div>
                             <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
-                                <img 
-                                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop" 
-                                    alt="Siti Rahmawati" 
+                                <img
+                                    src="https://ui-avatars.com/api/?name=Siti+Rahmawati&background=0ea5e9&color=fff&bold=true&size=80"
+                                    alt="Siti Rahmawati"
                                     className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
                                 />
                                 <div>
@@ -1091,9 +1075,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 </p>
                             </div>
                             <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
-                                <img 
-                                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop" 
-                                    alt="Deni Kurniawan" 
+                                <img
+                                    src="https://ui-avatars.com/api/?name=Deni+Kurniawan&background=10b981&color=fff&bold=true&size=80"
+                                    alt="Deni Kurniawan"
                                     className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
                                 />
                                 <div>

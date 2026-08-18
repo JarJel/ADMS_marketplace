@@ -14,21 +14,188 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
     
     const [loading, setLoading] = useState(true);
     const [actionMsg, setActionMsg] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [usersLoading, setUsersLoading] = useState(false);
+    const [adminStats, setAdminStats] = useState(null);
+
+    const [siteSettings, setSiteSettings] = useState({ site_name: 'ADMS Marketplace', contact_email: 'support@adms.id', maintenance_mode: false });
+    const [settingsSaving, setSettingsSaving] = useState(false);
+    const [settingsMsg, setSettingsMsg] = useState(null);
+
+    const [feePercent, setFeePercent] = useState(5);
+    const [feeSaving, setFeeSaving] = useState(false);
+    const [feeMsg, setFeeMsg] = useState(null);
+
+    const [categories, setCategories] = useState([]);
+    const [categoriesLoading, setCategoriesLoading] = useState(false);
+    const [transactions, setTransactions] = useState([]);
+    const [transactionsLoading, setTransactionsLoading] = useState(false);
+    const [packages, setPackages] = useState([]);
+    const [packagesLoading, setPackagesLoading] = useState(false);
 
     useEffect(() => {
         if (activeTab === 'dashboard' || activeTab === 'overview') {
             fetchAuditLogs();
             fetchPendingMerchants();
+            fetchAdminStats();
         } else if (activeTab === 'merchants') {
             fetchPendingMerchants();
-        } else if (activeTab === 'products') {
-            fetchPendingProducts();
         } else if (activeTab === 'ads' || activeTab === 'ads-moderation') {
             fetchPendingAds();
         } else if (activeTab === 'withdrawals' || activeTab === 'payouts') {
             fetchPendingWithdrawals();
+        } else if (activeTab === 'customers') {
+            fetchUsers();
+        } else if (activeTab === 'commissions') {
+            fetchAdminStats();
+            fetchCommission();
+        } else if (activeTab === 'settings') {
+            fetchSettings();
+        } else if (activeTab === 'categories') {
+            fetchCategories();
+        } else if (activeTab === 'transactions') {
+            fetchTransactions();
+        } else if (activeTab === 'ads-packages') {
+            fetchPackages();
+        } else if (activeTab === 'ads-reports') {
+            fetchAdminStats();
         }
     }, [activeTab]);
+
+    const fetchAdminStats = async () => {
+        try {
+            const res = await fetch('/api/admin/stats', { headers: { 'Authorization': `Bearer ${token}` }});
+            const data = await res.json();
+            if (data.success) setAdminStats(data.data);
+        } catch { }
+    };
+
+    const fetchSettings = async () => {
+        try {
+            const res = await fetch('/api/admin/settings', { headers: { 'Authorization': `Bearer ${token}` }});
+            const data = await res.json();
+            if (data.success) setSiteSettings(data.data);
+        } catch { }
+    };
+
+    const fetchCommission = async () => {
+        try {
+            const res = await fetch('/api/admin/commission', { headers: { 'Authorization': `Bearer ${token}` } });
+            const data = await res.json();
+            if (data.success) setFeePercent(data.data.fee_percent ?? 5);
+        } catch { }
+    };
+
+    const fetchCategories = async () => {
+        setCategoriesLoading(true);
+        try {
+            const res = await fetch('/api/admin/categories', { headers: { 'Authorization': `Bearer ${token}` } });
+            const data = await res.json();
+            if (data.success) setCategories(data.data);
+        } catch { } finally { setCategoriesLoading(false); }
+    };
+
+    const fetchTransactions = async () => {
+        setTransactionsLoading(true);
+        try {
+            const res = await fetch('/api/admin/transactions', { headers: { 'Authorization': `Bearer ${token}` } });
+            const data = await res.json();
+            if (data.success) setTransactions(data.data);
+        } catch { } finally { setTransactionsLoading(false); }
+    };
+
+    const fetchPackages = async () => {
+        setPackagesLoading(true);
+        try {
+            const res = await fetch('/api/admin/packages', { headers: { 'Authorization': `Bearer ${token}` } });
+            const data = await res.json();
+            if (data.success) setPackages(data.data);
+        } catch { } finally { setPackagesLoading(false); }
+    };
+
+    const saveCommission = async () => {
+        setFeeSaving(true);
+        setFeeMsg(null);
+        try {
+            const res = await fetch('/api/admin/commission', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ fee_percent: feePercent }),
+            });
+            const data = await res.json();
+            setFeeMsg({ type: data.success ? 'success' : 'error', text: data.message });
+            setTimeout(() => setFeeMsg(null), 3000);
+        } catch {
+            setFeeMsg({ type: 'error', text: 'Gagal menyimpan fee.' });
+        } finally {
+            setFeeSaving(false);
+        }
+    };
+
+    const handleExportCsv = () => {
+        if (!auditLogs.length) return;
+        const headers = ['Waktu', 'Admin', 'Aksi', 'Kategori', 'Alasan'];
+        const rows = auditLogs.map(log => [
+            new Date(log.created_at).toLocaleString('id-ID'),
+            log.admin?.name ?? 'System Admin',
+            log.action,
+            log.target_type,
+            `"${(log.reason ?? '').replace(/"/g, '""')}"`,
+        ]);
+        const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+        const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `audit-log-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    const saveSettings = async (e) => {
+        e.preventDefault();
+        setSettingsSaving(true);
+        setSettingsMsg(null);
+        try {
+            const res = await fetch('/api/admin/settings', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(siteSettings),
+            });
+            const data = await res.json();
+            setSettingsMsg({ type: data.success ? 'success' : 'error', text: data.message });
+        } catch (err) {
+            setSettingsMsg({ type: 'error', text: 'Gagal menyimpan pengaturan.' });
+        } finally {
+            setSettingsSaving(false);
+        }
+    };
+
+    const fetchUsers = async () => {
+        setUsersLoading(true);
+        try {
+            const res = await fetch('/api/admin/users', { headers: { 'Authorization': `Bearer ${token}` }});
+            const data = await res.json();
+            if (data.success) setUsers(data.data.data || data.data);
+        } catch { } finally { setUsersLoading(false); }
+    };
+
+    const handleToggleUserStatus = async (userId, currentStatus) => {
+        try {
+            const reason = currentStatus === 'active' ? 'Disuspend oleh admin' : 'Diaktifkan kembali oleh admin';
+            const res = await fetch(`/api/admin/users/${userId}/toggle-status`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ reason })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: data.data.status } : u));
+            } else {
+                alert(data.message || 'Gagal mengubah status user.');
+            }
+        } catch { }
+    };
 
     const fetchPendingMerchants = async () => {
         setLoading(true);
@@ -36,7 +203,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
             const res = await fetch('/api/admin/merchants/pending', { headers: { 'Authorization': `Bearer ${token}` }});
             const data = await res.json();
             if (data.success) setPendingMerchants(data.data.data || data.data);
-        } catch (err) { console.error(err); } finally { setLoading(false); }
+        } catch { } finally { setLoading(false); }
     };
 
     const fetchPendingProducts = async () => {
@@ -45,7 +212,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
             const res = await fetch('/api/admin/products/pending', { headers: { 'Authorization': `Bearer ${token}` }});
             const data = await res.json();
             if (data.success) setPendingProducts(data.data.data || data.data);
-        } catch (err) { console.error(err); } finally { setLoading(false); }
+        } catch { } finally { setLoading(false); }
     };
 
     const fetchPendingAds = async () => {
@@ -54,7 +221,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
             const res = await fetch('/api/admin/ads/pending', { headers: { 'Authorization': `Bearer ${token}` }});
             const data = await res.json();
             if (data.success) setPendingAds(data.data.data || data.data);
-        } catch (err) { console.error(err); } finally { setLoading(false); }
+        } catch { } finally { setLoading(false); }
     };
 
     const fetchPendingWithdrawals = async () => {
@@ -63,7 +230,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
             const res = await fetch('/api/admin/withdrawals/pending', { headers: { 'Authorization': `Bearer ${token}` }});
             const data = await res.json();
             if (data.success) setPendingWithdrawals(data.data.data || data.data);
-        } catch (err) { console.error(err); } finally { setLoading(false); }
+        } catch { } finally { setLoading(false); }
     };
 
     const fetchAuditLogs = async () => {
@@ -72,7 +239,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
             const res = await fetch('/api/admin/audit-logs', { headers: { 'Authorization': `Bearer ${token}` }});
             const data = await res.json();
             if (data.success) setAuditLogs(data.data.data || data.data);
-        } catch (err) { console.error(err); } finally { setLoading(false); }
+        } catch { } finally { setLoading(false); }
     };
 
     const handleVerifyMerchant = async (id, approve) => {
@@ -189,7 +356,16 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
     return (
         <div className="h-screen bg-slate-950 text-slate-100 font-sans flex overflow-hidden">
             {/* Sidebar Baru */}
-            <AdminSidebar activeItem={activeTab} onNavigate={setActiveTab} user={user} onLogout={onLogout} />
+            <AdminSidebar
+                activeItem={activeTab}
+                onNavigate={setActiveTab}
+                user={user}
+                onLogout={onLogout}
+                pendingCounts={{
+                    pendingMerchants: adminStats?.pendingMerchants ?? pendingMerchants.length,
+                    pendingAds: adminStats?.pendingAds ?? pendingAds.length,
+                }}
+            />
 
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
 
@@ -213,9 +389,9 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
 
                         {/* Rendering Content Berdasarkan activeTab */}
                         {activeTab === 'dashboard' || activeTab === 'overview' ? (
-                            <AdminOverview onNavigate={setActiveTab} />
+                            <AdminOverview onNavigate={setActiveTab} token={token} />
                         ) : activeTab === 'analytics' ? (
-                            <AdminAnalytics />
+                            <AdminAnalytics token={token} />
                         ) : activeTab === 'merchants' ? (
                     <div className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-6">
                         <h2 className="text-lg font-bold text-slate-200 mb-4 flex items-center gap-2">
@@ -243,7 +419,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                         )}
                     </div>
                 ) : activeTab === 'products' ? (
-                    <AdminProducts />
+                    <AdminProducts token={token} />
                         ) : activeTab === 'ads' || activeTab === 'ads-moderation' ? (
                     <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -355,9 +531,6 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                 </h2>
                                 <p className="text-sm text-slate-400 mt-1">Atur dan pantau semua pengguna yang terdaftar di sistem.</p>
                             </div>
-                            <button className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-2.5 px-6 rounded-xl text-sm shadow-lg shadow-indigo-600/30 transition-all duration-300 transform hover:-translate-y-1">
-                                + Tambah User
-                            </button>
                         </div>
                         <div className="overflow-x-auto relative z-10 bg-slate-950/40 rounded-xl border border-slate-800/50">
                             <table className="w-full text-left text-sm border-collapse">
@@ -365,54 +538,36 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                     <tr className="border-b border-slate-800/60 text-slate-400 bg-slate-900/50">
                                         <th className="py-4 px-5 font-semibold">Nama Pengguna</th>
                                         <th className="py-4 px-5 font-semibold">Email</th>
-                                        <th className="py-4 px-5 font-semibold">Terdaftar</th>
+                                        <th className="py-4 px-5 font-semibold">Role</th>
                                         <th className="py-4 px-5 font-semibold">Status</th>
                                         <th className="py-4 px-5 font-semibold text-right">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr className="border-b border-slate-800/30 hover:bg-indigo-900/20 transition-colors duration-200 group">
-                                        <td className="py-4 px-5 font-bold text-slate-200">Budi Santoso</td>
-                                        <td className="py-4 px-5 text-slate-400">budi.s@example.com</td>
-                                        <td className="py-4 px-5 text-slate-400">12 Agt 2026</td>
-                                        <td className="py-4 px-5">
-                                            <div className="relative inline-block w-28 group">
-                                                <select className="appearance-none w-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 cursor-pointer transition-colors group-hover:bg-emerald-500/20 shadow-sm">
-                                                    <option value="aktif" className="bg-slate-800 text-emerald-400 font-semibold">Aktif</option>
-                                                    <option value="suspend" className="bg-slate-800 text-amber-400 font-semibold">Suspend</option>
-                                                    <option value="banned" className="bg-slate-800 text-red-400 font-semibold">Blokir</option>
-                                                </select>
-                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-emerald-500">
-                                                    <svg className="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-5 text-right space-x-2">
-                                            <button className="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 font-bold py-1.5 px-3 rounded-lg text-xs transition-all hover:shadow-[0_0_10px_rgba(79,70,229,0.2)]">Edit</button>
-                                            <button className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-bold py-1.5 px-3 rounded-lg text-xs transition-all hover:shadow-[0_0_10px_rgba(239,68,68,0.2)]">Hapus</button>
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b border-slate-800/30 hover:bg-indigo-900/20 transition-colors duration-200 group">
-                                        <td className="py-4 px-5 font-bold text-slate-200">Siti Aminah</td>
-                                        <td className="py-4 px-5 text-slate-400">siti99@example.com</td>
-                                        <td className="py-4 px-5 text-slate-400">10 Agt 2026</td>
-                                        <td className="py-4 px-5">
-                                            <div className="relative inline-block w-28 group">
-                                                <select className="appearance-none w-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 cursor-pointer transition-colors group-hover:bg-emerald-500/20 shadow-sm">
-                                                    <option value="aktif" className="bg-slate-800 text-emerald-400 font-semibold">Aktif</option>
-                                                    <option value="suspend" className="bg-slate-800 text-amber-400 font-semibold">Suspend</option>
-                                                    <option value="banned" className="bg-slate-800 text-red-400 font-semibold">Blokir</option>
-                                                </select>
-                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-emerald-500">
-                                                    <svg className="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-5 text-right space-x-2">
-                                            <button className="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 font-bold py-1.5 px-3 rounded-lg text-xs transition-all hover:shadow-[0_0_10px_rgba(79,70,229,0.2)]">Edit</button>
-                                            <button className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-bold py-1.5 px-3 rounded-lg text-xs transition-all hover:shadow-[0_0_10px_rgba(239,68,68,0.2)]">Hapus</button>
-                                        </td>
-                                    </tr>
+                                    {usersLoading ? (
+                                        <tr><td colSpan="5" className="py-8 text-center text-slate-400">Memuat data pengguna...</td></tr>
+                                    ) : users.length === 0 ? (
+                                        <tr><td colSpan="5" className="py-8 text-center text-slate-400">Tidak ada pengguna ditemukan.</td></tr>
+                                    ) : users.map(u => (
+                                        <tr key={u.id} className="border-b border-slate-800/30 hover:bg-indigo-900/20 transition-colors duration-200">
+                                            <td className="py-4 px-5 font-bold text-slate-200">{u.name}</td>
+                                            <td className="py-4 px-5 text-slate-400">{u.email}</td>
+                                            <td className="py-4 px-5 text-slate-400 capitalize">{u.role}</td>
+                                            <td className="py-4 px-5">
+                                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${u.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}`}>
+                                                    {u.status}
+                                                </span>
+                                            </td>
+                                            <td className="py-4 px-5 text-right">
+                                                <button
+                                                    onClick={() => handleToggleUserStatus(u.id, u.status)}
+                                                    className={`font-bold py-1.5 px-3 rounded-lg text-xs transition-all ${u.status === 'active' ? 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'}`}
+                                                >
+                                                    {u.status === 'active' ? 'Suspend' : 'Aktifkan'}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
@@ -436,13 +591,16 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                     
                                     <div className="flex items-center gap-4">
                                         <div className="relative flex-1">
-                                            <input type="number" defaultValue="5" className="w-full bg-slate-900 border-2 border-slate-700 rounded-xl px-5 py-3.5 text-xl font-bold text-white focus:outline-none focus:border-indigo-500 transition-colors" />
+                                            <input type="number" min="0" max="100" value={feePercent} onChange={e => setFeePercent(e.target.value)} className="w-full bg-slate-900 border-2 border-slate-700 rounded-xl px-5 py-3.5 text-xl font-bold text-white focus:outline-none focus:border-indigo-500 transition-colors" />
                                             <span className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 font-black text-xl">%</span>
                                         </div>
-                                        <button className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-8 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all duration-300">
-                                            Simpan
+                                        <button onClick={saveCommission} disabled={feeSaving} className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 text-white font-bold py-3.5 px-8 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all duration-300">
+                                            {feeSaving ? '...' : 'Simpan'}
                                         </button>
                                     </div>
+                                    {feeMsg && (
+                                        <p className={`text-xs font-semibold mt-3 ${feeMsg.type === 'success' ? 'text-emerald-400' : 'text-red-400'}`}>{feeMsg.text}</p>
+                                    )}
                                     <p className="text-sm text-slate-500 mt-5 leading-relaxed">
                                         Persentase potongan otomatis yang masuk ke dompet Admin untuk setiap transaksi produk digital yang berhasil diselesaikan oleh pembeli.
                                     </p>
@@ -451,11 +609,17 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                 <div className="bg-gradient-to-br from-indigo-900 to-purple-900 p-8 rounded-2xl border border-indigo-500/30 relative overflow-hidden shadow-[0_0_40px_rgba(79,70,229,0.15)] group">
                                     <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-purple-500/30 rounded-full blur-3xl group-hover:bg-purple-500/40 transition-all duration-500"></div>
                                     <h3 className="text-sm font-bold text-indigo-200 mb-3 uppercase tracking-wider">Total Pendapatan Fee</h3>
-                                    <p className="text-4xl lg:text-5xl font-black text-white drop-shadow-md tracking-tight">Rp 2.450.000</p>
-                                    <div className="mt-6 flex items-center gap-2 inline-flex bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-sm border border-white/5">
-                                        <span className="text-emerald-400 font-black">↗ +12.5%</span>
-                                        <span className="text-indigo-200 text-xs font-medium">dibanding bulan lalu</span>
-                                    </div>
+                                    <p className="text-4xl lg:text-5xl font-black text-white drop-shadow-md tracking-tight">
+                                        {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(adminStats?.platformRevenue ?? 0)}
+                                    </p>
+                                    {adminStats?.gmvGrowth != null && (
+                                        <div className="mt-6 flex items-center gap-2 inline-flex bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-sm border border-white/5">
+                                            <span className={`font-black ${adminStats.gmvGrowth >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                                {adminStats.gmvGrowth >= 0 ? '↗' : '↘'} {adminStats.gmvGrowth >= 0 ? '+' : ''}{adminStats.gmvGrowth}%
+                                            </span>
+                                            <span className="text-indigo-200 text-xs font-medium">dibanding bulan lalu</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -472,26 +636,26 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                             <p className="text-slate-400 mt-2 text-sm">Sesuaikan informasi utama dan status operasional sistem secara keseluruhan.</p>
                         </div>
                         
-                        <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
+                        <form className="space-y-8" onSubmit={saveSettings}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-2">
                                     <label className="block text-sm font-bold text-slate-300 ml-1">Nama Website</label>
                                     <div className="relative">
-                                        <input type="text" defaultValue="ADMS Marketplace" className="w-full bg-slate-950/50 border-2 border-slate-700/50 rounded-xl px-5 py-3 text-white font-medium focus:outline-none focus:border-indigo-500 focus:bg-slate-900 transition-colors shadow-inner" />
+                                        <input type="text" value={siteSettings.site_name} onChange={e => setSiteSettings(p => ({ ...p, site_name: e.target.value }))} className="w-full bg-slate-950/50 border-2 border-slate-700/50 rounded-xl px-5 py-3 text-white font-medium focus:outline-none focus:border-indigo-500 focus:bg-slate-900 transition-colors shadow-inner" />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
                                     <label className="block text-sm font-bold text-slate-300 ml-1">Email Kontak Resmi</label>
                                     <div className="relative">
-                                        <input type="email" defaultValue="support@adms.id" className="w-full bg-slate-950/50 border-2 border-slate-700/50 rounded-xl px-5 py-3 text-white font-medium focus:outline-none focus:border-indigo-500 focus:bg-slate-900 transition-colors shadow-inner" />
+                                        <input type="email" value={siteSettings.contact_email} onChange={e => setSiteSettings(p => ({ ...p, contact_email: e.target.value }))} className="w-full bg-slate-950/50 border-2 border-slate-700/50 rounded-xl px-5 py-3 text-white font-medium focus:outline-none focus:border-indigo-500 focus:bg-slate-900 transition-colors shadow-inner" />
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="bg-amber-950/20 border border-amber-900/30 rounded-2xl p-6 flex items-start gap-5 hover:bg-amber-950/30 transition-colors">
                                 <div className="mt-1">
                                     <label className="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" className="sr-only peer" />
+                                        <input type="checkbox" className="sr-only peer" checked={!!siteSettings.maintenance_mode} onChange={e => setSiteSettings(p => ({ ...p, maintenance_mode: e.target.checked }))} />
                                         <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-800/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500 shadow-inner"></div>
                                     </label>
                                 </div>
@@ -500,10 +664,16 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                     <p className="text-sm text-slate-400">Jika diaktifkan, semua pengguna reguler akan melihat halaman "Sedang Perbaikan". Hanya Superadmin yang tetap bisa mengakses dan menguji sistem.</p>
                                 </div>
                             </div>
-                            
+
+                            {settingsMsg && (
+                                <div className={`px-4 py-3 rounded-xl text-sm font-semibold ${settingsMsg.type === 'success' ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-700/40' : 'bg-red-900/30 text-red-400 border border-red-700/40'}`}>
+                                    {settingsMsg.text}
+                                </div>
+                            )}
+
                             <div className="pt-6 mt-8 border-t border-slate-800/60 flex justify-end">
-                                <button type="button" className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-xl text-sm shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all transform hover:-translate-y-0.5">
-                                    Simpan Perubahan
+                                <button type="submit" disabled={settingsSaving} className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 text-white font-bold py-3 px-8 rounded-xl text-sm shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all transform hover:-translate-y-0.5">
+                                    {settingsSaving ? 'Menyimpan...' : 'Simpan Perubahan'}
                                 </button>
                             </div>
                         </form>
@@ -518,7 +688,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                 </h2>
                                 <p className="text-sm text-slate-400 mt-2">Rekam jejak seluruh aktivitas krusial yang dilakukan oleh jajaran Administrator.</p>
                             </div>
-                            <button className="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 px-5 rounded-xl text-sm border border-slate-700 transition-colors shadow-sm">
+                            <button onClick={handleExportCsv} disabled={!auditLogs.length} className="bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-white font-bold py-2 px-5 rounded-xl text-sm border border-slate-700 transition-colors shadow-sm">
                                 Export CSV
                             </button>
                         </div>
@@ -567,6 +737,159 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                 </table>
                             </div>
                         )}
+                    </div>
+                ) : activeTab === 'categories' ? (
+                    <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3 mb-6">
+                            <span className="p-2 bg-indigo-500/20 rounded-xl text-indigo-400">🏷️</span>
+                            Manajemen Kategori
+                        </h2>
+                        {categoriesLoading ? (
+                            <div className="flex justify-center py-16"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div></div>
+                        ) : (
+                            <div className="overflow-x-auto bg-slate-950/40 rounded-xl border border-slate-800/50">
+                                <table className="w-full text-left text-sm border-collapse">
+                                    <thead>
+                                        <tr className="border-b border-slate-800/60 text-slate-400 bg-slate-900/50">
+                                            <th className="py-3 px-5 font-semibold">Nama Kategori</th>
+                                            <th className="py-3 px-5 font-semibold">Slug</th>
+                                            <th className="py-3 px-5 font-semibold">Tipe</th>
+                                            <th className="py-3 px-5 font-semibold text-right">Produk</th>
+                                            <th className="py-3 px-5 font-semibold text-right">Iklan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {categories.length === 0 ? (
+                                            <tr><td colSpan="5" className="py-10 text-center text-slate-500">Belum ada kategori.</td></tr>
+                                        ) : categories.map(cat => (
+                                            <tr key={cat.id} className="border-b border-slate-800/30 hover:bg-slate-800/30 transition-colors">
+                                                <td className="py-3 px-5 font-semibold text-slate-200">{cat.name}</td>
+                                                <td className="py-3 px-5 text-slate-400 font-mono text-xs">{cat.slug}</td>
+                                                <td className="py-3 px-5">
+                                                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${cat.type === 'product' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>
+                                                        {cat.type}
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 px-5 text-right text-slate-300 font-bold">{cat.products_count ?? 0}</td>
+                                                <td className="py-3 px-5 text-right text-slate-300 font-bold">{cat.advertisements_count ?? 0}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                ) : activeTab === 'transactions' ? (
+                    <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3 mb-6">
+                            <span className="p-2 bg-teal-500/20 rounded-xl text-teal-400">🧾</span>
+                            Riwayat Transaksi (100 Terbaru)
+                        </h2>
+                        {transactionsLoading ? (
+                            <div className="flex justify-center py-16"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500"></div></div>
+                        ) : (
+                            <div className="overflow-x-auto bg-slate-950/40 rounded-xl border border-slate-800/50">
+                                <table className="w-full text-left text-sm border-collapse">
+                                    <thead>
+                                        <tr className="border-b border-slate-800/60 text-slate-400 bg-slate-900/50">
+                                            <th className="py-3 px-5 font-semibold">Pembeli</th>
+                                            <th className="py-3 px-5 font-semibold">Email</th>
+                                            <th className="py-3 px-5 font-semibold text-right">Total</th>
+                                            <th className="py-3 px-5 font-semibold">Status</th>
+                                            <th className="py-3 px-5 font-semibold">Pembayaran</th>
+                                            <th className="py-3 px-5 font-semibold">Waktu</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {transactions.length === 0 ? (
+                                            <tr><td colSpan="6" className="py-10 text-center text-slate-500">Belum ada transaksi.</td></tr>
+                                        ) : transactions.map(tx => (
+                                            <tr key={tx.id} className="border-b border-slate-800/30 hover:bg-slate-800/30 transition-colors">
+                                                <td className="py-3 px-5 font-semibold text-slate-200">{tx.buyer}</td>
+                                                <td className="py-3 px-5 text-slate-400 text-xs">{tx.email}</td>
+                                                <td className="py-3 px-5 text-right font-bold text-teal-400">
+                                                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(tx.total)}
+                                                </td>
+                                                <td className="py-3 px-5">
+                                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${tx.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400' : tx.status === 'cancelled' ? 'bg-red-500/10 text-red-400' : 'bg-amber-500/10 text-amber-400'}`}>
+                                                        {tx.status}
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 px-5">
+                                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${tx.payment_status === 'paid' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-600/30 text-slate-400'}`}>
+                                                        {tx.payment_status}
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 px-5 text-slate-400 text-xs font-mono">{tx.created_at}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                ) : activeTab === 'ads-packages' ? (
+                    <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3 mb-6">
+                            <span className="p-2 bg-amber-500/20 rounded-xl text-amber-400">📦</span>
+                            Paket Iklan
+                        </h2>
+                        {packagesLoading ? (
+                            <div className="flex justify-center py-16"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div></div>
+                        ) : packages.length === 0 ? (
+                            <div className="text-center py-16 text-slate-500">Belum ada paket iklan.</div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {packages.map(pkg => (
+                                    <div key={pkg.id} className={`bg-slate-950/80 border rounded-2xl p-6 flex flex-col gap-3 ${pkg.type === 'premium' ? 'border-amber-500/30' : 'border-slate-700/40'}`}>
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="font-black text-slate-100">{pkg.name}</h3>
+                                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${pkg.type === 'premium' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-slate-600/20 text-slate-400 border border-slate-700'}`}>
+                                                {pkg.type}
+                                            </span>
+                                        </div>
+                                        <p className="text-2xl font-black text-amber-400">
+                                            {pkg.price === 0 ? 'Gratis' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(pkg.price)}
+                                        </p>
+                                        <p className="text-sm text-slate-400">{pkg.duration_days} hari tayang</p>
+                                        {Array.isArray(pkg.benefits) && pkg.benefits.length > 0 && (
+                                            <ul className="text-xs text-slate-400 space-y-1 mt-1">
+                                                {pkg.benefits.map((b, i) => <li key={i} className="flex items-start gap-1.5"><span className="text-amber-400 mt-0.5">✓</span>{b}</li>)}
+                                            </ul>
+                                        )}
+                                        <div className="mt-auto pt-3 border-t border-slate-800/60 flex items-center justify-between">
+                                            <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${pkg.is_active ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+                                                {pkg.is_active ? 'Aktif' : 'Nonaktif'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                ) : activeTab === 'ads-reports' ? (
+                    <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3 mb-8">
+                            <span className="p-2 bg-purple-500/20 rounded-xl text-purple-400">📊</span>
+                            Laporan Iklan Baris
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[
+                                { label: 'Iklan Aktif (Disetujui)', value: adminStats?.activeAds ?? '-', color: 'emerald', icon: '✅' },
+                                { label: 'Menunggu Review', value: adminStats?.pendingAds ?? '-', color: 'amber', icon: '⏳' },
+                                { label: 'Total Pengguna', value: adminStats?.totalUsers ?? '-', color: 'indigo', icon: '👥' },
+                                { label: 'Total Merchant', value: adminStats?.totalMerchants ?? '-', color: 'teal', icon: '🏪' },
+                                { label: 'Total Produk', value: adminStats?.totalProducts ?? '-', color: 'sky', icon: '📦' },
+                                { label: 'Total Transaksi', value: adminStats?.totalOrders ?? '-', color: 'rose', icon: '🧾' },
+                            ].map(({ label, value, color, icon }) => (
+                                <div key={label} className={`bg-slate-950/80 border border-${color}-500/20 rounded-2xl p-6 flex flex-col gap-2`}>
+                                    <div className="flex items-center gap-2 text-slate-400 text-sm font-semibold">
+                                        <span>{icon}</span>{label}
+                                    </div>
+                                    <p className={`text-4xl font-black text-${color}-400`}>{value?.toLocaleString?.('id-ID') ?? value}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-20 text-slate-500">

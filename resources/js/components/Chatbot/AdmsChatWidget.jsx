@@ -14,7 +14,7 @@ import {
 import { callGeminiAI } from './aiProvider';
 import CatalogModal from './CatalogModal';
 import OrderConfirmationModal from './OrderConfirmationModal';
-import { ADMS_INFO } from './admsKnowledge';
+import { ADMS_INFO, ADMS_CATALOG, updateCatalog } from './admsKnowledge';
 import './chatbot.css';
 
 export default function AdmsChatWidget({ darkMode = true }) {
@@ -29,8 +29,22 @@ export default function AdmsChatWidget({ darkMode = true }) {
   const [selectedServiceForOrder, setSelectedServiceForOrder] = useState('');
   const [unreadCount, setUnreadCount] = useState(1);
   const [pendingQuery, setPendingQuery] = useState(null);
+  const [liveCatalog, setLiveCatalog] = useState(ADMS_CATALOG);
 
   const messagesEndRef = useRef(null);
+
+  // Fetch live service catalog from backend (override static prices if admin updated them)
+  useEffect(() => {
+    fetch('/api/public/service-catalog')
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          updateCatalog(data.data);
+          setLiveCatalog(data.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Initialize first greeting message
   useEffect(() => {
@@ -607,10 +621,11 @@ export default function AdmsChatWidget({ darkMode = true }) {
       </div>
 
       {/* Catalog Modal */}
-      <CatalogModal 
+      <CatalogModal
         isOpen={isCatalogOpen}
         onClose={() => setIsCatalogOpen(false)}
         onSelectService={handleSelectServiceFromCatalog}
+        catalog={liveCatalog}
       />
 
       {/* Order Confirmation Modal */}

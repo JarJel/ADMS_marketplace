@@ -30,7 +30,8 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
   
   // Package states
   const [adType, setAdType] = useState('free');
-  const [selectedPackageId, setSelectedPackageId] = useState('01a00f18-af67-72a7-bb4a-43d0648434c1');
+  const [selectedPackageId, setSelectedPackageId] = useState(null);
+  const [adPackages, setAdPackages] = useState([]);
 
   const [categories, setCategories] = useState([]);
 
@@ -39,20 +40,30 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
       try {
         const res = await fetch('/api/public/categories');
         const data = await res.json();
-        if (data.success) {
-          setCategories(data.data);
+        if (data.success) setCategories(data.data);
+      } catch (err) {
+      }
+    };
+    const fetchPackages = async () => {
+      try {
+        const res = await fetch('/api/public/packages');
+        const data = await res.json();
+        if (data.success && data.data.length > 0) {
+          const mapped = data.data.map(p => ({
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            durationDays: p.duration_days,
+          }));
+          setAdPackages(mapped);
+          setSelectedPackageId(mapped[0].id);
         }
       } catch (err) {
-        console.error("Gagal mengambil kategori:", err);
       }
     };
     fetchCategories();
+    fetchPackages();
   }, []);
-
-  const adPackages = [
-    { id: '01a00f18-af67-72a7-bb4a-43d0648434c1', name: 'Premium Boost', price: 50000, durationDays: 7 },
-    { id: 'pkg-2', name: 'Super VIP', price: 150000, durationDays: 30 },
-  ];
 
   const locationsData = {
     'DKI Jakarta': ['Jakarta Selatan', 'Jakarta Pusat', 'Jakarta Barat', 'Jakarta Utara', 'Jakarta Timur'],

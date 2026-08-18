@@ -71,7 +71,6 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
                 setStats(data.data);
             }
         } catch (err) {
-            console.error("Gagal mengambil dashboard data:", err);
         } finally {
             setLoading(false);
         }
@@ -83,7 +82,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
             const res = await fetch('/api/merchant/products', { headers: { 'Authorization': `Bearer ${token}` }});
             const data = await res.json();
             if (data.success) setProducts(data.data.data || data.data);
-        } catch (err) { console.error(err); } finally { setLoading(false); }
+        } catch { } finally { setLoading(false); }
     };
 
     const fetchOrders = async () => {
@@ -96,7 +95,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
                 const activeOrders = (data.data.data || data.data).filter(o => o.status !== 'completed');
                 setOrders(activeOrders);
             }
-        } catch (err) { console.error(err); } finally { setLoading(false); }
+        } catch { } finally { setLoading(false); }
     };
 
     const fetchHistoryOrders = async () => {
@@ -105,7 +104,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
             const res = await fetch('/api/merchant/orders?status=completed', { headers: { 'Authorization': `Bearer ${token}` }});
             const data = await res.json();
             if (data.success) setHistoryOrders(data.data.data || data.data);
-        } catch (err) { console.error(err); } finally { setLoading(false); }
+        } catch { } finally { setLoading(false); }
     };
 
     const fetchAds = async () => {
@@ -114,7 +113,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
             const res = await fetch('/api/merchant/ads', { headers: { 'Authorization': `Bearer ${token}` }});
             const data = await res.json();
             if (data.success) setAds(data.data.data || data.data);
-        } catch (err) { console.error(err); } finally { setLoading(false); }
+        } catch { } finally { setLoading(false); }
     };
 
     const handleUpdateOrderStatus = async (orderId, status) => {
@@ -125,7 +124,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
                 body: JSON.stringify({ status })
             });
             if (res.ok) fetchOrders();
-        } catch (err) { console.error(err); }
+        } catch { }
     };
 
     const handleDeleteProduct = async (id) => {
@@ -136,7 +135,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) fetchProducts();
-        } catch (err) { console.error(err); }
+        } catch { }
     };
 
     const handlePayoutRequest = async (e) => {

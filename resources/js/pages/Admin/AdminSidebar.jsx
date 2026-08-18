@@ -162,12 +162,25 @@ const SidebarUserProfile = ({ user, onLogout }) => {
 };
 
 // --- 5. AdminSidebar (Parent Component) ---
-export default function AdminSidebar({ activeItem = 'dashboard', onNavigate, user, onLogout }) {
+export default function AdminSidebar({ activeItem = 'dashboard', onNavigate, user, onLogout, pendingCounts = {} }) {
     const handleNavigate = (id) => {
-        if (onNavigate) {
-            onNavigate(id);
-        }
+        if (onNavigate) onNavigate(id);
     };
+
+    const dynamicGroups = menuGroups.map(group => ({
+        ...group,
+        items: group.items.map(item => {
+            const countMap = {
+                merchants: pendingCounts.pendingMerchants,
+                'ads-moderation': pendingCounts.pendingAds,
+                transactions: pendingCounts.pendingTransactions,
+            };
+            const count = countMap[item.id];
+            return count != null
+                ? { ...item, badge: count > 0 ? String(count) : undefined }
+                : item;
+        }),
+    }));
 
     return (
         <aside className="w-72 h-screen bg-slate-950 border-r border-slate-800/60 flex flex-col shrink-0">
@@ -176,12 +189,12 @@ export default function AdminSidebar({ activeItem = 'dashboard', onNavigate, use
 
             {/* Menu List dengan Custom Scrollbar Hiding tapi tetap bisa di-scroll */}
             <div className="flex-1 overflow-y-auto py-6 hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                {menuGroups.map((group, index) => (
-                    <SidebarMenuGroup 
-                        key={index} 
-                        group={group} 
-                        activeItem={activeItem} 
-                        onNavigate={handleNavigate} 
+                {dynamicGroups.map((group, index) => (
+                    <SidebarMenuGroup
+                        key={index}
+                        group={group}
+                        activeItem={activeItem}
+                        onNavigate={handleNavigate}
                     />
                 ))}
             </div>

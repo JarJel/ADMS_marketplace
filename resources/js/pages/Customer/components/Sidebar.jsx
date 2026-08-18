@@ -1,23 +1,30 @@
 import React from 'react';
-import { ShieldCheck, LogOut } from 'lucide-react';
+import { ShieldCheck, LogOut, User } from 'lucide-react';
 
-export default function Sidebar({ 
-    activeTab, 
-    setActiveTab, 
-    onLogout, 
-    profileName, 
-    setSaveSuccess, 
-    menuItems 
+export default function Sidebar({
+    activeTab,
+    setActiveTab,
+    onLogout,
+    profileName,
+    setSaveSuccess,
+    menuItems,
+    avatarUrl,
 }) {
     return (
         <div className="md:col-span-1 space-y-6">
             <div className="bg-white rounded-2xl border border-slate-200 p-6 text-center shadow-sm">
                 <div className="relative w-20 h-20 mx-auto mb-4">
-                    <img 
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop" 
-                        alt="Profile Avatar" 
-                        className="w-full h-full rounded-full object-cover border border-slate-100 shadow-sm"
-                    />
+                    {avatarUrl ? (
+                        <img
+                            src={avatarUrl}
+                            alt="Profile Avatar"
+                            className="w-full h-full rounded-full object-cover border border-slate-100 shadow-sm"
+                        />
+                    ) : (
+                        <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 shadow-sm">
+                            <User className="w-8 h-8 text-slate-400" />
+                        </div>
+                    )}
                     <span className="absolute bottom-0 right-0 bg-teal-600 text-white p-1 rounded-full border-2 border-white shadow-sm">
                         <ShieldCheck className="w-3.5 h-3.5" />
                     </span>

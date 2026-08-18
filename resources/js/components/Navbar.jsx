@@ -30,7 +30,6 @@ export default function Navbar({
                 setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
             }
         } catch (err) {
-            console.error(err);
         }
     };
 
@@ -45,7 +44,6 @@ export default function Navbar({
                 setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
             }
         } catch (err) {
-            console.error(err);
         }
     };
 

@@ -133,10 +133,13 @@ class OrderController extends Controller
 
             DB::commit();
 
+            $invoiceNumber = 'INV-ADMS-' . strtoupper(substr($order->id, 0, 8));
+
             return response()->json([
-                'success' => true,
-                'message' => 'Pesanan berhasil dibuat',
-                'data' => $order->load('items.product')
+                'success'        => true,
+                'message'        => 'Pesanan berhasil dibuat',
+                'invoice_number' => $invoiceNumber,
+                'data'           => $order->load('items.product')
             ], 200);
 
         } catch (\Exception $e) {

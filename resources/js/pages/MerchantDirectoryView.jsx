@@ -27,7 +27,6 @@ export default function MerchantDirectoryView({ user, token, onNavigate, darkMod
                 setMerchants(data.data);
             }
         } catch (err) {
-            console.error("Gagal mengambil data merchant:", err);
         } finally {
             setLoading(false);
         }

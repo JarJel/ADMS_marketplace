@@ -25,7 +25,7 @@ const SkeletonCard = () => (
     </div>
 );
 
-export default function ProductsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout, initialFilter, initialSearchQuery, onAddToCart, cartCount }) {
+export default function ProductsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout, initialFilter, initialSearchQuery, initialMerchantId, onAddToCart, cartCount }) {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -33,7 +33,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
     const isLoggedIn = !!token;
 
     // Filters and pagination state
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(initialSearchQuery || '');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
     useEffect(() => {
@@ -43,6 +43,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
         return () => clearTimeout(handler);
     }, [searchQuery]);
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
+    const [selectedMerchantId, setSelectedMerchantId] = useState(initialMerchantId || '');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
     const [sortOption, setSortOption] = useState('latest'); // 'latest', 'oldest', 'price_asc', 'price_desc'
@@ -66,7 +67,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
 
     useEffect(() => {
         fetchProducts();
-    }, [selectedCategoryId, sortOption, currentPage, initialFilter, debouncedSearchQuery]);
+    }, [selectedCategoryId, selectedMerchantId, sortOption, currentPage, initialFilter, debouncedSearchQuery]);
 
     const fetchCategories = async () => {
         try {
@@ -98,6 +99,9 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             }
             if (selectedCategoryId) {
                 url += `&category_id=${selectedCategoryId}`;
+            }
+            if (selectedMerchantId) {
+                url += `&merchant_id=${selectedMerchantId}`;
             }
             if (minPrice) {
                 url += `&min_price=${minPrice}`;
@@ -144,6 +148,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
     const handleClearFilters = () => {
         setSearchQuery('');
         setSelectedCategoryId('');
+        setSelectedMerchantId('');
         setMinPrice('');
         setMaxPrice('');
         setTempMinPrice('');

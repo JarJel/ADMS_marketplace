@@ -88,6 +88,17 @@ class MerchantModerationController extends Controller
                 'reason' => 'Status: ' . $status . '. Notes: ' . $notes,
             ]);
 
+            // Kirim notifikasi ke user
+            \App\Models\Notification::create([
+                'user_id' => $merchant->owner_id,
+                'title' => $status === 'VERIFIED' ? 'Pendaftaran Merchant Disetujui' : 'Pendaftaran Merchant Ditolak',
+                'message' => $status === 'VERIFIED' 
+                    ? "Selamat! Pendaftaran toko Anda '{$merchant->name}' telah disetujui. Akun Anda telah di-upgrade menjadi Merchant. Silakan masuk kembali atau buka Dashboard Merchant."
+                    : "Maaf, pendaftaran toko Anda '{$merchant->name}' ditolak karena: {$notes}.",
+                'type' => 'merchant_status',
+                'is_read' => false
+            ]);
+
             DB::commit();
 
             return response()->json([

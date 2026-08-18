@@ -7,6 +7,7 @@ import {
     SlidersHorizontal, PackageOpen
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import ProductDetailModal from '../components/ProductDetailModal';
 
 // Shimmer Skeleton Loader Card for loading state
 const SkeletonCard = () => (
@@ -24,7 +25,7 @@ const SkeletonCard = () => (
     </div>
 );
 
-export default function ProductsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout, initialFilter }) {
+export default function ProductsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout, initialFilter, initialSearchQuery, onAddToCart, cartCount }) {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -33,6 +34,14 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
 
     // Filters and pagination state
     const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 400);
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
@@ -57,7 +66,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
 
     useEffect(() => {
         fetchProducts();
-    }, [selectedCategoryId, sortOption, currentPage, initialFilter]);
+    }, [selectedCategoryId, sortOption, currentPage, initialFilter, debouncedSearchQuery]);
 
     const fetchCategories = async () => {
         try {
@@ -84,8 +93,8 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             setLoading(true);
             let url = `/api/public/products?page=${currentPage}&sort=${sortOption}`;
             
-            if (searchQuery) {
-                url += `&search=${encodeURIComponent(searchQuery)}`;
+            if (debouncedSearchQuery) {
+                url += `&search=${encodeURIComponent(debouncedSearchQuery)}`;
             }
             if (selectedCategoryId) {
                 url += `&category_id=${selectedCategoryId}`;
@@ -256,22 +265,30 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             />
 
             {/* A. Hero Banner Header */}
-            <div className="bg-[#0A1B33] text-slate-100 py-12 px-4 sm:px-6 lg:px-8 border-b border-slate-800 relative overflow-hidden z-10">
+            <div className={`py-12 px-4 sm:px-6 lg:px-8 border-b relative overflow-hidden z-10 transition-colors duration-300 ${
+                darkMode 
+                    ? 'bg-[#0A1B33] text-slate-100 border-slate-800' 
+                    : 'bg-gradient-to-br from-indigo-50/90 via-slate-50 to-white text-slate-900 border-slate-200/80'
+            }`}>
                 {/* Decorative background grid and circles */}
                 <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"></div>
                 <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-64 h-64 bg-indigo-500 rounded-full blur-[100px] opacity-20"></div>
                 <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-64 h-64 bg-emerald-500 rounded-full blur-[100px] opacity-20"></div>
 
                 <div className="max-w-7xl mx-auto text-center relative z-10 space-y-4">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold uppercase tracking-wider text-emerald-400 shadow-sm">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider shadow-sm ${
+                        darkMode 
+                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+                            : 'bg-emerald-100 border-emerald-300 text-emerald-700'
+                    }`}>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         Live Marketplace
                     </div>
-                    <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-none">
-                        Katalog <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-indigo-400 bg-clip-text text-transparent">Produk Digital</span>
+                    <h1 className={`text-3xl sm:text-5xl font-black tracking-tight leading-none ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                        Katalog <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 dark:from-emerald-400 dark:via-teal-400 dark:to-indigo-400 bg-clip-text text-transparent">Produk Digital</span>
                     </h1>
-                    <div className="w-16 h-1 bg-gradient-to-r from-emerald-400 to-indigo-500 rounded-full mx-auto my-2"></div>
-                    <p className="text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                    <div className="w-16 h-1 bg-gradient-to-r from-emerald-500 to-indigo-500 rounded-full mx-auto my-2"></div>
+                    <p className={`text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                         Temukan ratusan aset digital premium mulai dari Source Code aplikasi, E-book bisnis, template Canva/desain, hingga AI Prompt untuk melipatgandakan produktivitas Anda.
                     </p>
                 </div>
@@ -651,95 +668,20 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                         )}
             </div>
 
-            {/* C. Detail Modal Pop-up */}
-            {selectedProduct && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative border border-slate-100 dark:border-slate-800 p-6 flex flex-col">
-                        <button 
-                            onClick={() => setSelectedProduct(null)}
-                            className="absolute top-4 right-4 z-10 p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full transition-all active:scale-95"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                            {/* Product Image preview */}
-                            <div className="aspect-video md:aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
-                                <img 
-                                    src={selectedProduct.image || 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d'} 
-                                    alt={selectedProduct.title} 
-                                    className="w-full h-full object-cover" 
-                                />
-                            </div>
-                            
-                            {/* Product description & actions */}
-                            <div className="flex flex-col justify-between">
-                                <div className="space-y-3">
-                                    <span className="inline-block bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider border border-teal-100 dark:border-teal-500/20">
-                                        {selectedProduct.category?.name || 'Kategori'}
-                                    </span>
-                                    <h3 className="font-extrabold text-lg text-slate-800 dark:text-slate-100 leading-snug">{selectedProduct.title}</h3>
-                                    
-                                    <div className="flex items-center gap-1 text-xs text-amber-500">
-                                        <Star className="w-4 h-4 fill-current" />
-                                        <span className="font-bold text-slate-700 dark:text-slate-300">{selectedProduct.average_rating || 5.0}</span>
-                                        <span className="text-slate-400 dark:text-slate-500">({selectedProduct.reviews_count || 0} Ulasan)</span>
-                                    </div>
-                                    
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed whitespace-pre-line max-h-[160px] overflow-y-auto pr-1 scrollbar-thin">
-                                        {selectedProduct.description || 'Tidak ada deskripsi lengkap untuk produk digital ini.'}
-                                    </p>
-                                </div>
-                                
-                                <div className="bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-2xl space-y-3 mt-6">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs text-slate-500 dark:text-slate-400">Harga Aset</span>
-                                        <span className="font-black text-xl text-teal-600 dark:text-teal-400">Rp{numberFormat(selectedProduct.price)}</span>
-                                    </div>
-                                    
-                                    {/* Store Details info */}
-                                    <div className="flex items-center justify-between pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
-                                        <div>
-                                            <span className="text-[10px] text-slate-400 dark:text-slate-550 block uppercase font-bold">Penjual</span>
-                                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{selectedProduct.merchant?.store_name || 'ADMS Store'}</span>
-                                        </div>
-                                        {selectedProduct.merchant?.is_verified && (
-                                            <span className="inline-flex bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded-full text-[8px] uppercase tracking-wider border border-blue-100 dark:border-blue-500/20">
-                                                Terverifikasi
-                                            </span>
-                                        )}
-                                    </div>
-                                    
-                                    <div className="flex gap-2 pt-2">
-                                        <button 
-                                            onClick={() => {
-                                                handleAddToCart(selectedProduct.id);
-                                                setSelectedProduct(null);
-                                            }}
-                                            className="flex-1 bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-1.5"
-                                        >
-                                            <ShoppingCart className="w-4 h-4" />
-                                            <span>Tambah Keranjang</span>
-                                        </button>
-                                        
-                                        {selectedProduct.merchant?.whatsapp && (
-                                            <a 
-                                                href={`https://wa.me/${selectedProduct.merchant.whatsapp}?text=Halo%20${selectedProduct.merchant.store_name},%20saya%20tertarik%20dengan%20produk%20${encodeURIComponent(selectedProduct.title)}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="p-2.5 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-500/30 rounded-xl transition-all active:scale-95 flex items-center justify-center"
-                                                title="Hubungi WhatsApp"
-                                            >
-                                                <Phone className="w-4 h-4" />
-                                            </a>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Product Detail Modal */}
+            <ProductDetailModal 
+                product={selectedProduct}
+                isOpen={!!selectedProduct}
+                onClose={() => setSelectedProduct(null)}
+                darkMode={darkMode}
+                onAddToCart={(prod) => {
+                    if (onAddToCart) {
+                        onAddToCart(prod);
+                    } else {
+                        handleAddToCart(prod.id);
+                    }
+                }}
+            />
         </div>
     );
 }

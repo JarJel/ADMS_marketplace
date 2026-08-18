@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Heart, Bell, ChevronDown, Sun, Moon, Menu, X, User, ShoppingCart } from 'lucide-react';
+import { Search, Heart, Bell, ChevronDown, Sun, Moon, Menu, X, User, ShoppingCart, Store } from 'lucide-react';
 
 export default function Navbar({ 
     user, 
@@ -9,10 +9,47 @@ export default function Navbar({
     onLogout, 
     onNavigate, 
     currentView,
-    sidebarContent
+    sidebarContent,
+    cartCount = 0,
+    wishlistCount = 0,
+    notifications = [],
+    setNotifications
 }) {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
+    const [showNotifMenu, setShowNotifMenu] = useState(false);
+
+    const handleMarkNotifRead = async (id) => {
+        try {
+            const res = await fetch(`/api/customer/notifications/${id}/read`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success && setNotifications) {
+                setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleMarkAllNotificationsRead = async () => {
+        try {
+            const res = await fetch('/api/customer/notifications/read-all', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success && setNotifications) {
+                setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const unreadNotifCount = notifications ? notifications.filter(n => !n.is_read).length : 0;
 
     return (
         <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 shadow-sm font-sans transition-colors duration-300">
@@ -102,6 +139,17 @@ export default function Navbar({
 
                 {/* Sisi Kanan: Conditional render based on Auth status */}
                 <div className="flex items-center gap-3">
+                    {/* Daftar Mitra button for Customer */}
+                    {token && user && user.role === 'customer' && (
+                        <button 
+                            onClick={() => onNavigate('merchant_registration')}
+                            className="hidden md:flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 to-teal-600 hover:from-indigo-500 hover:to-teal-500 text-white text-[10px] font-black px-3.5 py-2 rounded-full shadow-md shadow-indigo-600/10 active:scale-95 transition-all cursor-pointer mr-1"
+                        >
+                            <Store className="w-3.5 h-3.5" />
+                            <span>Daftar Mitra</span>
+                        </button>
+                    )}
+
                     {/* Light/Dark Toggle (always visible) */}
                     <button 
                         onClick={() => setDarkMode(!darkMode)}
@@ -119,30 +167,82 @@ export default function Navbar({
 
                             {/* Cart Icon */}
                             <div className="relative">
-                                <button onClick={() => onNavigate('cart')} className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">
+                                <button 
+                                    onClick={() => onNavigate('cart')} 
+                                    className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer relative"
+                                    title="Keranjang Belanja"
+                                >
                                     <ShoppingCart className="w-4 h-4" />
+                                    {cartCount > 0 && (
+                                        <span className="absolute -top-1 -right-1 bg-teal-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white dark:border-slate-900 pointer-events-none">
+                                            {cartCount}
+                                        </span>
+                                    )}
                                 </button>
-                                <span className="absolute -top-1 -right-1 bg-teal-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white dark:border-slate-900 scale-90">
-                                    {/* TODO: Add dynamic count */}
-                                </span>
                             </div>
 
                             {/* Wishlist Icon with red counter badge */}
                             <div className="relative">
-                                <button className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">
+                                <button 
+                                    onClick={() => onNavigate('wishlist')} 
+                                    className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer relative"
+                                    title="Favorit Saya"
+                                >
                                     <Heart className="w-4 h-4" />
+                                    {wishlistCount > 0 && (
+                                        <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white dark:border-slate-900 pointer-events-none">
+                                            {wishlistCount}
+                                        </span>
+                                    )}
                                 </button>
-                                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white dark:border-slate-900 scale-90">
-                                    1
-                                </span>
                             </div>
 
                             {/* Notification Bell Icon with red dot badge */}
                             <div className="relative">
-                                <button className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">
+                                <button 
+                                    onClick={() => setShowNotifMenu(!showNotifMenu)}
+                                    className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+                                >
                                     <Bell className="w-4 h-4" />
                                 </button>
-                                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+                                {unreadNotifCount > 0 && (
+                                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+                                )}
+
+                                {showNotifMenu && (
+                                    <div className="absolute right-0 mt-3 w-80 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xl py-3 z-50 text-slate-700 dark:text-slate-200 text-left animate-in fade-in slide-in-from-top-2 duration-150">
+                                        <div className="px-4 pb-2 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                                            <span className="text-xs font-black">Notifikasi</span>
+                                            {unreadNotifCount > 0 && (
+                                                <button 
+                                                    onClick={(e) => { e.stopPropagation(); handleMarkAllNotificationsRead(); }}
+                                                    className="text-[10px] text-indigo-500 hover:underline font-bold"
+                                                >
+                                                    Tandai Semua Dibaca
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="max-h-64 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700">
+                                            {notifications && notifications.length > 0 ? (
+                                                notifications.map(notif => (
+                                                    <div 
+                                                        key={notif.id}
+                                                        onClick={() => handleMarkNotifRead(notif.id)}
+                                                        className={`p-3 text-[11px] leading-snug cursor-pointer transition-colors ${!notif.is_read ? 'bg-indigo-50/40 dark:bg-indigo-900/10 font-semibold' : 'hover:bg-slate-50 dark:hover:bg-slate-700/50'}`}
+                                                    >
+                                                        <span className="block text-slate-800 dark:text-slate-100 font-bold mb-0.5">{notif.title}</span>
+                                                        <p className="text-slate-500 dark:text-slate-400 font-medium">{notif.message}</p>
+                                                        <span className="block text-[9px] text-slate-400 mt-1">{new Date(notif.created_at).toLocaleDateString('id-ID')}</span>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <div className="py-8 text-center text-slate-400 text-[11px] font-bold">
+                                                    Tidak ada notifikasi baru
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* User Profile Avatar Dropdown */}

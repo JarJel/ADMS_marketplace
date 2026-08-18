@@ -193,7 +193,7 @@ export default function AdmsChatWidget({ darkMode = true }) {
         <p key={idx} className="my-1">
           {parts.map((part, pIdx) => {
             if (part.startsWith('**') && part.endsWith('**')) {
-              return <strong key={pIdx} className="font-semibold text-emerald-400">{part.slice(2, -2)}</strong>;
+              return <strong key={pIdx} className={`font-semibold ${darkMode ? 'text-emerald-400' : 'text-emerald-700'}`}>{part.slice(2, -2)}</strong>;
             }
             if (part.startsWith('*') && part.endsWith('*')) {
               return <em key={pIdx} className="italic opacity-90">{part.slice(1, -1)}</em>;
@@ -227,21 +227,31 @@ export default function AdmsChatWidget({ darkMode = true }) {
 
         {/* Floating Chat Window Modal */}
         {isOpen && (
-          <div className="w-[380px] sm:w-[420px] h-[580px] max-h-[85vh] max-w-[calc(100vw-2rem)] flex flex-col rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-5">
+          <div className={`w-[380px] sm:w-[420px] h-[580px] max-h-[85vh] max-w-[calc(100vw-2rem)] flex flex-col rounded-2xl backdrop-blur-xl border shadow-2xl overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-5 ${
+            darkMode 
+              ? 'bg-slate-900/95 border-slate-800 text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.6)]' 
+              : 'bg-white/95 border-slate-300 text-slate-800 shadow-2xl shadow-indigo-100/90'
+          }`}>
             
             {/* Header */}
-            <div className="bg-gradient-to-r from-slate-900 via-teal-950 to-indigo-950 p-3.5 px-4 border-b border-slate-800/80 flex items-center justify-between">
+            <div className={`p-3.5 px-4 border-b flex items-center justify-between ${
+              darkMode 
+                ? 'bg-gradient-to-r from-slate-900 via-teal-950 to-indigo-950 border-slate-800/80' 
+                : 'bg-gradient-to-r from-slate-100 via-teal-50 to-indigo-50 border-slate-300'
+            }`}>
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-teal-500/20">
                   <Bot className="w-5 h-5 text-slate-950" />
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-sm text-white tracking-wide">ADMS Assistant</span>
-                    <span className="px-1.5 py-0.5 text-[9px] font-medium bg-emerald-500/20 text-emerald-300 rounded-md border border-emerald-500/30">AI Pro</span>
+                    <span className={`font-bold text-sm tracking-wide ${darkMode ? 'text-white' : 'text-slate-900'}`}>ADMS Assistant</span>
+                    <span className={`px-1.5 py-0.5 text-[9px] font-semibold rounded-md border ${
+                      darkMode ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                    }`}>AI Pro</span>
                   </div>
-                  <span className="text-[11px] text-slate-400 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span className={`text-[11px] flex items-center gap-1.5 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     Online &bull; Konsultan Digital & Sales
                   </span>
                 </div>
@@ -252,21 +262,27 @@ export default function AdmsChatWidget({ darkMode = true }) {
                 <button 
                   onClick={() => setIsCatalogOpen(true)}
                   title="Lihat Katalog Layanan"
-                  className="p-1.5 text-slate-400 hover:text-teal-300 hover:bg-slate-800/60 rounded-lg transition-colors"
+                  className={`p-1.5 rounded-lg transition-colors ${
+                    darkMode ? 'text-slate-400 hover:text-teal-300 hover:bg-slate-800/60' : 'text-slate-500 hover:text-teal-700 hover:bg-slate-200/80'
+                  }`}
                 >
                   <Sparkles className="w-4 h-4" />
                 </button>
                 <button 
                   onClick={handleResetChat}
                   title="Reset Percakapan"
-                  className="p-1.5 text-slate-400 hover:text-amber-300 hover:bg-slate-800/60 rounded-lg transition-colors"
+                  className={`p-1.5 rounded-lg transition-colors ${
+                    darkMode ? 'text-slate-400 hover:text-amber-300 hover:bg-slate-800/60' : 'text-slate-500 hover:text-amber-700 hover:bg-slate-200/80'
+                  }`}
                 >
                   <RotateCcw className="w-4 h-4" />
                 </button>
                 <button 
                   onClick={handleToggleOpen}
                   title="Tutup Chat"
-                  className="p-1.5 text-slate-400 hover:text-rose-300 hover:bg-slate-800/60 rounded-lg transition-colors"
+                  className={`p-1.5 rounded-lg transition-colors ${
+                    darkMode ? 'text-slate-400 hover:text-rose-300 hover:bg-slate-800/60' : 'text-slate-500 hover:text-rose-700 hover:bg-slate-200/80'
+                  }`}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -274,9 +290,11 @@ export default function AdmsChatWidget({ darkMode = true }) {
             </div>
 
             {/* Stepper Status Bar */}
-            <div className="bg-slate-950/80 px-3.5 py-2 border-b border-slate-800/60 flex items-center justify-between text-[11px]">
+            <div className={`px-3.5 py-2 border-b flex items-center justify-between text-[11px] ${
+              darkMode ? 'bg-slate-950/80 border-slate-800/60' : 'bg-slate-100/90 border-slate-300'
+            }`}>
               <div className="flex items-center gap-1.5">
-                <span className="text-teal-400 font-medium">{getStateStepLabel(chatContext.currentState)}</span>
+                <span className={`font-semibold ${darkMode ? 'text-teal-400' : 'text-teal-700'}`}>{getStateStepLabel(chatContext.currentState)}</span>
               </div>
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map(step => (
@@ -284,10 +302,10 @@ export default function AdmsChatWidget({ darkMode = true }) {
                     key={step} 
                     className={`w-1.5 h-1.5 rounded-full transition-all ${
                       step === chatContext.currentState 
-                        ? 'w-3.5 bg-emerald-400 shadow-[0_0_8px_#34d399]' 
+                        ? 'w-3.5 bg-emerald-500 shadow-sm' 
                         : step < chatContext.currentState 
                         ? 'bg-emerald-600' 
-                        : 'bg-slate-700'
+                        : (darkMode ? 'bg-slate-700' : 'bg-slate-300')
                     }`}
                   />
                 ))}
@@ -299,24 +317,28 @@ export default function AdmsChatWidget({ darkMode = true }) {
               {messages.map((msg, idx) => (
                 <div key={idx} className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                   {msg.sender === 'bot' && (
-                    <div className="w-7 h-7 rounded-lg bg-teal-900/60 border border-teal-700/50 flex items-center justify-center shrink-0 mt-0.5 text-teal-300">
+                    <div className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
+                      darkMode ? 'bg-teal-900/60 border-teal-700/50 text-teal-300' : 'bg-teal-100 border-teal-300 text-teal-700'
+                    }`}>
                       <Bot className="w-3.5 h-3.5" />
                     </div>
                   )}
 
-                  <div className={`max-w-[85%] rounded-2xl p-3.5 leading-relaxed shadow-md ${
+                  <div className={`max-w-[85%] rounded-2xl p-3.5 leading-relaxed shadow-sm ${
                     msg.sender === 'user' 
                       ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-tr-none' 
-                      : 'bg-slate-800/90 text-slate-200 border border-slate-700/60 rounded-tl-none'
+                      : (darkMode 
+                          ? 'bg-slate-800/90 text-slate-200 border border-slate-700/60 rounded-tl-none' 
+                          : 'bg-slate-100 text-slate-800 border border-slate-300/90 rounded-tl-none')
                   }`}>
                     {renderFormattedText(msg.text)}
 
                     {/* Lead Trigger Button */}
                     {(msg.showLeadForm || msg.showLeadTrigger) && (
-                      <div className="mt-3 pt-2.5 border-t border-slate-700/60">
+                      <div className={`mt-3 pt-2.5 border-t ${darkMode ? 'border-slate-700/60' : 'border-slate-300'}`}>
                         <button 
                           onClick={() => setIsLeadFormOpen(true)}
-                          className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold rounded-xl shadow-lg transition-all"
+                          className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold rounded-xl shadow-md transition-all"
                         >
                           <FileText className="w-3.5 h-3.5" />
                           <span>Isi Data Lead Konsultasi</span>
@@ -326,20 +348,22 @@ export default function AdmsChatWidget({ darkMode = true }) {
 
                     {/* WhatsApp Handover Card */}
                     {msg.whatsappHandover && (
-                      <div className="mt-3 pt-2.5 border-t border-slate-700/60 space-y-2">
-                        <div className="p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-700/50 text-[11px] text-emerald-300 flex flex-col gap-1.5">
+                      <div className={`mt-3 pt-2.5 border-t space-y-2 ${darkMode ? 'border-slate-700/60' : 'border-slate-300'}`}>
+                        <div className={`p-2.5 rounded-xl border text-[11px] flex flex-col gap-1.5 ${
+                          darkMode ? 'bg-emerald-950/60 border-emerald-700/50 text-emerald-300' : 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                        }`}>
                           <div className="flex items-center gap-2">
-                            <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-                            <span className="font-semibold text-white">Data siap diteruskan ke Tim Sales Admin ADMS</span>
+                            <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                            <span className={`font-semibold ${darkMode ? 'text-white' : 'text-slate-900'}`}>Data siap diteruskan ke Tim Sales Admin ADMS</span>
                           </div>
-                          <div className="text-[10.5px] text-slate-300 pl-6 space-y-0.5">
+                          <div className={`text-[10.5px] pl-6 space-y-0.5 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                             <div className="flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                              <span>WhatsApp 1: <strong className="text-emerald-300 font-mono">+6281121211933</strong> <span className="text-[9px] px-1 py-0.2 bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30">Utama</span></span>
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                              <span>WhatsApp 1: <strong className="font-mono text-emerald-600 dark:text-emerald-300">+6281121211933</strong> <span className="text-[9px] px-1 py-0.2 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 rounded border border-emerald-500/30">Utama</span></span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
-                              <span>WhatsApp 2: <strong className="text-slate-300 font-mono">+6281121191933</strong></span>
+                              <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                              <span>WhatsApp 2: <strong className="font-mono text-slate-700 dark:text-slate-300">+6281121191933</strong></span>
                             </div>
                           </div>
                         </div>
@@ -347,7 +371,7 @@ export default function AdmsChatWidget({ darkMode = true }) {
                           href={msg.whatsappHandover.url} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl shadow-lg transition-all"
+                          className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-md transition-all text-xs"
                         >
                           <PhoneCall className="w-4 h-4" />
                           <span>Chat WhatsApp 1 Admin (+6281121211933)</span>
@@ -358,7 +382,7 @@ export default function AdmsChatWidget({ darkMode = true }) {
 
                     {/* Quick Suggestion Chips */}
                     {msg.quickReplies && msg.quickReplies.length > 0 && idx === messages.length - 1 && (
-                      <div className="mt-3 pt-2.5 border-t border-slate-700/60 flex flex-wrap gap-1.5">
+                      <div className={`mt-3 pt-2.5 border-t flex flex-wrap gap-1.5 ${darkMode ? 'border-slate-700/60' : 'border-slate-300'}`}>
                         {msg.quickReplies.map((reply, rIdx) => (
                           <button
                             key={rIdx}
@@ -371,7 +395,11 @@ export default function AdmsChatWidget({ darkMode = true }) {
                                 handleSendMessage(reply);
                               }
                             }}
-                            className="px-2.5 py-1 text-[11px] rounded-lg bg-slate-900/80 hover:bg-teal-900/60 text-teal-300 border border-teal-500/30 hover:border-teal-400 transition-all text-left"
+                            className={`px-2.5 py-1 text-[11px] rounded-lg border transition-all text-left font-medium ${
+                              darkMode 
+                                ? 'bg-slate-900/80 hover:bg-teal-900/60 text-teal-300 border-teal-500/30 hover:border-teal-400' 
+                                : 'bg-white hover:bg-teal-50 text-teal-700 border-teal-300 hover:border-teal-500 shadow-sm'
+                            }`}
                           >
                             {reply}
                           </button>
@@ -385,7 +413,9 @@ export default function AdmsChatWidget({ darkMode = true }) {
                   </div>
 
                   {msg.sender === 'user' && (
-                    <div className="w-7 h-7 rounded-lg bg-slate-700 flex items-center justify-center shrink-0 mt-0.5 text-slate-300">
+                    <div className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
+                      darkMode ? 'bg-slate-700 border-slate-600 text-slate-300' : 'bg-slate-200 border-slate-300 text-slate-700'
+                    }`}>
                       <User className="w-3.5 h-3.5" />
                     </div>
                   )}
@@ -394,14 +424,18 @@ export default function AdmsChatWidget({ darkMode = true }) {
 
               {isTyping && (
                 <div className="flex gap-2.5 justify-start items-center text-slate-400 text-[11px]">
-                  <div className="w-7 h-7 rounded-lg bg-teal-900/60 border border-teal-700/50 flex items-center justify-center shrink-0 text-teal-300">
+                  <div className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 ${
+                    darkMode ? 'bg-teal-900/60 border-teal-700/50 text-teal-300' : 'bg-teal-100 border-teal-300 text-teal-700'
+                  }`}>
                     <Bot className="w-3.5 h-3.5" />
                   </div>
-                  <div className="bg-slate-800/90 border border-slate-700/60 rounded-2xl rounded-tl-none p-3 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce"></span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce [animation-delay:0.2s]"></span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce [animation-delay:0.4s]"></span>
-                    <span className="ml-1 text-slate-300">ADMS AI sedang merespons...</span>
+                  <div className={`border rounded-2xl rounded-tl-none p-3 flex items-center gap-1.5 ${
+                    darkMode ? 'bg-slate-800/90 border-slate-700/60 text-slate-300' : 'bg-slate-100 border-slate-300 text-slate-700'
+                  }`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-bounce"></span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-bounce [animation-delay:0.2s]"></span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-bounce [animation-delay:0.4s]"></span>
+                    <span className={`ml-1 ${darkMode ? 'text-slate-300' : 'text-slate-700 font-medium'}`}>ADMS AI sedang merespons...</span>
                   </div>
                 </div>
               )}
@@ -410,7 +444,7 @@ export default function AdmsChatWidget({ darkMode = true }) {
             </div>
 
             {/* Input Bar */}
-            <div className="p-3 bg-slate-950 border-t border-slate-800">
+            <div className={`p-3 border-t ${darkMode ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-300'}`}>
               <form 
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -423,25 +457,31 @@ export default function AdmsChatWidget({ darkMode = true }) {
                   placeholder="Ketik pertanyaan (contoh: harga website, izin NIB, Ads)..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  className="flex-1 bg-slate-900 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                  className={`flex-1 rounded-xl px-3.5 py-2.5 text-xs border focus:outline-none focus:ring-1 ${
+                    darkMode 
+                      ? 'bg-slate-900 border-slate-700/80 text-white placeholder-slate-500 focus:border-teal-500 focus:ring-teal-500' 
+                      : 'bg-white border-slate-300 text-slate-800 placeholder-slate-400 font-medium focus:border-teal-500 focus:ring-teal-500 shadow-sm'
+                  }`}
                 />
                 <button 
                   type="submit"
                   disabled={!inputMessage.trim()}
-                  className="p-2.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-bold rounded-xl transition-all shadow-md shadow-teal-500/20"
+                  className="p-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-md shadow-teal-500/20"
                 >
                   <Send className="w-4 h-4" />
                 </button>
               </form>
-              <div className="mt-2 flex flex-col sm:flex-row items-center justify-between text-[10px] text-slate-400 gap-1 pt-1 border-t border-slate-900">
+              <div className={`mt-2 flex flex-col sm:flex-row items-center justify-between text-[10px] gap-1 pt-1 border-t ${
+                darkMode ? 'text-slate-400 border-slate-900' : 'text-slate-500 border-slate-200'
+              }`}>
                 <span className="flex items-center gap-1">
-                  <Shield className="w-3 h-3 text-teal-400" />
+                  <Shield className="w-3 h-3 text-teal-500" />
                   <span>Google Cloud Platform Server</span>
                 </span>
                 <span className="flex items-center gap-1.5 font-mono">
-                  <span>WA 1: <strong className="text-emerald-400 font-semibold">+6281121211933</strong></span>
-                  <span className="text-slate-600">&bull;</span>
-                  <span>WA 2: <strong className="text-slate-300 font-semibold">+6281121191933</strong></span>
+                  <span>WA 1: <strong className="text-emerald-600 dark:text-emerald-400 font-semibold">+6281121211933</strong></span>
+                  <span className="text-slate-400">&bull;</span>
+                  <span>WA 2: <strong className="text-slate-700 dark:text-slate-300 font-semibold">+6281121191933</strong></span>
                 </span>
               </div>
             </div>

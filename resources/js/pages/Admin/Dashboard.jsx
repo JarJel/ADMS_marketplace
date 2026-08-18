@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 
-export default function AdminDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode }) {
+export default function AdminDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode, cartCount, wishlistCount, notifications }) {
     const [activeTab, setActiveTab] = useState('overview');
     const [pendingMerchants, setPendingMerchants] = useState([]);
     const [pendingProducts, setPendingProducts] = useState([]);
@@ -194,6 +194,9 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                 onLogout={onLogout} 
                 onNavigate={onNavigate}
                 currentView="admin_dashboard"
+                cartCount={cartCount}
+                wishlistCount={wishlistCount}
+                notifications={notifications}
             />
 
             {/* Dashboard Contents */}

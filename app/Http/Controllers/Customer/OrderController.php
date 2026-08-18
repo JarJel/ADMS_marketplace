@@ -122,6 +122,15 @@ class OrderController extends Controller
                 }
             }
 
+            // Kirim notifikasi ke user
+            \App\Models\Notification::create([
+                'user_id' => $user->id,
+                'title' => 'Pesanan Baru Dibuat',
+                'message' => "Pesanan Anda #{$order->id} (Total: Rp " . number_format($totalAmount, 0, ',', '.') . ") berhasil dibuat dan sedang menunggu pembayaran.",
+                'type' => 'order',
+                'is_read' => false
+            ]);
+
             DB::commit();
 
             return response()->json([

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 
-export default function MerchantDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode }) {
+export default function MerchantDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode, cartCount, wishlistCount, notifications }) {
     const [activeTab, setActiveTab] = useState('overview');
     const [stats, setStats] = useState(null);
     const [products, setProducts] = useState([]);
@@ -141,6 +141,9 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
                 onLogout={onLogout} 
                 onNavigate={onNavigate}
                 currentView="merchant_dashboard"
+                cartCount={cartCount}
+                wishlistCount={wishlistCount}
+                notifications={notifications}
             />
 
             {/* Dashboard Contents */}

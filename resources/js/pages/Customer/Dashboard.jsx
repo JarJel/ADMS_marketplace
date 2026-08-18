@@ -1,12 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
-    LayoutDashboard, ShoppingBag, Download, Megaphone, Heart, Settings, 
-    LogOut, CreditCard, Star, FileText, Upload, User, ShieldCheck, Check, Trash2, MapPin, Tag
+    LayoutDashboard, ShoppingBag, ShoppingCart, Download, Megaphone, Heart, Settings, 
+    LogOut, CreditCard, Star, FileText, Upload, User, ShieldCheck, Check, Trash2, MapPin, Tag, Store,
+    ChevronLeft, ChevronRight
 } from 'lucide-react';
 import Navbar from '../../components/Navbar';
+import ProductDetailModal from '../../components/ProductDetailModal';
 
-export default function CustomerDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode }) {
-    const [activeTab, setActiveTab] = useState('overview');
+export default function CustomerDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode, initialTab = 'overview', refreshSession, onAddToCart, onToggleWishlist, cartCount, wishlistCount, notifications }) {
+    const [activeTab, setActiveTab] = useState(initialTab);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const recommendedRef = useRef(null);
+
+    const scrollRecommended = (direction) => {
+        if (recommendedRef.current) {
+            const { scrollLeft, clientWidth } = recommendedRef.current;
+            const scrollAmount = clientWidth * 0.75;
+            recommendedRef.current.scrollTo({
+                left: direction === 'left' ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    useEffect(() => {
+        setActiveTab(initialTab);
+    }, [initialTab]);
     const [saveSuccess, setSaveSuccess] = useState(false);
 
     const [purchases, setPurchases] = useState([]);
@@ -15,7 +35,25 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
     const [wishlist, setWishlist] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const recommendedProducts = [
+    const toggleWishlist = async (prod) => {
+        if (!prod) return;
+        const prodId = prod.id;
+        const exists = wishlist.some(item => item.id === prodId || item.product_id === prodId);
+        
+        let newWishlist = [];
+        if (exists) {
+            newWishlist = wishlist.filter(item => item.id !== prodId && item.product_id !== prodId);
+        } else {
+            newWishlist = [...wishlist, prod];
+        }
+        setWishlist(newWishlist);
+
+        if (onToggleWishlist) {
+            onToggleWishlist(prodId);
+        }
+    };
+
+    const [recommendedProducts, setRecommendedProducts] = useState([
         {
             id: 1,
             title: "Template Bundling Social Media Canva untuk UMKM 2026",
@@ -29,9 +67,9 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
         },
         {
             id: 2,
-            title: "Source Code Aplikasi Kasir Web Laravel 11 & React",
-            category: "Source Code",
-            merchant: "Afifah Tech",
+            title: "Source Code Aplikasi POS Kasir Toko Laravel 11",
+            category: "Source Code Web",
+            merchant: "Syariah Tech ID",
             isSyariah: true,
             rating: 4.8,
             reviewsCount: 89,
@@ -40,13 +78,13 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
         },
         {
             id: 3,
-            title: "Ebook Panduan Sukses Jualan Produk Digital Dari Nol",
+            title: "E-Book Panduan Bisnis Digital Syariah Bebas Riba",
             category: "E-Book",
-            merchant: "Deni Book Store",
-            isSyariah: false,
-            rating: 4.7,
-            reviewsCount: 54,
-            price: 89000,
+            merchant: "Pustaka Muamalah",
+            isSyariah: true,
+            rating: 4.9,
+            reviewsCount: 310,
+            price: 35000,
             image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=600&auto=format&fit=crop"
         },
         {
@@ -60,7 +98,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
             price: 129000,
             image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop"
         }
-    ];
+    ]);
 
     useEffect(() => {
         if (!token) return;
@@ -118,8 +156,14 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                     setAdvertisements(adsData.data);
                 }
 
+                // Fetch recommended products from database
+                const recRes = await fetch('/api/public/products/recommended');
+                const recData = await recRes.json();
+                if (recData.success && recData.data && recData.data.length > 0) {
+                    setRecommendedProducts(recData.data);
+                }
             } catch (error) {
-                console.error("Error fetching dashboard data:", error);
+                console.error("Error fetching customer dashboard data:", error);
             } finally {
                 setIsLoading(false);
             }
@@ -155,6 +199,64 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(val);
     };
 
+    // Merchant registration states
+    const [regStoreName, setRegStoreName] = useState('');
+    const [regStoreSlug, setRegStoreSlug] = useState('');
+    const [regDescription, setRegDescription] = useState('');
+    const [regLocation, setRegLocation] = useState('');
+    const [regWhatsapp, setRegWhatsapp] = useState(user?.phone || '');
+    const [regSyariahCertified, setRegSyariahCertified] = useState(false);
+    const [regSyariahCertNumber, setRegSyariahCertNumber] = useState('');
+    const [regSyariahCertBody, setRegSyariahCertBody] = useState('');
+    const [regLoading, setRegLoading] = useState(false);
+    const [regSuccess, setRegSuccess] = useState(false);
+    const [regErrors, setRegErrors] = useState({});
+
+    const handleStoreNameChange = (val) => {
+        setRegStoreName(val);
+        setRegStoreSlug(val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
+    };
+
+    const handleMerchantRegister = async (e) => {
+        e.preventDefault();
+        setRegLoading(true);
+        setRegErrors({});
+
+        try {
+            const res = await fetch('/api/customer/merchant/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: regStoreName,
+                    slug: regStoreSlug,
+                    description: regDescription,
+                    location: regLocation,
+                    contact_whatsapp: regWhatsapp,
+                    syariah_certified: regSyariahCertified,
+                    syariah_cert_number: regSyariahCertified ? regSyariahCertNumber : null,
+                    syariah_cert_body: regSyariahCertified ? regSyariahCertBody : null
+                })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                setRegSuccess(true);
+                if (refreshSession) refreshSession();
+            } else {
+                alert(data.message || 'Pendaftaran merchant gagal.');
+                if (data.errors) setRegErrors(data.errors);
+            }
+        } catch (err) {
+            console.error("Merchant registration error:", err);
+            alert("Terjadi kesalahan jaringan.");
+        } finally {
+            setRegLoading(false);
+        }
+    };
+
     const menuItems = [
         { id: 'overview', name: 'Ringkasan', icon: <LayoutDashboard className="w-4 h-4" /> },
         { id: 'purchases', name: 'Transaksi Saya', icon: <ShoppingBag className="w-4 h-4" /> },
@@ -163,6 +265,10 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
         { id: 'wishlist', name: 'Favorit / Wishlist', icon: <Heart className="w-4 h-4" /> },
         { id: 'settings', name: 'Pengaturan Akun', icon: <Settings className="w-4 h-4" /> }
     ];
+
+    if (user && user.role === 'customer') {
+        menuItems.push({ id: 'merchant_registration', name: 'Daftar Mitra Merchant', icon: <Store className="w-4 h-4" /> });
+    }
 
     const renderSidebar = (closeSidebar) => (
         <div className="space-y-6">
@@ -224,6 +330,9 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                 onNavigate={onNavigate}
                 currentView="customer_dashboard"
                 sidebarContent={renderSidebar}
+                cartCount={cartCount}
+                wishlistCount={wishlistCount}
+                notifications={notifications}
             />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
@@ -232,75 +341,211 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                         {/* 1. Tab Overview */}
                         {activeTab === 'overview' && (
                             <div className="space-y-6">
-                                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm text-left">
-                                    <h1 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white leading-tight">
-                                        Halo, {profileName}! Selamat datang kembali.
-                                    </h1>
-                                    <p className="text-xs text-slate-400 dark:text-slate-500 dark:text-slate-400 dark:text-slate-500 mt-1">{today}</p>
+                                <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl border border-indigo-950/50 p-8 sm:p-10 shadow-xl text-left">
+                                    <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                                    <div className="absolute bottom-0 left-10 w-36 h-36 bg-teal-500/5 rounded-full blur-2xl pointer-events-none"></div>
+                                    <div className="relative z-10 space-y-2">
+                                        <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest bg-indigo-500/20 px-3.5 py-1.5 rounded-full border border-indigo-400/20">
+                                            Dashboard Pelanggan
+                                        </span>
+                                        <h1 className="text-xl sm:text-3xl font-black text-white leading-tight mt-2">
+                                            Halo, <span className="text-transparent bg-gradient-to-r from-indigo-400 to-teal-300 bg-clip-text font-black">{profileName}</span>! Selamat datang kembali.
+                                        </h1>
+                                        <p className="text-xs text-slate-300 font-semibold">{today}</p>
+                                    </div>
                                 </div>
 
                                 {/* Mini stats widgets grid */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 text-center">
-                                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex items-center gap-5 text-left">
-                                        <div className="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl text-indigo-600 dark:text-indigo-400">
-                                            <ShoppingBag className="w-7 h-7" />
+                                    <button 
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setActiveTab('purchases');
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className="group relative overflow-hidden bg-white dark:bg-slate-900 rounded-3xl border border-slate-300 dark:border-slate-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-indigo-500/10 hover:border-indigo-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                                    >
+                                        <div className="p-4 bg-indigo-50 dark:bg-indigo-950/40 rounded-2xl text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
+                                            <ShoppingBag className="w-6 h-6" />
                                         </div>
-                                        <div>
-                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-1">Total Transaksi</span>
-                                            <span className="text-2xl font-black text-slate-800 dark:text-slate-100">{purchases.length} <span className="text-sm font-medium text-slate-500">Pembelian</span></span>
+                                        <div className="pointer-events-none">
+                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Total Transaksi</span>
+                                            <span className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">{purchases.length} <span className="text-sm font-normal text-slate-400">Pembelian</span></span>
                                         </div>
-                                    </div>
+                                    </button>
 
-                                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex items-center gap-5 text-left">
-                                        <div className="p-4 bg-teal-50 dark:bg-teal-900/30 rounded-xl text-teal-600 dark:text-teal-400">
-                                            <Tag className="w-7 h-7" />
+                                    <button 
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setActiveTab('ads');
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className="group relative overflow-hidden bg-white dark:bg-slate-900 rounded-3xl border border-slate-300 dark:border-slate-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-teal-500/10 hover:border-teal-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                                    >
+                                        <div className="p-4 bg-teal-50 dark:bg-teal-950/40 rounded-2xl text-teal-600 dark:text-teal-400 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
+                                            <Tag className="w-6 h-6" />
                                         </div>
+                                        <div className="pointer-events-none">
+                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Iklan Aktif</span>
+                                            <span className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">{advertisements.filter(ad => ad.status === 'active' || ad.status === 'Published' || ad.status === 'approved').length} <span className="text-sm font-normal text-slate-400">Unit</span></span>
+                                        </div>
+                                    </button>
+
+                                    <button 
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setActiveTab('wishlist');
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className="group relative overflow-hidden bg-white dark:bg-slate-900 rounded-3xl border border-slate-300 dark:border-slate-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-rose-500/10 hover:border-rose-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-rose-500/50"
+                                    >
+                                        <div className="p-4 bg-rose-50 dark:bg-rose-950/40 rounded-2xl text-rose-600 dark:text-rose-400 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
+                                            <Heart className="w-6 h-6" />
+                                        </div>
+                                        <div className="pointer-events-none">
+                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Disimpan</span>
+                                            <span className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">{wishlist.length} <span className="text-sm font-normal text-slate-400">Favorit</span></span>
+                                        </div>
+                                    </button>
+
+                                    <button 
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setActiveTab('purchases');
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className="group relative overflow-hidden bg-white dark:bg-slate-900 rounded-3xl border border-slate-300 dark:border-slate-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-amber-500/10 hover:border-amber-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                                    >
+                                        <div className="p-4 bg-amber-50 dark:bg-amber-950/40 rounded-2xl text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
+                                            <CreditCard className="w-6 h-6" />
+                                        </div>
+                                        <div className="pointer-events-none">
+                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Pengeluaran</span>
+                                            <span className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">{formatCurrency(purchases.filter(p => p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid').reduce((sum, p) => sum + parseFloat(p.total_amount || p.total || 0), 0))}</span>
+                                        </div>
+                                    </button>
+                                </div>
+
+                                {/* 1. Recent Transactions Table (Transaksinya di atas) */}
+                                <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-300 dark:border-slate-800 shadow-md shadow-slate-200/70 dark:shadow-none overflow-hidden text-left mb-10">
+                                    <div className="p-6 sm:p-7 border-b-2 border-slate-300 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-900/50">
                                         <div>
-                                            <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Iklan Aktif</p>
-                                            <p className="text-2xl font-black text-slate-800 dark:text-white leading-none">{advertisements.filter(ad => ad.status === 'active' || ad.status === 'Published').length}</p>
+                                            <h3 className="font-bold text-lg sm:text-xl text-slate-800 dark:text-slate-100">Transaksi Terbaru</h3>
+                                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Riwayat 3 transaksi terakhir pembelian produk digital Anda.</p>
                                         </div>
+                                        <button 
+                                            onClick={() => setActiveTab('purchases')}
+                                            className="text-xs sm:text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 font-bold px-4 py-2 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/50 rounded-xl border border-indigo-200 dark:border-indigo-800 transition-colors cursor-pointer"
+                                        >
+                                            Lihat Semua
+                                        </button>
                                     </div>
-                                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex items-center gap-5 text-left">
-                                        <div className="p-4 bg-rose-50 dark:bg-rose-900/30 rounded-xl text-rose-600 dark:text-rose-400">
-                                            <Heart className="w-7 h-7" />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Disimpan</p>
-                                            <p className="text-2xl font-black text-slate-800 dark:text-white leading-none">{wishlist.length}</p>
-                                        </div>
-                                    </div>
-                                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex items-center gap-5 text-left">
-                                        <div className="p-4 bg-amber-50 dark:bg-amber-900/30 rounded-xl text-amber-600 dark:text-amber-400">
-                                            <CreditCard className="w-7 h-7" />
-                                        </div>
-                                        <div>
-                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-1">Pengeluaran</span>
-                                            <span className="text-xl font-black text-slate-800 dark:text-slate-100">{formatCurrency(purchases.filter(p => p.status === 'completed' || p.status === 'PAID').reduce((sum, p) => sum + parseFloat(p.total_amount || p.total || 0), 0))}</span>
-                                        </div>
+                                    <div className="overflow-x-auto">
+                                        {purchases && purchases.length > 0 ? (
+                                            <table className="w-full text-sm border-collapse">
+                                                <thead className="bg-slate-200/80 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold text-xs uppercase border-b-2 border-slate-300 dark:border-slate-700">
+                                                    <tr>
+                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">ID Transaksi</th>
+                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Merchant</th>
+                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Tanggal</th>
+                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Total</th>
+                                                        <th className="px-6 py-4 text-left tracking-wider">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200 font-medium text-sm">
+                                                    {purchases.slice(0, 3).map((p) => (
+                                                        <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                                                            <td className="px-6 py-4.5 font-medium font-mono text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">
+                                                                {p.order_number || (p.id ? (p.id.length > 12 ? `${p.id.substring(0, 8)}...` : p.id) : '-')}
+                                                            </td>
+                                                            <td className="px-6 py-4.5 font-medium text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{p.merchant?.name || 'Merchant'}</td>
+                                                            <td className="px-6 py-4.5 text-slate-600 dark:text-slate-400 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
+                                                            <td className="px-6 py-4.5 font-bold text-teal-600 dark:text-teal-400 text-sm sm:text-base border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{formatCurrency(p.total_amount || p.total || 0)}</td>
+                                                            <td className="px-6 py-4.5">
+                                                                <span className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
+                                                                    (p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid' || p.status?.toLowerCase() === 'verified') 
+                                                                        ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30' 
+                                                                        : (p.status?.toLowerCase() === 'failed' || p.status?.toLowerCase() === 'cancelled')
+                                                                            ? 'bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30'
+                                                                            : 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30'
+                                                                }`}>
+                                                                    {p.status}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        ) : (
+                                            <div className="py-12 text-center text-slate-400 text-sm font-medium bg-slate-50/50 dark:bg-slate-900/20">
+                                                Belum ada riwayat transaksi
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
-                                {/* Recommended Products */}
-                                <div className="mb-10">
+                                {/* 2. Recommended Products Horizontal Carousel (Bergeser dari Kanan ke Kiri / Kiri ke Kanan) */}
+                                <div className="mb-10 text-left">
                                     <div className="flex items-center justify-between mb-5">
-                                        <h3 className="font-extrabold text-lg text-slate-800 dark:text-white">Rekomendasi Spesial Untuk Anda</h3>
-                                        <button 
-                                            onClick={() => onNavigate('classifieds')}
-                                            className="text-sm font-bold text-indigo-600 hover:text-indigo-500 transition-colors"
-                                        >
-                                            Lihat Semua &rarr;
-                                        </button>
+                                        <div>
+                                            <h3 className="font-bold text-lg sm:text-xl text-slate-800 dark:text-slate-100">Rekomendasi Spesial Untuk Anda</h3>
+                                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Geser untuk melihat opsi produk digital unggulan.</p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button 
+                                                onClick={() => scrollRecommended('left')}
+                                                className="p-2 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer"
+                                                title="Geser Kiri"
+                                            >
+                                                <ChevronLeft className="w-4.5 h-4.5" />
+                                            </button>
+                                            <button 
+                                                onClick={() => scrollRecommended('right')}
+                                                className="p-2 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer"
+                                                title="Geser Kanan"
+                                            >
+                                                <ChevronRight className="w-4.5 h-4.5" />
+                                            </button>
+                                            <button 
+                                                onClick={() => onNavigate('classifieds')}
+                                                className="text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 transition-colors ml-2 cursor-pointer"
+                                            >
+                                                Lihat Semua &rarr;
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+
+                                    <div 
+                                        ref={recommendedRef}
+                                        className="flex gap-6 overflow-x-auto pb-4 pt-1 snap-x scroll-smooth no-scrollbar"
+                                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                                    >
                                         {recommendedProducts.map((prod) => (
                                             <div 
                                                 key={prod.id}
-                                                className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden flex flex-col justify-between group transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/10 hover:border-indigo-500/30 relative"
+                                                onClick={() => {
+                                                    setSelectedProduct(prod);
+                                                    setIsDetailModalOpen(true);
+                                                }}
+                                                className="min-w-[280px] sm:min-w-[300px] max-w-[320px] flex-shrink-0 snap-start rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden flex flex-col justify-between group transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/10 hover:border-indigo-500/30 relative cursor-pointer"
                                             >
                                                 <button 
-                                                    className="absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-full text-slate-400 dark:text-slate-500 hover:text-rose-500 shadow-sm transition-colors"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        toggleWishlist(prod);
+                                                    }}
+                                                    className={`absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-full shadow-sm transition-all cursor-pointer ${
+                                                        wishlist.some(item => item.id === prod.id || item.product_id === prod.id)
+                                                            ? 'text-rose-500 fill-rose-500 scale-110'
+                                                            : 'text-slate-400 dark:text-slate-500 hover:text-rose-500'
+                                                    }`}
+                                                    title={wishlist.some(item => item.id === prod.id || item.product_id === prod.id) ? "Hapus dari Wishlist" : "Tambah ke Wishlist"}
                                                 >
-                                                    <Heart className="w-4 h-4" />
+                                                    <Heart className={`w-4 h-4 ${wishlist.some(item => item.id === prod.id || item.product_id === prod.id) ? 'fill-current text-rose-500' : ''}`} />
                                                 </button>
                                                 <div>
                                                     <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
@@ -309,78 +554,43 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                             alt={prod.title} 
                                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                         />
-                                                        <span className="absolute top-3 left-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur text-[10px] font-bold text-teal-600 dark:text-teal-400 px-2.5 py-0.5 rounded border border-slate-100 dark:border-slate-700 shadow-sm">
+                                                        <span className="absolute top-3 left-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur text-xs font-semibold text-teal-600 dark:text-teal-400 px-2.5 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
                                                             {prod.category}
                                                         </span>
                                                     </div>
-                                                    <div className="p-4 flex flex-col gap-2">
-                                                        <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 min-h-[40px] group-hover:text-indigo-500 transition-colors">{prod.title}</h4>
+                                                    <div className="p-4.5 flex flex-col gap-2">
+                                                        <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 min-h-[44px] group-hover:text-indigo-500 transition-colors">{prod.title}</h4>
                                                         
                                                         <div className="flex items-center gap-1.5 text-xs text-amber-500">
                                                             <Star className="w-3.5 h-3.5 fill-current" />
                                                             <span className="font-semibold text-slate-700 dark:text-slate-300">{prod.rating}</span>
-                                                            <span className="text-[10px] text-slate-400 dark:text-slate-500">({prod.reviewsCount})</span>
+                                                            <span className="text-xs text-slate-400 dark:text-slate-500">({prod.reviewsCount})</span>
                                                         </div>
 
-                                                        <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400">
+                                                        <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
                                                             <span>Toko:</span>
-                                                            <strong className="text-slate-700 dark:text-slate-300 font-bold">{prod.merchant}</strong>
+                                                            <strong className="text-slate-700 dark:text-slate-300 font-semibold">{prod.merchant}</strong>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                <div className="p-4 pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/50 mt-2">
-                                                    <span className="font-black text-sm text-teal-600 dark:text-teal-400">{formatCurrency(prod.price)}</span>
+                                                <div className="p-4.5 pt-2.5 flex items-center justify-between border-t border-slate-200 dark:border-slate-800/50 mt-2">
+                                                    <span className="font-bold text-sm sm:text-base text-teal-600 dark:text-teal-400">{formatCurrency(prod.price)}</span>
                                                     <button 
-                                                        className="bg-indigo-600 hover:bg-indigo-700 text-white p-1.5 rounded-lg transition-colors shadow-md shadow-indigo-500/20"
-                                                        title="Tambah ke Keranjang"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSelectedProduct(prod);
+                                                            setIsDetailModalOpen(true);
+                                                        }}
+                                                        className="bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2 px-3.5 sm:px-4 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+                                                        title="Buka Detail & Tambah ke Keranjang"
                                                     >
-                                                        <ShoppingBag className="w-4 h-4" />
+                                                        <ShoppingCart className="w-3.5 h-3.5" />
+                                                        <span>Keranjang</span>
                                                     </button>
                                                 </div>
                                             </div>
                                         ))}
-                                    </div>
-                                </div>
-
-                                {/* Recent Transactions Table */}
-                                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden text-left">
-                                    <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                                        <h3 className="font-extrabold text-base text-slate-800 dark:text-white">Transaksi Terbaru</h3>
-                                        <button 
-                                            onClick={() => setActiveTab('purchases')}
-                                            className="text-sm text-indigo-600 font-bold hover:underline"
-                                        >
-                                            Lihat Semua
-                                        </button>
-                                    </div>
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full text-sm">
-                                            <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold text-xs uppercase border-b border-slate-200 dark:border-slate-700">
-                                                <tr>
-                                                    <th className="px-6 py-5 text-left tracking-wider">ID Transaksi</th>
-                                                    <th className="px-6 py-5 text-left tracking-wider">Merchant</th>
-                                                    <th className="px-6 py-5 text-left tracking-wider">Tanggal</th>
-                                                    <th className="px-6 py-5 text-left tracking-wider">Total</th>
-                                                    <th className="px-6 py-5 text-left tracking-wider">Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200 font-medium">
-                                                {purchases.slice(0, 3).map((p) => (
-                                                    <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
-                                                        <td className="px-6 py-5 font-bold text-slate-800 dark:text-slate-100">{p.order_number || p.id}</td>
-                                                        <td className="px-6 py-5">{p.merchant?.name || 'Merchant'}</td>
-                                                        <td className="px-6 py-5">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
-                                                        <td className="px-6 py-5 font-bold text-indigo-600 dark:text-indigo-400">{formatCurrency(p.total_amount || p.total || 0)}</td>
-                                                        <td className="px-6 py-5">
-                                                            <span className="inline-block bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-400 font-bold px-3 py-1 rounded-md text-xs uppercase tracking-wide">
-                                                                {p.status}
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -388,48 +598,52 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
 
                         {/* 2. Tab Purchases (Transaksi Saya) */}
                         {activeTab === 'purchases' && (
-                            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden text-left">
-                                <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                                    <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100">Daftar Transaksi Saya</h3>
-                                    <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Riwayat lengkap pembelian produk digital Anda.</p>
+                            <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-300 dark:border-slate-800 shadow-md shadow-slate-200/70 dark:shadow-none overflow-hidden text-left">
+                                <div className="p-6 sm:p-7 border-b-2 border-slate-300 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50">
+                                    <h3 className="font-bold text-lg sm:text-xl text-slate-800 dark:text-slate-100">Daftar Transaksi Saya</h3>
+                                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Riwayat lengkap pembelian produk digital Anda.</p>
                                 </div>
                                 <div className="overflow-x-auto">
-                                    <table className="w-full text-xs">
-                                        <thead className="bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500 font-bold text-[10px] uppercase border-b border-slate-100 dark:border-slate-800">
+                                    <table className="w-full text-sm border-collapse">
+                                        <thead className="bg-slate-200/80 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold text-xs uppercase border-b-2 border-slate-300 dark:border-slate-700">
                                             <tr>
-                                                <th className="px-6 py-4 text-left">ID Transaksi</th>
-                                                <th className="px-6 py-4 text-left">Merchant</th>
-                                                <th className="px-6 py-4 text-left">Tanggal</th>
-                                                <th className="px-6 py-4 text-left">Total</th>
-                                                <th className="px-6 py-4 text-left">Status</th>
-                                                <th className="px-6 py-4 text-center">Aksi</th>
+                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">ID Transaksi</th>
+                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Merchant</th>
+                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Tanggal</th>
+                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Total</th>
+                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Status</th>
+                                                <th className="px-6 py-4 text-center tracking-wider">Aksi</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200 font-medium">
+                                        <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200 font-medium text-sm">
                                             {purchases.map((p) => (
-                                                <tr key={p.id}>
-                                                    <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">{p.order_number || p.id}</td>
-                                                    <td className="px-6 py-4">{p.merchant?.name || 'Merchant'}</td>
-                                                    <td className="px-6 py-4">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
-                                                    <td className="px-6 py-4 font-bold text-indigo-600">{formatCurrency(p.total_amount || p.total || 0)}</td>
-                                                    <td className="px-6 py-4">
-                                                        <span className={`inline-block font-bold px-2 py-0.5 rounded text-[10px] uppercase ${
-                                                            (p.status === 'completed' || p.status === 'PAID') ? 'bg-emerald-100 text-emerald-800' :
-                                                            (p.status === 'pending' || p.status === 'PENDING') ? 'bg-amber-100 text-amber-800' :
-                                                            'bg-rose-100 text-rose-800'
+                                                <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                                                    <td className="px-6 py-4.5 font-medium font-mono text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">
+                                                        {p.order_number || (p.id ? (p.id.length > 12 ? `${p.id.substring(0, 8)}...` : p.id) : '-')}
+                                                    </td>
+                                                    <td className="px-6 py-4.5 font-medium text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{p.merchant?.name || 'Merchant'}</td>
+                                                    <td className="px-6 py-4.5 text-slate-600 dark:text-slate-400 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
+                                                    <td className="px-6 py-4.5 font-bold text-teal-600 dark:text-teal-400 text-sm sm:text-base border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{formatCurrency(p.total_amount || p.total || 0)}</td>
+                                                    <td className="px-6 py-4.5 border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">
+                                                        <span className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
+                                                            (p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid' || p.status?.toLowerCase() === 'verified') 
+                                                                ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30' 
+                                                                : (p.status?.toLowerCase() === 'failed' || p.status?.toLowerCase() === 'cancelled')
+                                                                    ? 'bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30'
+                                                                    : 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30'
                                                         }`}>
                                                             {p.status}
                                                         </span>
                                                     </td>
-                                                    <td className="px-6 py-4 text-center">
+                                                    <td className="px-6 py-4.5 text-center">
                                                         <div className="flex justify-center gap-2">
-                                                            <button className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-bold rounded-lg text-[10px] transition-colors cursor-pointer flex items-center gap-1">
-                                                                <FileText className="w-3 h-3" />
+                                                            <button className="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm border border-slate-300 dark:border-slate-700">
+                                                                <FileText className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                                                                 Invoice
                                                             </button>
                                                             {(p.status === 'completed' || p.status === 'PAID') && (
-                                                                <button className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-lg text-[10px] transition-colors cursor-pointer flex items-center gap-1">
-                                                                    <Star className="w-3 h-3 text-indigo-600 fill-current" />
+                                                                <button className="px-3.5 py-1.5 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm border border-indigo-300 dark:border-indigo-800">
+                                                                    <Star className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 fill-current" />
                                                                     Rating
                                                                 </button>
                                                             )}
@@ -690,8 +904,184 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                 </div>
                             </form>
                         )}
+
+                        {/* 7. Tab Merchant Registration */}
+                        {activeTab === 'merchant_registration' && (
+                            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8 space-y-6 text-left">
+                                <div>
+                                    <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100">Pendaftaran Mitra Merchant</h3>
+                                    <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Gabung menjadi Merchant resmi ADMS untuk menjual produk digital dan jasa Anda sesuai syariat.</p>
+                                </div>
+
+                                {user?.merchant ? (
+                                    <div className="p-8 text-center space-y-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                        <div className="w-16 h-16 bg-amber-50 dark:bg-amber-950/30 rounded-full flex items-center justify-center mx-auto text-amber-500">
+                                            <Store className="w-8 h-8" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <h4 className="font-extrabold text-slate-800 dark:text-slate-200">Status Pendaftaran: Menunggu Verifikasi</h4>
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
+                                                Toko Anda <strong>"{user.merchant.name}"</strong> sedang ditinjau oleh Tim Admin ADMS. Proses moderasi ini memakan waktu maksimal 24 jam untuk memverifikasi kepatuhan syariah dan dokumen Anda.
+                                            </p>
+                                        </div>
+                                        <div className="inline-block bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black px-4 py-2 rounded-full border border-amber-500/20 uppercase tracking-wider">
+                                            Sedang Ditinjau Admin
+                                        </div>
+                                    </div>
+                                ) : regSuccess ? (
+                                    <div className="p-8 text-center space-y-4 bg-emerald-50 dark:bg-emerald-950/30 rounded-2xl border border-emerald-100 dark:border-emerald-900/30 text-emerald-800 dark:text-emerald-400">
+                                        <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center mx-auto text-emerald-600">
+                                            <Check className="w-8 h-8" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <h4 className="font-extrabold text-lg">Pendaftaran Berhasil Diajukan!</h4>
+                                            <p className="text-xs text-emerald-600 dark:text-emerald-500 max-w-md mx-auto leading-relaxed">
+                                                Terima kasih atas pengajuan Anda. Tim Admin ADMS akan segera meninjau profil toko Anda. Notifikasi akan dikirimkan ke akun Anda segera setelah toko disetujui.
+                                            </p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleMerchantRegister} className="space-y-6">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                            <div className="space-y-1.5">
+                                                <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Nama Toko / Merchant <span className="text-rose-500">*</span></label>
+                                                <input 
+                                                    type="text" 
+                                                    required
+                                                    placeholder="Nama Toko Anda"
+                                                    value={regStoreName}
+                                                    onChange={(e) => handleStoreNameChange(e.target.value)}
+                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none"
+                                                />
+                                                {regErrors.name && <span className="text-[10px] text-rose-500 font-bold">{regErrors.name[0]}</span>}
+                                            </div>
+
+                                            <div className="space-y-1.5">
+                                                <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Slug Link Toko <span className="text-rose-500">*</span></label>
+                                                <input 
+                                                    type="text" 
+                                                    required
+                                                    placeholder="nama-toko-anda"
+                                                    value={regStoreSlug}
+                                                    onChange={(e) => setRegStoreSlug(e.target.value)}
+                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-100 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none font-mono"
+                                                />
+                                                {regErrors.slug && <span className="text-[10px] text-rose-500 font-bold">{regErrors.slug[0]}</span>}
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-1.5">
+                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Deskripsi Bisnis / Toko <span className="text-rose-500">*</span></label>
+                                            <textarea 
+                                                rows={4}
+                                                required
+                                                placeholder="Jelaskan produk atau jasa halal yang Anda tawarkan..."
+                                                value={regDescription}
+                                                onChange={(e) => setRegDescription(e.target.value)}
+                                                className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none resize-none"
+                                            />
+                                            {regErrors.description && <span className="text-[10px] text-rose-500 font-bold">{regErrors.description[0]}</span>}
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                            <div className="space-y-1.5">
+                                                <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Lokasi / Kota Asal <span className="text-rose-500">*</span></label>
+                                                <input 
+                                                    type="text" 
+                                                    required
+                                                    placeholder="Sleman, Yogyakarta"
+                                                    value={regLocation}
+                                                    onChange={(e) => setRegLocation(e.target.value)}
+                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none"
+                                                />
+                                                {regErrors.location && <span className="text-[10px] text-rose-500 font-bold">{regErrors.location[0]}</span>}
+                                            </div>
+
+                                            <div className="space-y-1.5">
+                                                <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Nomor WhatsApp Toko <span className="text-rose-500">*</span></label>
+                                                <input 
+                                                    type="text" 
+                                                    required
+                                                    placeholder="0812345678"
+                                                    value={regWhatsapp}
+                                                    onChange={(e) => setRegWhatsapp(e.target.value)}
+                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none"
+                                                />
+                                                {regErrors.contact_whatsapp && <span className="text-[10px] text-rose-500 font-bold">{regErrors.contact_whatsapp[0]}</span>}
+                                            </div>
+                                        </div>
+
+                                        {/* Sertifikasi Syariah Checkbox */}
+                                        <div className="border-t border-slate-100 dark:border-slate-800 pt-6 space-y-4">
+                                            <label className="flex items-center gap-2.5 text-xs font-bold text-slate-800 dark:text-slate-200 cursor-pointer">
+                                                <input 
+                                                    type="checkbox" 
+                                                    checked={regSyariahCertified}
+                                                    onChange={(e) => setRegSyariahCertified(e.target.checked)}
+                                                    className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-slate-300 rounded"
+                                                />
+                                                <span>Toko Kami Memiliki Sertifikasi Syariah / Halal (Opsional)</span>
+                                            </label>
+
+                                            {regSyariahCertified && (
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 animate-in fade-in slide-in-from-top-1 duration-200">
+                                                    <div className="space-y-1.5">
+                                                        <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Nomor Sertifikat Halal / Syariah</label>
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder="ID3411000123456"
+                                                            value={regSyariahCertNumber}
+                                                            onChange={(e) => setRegSyariahCertNumber(e.target.value)}
+                                                            className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none"
+                                                        />
+                                                    </div>
+
+                                                    <div className="space-y-1.5">
+                                                        <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Lembaga Penerbit Sertifikat</label>
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder="BPJPH Kemenag / MUI"
+                                                            value={regSyariahCertBody}
+                                                            onChange={(e) => setRegSyariahCertBody(e.target.value)}
+                                                            className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <button 
+                                            type="submit" 
+                                            disabled={regLoading}
+                                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-indigo-500/20 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                                        >
+                                            {regLoading ? (
+                                                <>
+                                                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                                    <span>Memproses Pendaftaran...</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Store className="w-4 h-4" />
+                                                    <span>Ajukan Pendaftaran Merchant</span>
+                                                </>
+                                            )}
+                                        </button>
+                                    </form>
+                                )}
+                            </div>
+                        )}
                 </div>
             </main>
+
+            {/* Product Detail Modal Popup */}
+            <ProductDetailModal 
+                product={selectedProduct}
+                isOpen={isDetailModalOpen}
+                onClose={() => setIsDetailModalOpen(false)}
+                darkMode={darkMode}
+                onAddToCart={onAddToCart}
+            />
         </div>
     );
 }

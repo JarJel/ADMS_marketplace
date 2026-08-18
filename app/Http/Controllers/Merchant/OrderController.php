@@ -78,6 +78,15 @@ class OrderController extends Controller
 
         $order->save();
 
+        // Kirim notifikasi ke customer
+        \App\Models\Notification::create([
+            'user_id' => $order->user_id,
+            'title' => 'Status Pesanan Diperbarui',
+            'message' => "Status pesanan Anda #{$order->id} telah diperbarui menjadi '{$request->status}'.",
+            'type' => 'order',
+            'is_read' => false
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Status pesanan berhasil diperbarui dari ' . $oldStatus . ' menjadi ' . $request->status . '.',

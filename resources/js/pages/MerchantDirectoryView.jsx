@@ -6,6 +6,14 @@ export default function MerchantDirectoryView({ user, token, onNavigate, darkMod
     const [merchants, setMerchants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 400);
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
 
     useEffect(() => {
         fetchMerchants();
@@ -26,8 +34,8 @@ export default function MerchantDirectoryView({ user, token, onNavigate, darkMod
     };
 
     const filteredMerchants = merchants.filter(merchant => {
-        if (!searchQuery.trim()) return true;
-        const q = searchQuery.toLowerCase();
+        if (!debouncedSearchQuery.trim()) return true;
+        const q = debouncedSearchQuery.toLowerCase();
         return (merchant.store_name || merchant.name || '').toLowerCase().includes(q) || 
                (merchant.description || '').toLowerCase().includes(q) || 
                (merchant.location || '').toLowerCase().includes(q);

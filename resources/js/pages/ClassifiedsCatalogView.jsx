@@ -456,7 +456,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                                     </div>
 
                                                     <a 
-                                                        href={`https://wa.me/6281121211933`}
+                                                        href={`https://wa.me/${ad.whatsapp ? ad.whatsapp.replace(/[^0-9]/g, '') : '6281121211933'}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         onClick={(e) => { e.stopPropagation(); handleAdClick(ad.id); }} // Stop modal popup trigger
@@ -622,7 +622,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 <span className="text-[10px] text-slate-400 dark:text-slate-500">Dipublikasikan pada: {selectedAd.date}</span>
                                 
                                 <a 
-                                    href={`https://wa.me/6281121211933`}
+                                    href={`https://wa.me/${selectedAd.whatsapp ? selectedAd.whatsapp.replace(/[^0-9]/g, '') : '6281121211933'}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-colors cursor-pointer"

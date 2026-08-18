@@ -67,6 +67,17 @@ class AdModerationController extends Controller
 
         $ad->save();
 
+        // Kirim notifikasi ke pemilik iklan
+        \App\Models\Notification::create([
+            'user_id' => $ad->owner_id,
+            'title' => $status === 'approved' ? 'Iklan Disetujui' : 'Iklan Ditolak',
+            'message' => $status === 'approved' 
+                ? "Iklan Anda yang berjudul '{$ad->title}' telah disetujui dan saat ini aktif di halaman Iklan Gratis." 
+                : "Maaf, iklan Anda yang berjudul '{$ad->title}' ditolak karena: {$reason}.",
+            'type' => 'ad_status',
+            'is_read' => false
+        ]);
+
         // Create audit log
         AdminAuditLog::create([
             'admin_id' => $admin->id,

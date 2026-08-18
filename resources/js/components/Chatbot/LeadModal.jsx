@@ -19,16 +19,21 @@ export default function LeadModal({ isOpen, onClose, onSubmitLead, initialData }
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content lead-modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <div>
-            <h3>Pengisian Data Leads Konsultasi</h3>
-            <p className="modal-subtitle">Dapatkan penawaran khusus & estimasi jadwalkan konsultasi gratis ADMS</p>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#061224] border border-amber-400/50 p-1 flex items-center justify-center shadow-md">
+              <img src="/assets/Images/adms-symbol.png" alt="ADMS Logo" className="w-full h-full object-contain" />
+            </div>
+            <div>
+              <h3>Form Data Konsultasi ADMS</h3>
+              <p className="modal-subtitle">Dapatkan penawaran khusus & konsultasi langsung dengan Sales Admin ADMS</p>
+            </div>
           </div>
           <button className="btn-close" onClick={onClose}><X size={20} /></button>
         </div>
 
         <form onSubmit={handleSubmit} className="lead-form">
           <div className="form-group">
-            <label><User size={16} /> Nama Lengkap / Panggilan *</label>
+            <label><User size={16} className="text-amber-400" /> Nama Lengkap / Panggilan *</label>
             <input 
               type="text"
               required
@@ -39,7 +44,7 @@ export default function LeadModal({ isOpen, onClose, onSubmitLead, initialData }
           </div>
 
           <div className="form-group">
-            <label><Building size={16} /> Nama Usaha / Bisnis (Opsional)</label>
+            <label><Building size={16} className="text-amber-400" /> Nama Usaha / Bisnis (Opsional)</label>
             <input 
               type="text"
               placeholder="Contoh: Kedai Kopi Berkah / PT Mandiri Jaya"
@@ -49,7 +54,7 @@ export default function LeadModal({ isOpen, onClose, onSubmitLead, initialData }
           </div>
 
           <div className="form-group">
-            <label><Phone size={16} /> Nomor WhatsApp Aktif *</label>
+            <label><Phone size={16} className="text-amber-400" /> Nomor WhatsApp Aktif *</label>
             <input 
               type="tel"
               required
@@ -60,14 +65,14 @@ export default function LeadModal({ isOpen, onClose, onSubmitLead, initialData }
           </div>
 
           <div className="privacy-note">
-            <ShieldCheck size={16} className="text-emerald" />
-            <span>Data Kakak aman 100% dan hanya digunakan untuk komunikasi konsultasi resmi ADMS.</span>
+            <ShieldCheck size={16} className="text-amber-400 shrink-0" />
+            <span>Data Anda terjamin aman 100% dan hanya digunakan untuk konsultasi resmi tim ADMS.</span>
           </div>
 
           <div className="modal-footer">
             <button type="button" className="btn-secondary" onClick={onClose}>Batal</button>
-            <button type="submit" className="btn-primary glow">
-              Lanjut ke WA Admin <ArrowRight size={16} />
+            <button type="submit" className="btn-primary">
+              Hubungkan ke WA 1 Admin <ArrowRight size={16} />
             </button>
           </div>
         </form>

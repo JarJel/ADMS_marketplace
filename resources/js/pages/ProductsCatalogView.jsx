@@ -76,8 +76,11 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             const data = await response.json();
             if (response.ok && data.success) {
                 if (initialFilter === 'digital') {
-                    const digitalSlugs = ['template-canva', 'source-code-web', 'ebook-buku-digital', 'ai-prompt-kit', 'aset-digital-software', 'digital-ads', 'website-development', 'marketing-distribution', 'automation-blast', 'social-media', 'legal-bisnis', 'layanan-offline'];
+                    const digitalSlugs = ['template-canva', 'source-code-web', 'ebook-buku-digital', 'ai-prompt-kit', 'aset-digital-software', 'digital-ads', 'website-development', 'marketing-distribution', 'automation-blast', 'social-media'];
                     setCategories(data.data.filter(cat => digitalSlugs.includes(cat.slug)));
+                } else if (initialFilter === 'vendor') {
+                    const vendorSlugs = ['legal-bisnis', 'layanan-offline'];
+                    setCategories(data.data.filter(cat => vendorSlugs.includes(cat.slug)));
                 } else {
                     setCategories(data.data);
                 }
@@ -115,8 +118,11 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             if (response.ok && data.success) {
                 let fetchedProducts = data.data.data || [];
                 if (initialFilter === 'digital' && !selectedCategoryId) {
-                    const digitalSlugs = ['template-canva', 'source-code-web', 'ebook-buku-digital', 'ai-prompt-kit', 'aset-digital-software', 'digital-ads', 'website-development', 'marketing-distribution', 'automation-blast', 'social-media', 'legal-bisnis', 'layanan-offline'];
+                    const digitalSlugs = ['template-canva', 'source-code-web', 'ebook-buku-digital', 'ai-prompt-kit', 'aset-digital-software', 'digital-ads', 'website-development', 'marketing-distribution', 'automation-blast', 'social-media'];
                     fetchedProducts = fetchedProducts.filter(p => p.category && digitalSlugs.includes(p.category.slug));
+                } else if (initialFilter === 'vendor' && !selectedCategoryId) {
+                    const vendorSlugs = ['legal-bisnis', 'layanan-offline'];
+                    fetchedProducts = fetchedProducts.filter(p => p.category && vendorSlugs.includes(p.category.slug));
                 }
                 setProducts(fetchedProducts);
                 setPaginationData(data.data);
@@ -290,8 +296,19 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                         Live Marketplace
                     </div>
                     <h1 className={`text-3xl sm:text-5xl font-black tracking-tight leading-none ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-                        Katalog <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 dark:from-emerald-400 dark:via-teal-400 dark:to-indigo-400 bg-clip-text text-transparent">Produk Digital</span>
-                    </h1>
+                            {initialFilter === 'digital' ? (
+                                <>
+                                    Katalog <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 dark:from-emerald-400 dark:via-teal-400 dark:to-indigo-400 bg-clip-text text-transparent">Produk Digital</span>
+                                </>
+                            ) : initialFilter === 'vendor' ? (
+                                <>
+                                    Katalog <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 dark:from-emerald-400 dark:via-teal-400 dark:to-indigo-400 bg-clip-text text-transparent">Layanan Jasa & Vendor</span>
+                                </>
+                            ) : (
+                                <>
+                                    Katalog <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 dark:from-emerald-400 dark:via-teal-400 dark:to-indigo-400 bg-clip-text text-transparent">Semua Produk & Jasa</span>
+                                </>
+                            )}</h1>
                     <div className="w-16 h-1 bg-gradient-to-r from-emerald-500 to-indigo-500 rounded-full mx-auto my-2"></div>
                     <p className={`text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                         Temukan ratusan aset digital premium mulai dari Source Code aplikasi, E-book bisnis, template Canva/desain, hingga AI Prompt untuk melipatgandakan produktivitas Anda.

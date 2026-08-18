@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import AdminSidebar from './AdminSidebar';
 import { AdminOverview } from './AdminOverview';
+import { AdminAnalytics } from './AdminAnalytics';
+import { AdminProducts } from './AdminProducts';
 
 export default function AdminDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode, cartCount, wishlistCount, notifications }) {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -212,6 +214,8 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                         {/* Rendering Content Berdasarkan activeTab */}
                         {activeTab === 'dashboard' || activeTab === 'overview' ? (
                             <AdminOverview onNavigate={setActiveTab} />
+                        ) : activeTab === 'analytics' ? (
+                            <AdminAnalytics />
                         ) : activeTab === 'merchants' ? (
                     <div className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-6">
                         <h2 className="text-lg font-bold text-slate-200 mb-4 flex items-center gap-2">
@@ -239,31 +243,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                         )}
                     </div>
                 ) : activeTab === 'products' ? (
-                    <div className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-6">
-                        <h2 className="text-lg font-bold text-slate-200 mb-4 flex items-center gap-2">
-                            📦 Moderasi Produk Baru (Pending)
-                        </h2>
-                        {loading ? (
-                            <div className="text-xs text-slate-500 italic">Memuat pengajuan produk...</div>
-                        ) : pendingProducts.length === 0 ? (
-                            <div className="text-xs text-slate-500">Tidak ada produk baru menunggu review.</div>
-                        ) : (
-                            <div className="space-y-4">
-                                {pendingProducts.map((prod) => (
-                                    <div key={prod.id} className="flex justify-between items-center p-4 bg-slate-950/60 border border-slate-800/50 rounded-lg">
-                                        <div>
-                                            <span className="block text-sm font-semibold">{prod.title}</span>
-                                            <span className="block text-[10px] text-slate-500 mt-0.5">Toko: {prod.merchant?.name || 'Toko'} &bull; Rp{numberFormat(prod.price)}</span>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button onClick={() => handleVerifyProduct(prod.id, true)} className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 px-3 rounded text-[11px]">Approve</button>
-                                            <button onClick={() => handleVerifyProduct(prod.id, false)} className="bg-red-600 hover:bg-red-500 text-white font-bold py-1 px-3 rounded text-[11px]">Tolak</button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                    <AdminProducts />
                         ) : activeTab === 'ads' || activeTab === 'ads-moderation' ? (
                     <div className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-6">
                         <h2 className="text-lg font-bold text-slate-200 mb-4 flex items-center gap-2">

@@ -339,7 +339,6 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                         : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200/60 dark:border-slate-700/60 hover:bg-slate-100/80 dark:hover:bg-slate-700/80'
                                 }`}
                             >
-                                <Globe className="w-3.5 h-3.5" />
                                 <span>Semua Kategori</span>
                             </button>
                             
@@ -356,7 +355,6 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                                 : `${colors.bg} border-transparent`
                                         }`}
                                     >
-                                        {getCategoryIcon(cat.name)}
                                         <span>{cat.name}</span>
                                     </button>
                                 );

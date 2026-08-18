@@ -43,24 +43,58 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
     const [selectedSubCategoryId, setSelectedSubCategoryId] = useState('');
 
+    const FALLBACK_CATEGORIES = [
+        {
+            id: 1,
+            name: 'Jasa & Layanan',
+            children: [
+                { id: 101, name: 'Desain Grafis & Logo' },
+                { id: 102, name: 'Pembuatan Website' },
+                { id: 103, name: 'Digital Marketing & SEO' }
+            ]
+        },
+        {
+            id: 2,
+            name: 'Produk Digital',
+            children: [
+                { id: 201, name: 'Source Code & Script' },
+                { id: 202, name: 'Template & Tema' },
+                { id: 203, name: 'E-Book & Panduan' }
+            ]
+        },
+        {
+            id: 3,
+            name: 'Akun & Sosial Media',
+            children: [
+                { id: 301, name: 'Akun Game & Topup' },
+                { id: 302, name: 'Jasa Followers & Likes' }
+            ]
+        }
+    ];
+
     useEffect(() => {
         const fetchAdCategories = async () => {
             try {
                 const res = await fetch('/api/public/categories?type=advertisement');
                 const data = await res.json();
-                if (data.success && data.data) {
+                if (data.success && data.data && data.data.length > 0) {
                     setDbCategories(data.data);
-                    if (data.data.length > 0) {
-                        setSelectedCategoryId(data.data[0].id.toString());
-                        if (data.data[0].children && data.data[0].children.length > 0) {
-                            setSelectedSubCategoryId(data.data[0].children[0].id.toString());
-                        } else {
-                            setSelectedSubCategoryId(data.data[0].id.toString());
-                        }
+                    setSelectedCategoryId(data.data[0].id.toString());
+                    if (data.data[0].children && data.data[0].children.length > 0) {
+                        setSelectedSubCategoryId(data.data[0].children[0].id.toString());
+                    } else {
+                        setSelectedSubCategoryId(data.data[0].id.toString());
                     }
+                } else {
+                    setDbCategories(FALLBACK_CATEGORIES);
+                    setSelectedCategoryId(FALLBACK_CATEGORIES[0].id.toString());
+                    setSelectedSubCategoryId(FALLBACK_CATEGORIES[0].children[0].id.toString());
                 }
             } catch (err) {
                 console.error("Gagal memuat kategori iklan gratis:", err);
+                setDbCategories(FALLBACK_CATEGORIES);
+                setSelectedCategoryId(FALLBACK_CATEGORIES[0].id.toString());
+                setSelectedSubCategoryId(FALLBACK_CATEGORIES[0].children[0].id.toString());
             }
         };
         fetchAdCategories();
@@ -104,8 +138,8 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
         if (s === 1) {
             if (!judul.trim()) errs.judul = 'Judul iklan wajib diisi';
             else if (judul.length > 100) errs.judul = 'Judul iklan maksimal 100 karakter';
-            if (!kategori) errs.kategori = 'Kategori wajib dipilih';
-            if (!subKategori) errs.subKategori = 'Sub-kategori wajib dipilih';
+            if (!selectedCategoryId) errs.kategori = 'Kategori wajib dipilih';
+            if (!selectedSubCategoryId) errs.subKategori = 'Sub-kategori wajib dipilih';
         } else if (s === 2) {
             if (!deskripsi.trim()) errs.deskripsi = 'Deskripsi iklan wajib diisi';
             if (tipeHarga === 'Harga Tetap' && !harga) errs.harga = 'Harga wajib diisi untuk pilihan Harga Tetap';
@@ -190,6 +224,13 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
             formData.append('price', tipeHarga === 'Harga Tetap' ? harga : 0);
             formData.append('location', lokasi);
             formData.append('whatsapp', whatsapp);
+            formData.append('contact_name', namaKontak);
+            if (!isJasa) {
+                formData.append('condition', kondisi);
+            }
+            if (website) {
+                formData.append('website_url', website);
+            }
 
             photos.forEach(photo => {
                 if (photo.file) {
@@ -307,7 +348,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                     value={judul}
                                                     onChange={(e) => setJudul(e.target.value)}
                                                     placeholder="Jasa Pembuatan Website Company Profile UMKM Cepat"
-                                                    className="w-full text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
+                                                    className="w-full text-slate-800 text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none"
                                                 />
                                                 <div className="flex items-center justify-between text-[10px]">
                                                     <span className="text-rose-500 font-semibold">{errors.judul}</span>
@@ -322,12 +363,13 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                     <select
                                                         value={selectedCategoryId}
                                                         onChange={(e) => setSelectedCategoryId(e.target.value)}
-                                                        className="w-full text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl outline-none bg-white"
+                                                        className="w-full text-slate-800 text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl outline-none bg-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
                                                     >
                                                         {dbCategories.map((cat) => (
                                                             <option key={cat.id} value={cat.id}>{cat.name}</option>
                                                         ))}
                                                     </select>
+                                                    <span className="text-[10px] text-rose-500 font-semibold">{errors.kategori}</span>
                                                 </div>
 
                                                 <div className="space-y-1.5">
@@ -335,7 +377,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                     <select
                                                         value={selectedSubCategoryId}
                                                         onChange={(e) => setSelectedSubCategoryId(e.target.value)}
-                                                        className="w-full text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl outline-none bg-white"
+                                                        className="w-full text-slate-800 text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl outline-none bg-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
                                                     >
                                                         {(() => {
                                                             const parent = dbCategories.find(c => c.id === parseInt(selectedCategoryId));
@@ -347,6 +389,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                             return parent ? <option value={parent.id}>Semua {parent.name}</option> : null;
                                                         })()}
                                                     </select>
+                                                    <span className="text-[10px] text-rose-500 font-semibold">{errors.subKategori}</span>
                                                 </div>
                                             </div>
 
@@ -356,7 +399,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                     <label className="block text-xs font-bold text-slate-700">Kondisi Barang <span className="text-red-500">*</span></label>
                                                     <div className="flex gap-4">
                                                         {['Baru', 'Bekas'].map((cond) => (
-                                                            <label key={cond} className="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+                                                            <label key={cond} className="flex items-center gap-2 text-xs font-semibold cursor-pointer text-slate-800">
                                                                 <input 
                                                                     type="radio" 
                                                                     name="kondisi" 
@@ -403,7 +446,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                     value={deskripsi}
                                                     onChange={(e) => setDeskripsi(e.target.value)}
                                                     placeholder="Tuliskan spesifikasi produk, keunggulan jasa, dan detail lengkap penawaran Anda di sini..."
-                                                    className="w-full text-xs sm:text-sm p-4 border border-slate-200 rounded-b-xl focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none resize-none"
+                                                    className="w-full text-slate-800 text-xs sm:text-sm p-4 border border-slate-200 rounded-b-xl focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none resize-none"
                                                 />
                                                 <span className="text-[10px] text-rose-500 font-semibold">{errors.deskripsi}</span>
                                             </div>
@@ -414,7 +457,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                     <label className="block text-xs font-bold text-slate-700">Tipe Harga <span className="text-red-500">*</span></label>
                                                     <div className="flex gap-4 p-3 border border-slate-200 rounded-xl bg-white">
                                                         {['Harga Tetap', 'Hubungi Kontak'].map((tPrice) => (
-                                                            <label key={tPrice} className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
+                                                            <label key={tPrice} className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-slate-800">
                                                                 <input 
                                                                     type="radio" 
                                                                     name="tipeHarga"
@@ -439,7 +482,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                             value={tipeHarga === 'Hubungi Kontak' ? '' : harga}
                                                             onChange={(e) => setHarga(e.target.value)}
                                                             placeholder="50000"
-                                                            className={`w-full text-xs sm:text-sm p-3.5 pl-10 border rounded-xl outline-none ${
+                                                            className={`w-full text-slate-800 text-xs sm:text-sm p-3.5 pl-10 border rounded-xl outline-none ${
                                                                 tipeHarga === 'Hubungi Kontak' 
                                                                     ? 'bg-slate-100/70 border-slate-200 text-slate-400 cursor-not-allowed' 
                                                                     : 'border-slate-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-500'
@@ -537,7 +580,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                             type="text" 
                                                             value={namaKontak}
                                                             onChange={(e) => setNamaKontak(e.target.value)}
-                                                            className="w-full text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
+                                                            className="w-full text-slate-800 text-xs sm:text-sm p-3.5 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
                                                         />
                                                         <span className="text-[10px] text-rose-500 font-semibold">{errors.namaKontak}</span>
                                                     </div>
@@ -551,7 +594,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                                 value={whatsapp}
                                                                 onChange={(e) => setWhatsapp(e.target.value)}
                                                                 placeholder="+6281121211933"
-                                                                className="w-full text-xs sm:text-sm p-3.5 pl-11 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
+                                                                className="w-full text-slate-800 text-xs sm:text-sm p-3.5 pl-11 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
                                                             />
                                                         </div>
                                                         <span className="text-[10px] text-rose-500 font-semibold">{errors.whatsapp}</span>
@@ -569,7 +612,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                                 value={lokasi}
                                                                 onChange={(e) => setLokasi(e.target.value)}
                                                                 placeholder="Misal: Jakarta Timur atau Sleman, Yogyakarta"
-                                                                className="w-full text-xs sm:text-sm p-3.5 pl-11 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
+                                                                className="w-full text-slate-800 text-xs sm:text-sm p-3.5 pl-11 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
                                                             />
                                                         </div>
                                                         <span className="text-[10px] text-rose-500 font-semibold">{errors.lokasi}</span>
@@ -584,7 +627,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                                 value={website}
                                                                 onChange={(e) => setWebsite(e.target.value)}
                                                                 placeholder="https://tokoanda.com"
-                                                                className="w-full text-xs sm:text-sm p-3.5 pl-11 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
+                                                                className="w-full text-slate-800 text-xs sm:text-sm p-3.5 pl-11 border border-slate-200 rounded-xl focus:border-teal-500 outline-none"
                                                             />
                                                         </div>
                                                     </div>

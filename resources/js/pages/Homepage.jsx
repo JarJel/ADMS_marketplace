@@ -7,7 +7,7 @@ import {
     Shield, CheckCircle, Smartphone, ExternalLink, HelpCircle,
     LayoutGrid, Share2, ShoppingBag, Store, Download, Zap, Users, Quote, ChevronDown,
     LayoutTemplate, Book, Globe, Video, Headphones, GraduationCap, TrendingUp, Wrench, Handshake, MoreHorizontal,
-    Heart, ShoppingCart, X, Phone
+    Heart, ShoppingCart, X, Phone, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import debounce from 'lodash.debounce';
 
@@ -55,6 +55,39 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
     const [merchants, setMerchants] = useState([]);
     const [loadingMerchants, setLoadingMerchants] = useState(true);
     const [selectedProduct, setSelectedProduct] = useState(null);
+
+    const promoSlides = [
+        {
+            image: 'https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=800&auto=format&fit=crop',
+            title: 'ADMS Blast',
+            domain: 'armadadigitalmarketing.icu',
+            desc: 'Layanan Digital Marketing & Broadcast',
+            link: 'https://armadadigitalmarketing.icu/'
+        },
+        {
+            image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop',
+            title: 'ADMS Sosial Panel',
+            domain: 'admsgroup.my.id',
+            desc: 'SMM Panel & Social Media',
+            link: 'https://admsgroup.my.id/'
+        },
+        {
+            image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop',
+            title: 'ADMS Marketplace',
+            domain: 'Marketplace Internal',
+            desc: 'Jual Beli Produk Digital',
+            link: '#'
+        }
+    ];
+
+    const [currentPromoSlide, setCurrentPromoSlide] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentPromoSlide((prev) => (prev + 1) % promoSlides.length);
+        }, 4000);
+        return () => clearInterval(timer);
+    }, [promoSlides.length, currentPromoSlide]);
 
     // Debounced search handler
     const debouncedSearch = useCallback(
@@ -302,14 +335,6 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     
                     {/* Copywriting (7 columns) */}
                     <div className="space-y-6 lg:col-span-7">
-                        <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-sm ${
-                            darkMode 
-                                ? 'bg-emerald-500/10 border-emerald-500/25 text-emerald-400 shadow-emerald-500/5' 
-                                : 'bg-emerald-100/80 border-emerald-300 text-emerald-700'
-                        }`}>
-                            <Star className={`w-3.5 h-3.5 fill-current ${darkMode ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                            Platform #1 Digital Marketplace & Ad Exchange
-                        </div>
 
                         <h1 className={`text-4xl sm:text-5xl font-black tracking-tight leading-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                             Temukan <span className="text-transparent bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-400 dark:to-teal-400 bg-clip-text">Produk Digital</span>.<br />
@@ -386,7 +411,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                     {/* Visual Card Showcase (5 columns) */}
                     <div className="relative flex justify-center lg:justify-end lg:col-span-5 pt-8 lg:pt-0">
-                        <div className="relative w-full max-w-[400px]">
+                        <div className="relative w-full max-w-[600px]">
                             {/* Ambient glow blobs behind card */}
                             <div className="absolute -top-16 -right-16 w-64 h-64 bg-indigo-600/20 rounded-full blur-[80px] pointer-events-none"></div>
                             <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-emerald-500/15 rounded-full blur-[80px] pointer-events-none"></div>
@@ -401,116 +426,67 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-400/60 to-transparent"></div>
                                 <div className="absolute top-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent blur-sm"></div>
 
-                                {/* Card Header */}
-                                <div className="flex items-center justify-between mb-5">
-                                    <div className="flex items-center gap-2.5">
-                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center border text-sm font-black shadow-sm ${
-                                            darkMode 
-                                                ? 'bg-gradient-to-br from-indigo-500/30 to-purple-600/20 border-indigo-400/20 text-indigo-300' 
-                                                : 'bg-indigo-50 border-indigo-200 text-indigo-600'
-                                        }`}>
-                                            %
-                                        </div>
-                                        <div>
-                                            <span className={`block text-xs font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>Promo Spesial Member</span>
-                                            <span className={`block text-[9px] mt-0.5 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Cashback & Diskon Terbatas</span>
-                                        </div>
+                                {/* Slider Image container */}
+                                <div className="relative w-full rounded-2xl overflow-hidden shadow-lg group">
+                                    <div className="block relative aspect-[4/3] md:aspect-[16/10] overflow-hidden bg-slate-900">
+                                        <img 
+                                            src={promoSlides[currentPromoSlide].image} 
+                                            alt={promoSlides[currentPromoSlide].title}
+                                            className="w-full h-full object-cover opacity-40 transition-transform duration-1000 group-hover:scale-110 group-hover:opacity-30"
+                                        />
+                                        
+                                        {/* Overlay Content */}
+                                        <a href={promoSlides[currentPromoSlide].link} target="_blank" rel="noreferrer" className="absolute inset-0 p-6 flex flex-col justify-center items-center text-center z-10 cursor-pointer">
+                                            <span className="bg-emerald-500/90 backdrop-blur text-white text-[9px] font-black tracking-widest px-3 py-1 rounded-full mb-3 shadow-lg shadow-emerald-500/30 uppercase">
+                                                Featured Website
+                                            </span>
+                                            <h3 className="text-white font-black text-2xl md:text-3xl mb-1 shadow-sm drop-shadow-lg">
+                                                {promoSlides[currentPromoSlide].title}
+                                            </h3>
+                                            <p className="text-emerald-300 font-medium text-xs md:text-sm mb-4 drop-shadow-md">
+                                                {promoSlides[currentPromoSlide].desc}
+                                            </p>
+                                            
+                                            {/* Domain badge */}
+                                            <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 transition-colors px-4 py-2 rounded-xl shadow-2xl">
+                                                <Globe className="w-3.5 h-3.5 text-slate-300" />
+                                                <span className="text-slate-100 text-[10px] md:text-xs font-semibold tracking-wide">
+                                                    {promoSlides[currentPromoSlide].domain}
+                                                </span>
+                                                <ExternalLink className="w-3.5 h-3.5 text-emerald-400 ml-1" />
+                                            </div>
+                                        </a>
+
+                                        {/* Manual Navigation Arrows */}
+                                        <button 
+                                            onClick={(e) => { e.preventDefault(); setCurrentPromoSlide((prev) => (prev === 0 ? promoSlides.length - 1 : prev - 1)); }}
+                                            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/60 text-white backdrop-blur-sm border border-white/10 transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
+                                        >
+                                            <ChevronLeft className="w-5 h-5" />
+                                        </button>
+                                        <button 
+                                            onClick={(e) => { e.preventDefault(); setCurrentPromoSlide((prev) => (prev + 1) % promoSlides.length); }}
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/60 text-white backdrop-blur-sm border border-white/10 transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0"
+                                        >
+                                            <ChevronRight className="w-5 h-5" />
+                                        </button>
                                     </div>
-                                    <span className="text-[8px] font-black bg-gradient-to-r from-amber-500/20 to-orange-500/10 text-amber-500 dark:text-amber-400 px-2.5 py-1 rounded-lg border border-amber-400/30 uppercase tracking-wider">
-                                        🔥 Promo
-                                    </span>
-                                </div>
-
-                                {/* Inner Product Display Box */}
-                                <div className={`relative border rounded-2xl p-5 flex flex-col items-center text-center mb-4 overflow-hidden ${
-                                    darkMode 
-                                        ? 'bg-gradient-to-br from-emerald-950/80 to-teal-950/60 border-emerald-500/20' 
-                                        : 'bg-gradient-to-br from-emerald-50 via-teal-50/70 to-emerald-50 border-emerald-200/90'
-                                }`}>
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-24 bg-emerald-500/8 rounded-full blur-2xl pointer-events-none"></div>
-                                    <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent"></div>
-
-                                    <span className="relative z-10 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[9px] font-black tracking-widest px-3 py-1 rounded-full mb-3 shadow-lg shadow-emerald-500/30">
-                                        ✦ DISKON 50%
-                                    </span>
-                                    <h4 className={`relative z-10 font-extrabold text-sm mb-1.5 tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>Source Code & Canva Kit</h4>
-                                    <p className={`relative z-10 text-[10px] leading-relaxed max-w-[220px] ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                                        Pembelian pertama dengan kode promo: <strong className="text-emerald-600 dark:text-emerald-400 font-black tracking-wider">ADMSBARU</strong>
-                                    </p>
-                                    <button className={`relative z-10 mt-3 text-[9px] font-black px-3.5 py-1 rounded-lg transition-all border ${
-                                        darkMode 
-                                            ? 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20' 
-                                            : 'text-emerald-700 border-emerald-300 bg-emerald-100/80 hover:bg-emerald-200/80'
-                                    }`}>
-                                        Klaim Sekarang &rarr;
-                                    </button>
-                                </div>
-
-                                {/* Stats mini row */}
-                                <div className="grid grid-cols-3 gap-2 mb-4">
-                                    {[
-                                        { value: '9.8K', label: 'Produk', color: 'text-teal-600 dark:text-teal-400' },
-                                        { value: '3.2K', label: 'Merchant', color: 'text-indigo-600 dark:text-indigo-400' },
-                                        { value: '25K', label: 'User', color: 'text-amber-600 dark:text-amber-400' },
-                                    ].map((s, i) => (
-                                        <div key={i} className={`border rounded-xl p-2 text-center ${
-                                            darkMode ? 'bg-white/[0.04] border-white/[0.06]' : 'bg-slate-50 border-slate-200'
-                                        }`}>
-                                            <span className={`block text-xs font-black ${s.color}`}>{s.value}</span>
-                                            <span className={`block text-[8px] font-medium mt-0.5 ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>{s.label}</span>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {/* Bottom Ads Exchange block */}
-                                <div className={`flex items-center gap-3 border rounded-2xl p-3 ${
-                                    darkMode ? 'bg-indigo-500/8 border-indigo-500/15' : 'bg-indigo-50/80 border-indigo-200/80'
-                                }`}>
-                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center border flex-shrink-0 ${
-                                        darkMode 
-                                            ? 'bg-gradient-to-br from-indigo-600/30 to-purple-600/20 border-indigo-400/20 text-indigo-400' 
-                                            : 'bg-indigo-100 border-indigo-200 text-indigo-600'
-                                    }`}>
-                                        <Megaphone className="w-4 h-4" />
-                                    </div>
-                                    <div className="flex-grow min-w-0">
-                                        <span className={`block text-xs font-bold truncate ${darkMode ? 'text-white' : 'text-slate-900'}`}>Ads Exchange Premium</span>
-                                        <span className={`block text-[9px] mt-0.5 truncate ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Tayang 30 hari · Prioritas pencarian teratas.</span>
-                                    </div>
-                                    <span className="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-500 shadow-sm animate-pulse"></span>
                                 </div>
 
                                 {/* Pagination dots */}
-                                <div className="flex items-center justify-center gap-1.5 mt-5">
-                                    <span className={`w-1.5 h-1.5 rounded-full ${darkMode ? 'bg-slate-700' : 'bg-slate-300'}`}></span>
-                                    <span className="w-5 h-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 shadow-sm"></span>
-                                    <span className={`w-1.5 h-1.5 rounded-full ${darkMode ? 'bg-slate-700' : 'bg-slate-300'}`}></span>
-                                </div>
-                            </div>
-
-                            {/* Floating Stats Card */}
-                            <div className={`backdrop-blur-xl border rounded-2xl p-3.5 absolute bottom-10 -left-14 w-56 flex items-center gap-3 overflow-hidden z-20 ${
-                                darkMode 
-                                    ? 'bg-[#080f1e]/95 border-white/[0.07] text-white shadow-[0_20px_50px_rgba(0,0,0,0.7)]' 
-                                    : 'bg-white/95 border-slate-200 text-slate-800 shadow-xl shadow-indigo-100/90'
-                            }`}>
-                                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-teal-400/40 to-transparent"></div>
-                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center border text-sm font-black flex-shrink-0 ${
-                                    darkMode 
-                                        ? 'bg-gradient-to-br from-teal-600/30 to-emerald-600/20 border-teal-400/20 text-teal-400' 
-                                        : 'bg-teal-50 border-teal-200 text-teal-600'
-                                }`}>
-                                    ↑
-                                </div>
-                                <div className="min-w-0">
-                                    <span className={`block text-[10px] font-bold truncate ${darkMode ? 'text-white' : 'text-slate-900'}`}>Iklan Premium Baru</span>
-                                    <span className={`block text-[8px] mt-0.5 ${darkMode ? 'text-slate-500' : 'text-slate-500'}`}>Impr: 12.5K · CTR: 5.4%</span>
-                                    <div className="flex gap-2 mt-1.5">
-                                        <span className="text-[8px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block"></span> Aktif
-                                        </span>
-                                        <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-400/10 px-1.5 rounded">VIP</span>
-                                    </div>
+                                <div className="flex items-center justify-center gap-2 mt-5">
+                                    {promoSlides.map((_, idx) => (
+                                        <button 
+                                            key={idx}
+                                            onClick={() => setCurrentPromoSlide(idx)}
+                                            className={`transition-all duration-300 rounded-full ${
+                                                idx === currentPromoSlide 
+                                                    ? 'w-6 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 shadow-md' 
+                                                    : `w-2 h-2 ${darkMode ? 'bg-slate-700 hover:bg-slate-500' : 'bg-slate-300 hover:bg-slate-400'}`
+                                            }`}
+                                            aria-label={`Go to slide ${idx + 1}`}
+                                        />
+                                    ))}
                                 </div>
                             </div>
                         </div>

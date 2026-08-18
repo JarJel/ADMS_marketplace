@@ -13,6 +13,7 @@ import ProductsCatalogView from './pages/ProductsCatalogView';
 import MerchantDirectoryView from './pages/MerchantDirectoryView';
 import Toast from './components/Toast';
 import Cart from './pages/Customer/Cart';
+import Checkout from './pages/Customer/Checkout';
 import AdmsChatWidget from './components/Chatbot/AdmsChatWidget';
 
 function App() {
@@ -52,22 +53,25 @@ function App() {
 
         const fetchNavbarCounts = async () => {
             try {
+                const guestCart = JSON.parse(localStorage.getItem('adms_guest_cart') || '[]');
+                const guestWishlist = JSON.parse(localStorage.getItem('adms_guest_wishlist') || '[]');
+
                 // Fetch Cart
                 const cartRes = await fetch('/api/customer/cart', { headers: { 'Authorization': `Bearer ${token}` } });
                 const cartData = await cartRes.json();
-                if (cartData.success) {
-                    const apiCount = cartData.data.length;
-                    const guestCart = JSON.parse(localStorage.getItem('adms_guest_cart') || '[]');
-                    setCartCount(apiCount + guestCart.length);
+                if (cartData.success && Array.isArray(cartData.data)) {
+                    setCartCount(Math.max(cartData.data.length, guestCart.length));
+                } else {
+                    setCartCount(guestCart.length);
                 }
 
                 // Fetch Wishlist
                 const wishlistRes = await fetch('/api/customer/wishlist', { headers: { 'Authorization': `Bearer ${token}` } });
                 const wishlistData = await wishlistRes.json();
-                if (wishlistData.success) {
-                    const apiWishlistCount = wishlistData.data.length;
-                    const guestWishlist = JSON.parse(localStorage.getItem('adms_guest_wishlist') || '[]');
-                    setWishlistCount(apiWishlistCount + guestWishlist.length);
+                if (wishlistData.success && Array.isArray(wishlistData.data)) {
+                    setWishlistCount(Math.max(wishlistData.data.length, guestWishlist.length));
+                } else {
+                    setWishlistCount(guestWishlist.length);
                 }
 
                 // Fetch Notifications
@@ -118,10 +122,7 @@ function App() {
         }
         localStorage.setItem('adms_guest_cart', JSON.stringify(existingCart));
 
-        // 2. Immediately increment navbar badge count in real-time
-        setCartCount(prev => prev + 1);
-
-        // 3. If logged in, also sync with API
+        let apiCartCount = 0;
         if (token) {
             try {
                 await fetch('/api/customer/cart', {
@@ -138,12 +139,14 @@ function App() {
                 const cartRes = await fetch('/api/customer/cart', { headers: { 'Authorization': `Bearer ${token}` } });
                 const cartData = await cartRes.json();
                 if (cartData.success && Array.isArray(cartData.data)) {
-                    setCartCount(cartData.data.length + existingCart.length);
+                    apiCartCount = cartData.data.length;
                 }
             } catch (err) {
                 console.error("Gagal menambah ke keranjang API:", err);
             }
         }
+
+        setCartCount(Math.max(apiCartCount, existingCart.length));
     };
 
     const handleToggleWishlist = async (productOrId) => {
@@ -159,6 +162,7 @@ function App() {
         }
         localStorage.setItem('adms_guest_wishlist', JSON.stringify(updated));
 
+        let apiWishlistCount = 0;
         if (token) {
             try {
                 await fetch('/api/customer/wishlist/toggle', {
@@ -168,16 +172,15 @@ function App() {
                 });
                 const wishlistRes = await fetch('/api/customer/wishlist', { headers: { 'Authorization': `Bearer ${token}` } });
                 const wishlistData = await wishlistRes.json();
-                if (wishlistData.success) {
-                    setWishlistCount(wishlistData.data.length + updated.length);
-                    return;
+                if (wishlistData.success && Array.isArray(wishlistData.data)) {
+                    apiWishlistCount = wishlistData.data.length;
                 }
             } catch (err) {
                 console.error("Gagal toggle wishlist API:", err);
             }
         }
 
-        setWishlistCount(updated.length);
+        setWishlistCount(Math.max(apiWishlistCount, updated.length));
     };
     
     // Toast notification state
@@ -247,6 +250,8 @@ function App() {
             setView('merchants');
         } else if (path === '/cart') {
             setView('cart');
+        } else if (path === '/checkout') {
+            setView('checkout');
         } else {
             setView('homepage');
         }
@@ -325,6 +330,8 @@ function App() {
             navigateTo('help_center', '/bantuan');
         } else if (targetView === 'cart') {
             navigateTo('cart', '/cart');
+        } else if (targetView === 'checkout') {
+            navigateTo('checkout', '/checkout');
         } else if (targetView === 'wishlist') {
             setDashboardTab('wishlist');
             navigateTo('customer_dashboard', '/customer');
@@ -413,6 +420,8 @@ function App() {
                 return <MerchantDirectoryView {...dashboardProps} />;
             case 'cart':
                 return <Cart {...dashboardProps} />;
+            case 'checkout':
+                return <Checkout {...dashboardProps} />;
             case 'login':
                 return (
                     <Login 

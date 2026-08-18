@@ -158,41 +158,14 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
     });
 
     const handleCheckout = async () => {
-        try {
-            if (selectedItemsList.length === 0) {
-                alert('Pilih setidaknya 1 produk untuk di-checkout.');
-                return;
-            }
-            const firstItem = selectedItemsList[0];
-            const merchantId = firstItem.product?.merchant_id || 1;
-            
-            const res = await fetch('/api/customer/orders', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    checkout_from_cart: true,
-                    merchant_id: merchantId,
-                    payment_method: 'transfer_bank'
-                })
-            });
-            const data = await res.json();
-            if (data.success) {
-                localStorage.removeItem('adms_guest_cart');
-                alert(`Checkout ${selectedItemsList.length} produk berhasil! Menuju ke Dashboard.`);
-                onNavigate('customer');
-            } else {
-                alert(data.message || `Checkout ${selectedItemsList.length} produk berhasil diproses!`);
-                localStorage.removeItem('adms_guest_cart');
-                onNavigate('customer');
-            }
-        } catch (err) {
-            console.error(err);
-            localStorage.removeItem('adms_guest_cart');
-            alert('Pesanan berhasil dibuat!');
-            onNavigate('customer');
+        if (selectedItemsList.length === 0) {
+            alert('Pilih setidaknya 1 produk untuk di-checkout.');
+            return;
+        }
+        localStorage.setItem('adms_checkout_items', JSON.stringify(selectedItemsList));
+        localStorage.setItem('adms_checkout_discount', discount.toString());
+        if (onNavigate) {
+            onNavigate('checkout');
         }
     };
 

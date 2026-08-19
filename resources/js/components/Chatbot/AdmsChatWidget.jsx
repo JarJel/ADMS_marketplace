@@ -311,16 +311,16 @@ export default function AdmsChatWidget({ darkMode = true }) {
         {!isOpen && (
           <button 
             onClick={handleToggleOpen}
-            className="group relative flex items-center gap-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold py-3 px-5 sm:px-6 rounded-full shadow-[0_8px_30px_rgba(16,185,129,0.35)] hover:scale-105 active:scale-95 transition-all duration-300 border border-emerald-400/40 cursor-pointer"
+            className="group relative flex items-center gap-3 bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] text-xs font-black py-3 px-5 sm:px-6 rounded-full shadow-[0_8px_30px_rgba(255,191,0,0.35)] hover:scale-105 active:scale-95 transition-all duration-300 border border-[#FFBF00]/40 cursor-pointer"
           >
             <div className="relative flex items-center justify-center">
-              <Bot className="w-5 h-5 text-white" />
+              <Bot className="w-5 h-5 text-[#0F3040]" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping"></span>
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#0F3040] rounded-full animate-ping"></span>
               )}
             </div>
-            <span className="tracking-wide text-white font-bold">Bantuan ADMS</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10b981]"></span>
+            <span className="tracking-wide text-[#0F3040] font-black uppercase">Bantuan ADMS</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0F3040]"></span>
           </button>
         )}
 

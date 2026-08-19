@@ -68,16 +68,25 @@ const menuGroups = [
 
 // --- 1. SidebarLogo ---
 const SidebarLogo = () => (
-    <div className="flex items-center gap-3 px-6 py-6 border-b border-slate-800/60">
-        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 shadow-lg shadow-indigo-500/20">
-            <ShieldCheck className="w-6 h-6 text-white" />
+    <div className="flex flex-col px-6 py-5 border-b border-[#174256]/80 bg-[#071922]/50">
+        <div className="flex items-center gap-2.5">
+            <img 
+                src="/assets/Images/adms-symbol.png" 
+                alt="ADMS Symbol" 
+                className="h-9 w-auto object-contain drop-shadow-md"
+            />
+            <img 
+                src="/assets/Images/adms-text.png" 
+                alt="ADMS Text" 
+                className="h-6 w-auto object-contain invert mix-blend-screen"
+            />
         </div>
-        <div>
-            <h1 className="text-xl font-black text-white tracking-tight leading-none">ADMS</h1>
-            <p className="text-[10px] font-bold text-indigo-400 tracking-widest uppercase mt-0.5">Superadmin</p>
-        </div>
+        <p className="text-[10px] font-black text-[#FFBF00] tracking-widest uppercase mt-1.5 pl-0.5">
+            SUPERADMIN PANEL
+        </p>
     </div>
 );
+
 
 // --- 2. SidebarMenuItem ---
 const SidebarMenuItem = ({ item, isActive, onClick }) => {
@@ -88,19 +97,19 @@ const SidebarMenuItem = ({ item, isActive, onClick }) => {
             onClick={() => onClick(item.id)}
             className={`w-full flex items-center justify-between px-6 py-3 transition-all duration-200 group ${
                 isActive 
-                    ? 'bg-[#15132b] border-l-4 border-indigo-500 text-indigo-400' 
-                    : 'border-l-4 border-transparent text-slate-200 hover:bg-slate-800/50 hover:text-white'
+                    ? 'bg-[#071922] border-l-4 border-[#FFBF00] text-[#FFBF00] font-bold shadow-inner' 
+                    : 'border-l-4 border-transparent text-slate-200 hover:bg-[#174256]/50 hover:text-[#FFBF00]'
             }`}
         >
             <div className="flex items-center gap-4">
-                <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-400' : 'text-slate-400 group-hover:text-slate-200'}`} strokeWidth={isActive ? 2.5 : 2} />
-                <span className={`text-sm ${isActive ? 'font-bold' : 'font-bold'}`}>
+                <Icon className={`w-5 h-5 ${isActive ? 'text-[#FFBF00]' : 'text-slate-300 group-hover:text-[#FFBF00]'}`} strokeWidth={isActive ? 2.5 : 2} />
+                <span className={`text-sm ${isActive ? 'font-black' : 'font-semibold'}`}>
                     {item.label}
                 </span>
             </div>
             
             {item.badge && (
-                <span className={`w-5 h-5 flex items-center justify-center text-[10px] font-bold text-white rounded-full ${item.badgeColor || 'bg-indigo-500'} shadow-sm`}>
+                <span className={`w-5 h-5 flex items-center justify-center text-[10px] font-black rounded-full bg-[#FFBF00] text-[#0F3040] shadow-sm`}>
                     {item.badge}
                 </span>
             )}
@@ -111,7 +120,7 @@ const SidebarMenuItem = ({ item, isActive, onClick }) => {
 // --- 3. SidebarMenuGroup ---
 const SidebarMenuGroup = ({ group, activeItem, onNavigate }) => (
     <div className="mb-6">
-        <h3 className="px-6 mb-2 text-[10px] font-black text-slate-500 uppercase tracking-wider">
+        <h3 className="px-6 mb-2 text-[10px] font-black text-[#FFBF00]/80 uppercase tracking-widest">
             {group.title}
         </h3>
         <div className="space-y-0.5">
@@ -132,27 +141,27 @@ const SidebarUserProfile = ({ user, onLogout }) => {
     const userName = user?.name || 'Administrator';
     const userRole = user?.role === 'admin' ? 'System Admin' : (user?.role || 'User');
     const encodedName = encodeURIComponent(userName);
-    const avatarUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=4f46e5&color=fff&bold=true`;
+    const avatarUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=FFBF00&color=0F3040&bold=true`;
 
     return (
-        <div className="p-4 mt-auto border-t border-slate-800/60 bg-slate-900/30">
+        <div className="p-4 mt-auto border-t border-[#174256]/80 bg-[#071922]/80">
             <div className="flex items-center gap-3 mb-4 px-2">
                 <div className="relative">
                     <img 
                         src={avatarUrl} 
                         alt={`${userName} Avatar`} 
-                        className="w-10 h-10 rounded-full border border-slate-700 object-cover"
+                        className="w-10 h-10 rounded-full border-2 border-[#FFBF00] object-cover"
                     />
-                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-950 rounded-full"></div>
+                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-[#0F3040] rounded-full"></div>
                 </div>
                 <div className="flex-1 overflow-hidden">
                     <p className="text-sm font-bold text-white truncate">{userName}</p>
-                    <p className="text-xs text-slate-400 truncate capitalize">{userRole}</p>
+                    <p className="text-xs text-[#FFBF00]/80 truncate font-semibold capitalize">{userRole}</p>
                 </div>
             </div>
             <button 
                 onClick={onLogout}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-bold text-slate-300 bg-slate-800/50 hover:bg-rose-500/10 hover:text-rose-400 border border-slate-700/50 transition-all duration-200"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-bold text-white bg-[#071922] hover:bg-[#FFBF00] hover:text-[#0F3040] border border-[#174256] transition-all duration-200"
             >
                 <LogOut className="w-4 h-4" />
                 <span>Keluar Sistem</span>
@@ -183,7 +192,7 @@ export default function AdminSidebar({ activeItem = 'dashboard', onNavigate, use
     }));
 
     return (
-        <aside className="w-72 h-screen bg-slate-950 border-r border-slate-800/60 flex flex-col shrink-0">
+        <aside className="w-72 h-screen bg-[#0F3040] border-r border-[#174256]/80 flex flex-col shrink-0 text-white shadow-2xl">
             {/* Header / Logo */}
             <SidebarLogo />
 

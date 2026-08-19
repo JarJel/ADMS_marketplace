@@ -112,7 +112,7 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
     };
 
     return (
-        <div className={`min-h-screen transition-colors duration-300 font-sans pb-20 ${darkMode ? 'bg-[#030914] text-slate-200' : 'bg-slate-50 text-slate-800'}`}>
+        <div className="min-h-screen bg-slate-100 dark:bg-[#071922] text-slate-900 dark:text-white font-sans pb-20 transition-colors duration-300">
             <Navbar 
                 user={user} 
                 token={token} 
@@ -124,18 +124,18 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
             />
 
             {/* 2. Hero Section Bantuan */}
-            <header className={`pt-32 pb-20 px-4 sm:px-6 lg:px-8 border-b ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+            <header className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 border-b-2 border-slate-300 dark:border-[#174256] bg-slate-50 dark:bg-[#0F3040] text-slate-900 dark:text-white transition-colors duration-300">
                 <div className="max-w-3xl mx-auto text-center space-y-6">
-                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
-                        Pusat Bantuan ADMS Marketplace
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#0F3040] dark:text-white">
+                        Pusat Bantuan <span className="text-[#FFBF00]">ADMS Marketplace</span>
                     </h1>
-                    <p className={`text-base sm:text-lg max-w-2xl mx-auto leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                    <p className="text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-slate-600 dark:text-slate-300">
                         Temukan jawaban atas pertanyaan seputar pembelian, pembayaran, produk digital, akun, dan kendala penggunaan ADMS Marketplace.
                     </p>
 
                     {/* 3. Search bantuan */}
                     <div className="relative max-w-2xl mx-auto mt-8 group">
-                        <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${darkMode ? 'text-slate-500 group-focus-within:text-sky-400' : 'text-slate-400 group-focus-within:text-sky-600'}`}>
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#FFBF00]">
                             <Search className="h-5 w-5" />
                         </div>
                         <input
@@ -143,11 +143,7 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Bagaimana kami dapat membantu?"
-                            className={`block w-full pl-11 pr-4 py-4 text-sm sm:text-base rounded-2xl border focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all shadow-sm ${
-                                darkMode 
-                                    ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-500' 
-                                    : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400'
-                            }`}
+                            className="block w-full pl-11 pr-4 py-4 text-sm sm:text-base rounded-2xl border-2 border-slate-300 dark:border-[#174256] focus:outline-none focus:ring-2 focus:ring-[#FFBF00] focus:border-[#FFBF00] bg-white dark:bg-[#071922] text-slate-900 dark:text-white placeholder-slate-400 shadow-xl transition-all font-medium"
                         />
                     </div>
                 </div>
@@ -161,10 +157,10 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                         <div className="flex flex-wrap items-center justify-center gap-3">
                             <button
                                 onClick={() => setActiveCategory('Semua')}
-                                className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
+                                className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap cursor-pointer border-2 ${
                                     activeCategory === 'Semua'
-                                        ? (darkMode ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/20' : 'bg-sky-600 text-white shadow-md shadow-sky-600/20')
-                                        : (darkMode ? 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-slate-700/50' : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200')
+                                        ? 'bg-[#FFBF00] text-[#0F3040] font-black border-[#FFBF00] shadow-lg shadow-[#FFBF00]/20'
+                                        : 'bg-white dark:bg-[#071922] text-slate-700 dark:text-slate-300 border-slate-300 dark:border-[#174256] hover:text-[#FFBF00]'
                                 }`}
                             >
                                 Semua Kategori
@@ -176,13 +172,13 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                                     <button
                                         key={idx}
                                         onClick={() => setActiveCategory(cat.category)}
-                                        className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
+                                        className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap cursor-pointer border-2 ${
                                             isActive 
-                                                ? (darkMode ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/20' : 'bg-sky-600 text-white shadow-md shadow-sky-600/20')
-                                                : (darkMode ? 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-slate-700/50' : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200')
+                                                ? 'bg-[#FFBF00] text-[#0F3040] font-black border-[#FFBF00] shadow-lg shadow-[#FFBF00]/20'
+                                                : 'bg-white dark:bg-[#071922] text-slate-700 dark:text-slate-300 border-slate-300 dark:border-[#174256] hover:text-[#FFBF00]'
                                         }`}
                                     >
-                                        <Icon className="w-4 h-4" />
+                                        <Icon className="w-4 h-4 text-[#FFBF00]" />
                                         {cat.category}
                                     </button>
                                 )
@@ -199,8 +195,8 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                             return (
                             <section key={catIdx} className="space-y-4">
                                 {/* Only show Category header if not searching, or if searching we can still show it */}
-                                <h2 className={`text-xl sm:text-2xl font-extrabold flex items-center gap-2 mb-6 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-                                    <Icon className="w-6 h-6 text-sky-500" />
+                                <h2 className="text-xl sm:text-2xl font-black flex items-center gap-2 mb-6 text-[#0F3040] dark:text-white">
+                                    <Icon className="w-6 h-6 text-[#FFBF00]" />
                                     {cat.category}
                                 </h2>
                                 
@@ -210,26 +206,22 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                                         return (
                                             <div 
                                                 key={itemIdx}
-                                                className={`border rounded-2xl overflow-hidden transition-all duration-300 ${
-                                                    darkMode 
-                                                        ? `bg-slate-900 border-slate-800 hover:border-slate-700`
-                                                        : `bg-white border-slate-200 hover:border-slate-300`
-                                                }`}
+                                                className="border-2 border-slate-300 dark:border-[#174256] rounded-2xl overflow-hidden transition-all duration-300 bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white hover:border-[#FFBF00] shadow-md dark:shadow-lg"
                                             >
                                                 <button
                                                     onClick={() => toggleFaq(catIdx, itemIdx)}
-                                                    className="w-full px-6 py-5 flex items-start sm:items-center justify-between gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 text-left"
+                                                    className="w-full px-6 py-5 flex items-start sm:items-center justify-between gap-4 focus:outline-none text-left cursor-pointer"
                                                     aria-expanded={isOpen}
                                                 >
-                                                    <h3 className={`font-bold text-sm sm:text-base leading-snug transition-colors ${
-                                                        darkMode ? (isOpen ? 'text-sky-400' : 'text-slate-200') : (isOpen ? 'text-sky-700' : 'text-slate-800')
+                                                    <h3 className={`font-black text-sm sm:text-base leading-snug transition-colors ${
+                                                        isOpen ? 'text-[#FFBF00]' : 'text-[#0F3040] dark:text-white'
                                                     }`}>
                                                         {item.q}
                                                     </h3>
                                                     <div className={`mt-0.5 sm:mt-0 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${
                                                         isOpen 
-                                                            ? (darkMode ? 'bg-sky-500/20 text-sky-400' : 'bg-sky-100 text-sky-600')
-                                                            : (darkMode ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500')
+                                                            ? 'bg-[#FFBF00] text-[#0F3040]'
+                                                            : 'bg-slate-100 dark:bg-[#071922] text-[#FFBF00] border border-slate-300 dark:border-[#174256]'
                                                     }`}>
                                                         {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                                                     </div>
@@ -240,7 +232,7 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                                                         isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
                                                     }`}
                                                 >
-                                                    <div className={`px-6 pb-6 pt-1 text-sm leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                                                    <div className="px-6 pb-6 pt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-[#174256]/50 mt-2">
                                                         <p>{item.a}</p>
                                                     </div>
                                                 </div>

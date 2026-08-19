@@ -298,18 +298,18 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                         {/* Kolom Kiri: Form & Stepper (8 Kolom) */}
                         <div className="lg:col-span-8 bg-white rounded-[20px] shadow-sm border border-slate-200 overflow-hidden">
                             {/* Dark Header Banner */}
-                            <div className="bg-[#0f172a] p-6 sm:p-8 flex items-center gap-4 text-white">
-                                <div className="w-14 h-14 rounded-2xl bg-amber-400 flex flex-shrink-0 items-center justify-center text-[#0f172a]">
-                                    <Megaphone className="w-7 h-7" />
+                            <div className="bg-[#0F3040] p-6 sm:p-8 flex items-center gap-4 text-white border-b border-[#174256]">
+                                <div className="w-14 h-14 rounded-2xl bg-[#FFBF00] flex flex-shrink-0 items-center justify-center text-[#0F3040] shadow-lg shadow-[#FFBF00]/20">
+                                    <Megaphone className="w-7 h-7 text-[#0F3040]" />
                                 </div>
                                 <div>
-                                    <h1 className="text-xl sm:text-2xl font-black">Buat Iklan Baris Baru</h1>
+                                    <h1 className="text-xl sm:text-2xl font-black text-white">Buat Iklan Baris Baru</h1>
                                     <p className="text-sm text-slate-300 mt-1 opacity-90">Isi semua detail di bawah untuk mempromosikan produk Anda gratis.</p>
                                 </div>
                             </div>
 
                             {/* Stepper Navbar */}
-                            <div className="flex border-b border-slate-100 px-6 py-4 overflow-x-auto hide-scrollbar gap-8 text-xs font-bold whitespace-nowrap">
+                            <div className="flex border-b border-slate-100 px-6 py-4 overflow-x-auto hide-scrollbar gap-8 text-xs font-bold whitespace-nowrap bg-[#071922]">
                                 {[
                                     { id: 1, label: 'Informasi' },
                                     { id: 2, label: 'Deskripsi' },
@@ -319,10 +319,10 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                     { id: 6, label: 'Pratinjau' }
                                 ].map((s) => (
                                     <div key={s.id} className="flex items-center gap-2">
-                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step === s.id ? 'bg-[#0f172a] text-white' : step > s.id ? 'bg-[#0f172a] text-white opacity-40' : 'bg-slate-100 text-slate-400'}`}>
+                                        <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step === s.id ? 'bg-[#FFBF00] text-[#0F3040] font-black' : step > s.id ? 'bg-[#FFBF00]/40 text-[#0F3040]' : 'bg-slate-800 text-slate-400'}`}>
                                             {s.id}
                                         </div>
-                                        <span className={`${step === s.id ? 'text-[#0f172a]' : step > s.id ? 'text-[#0f172a] opacity-40' : 'text-slate-400'}`}>
+                                        <span className={`${step === s.id ? 'text-[#FFBF00] font-black' : step > s.id ? 'text-slate-300' : 'text-slate-400'}`}>
                                             {s.label}
                                         </span>
                                     </div>
@@ -331,7 +331,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
 
                             {/* Form Step Content */}
                             <div className="p-6 sm:p-8 min-h-[400px]">
-                                <div className="flex items-center gap-2 mb-8 text-[#3b82f6] text-sm font-black uppercase tracking-wide">
+                                <div className="flex items-center gap-2 mb-8 text-[#FFBF00] text-sm font-black uppercase tracking-wide">
                                     <Info className="w-5 h-5" />
                                     LANGKAH {step}: {stepTitles[step-1]}
                                 </div>

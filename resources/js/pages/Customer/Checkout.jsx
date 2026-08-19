@@ -495,16 +495,16 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                 <button 
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full font-black text-sm py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-white shadow-xl shadow-emerald-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                                    className="w-full py-4 px-6 bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-xs sm:text-sm rounded-2xl shadow-xl shadow-[#FFBF00]/20 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider disabled:opacity-50"
                                 >
                                     {isSubmitting ? (
                                         <div className="flex items-center gap-2">
-                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                            <div className="w-4 h-4 border-2 border-[#0F3040] border-t-transparent rounded-full animate-spin"></div>
                                             <span>Memproses Transaksi...</span>
                                         </div>
                                     ) : (
                                         <>
-                                            <CreditCard className="w-5 h-5" />
+                                            <CreditCard className="w-5 h-5 text-[#0F3040]" />
                                             <span>Bayar Sekarang & Konfirmasi ({formatCurrency(grandTotal)})</span>
                                             <span>&rarr;</span>
                                         </>
@@ -512,7 +512,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                 </button>
 
                                 <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-center gap-2 text-[10.5px] text-slate-400">
-                                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                                    <ShieldCheck className="w-4 h-4 text-[#FFBF00]" />
                                     <span>256-Bit Encrypted Syariah Payment Security</span>
                                 </div>
                             </div>
@@ -526,23 +526,23 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
             {isSuccessModalOpen && createdOrder && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
                     <div className={`w-full max-w-lg rounded-3xl border p-6 sm:p-8 shadow-2xl text-center relative overflow-hidden animate-in zoom-in-95 ${
-                        darkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                        darkMode ? 'bg-[#0F3040] border-[#174256] text-white' : 'bg-white border-slate-200 text-slate-900'
                     }`}>
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/30">
-                            <Check className="w-8 h-8 stroke-[3]" />
+                        <div className="w-16 h-16 rounded-full bg-[#FFBF00] text-[#0F3040] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#FFBF00]/30">
+                            <Check className="w-8 h-8 stroke-[3] text-[#0F3040]" />
                         </div>
 
-                        <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full mb-2">
+                        <span className="inline-block text-[10px] font-black uppercase tracking-widest text-[#FFBF00] bg-[#FFBF00]/20 border border-[#FFBF00]/40 px-3 py-1 rounded-full mb-2">
                             Pembayaran Berhasil / Terkonfirmasi
                         </span>
 
-                        <h3 className="text-2xl font-black mb-1">Transaksi Berhasil!</h3>
-                        <p className="text-xs text-slate-400 mb-6">File produk digital siap langsung diunduh.</p>
+                        <h3 className="text-2xl font-black mb-1 text-white">Transaksi Berhasil!</h3>
+                        <p className="text-xs text-slate-300 mb-6">File produk digital siap langsung diunduh.</p>
 
-                        <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 text-xs text-left space-y-2 mb-6 font-mono">
-                            <div className="flex justify-between border-b border-slate-800 pb-2 text-slate-300">
+                        <div className="bg-[#071922] border border-[#174256] rounded-2xl p-4 text-xs text-left space-y-2 mb-6 font-mono">
+                            <div className="flex justify-between border-b border-[#174256] pb-2 text-slate-300">
                                 <span>No Invoice:</span>
-                                <strong className="text-teal-400">{createdOrder.invoice}</strong>
+                                <strong className="text-[#FFBF00]">{createdOrder.invoice}</strong>
                             </div>
                             <div className="flex justify-between text-slate-300">
                                 <span>Pemesan:</span>
@@ -550,7 +550,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                             </div>
                             <div className="flex justify-between text-slate-300">
                                 <span>Total Bayar:</span>
-                                <strong className="text-emerald-400">{formatCurrency(createdOrder.total)}</strong>
+                                <strong className="text-[#FFBF00]">{formatCurrency(createdOrder.total)}</strong>
                             </div>
                             <div className="flex justify-between text-slate-300">
                                 <span>Waktu:</span>
@@ -564,9 +564,9 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                     setIsSuccessModalOpen(false);
                                     onNavigate('customer');
                                 }}
-                                className="w-full py-3.5 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-black text-xs rounded-xl shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                                className="w-full py-3.5 px-6 bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-xs rounded-xl shadow-lg shadow-[#FFBF00]/20 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
                             >
-                                <Download className="w-4 h-4" />
+                                <Download className="w-4 h-4 text-[#0F3040]" />
                                 <span>Unduh Produk Saya di Dashboard</span>
                             </button>
 

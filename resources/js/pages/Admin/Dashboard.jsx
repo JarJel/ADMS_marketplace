@@ -354,7 +354,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
     };
 
     return (
-        <div className="h-screen bg-slate-950 text-slate-100 font-sans flex overflow-hidden">
+        <div className="h-screen bg-[#071922] text-slate-100 font-sans flex overflow-hidden">
             {/* Sidebar Baru */}
             <AdminSidebar
                 activeItem={activeTab}
@@ -370,11 +370,13 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
 
                 {/* Dashboard Contents */}
-                <main className="flex-1 overflow-y-auto px-6 py-10 bg-slate-50 dark:bg-slate-900/40 text-slate-900 dark:text-slate-100">
+                <main className="flex-1 overflow-y-auto px-6 py-10 bg-[#0B2330] text-slate-100">
                     <div className="max-w-6xl mx-auto">
-                        <div className="mb-8">
-                            <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">Dasbor Administrator</h1>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm">Kelola verifikasi merchant, moderasi produk, dan audit sistem secara terpusat.</p>
+                        <div className="mb-8 border-b border-[#174256] pb-5">
+                            <h1 className="text-3xl font-black text-white mb-1 tracking-tight flex items-center gap-2">
+                                Dasbor Administrator <span className="text-xs bg-[#FFBF00] text-[#0F3040] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">Superadmin</span>
+                            </h1>
+                            <p className="text-slate-300 text-sm">Kelola verifikasi merchant, moderasi produk, dan audit sistem secara terpusat.</p>
                         </div>
 
                         {actionMsg && (

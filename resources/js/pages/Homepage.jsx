@@ -225,16 +225,10 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
     ];
 
     return (
-        <div className={`min-h-screen transition-colors duration-300 font-sans ${
-            darkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
-        }`}>
-            {/* Global light sources (Dark Mode decoration) */}
-            {darkMode && (
-                <>
-                    <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-teal-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-                    <div className="absolute top-1/3 right-1/4 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-[150px] pointer-events-none"></div>
-                </>
-            )}
+        <div className="min-h-screen bg-slate-100 dark:bg-[#071922] text-slate-900 dark:text-white font-sans transition-colors duration-300">
+            {/* Global light sources */}
+            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#FFBF00]/5 rounded-full blur-[120px] pointer-events-none"></div>
+            <div className="absolute top-1/3 right-1/4 w-[600px] h-[600px] bg-[#174256]/40 rounded-full blur-[150px] pointer-events-none"></div>
 
             {/* A. Sticky Glassmorphic Header */}
             <Navbar 
@@ -252,91 +246,75 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* B. Hero Section */}
             <ScrollFadeIn>
-            <section className={`py-16 transition-colors duration-300 relative overflow-hidden ${
-                darkMode ? 'bg-[#0A1B33] text-slate-100' : 'bg-gradient-to-br from-indigo-50/90 via-slate-50 to-white text-slate-900 border-b border-slate-200/80'
-            }`}>
+            <section className="py-16 transition-colors duration-300 relative overflow-hidden bg-[#0F3040] dark:bg-[#071922] text-white border-b-2 border-[#174256]">
                 {/* Background ambient glow effects */}
-                <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/4 ${
-                    darkMode ? 'bg-indigo-700/10' : 'bg-indigo-500/10'
-                }`}></div>
-                <div className={`absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/4 ${
-                    darkMode ? 'bg-emerald-600/8' : 'bg-teal-400/15'
-                }`}></div>
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[140px] pointer-events-none -translate-y-1/2 translate-x-1/4 bg-[#FFBF00]/10"></div>
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none translate-y-1/3 -translate-x-1/4 bg-[#174256]/50"></div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
                     
                     {/* Copywriting (7 columns) */}
                     <div className="space-y-6 lg:col-span-7">
 
-                        <h1 className={`text-4xl sm:text-5xl font-black tracking-tight leading-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-                            Temukan <span className="text-transparent bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-400 dark:to-teal-400 bg-clip-text">Produk Digital</span>.<br />
-                            <span className="text-transparent bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-400 dark:to-orange-400 bg-clip-text">Pasang Iklan</span>. Kembangkan Bisnis.
+                        <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-tight text-white">
+                            Temukan <span className="text-[#FFBF00] bg-clip-text text-transparent bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00]">Produk Digital</span>.<br />
+                            <span className="text-[#FFBF00] bg-clip-text text-transparent bg-gradient-to-r from-[#FFBF00] to-[#e6ac00]">Pasang Iklan</span>. Kembangkan Bisnis.
                         </h1>
 
-                        <p className={`text-sm sm:text-base leading-relaxed max-w-xl ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                        <p className="text-sm sm:text-base leading-relaxed max-w-xl text-slate-300">
                             ADMS adalah platform marketplace dan digital advertising terpadu yang membantu Anda menemukan produk digital terbaik, berjualan sebagai merchant, dan mempromosikan bisnis dalam satu ekosistem.
                         </p>
 
                         {/* Search Bar inside Hero */}
-                        <div className={`max-w-lg mt-8 relative flex items-center rounded-xl p-1.5 pl-4 shadow-xl border ${
-                            darkMode 
-                                ? 'bg-white/[0.05] backdrop-blur-sm border-white/[0.1] shadow-black/20 text-slate-100' 
-                                : 'bg-white border-slate-300/90 shadow-indigo-100/70 text-slate-800'
-                        }`}>
-                            <Search className={`w-4 h-4 mr-2.5 flex-shrink-0 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`} />
+                        <div className="max-w-lg mt-8 relative flex items-center rounded-2xl p-1.5 pl-4 shadow-xl border-2 bg-[#0F3040] border-[#174256] text-white">
+                            <Search className="w-4 h-4 mr-2.5 flex-shrink-0 text-[#FFBF00]" />
                             <input 
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Cari produk digital, jasa, atau iklan promosi..."
-                                className={`w-full bg-transparent focus:outline-none text-xs sm:text-sm ${
-                                    darkMode ? 'text-slate-100 placeholder-slate-500' : 'text-slate-800 placeholder-slate-400 font-medium'
-                                }`}
+                                className="w-full bg-transparent focus:outline-none text-xs sm:text-sm text-white placeholder-slate-400 font-medium"
                             />
                             <button 
                                 onClick={() => onNavigate('products', 'all', searchQuery)}
-                                className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white text-xs font-bold px-5 py-2.5 rounded-lg active:scale-95 transition-all shadow-lg shadow-emerald-500/25"
+                                className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] text-xs font-black px-5 py-2.5 rounded-xl active:scale-95 transition-all shadow-lg shadow-[#FFBF00]/20 cursor-pointer uppercase tracking-wider"
                             >
                                 Cari
                             </button>
                         </div>
 
                         {/* Popular Tags */}
-                        <p className={`text-[11px] font-medium ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                            Pencarian Populer: <span className={darkMode ? 'text-slate-300' : 'text-slate-700 font-semibold'}>Template Canva &bull; Ebook Marketing &bull; Source Code Web</span>
+                        <p className="text-[11px] font-medium text-slate-400">
+                            Pencarian Populer: <span className="text-[#FFBF00] font-semibold">Template Canva &bull; Ebook Marketing &bull; Source Code Web</span>
                         </p>
 
                         {/* CTA Buttons */}
                         <div className="flex flex-wrap items-center gap-4 pt-4">
                             <a 
                                 href="#marketplace"
-                                className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold py-3.5 px-7 rounded-xl text-xs shadow-xl shadow-emerald-500/20 active:scale-[0.98] transition-all flex items-center gap-1.5"
+                                className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black py-3.5 px-7 rounded-xl text-xs shadow-xl shadow-[#FFBF00]/20 active:scale-[0.98] transition-all flex items-center gap-1.5 cursor-pointer uppercase tracking-wider"
                             >
                                 Jelajahi Marketplace &rarr;
                             </a>
                             <button 
                                 onClick={onNavigateToCreateAd}
-                                className={`font-bold py-3.5 px-6 rounded-xl text-xs flex items-center gap-1.5 border transition-all ${
-                                    darkMode 
-                                        ? 'border-white/10 hover:border-indigo-400/40 text-slate-200 hover:bg-white/5' 
-                                        : 'border-slate-300 hover:border-slate-400 text-slate-800 bg-white hover:bg-slate-50 shadow-sm'
-                                }`}
+                                className="font-bold py-3.5 px-6 rounded-xl text-xs flex items-center gap-1.5 border-2 border-[#174256] hover:border-[#FFBF00] text-slate-200 bg-[#0F3040] hover:bg-[#0F3040]/80 transition-all cursor-pointer shadow-md"
                             >
-                                <Megaphone className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+                                <Megaphone className="w-3.5 h-3.5 text-[#FFBF00]" />
                                 Pasang Iklan Gratis
                             </button>
                         </div>
 
                         {/* Core benefits checklist */}
-                        <div className={`flex flex-wrap items-center gap-6 pt-4 text-xs font-bold ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        <div className="flex flex-wrap items-center gap-6 pt-4 text-xs font-bold text-slate-300">
                             <span className="flex items-center gap-1.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> Instan Download
+                                <CheckCircle className="w-3.5 h-3.5 text-[#FFBF00]" /> Instan Download
                             </span>
                             <span className="flex items-center gap-1.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> Verified Merchant
+                                <CheckCircle className="w-3.5 h-3.5 text-[#FFBF00]" /> Verified Merchant
                             </span>
                             <span className="flex items-center gap-1.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> Iklan Gratis Rp0
+                                <CheckCircle className="w-3.5 h-3.5 text-[#FFBF00]" /> Iklan Gratis Rp0
                             </span>
                         </div>
                     </div>
@@ -345,22 +323,17 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     <div className="relative flex justify-center lg:justify-end lg:col-span-5 pt-8 lg:pt-0">
                         <div className="relative w-full max-w-[600px]">
                             {/* Ambient glow blobs behind card */}
-                            <div className="absolute -top-16 -right-16 w-64 h-64 bg-indigo-600/20 rounded-full blur-[80px] pointer-events-none"></div>
-                            <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-emerald-500/15 rounded-full blur-[80px] pointer-events-none"></div>
+                            <div className="absolute -top-16 -right-16 w-64 h-64 bg-[#FFBF00]/10 rounded-full blur-[80px] pointer-events-none"></div>
+                            <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-[#174256]/50 rounded-full blur-[80px] pointer-events-none"></div>
 
-                            {/* Main glass card */}
-                            <div className={`w-full rounded-3xl backdrop-blur-xl border p-5 relative overflow-hidden ${
-                                darkMode 
-                                    ? 'bg-gradient-to-br from-[#0f1f3d] to-[#0a1528] border-white/[0.07] shadow-[0_40px_100px_rgba(0,0,0,0.6)]' 
-                                    : 'bg-white/95 border-slate-200/90 shadow-2xl shadow-indigo-100/80 text-slate-800'
-                            }`}>
+                            {/* Main card */}
+                            <div className="w-full rounded-3xl backdrop-blur-xl border-2 border-[#174256] p-5 relative overflow-hidden bg-[#0F3040] shadow-2xl text-white">
                                 {/* Top shimmer border */}
-                                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-400/60 to-transparent"></div>
-                                <div className="absolute top-0 left-[20%] right-[20%] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent blur-sm"></div>
+                                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#FFBF00] to-transparent"></div>
 
                                 {/* Slider Image container */}
-                                <div className="relative w-full rounded-2xl overflow-hidden shadow-lg group">
-                                    <div className="block relative aspect-[4/3] md:aspect-[16/10] overflow-hidden bg-slate-900">
+                                <div className="relative w-full rounded-2xl overflow-hidden shadow-lg group border border-[#174256]">
+                                    <div className="block relative aspect-[4/3] md:aspect-[16/10] overflow-hidden bg-[#071922]">
                                         <img 
                                             src={promoSlides[currentPromoSlide].image} 
                                             alt={promoSlides[currentPromoSlide].title}
@@ -369,36 +342,36 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                         
                                         {/* Overlay Content */}
                                         <a href={promoSlides[currentPromoSlide].link} target="_blank" rel="noreferrer" className="absolute inset-0 p-6 flex flex-col justify-center items-center text-center z-10 cursor-pointer">
-                                            <span className="bg-emerald-500/90 backdrop-blur text-white text-[9px] font-black tracking-widest px-3 py-1 rounded-full mb-3 shadow-lg shadow-emerald-500/30 uppercase">
+                                            <span className="bg-[#FFBF00] text-[#0F3040] text-[9px] font-black tracking-widest px-3 py-1 rounded-full mb-3 shadow-lg uppercase">
                                                 Featured Website
                                             </span>
                                             <h3 className="text-white font-black text-2xl md:text-3xl mb-1 shadow-sm drop-shadow-lg">
                                                 {promoSlides[currentPromoSlide].title}
                                             </h3>
-                                            <p className="text-emerald-300 font-medium text-xs md:text-sm mb-4 drop-shadow-md">
+                                            <p className="text-[#FFBF00] font-medium text-xs md:text-sm mb-4 drop-shadow-md">
                                                 {promoSlides[currentPromoSlide].desc}
                                             </p>
                                             
                                             {/* Domain badge */}
-                                            <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 transition-colors px-4 py-2 rounded-xl shadow-2xl">
+                                            <div className="flex items-center gap-1.5 bg-[#071922]/80 backdrop-blur-md border border-[#174256] hover:bg-[#071922] transition-colors px-4 py-2 rounded-xl shadow-2xl">
                                                 <Globe className="w-3.5 h-3.5 text-slate-300" />
-                                                <span className="text-slate-100 text-[10px] md:text-xs font-semibold tracking-wide">
+                                                <span className="text-white text-[10px] md:text-xs font-semibold tracking-wide">
                                                     {promoSlides[currentPromoSlide].domain}
                                                 </span>
-                                                <ExternalLink className="w-3.5 h-3.5 text-emerald-400 ml-1" />
+                                                <ExternalLink className="w-3.5 h-3.5 text-[#FFBF00] ml-1" />
                                             </div>
                                         </a>
 
                                         {/* Manual Navigation Arrows */}
                                         <button 
                                             onClick={(e) => { e.preventDefault(); setCurrentPromoSlide((prev) => (prev === 0 ? promoSlides.length - 1 : prev - 1)); }}
-                                            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/60 text-white backdrop-blur-sm border border-white/10 transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
+                                            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-[#071922]/60 hover:bg-[#071922] text-white backdrop-blur-sm border border-[#174256] transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
                                         >
                                             <ChevronLeft className="w-5 h-5" />
                                         </button>
                                         <button 
                                             onClick={(e) => { e.preventDefault(); setCurrentPromoSlide((prev) => (prev + 1) % promoSlides.length); }}
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/60 text-white backdrop-blur-sm border border-white/10 transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0"
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-[#071922]/60 hover:bg-[#071922] text-white backdrop-blur-sm border border-[#174256] transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0"
                                         >
                                             <ChevronRight className="w-5 h-5" />
                                         </button>
@@ -413,8 +386,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                             onClick={() => setCurrentPromoSlide(idx)}
                                             className={`transition-all duration-300 rounded-full ${
                                                 idx === currentPromoSlide 
-                                                    ? 'w-6 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 shadow-md' 
-                                                    : `w-2 h-2 ${darkMode ? 'bg-slate-700 hover:bg-slate-500' : 'bg-slate-300 hover:bg-slate-400'}`
+                                                    ? 'w-6 h-2 bg-[#FFBF00] shadow-md' 
+                                                    : 'w-2 h-2 bg-[#174256] hover:bg-[#FFBF00]/50'
                                             }`}
                                             aria-label={`Go to slide ${idx + 1}`}
                                         />
@@ -427,30 +400,24 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                 </div>
 
                 {/* Social Stats footer */}
-                <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
-                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
-                    }`}>
-                        <span className="block text-3xl font-black text-teal-400">
+                <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="p-6 border-2 border-[#174256] bg-[#0F3040] rounded-2xl shadow-lg text-center">
+                        <span className="block text-3xl font-black text-[#FFBF00]">
                             {platformStats ? `${platformStats.activeAds.toLocaleString('id-ID')}` : '...'}
                         </span>
-                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Iklan Baris Aktif</span>
+                        <span className="text-xs text-slate-300 uppercase font-bold mt-1">Iklan Baris Aktif</span>
                     </div>
-                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
-                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
-                    }`}>
-                        <span className="block text-3xl font-black text-indigo-400">
+                    <div className="p-6 border-2 border-[#174256] bg-[#0F3040] rounded-2xl shadow-lg text-center">
+                        <span className="block text-3xl font-black text-[#FFBF00]">
                             {platformStats ? `${platformStats.totalProducts.toLocaleString('id-ID')}` : '...'}
                         </span>
-                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Aset Digital Terverifikasi</span>
+                        <span className="text-xs text-slate-300 uppercase font-bold mt-1">Aset Digital Terverifikasi</span>
                     </div>
-                    <div className={`p-6 border rounded-2xl shadow-sm text-center ${
-                        darkMode ? 'bg-slate-900/30 border-slate-800/80' : 'bg-white border-slate-200'
-                    }`}>
+                    <div className="p-6 border-2 border-[#174256] bg-[#0F3040] rounded-2xl shadow-lg text-center">
                         <span className="block text-3xl font-black text-white">
                             {platformStats ? `${platformStats.totalUsers.toLocaleString('id-ID')}` : '...'}
                         </span>
-                        <span className="text-xs text-slate-500 uppercase font-semibold mt-1">Pengguna & Merchant Aktif</span>
+                        <span className="text-xs text-slate-300 uppercase font-bold mt-1">Pengguna & Merchant Aktif</span>
                     </div>
                 </div>
             </section>
@@ -458,30 +425,27 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
             {/* C. Quick Categories Grid */}
             <ScrollFadeIn>
-            <section className="py-20 bg-[#FBFDFE] dark:bg-slate-950 border-y border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
+            <section className="py-20 bg-slate-50 dark:bg-[#071922] border-y-2 border-slate-300 dark:border-[#174256] relative overflow-hidden text-slate-900 dark:text-white transition-colors duration-300">
                 {/* Decorative background shapes */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                    {/* Subtle dotted grid matrix */}
-                    <div className="absolute inset-0 opacity-[0.25] dark:opacity-[0.08] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:20px_20px]"></div>
-                    {/* Soft colored mesh gradient glowing circles */}
-                    <div className="absolute top-[-10%] left-[-10%] w-[350px] h-[350px] rounded-full bg-emerald-400/5 dark:bg-emerald-500/5 blur-[80px]"></div>
-                    <div className="absolute bottom-[-10%] right-[-10%] w-[350px] h-[350px] rounded-full bg-indigo-400/5 dark:bg-indigo-500/5 blur-[80px]"></div>
+                    <div className="absolute inset-0 opacity-[0.08] bg-[radial-gradient(#64748b_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                    <div className="absolute top-[-10%] left-[-10%] w-[350px] h-[350px] rounded-full bg-[#FFBF00]/5 blur-[80px]"></div>
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[350px] h-[350px] rounded-full bg-[#174256]/50 blur-[80px]"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
-                    {/* Premium Creative Header */}
+                    {/* Header */}
                     <div className="text-center mb-16 space-y-4">
-                        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-[10px] font-bold uppercase tracking-wider text-indigo-600 shadow-sm shadow-indigo-100/50">
-                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FFBF00]/20 border-2 border-[#FFBF00]/40 text-[10px] font-black uppercase tracking-wider text-[#FFBF00]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#FFBF00] animate-pulse"></span>
                             Kategori Pilihan
                         </div>
-                        <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-                            Jelajahi <span className="bg-gradient-to-r from-[#10B981] to-indigo-600 bg-clip-text text-transparent">Kategori Layanan</span>
+                        <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-[#0F3040] dark:text-white leading-tight">
+                            Jelajahi <span className="text-[#FFBF00]">Kategori Layanan</span>
                         </h2>
-                        {/* Elegant under-title visual divider */}
-                        <div className="w-16 h-1 bg-gradient-to-r from-[#10B981] to-indigo-50 rounded-full mx-auto"></div>
-                        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed font-medium pt-1">
+                        <div className="w-16 h-1 bg-[#FFBF00] rounded-full mx-auto"></div>
+                        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed font-medium pt-1">
                             Temukan berbagai kebutuhan digital marketing, website, pembuatan legalitas usaha, hingga layanan offline dalam satu platform.
                         </p>
                     </div>
@@ -490,60 +454,19 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
                         {categories.map((cat, idx) => {
                             const IconComponent = cat.icon;
-                            const colorThemes = [
-                                // Template (Emerald)
-                                { bg: 'bg-emerald-50 text-emerald-600', border: 'hover:border-emerald-500 hover:shadow-emerald-500/10', text: 'group-hover:text-emerald-700', textLight: 'group-hover:text-emerald-500', bar: 'group-hover:bg-emerald-500', overlay: 'from-emerald-50/50' },
-                                // Ebook (Indigo)
-                                { bg: 'bg-indigo-50 text-indigo-600', border: 'hover:border-indigo-500 hover:shadow-indigo-500/10', text: 'group-hover:text-indigo-700', textLight: 'group-hover:text-indigo-500', bar: 'group-hover:bg-indigo-500', overlay: 'from-indigo-50/50' },
-                                // Software (Sky)
-                                { bg: 'bg-sky-50 text-sky-600', border: 'hover:border-sky-500 hover:shadow-sky-500/10', text: 'group-hover:text-sky-700', textLight: 'group-hover:text-sky-500', bar: 'group-hover:bg-sky-500', overlay: 'from-sky-50/50' },
-                                // Website (Blue)
-                                { bg: 'bg-blue-50 text-blue-600', border: 'hover:border-blue-500 hover:shadow-blue-500/10', text: 'group-hover:text-blue-700', textLight: 'group-hover:text-blue-500', bar: 'group-hover:bg-blue-500', overlay: 'from-blue-50/50' },
-                                // Design (Purple)
-                                { bg: 'bg-purple-50 text-purple-600', border: 'hover:border-purple-500 hover:shadow-purple-500/10', text: 'group-hover:text-purple-700', textLight: 'group-hover:text-purple-500', bar: 'group-hover:bg-purple-500', overlay: 'from-purple-50/50' },
-                                // Video (Rose)
-                                { bg: 'bg-rose-50 text-rose-600', border: 'hover:border-rose-500 hover:shadow-rose-500/10', text: 'group-hover:text-rose-700', textLight: 'group-hover:text-rose-500', bar: 'group-hover:bg-rose-500', overlay: 'from-rose-50/50' },
-                                // Audio (Cyan)
-                                { bg: 'bg-cyan-50 text-cyan-600', border: 'hover:border-cyan-500 hover:shadow-cyan-500/10', text: 'group-hover:text-cyan-700', textLight: 'group-hover:text-cyan-500', bar: 'group-hover:bg-cyan-500', overlay: 'from-cyan-50/50' },
-                                // Course (Teal)
-                                { bg: 'bg-teal-50 text-teal-600', border: 'hover:border-teal-500 hover:shadow-teal-500/10', text: 'group-hover:text-teal-700', textLight: 'group-hover:text-teal-500', bar: 'group-hover:bg-teal-500', overlay: 'from-teal-50/50' },
-                                // Social Media (Violet)
-                                { bg: 'bg-violet-50 text-violet-600', border: 'hover:border-violet-500 hover:shadow-violet-500/10', text: 'group-hover:text-violet-700', textLight: 'group-hover:text-violet-500', bar: 'group-hover:bg-violet-500', overlay: 'from-violet-50/50' },
-                                // Digital Marketing (Amber)
-                                { bg: 'bg-amber-50 text-amber-600', border: 'hover:border-amber-500 hover:shadow-amber-500/10', text: 'group-hover:text-amber-700', textLight: 'group-hover:text-amber-500', bar: 'group-hover:bg-amber-500', overlay: 'from-amber-50/50' },
-                                // Business (Lime)
-                                { bg: 'bg-lime-50 text-lime-600', border: 'hover:border-lime-500 hover:shadow-lime-500/10', text: 'group-hover:text-lime-700', textLight: 'group-hover:text-lime-500', bar: 'group-hover:bg-lime-500', overlay: 'from-lime-50/50' },
-                                // Education (Fuchsia)
-                                { bg: 'bg-fuchsia-50 text-fuchsia-600', border: 'hover:border-fuchsia-500 hover:shadow-fuchsia-500/10', text: 'group-hover:text-fuchsia-700', textLight: 'group-hover:text-fuchsia-500', bar: 'group-hover:bg-fuchsia-500', overlay: 'from-fuchsia-50/50' },
-                                // Tools (Orange)
-                                { bg: 'bg-orange-50 text-orange-600', border: 'hover:border-orange-500 hover:shadow-orange-500/10', text: 'group-hover:text-orange-700', textLight: 'group-hover:text-orange-500', bar: 'group-hover:bg-orange-500', overlay: 'from-orange-50/50' },
-                                // Jasa (Pink)
-                                { bg: 'bg-pink-50 text-pink-600', border: 'hover:border-pink-500 hover:shadow-pink-500/10', text: 'group-hover:text-pink-700', textLight: 'group-hover:text-pink-500', bar: 'group-hover:bg-pink-500', overlay: 'from-pink-50/50' },
-                                // Lainnya (Slate)
-                                { bg: 'bg-slate-100 text-slate-700', border: 'hover:border-slate-500 hover:shadow-slate-500/10', text: 'group-hover:text-slate-800', textLight: 'group-hover:text-slate-600', bar: 'group-hover:bg-slate-500', overlay: 'from-slate-100/50' }
-                            ];
-                            const theme = colorThemes[idx % colorThemes.length];
                             return (
                                 <div 
                                     key={idx}
-                                    className={`p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer text-left flex flex-col justify-between min-h-[140px] group relative overflow-hidden shadow-sm hover:shadow-lg dark:backdrop-blur-md ${theme.border}`}
+                                    className="p-6 bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer text-left flex flex-col justify-between min-h-[140px] group relative overflow-hidden shadow-md dark:shadow-lg hover:border-[#FFBF00]"
                                 >
-                                    {/* Hover overlay gradient */}
-                                    <div className={`absolute inset-0 bg-gradient-to-br ${theme.overlay} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
-                                    
-                                    {/* Top colored accent line on hover */}
-                                    <div className={`absolute top-0 left-0 w-full h-[4px] bg-transparent transition-all duration-300 ${theme.bar}`}></div>
-                                    
                                     <div className="relative z-10">
-                                        {/* Icon container top left */}
-                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md ${theme.bg}`}>
+                                        <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-[#071922] border border-slate-300 dark:border-[#174256] flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 text-[#0F3040] dark:text-[#FFBF00]">
                                             <IconComponent className="w-6 h-6 transition-transform duration-300" strokeWidth={2} />
                                         </div>
  
-                                        {/* Left-aligned titles and count */}
                                         <div>
-                                            <h4 className={`font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-1 transition-colors duration-300 ${theme.text}`}>{cat.name}</h4>
-                                            <span className={`text-[10px] text-slate-400 dark:text-slate-500 font-semibold transition-all duration-300 flex items-center gap-1 ${theme.textLight}`}>
+                                            <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white leading-tight mb-1 group-hover:text-[#FFBF00] transition-colors duration-300">{cat.name}</h4>
+                                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold transition-all duration-300 flex items-center gap-1 group-hover:text-[#FFBF00]">
                                                 {cat.count} 
                                                 <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
                                             </span>
@@ -557,37 +480,28 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             </section>
             </ScrollFadeIn>
 
-            {/* D. Marketplace Featured Products with light theme and side-by-side header */}
+            {/* D. Marketplace Featured Products */}
             <ScrollFadeIn>
-            <section id="marketplace" className="py-20 bg-white dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
-                {/* Decorative background shapes */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                    {/* Subtle diagonal lines pattern */}
-                    <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03] bg-[linear-gradient(135deg,#4f46e5_10%,transparent_10%,transparent_50%,#4f46e5_50%,#4f46e5_60%,transparent_60%,transparent)] bg-[size:40px_40px]"></div>
-                    {/* Soft colored mesh gradient glowing circles */}
-                    <div className="absolute top-[20%] right-[-10%] w-[400px] h-[400px] rounded-full bg-indigo-400/5 dark:bg-indigo-500/5 blur-[100px]"></div>
-                    <div className="absolute bottom-[20%] left-[-10%] w-[400px] h-[400px] rounded-full bg-teal-400/5 dark:bg-teal-500/5 blur-[100px]"></div>
-                </div>
-
+            <section id="marketplace" className="py-20 bg-slate-100 dark:bg-[#071922] border-b-2 border-slate-300 dark:border-[#174256] relative overflow-hidden text-slate-900 dark:text-white transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
                     {/* Header */}
-                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4 border-b border-slate-100 pb-6">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4 border-b-2 border-slate-300 dark:border-[#174256] pb-6">
                         <div>
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-3 shadow-sm shadow-emerald-50/50">
-                                <Star className="w-3 h-3 fill-current text-emerald-500 animate-pulse" />
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFBF00]/20 border-2 border-[#FFBF00]/40 text-[10px] font-black uppercase tracking-wider text-[#FFBF00] mb-3">
+                                <Star className="w-3 h-3 fill-current text-[#FFBF00] animate-pulse" />
                                 Rekomendasi Utama
                             </div>
-                            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-                                Produk Digital <span className="bg-gradient-to-r from-emerald-500 to-indigo-600 bg-clip-text text-transparent">Pilihan</span>
+                            <h2 className="text-3xl font-black tracking-tight text-[#0F3040] dark:text-white leading-tight">
+                                Produk Digital <span className="text-[#FFBF00]">Pilihan</span>
                             </h2>
-                            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-2 font-medium">
+                            <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm mt-2 font-medium">
                                 Aset digital terlaris dan berkualitas tinggi yang diverifikasi oleh tim ADMS.
                             </p>
                         </div>
                         <button 
                             onClick={onNavigateToProducts}
-                            className="inline-flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-500 bg-slate-50 hover:bg-slate-100 border border-slate-200/60 px-4 py-2 rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer"
+                            className="inline-flex items-center gap-2 text-xs font-black text-[#0F3040] bg-[#FFBF00] hover:bg-[#ffcd33] px-4 py-2.5 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer uppercase tracking-wider"
                         >
                             <span>Lihat Semua Produk</span>
                             <span className="text-sm font-semibold">&rarr;</span>
@@ -596,65 +510,60 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                     {/* Products Grid */}
                     {loadingProducts ? (
-                        <div className="text-center py-10 text-slate-500">Memuat produk rekomendasi...</div>
+                        <div className="text-center py-10 text-slate-400">Memuat produk rekomendasi...</div>
                     ) : recommendedProducts.length === 0 ? (
-                        <div className="text-center py-10 text-slate-500">Belum ada produk digital pilihan saat ini.</div>
+                        <div className="text-center py-10 text-slate-400">Belum ada produk digital pilihan saat ini.</div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                             {(() => {
                                 const filtered = searchQuery ? recommendedProducts.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.description?.toLowerCase().includes(searchQuery.toLowerCase())) : recommendedProducts;
                                 if (filtered.length === 0) {
                                     return (
-                                        <div className="col-span-full py-12 text-center text-slate-500 font-medium">
-                                            Tidak ada produk yang sesuai dengan pencarian "{searchQuery}".
+                                        <div className="col-span-full py-12 text-center text-slate-400 font-medium">
+                                            Tidak ada produk yang sesuai dengan pencarian &quot;{searchQuery}&quot;.
                                         </div>
                                     );
                                 }
-                                return filtered.map((prod) => (
+                                 return filtered.map((prod) => (
                                 <div 
-                                        key={prod.id}
+                                    key={prod.id}
                                     onClick={() => setSelectedProduct(prod)}
-                                    className="rounded-2xl border border-slate-300 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-xl hover:shadow-indigo-500/5 relative dark:backdrop-blur-md cursor-pointer"
+                                    className="rounded-2xl border-2 border-slate-300 dark:border-[#174256] bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-md dark:shadow-xl hover:border-[#FFBF00] relative cursor-pointer"
                                 >
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); toggleWishlist(prod.id); }}
-                                    className={`absolute top-3 right-3 z-10 p-2 backdrop-blur-md rounded-full shadow-md border transition-all duration-300 cursor-pointer ${
-                                        userWishlist.some(id => id?.toString() === prod.id?.toString())
-                                            ? 'bg-rose-50 dark:bg-rose-950/80 border-rose-300 dark:border-rose-700 text-rose-500 fill-rose-500 scale-110 shadow-rose-500/20'
-                                            : 'bg-white/90 dark:bg-slate-900/90 border-slate-100/50 dark:border-slate-800/50 text-slate-400 hover:text-rose-500 hover:scale-110 active:scale-95'
-                                    }`}
-                                    title={userWishlist.some(id => id?.toString() === prod.id?.toString()) ? "Hapus dari Favorit" : "Tambah ke Favorit"}
+                                    className="absolute top-3 right-3 z-10 p-2 bg-[#071922]/80 backdrop-blur-md rounded-full shadow-md border border-[#174256] text-slate-400 hover:text-[#FFBF00] hover:scale-110 active:scale-95 cursor-pointer"
                                 >
-                                    <Heart className={`w-4 h-4 ${userWishlist.some(id => id?.toString() === prod.id?.toString()) ? 'fill-current text-rose-500' : ''}`} />
+                                    <Heart className="w-4 h-4" />
                                 </button>
                                 <div>
                                     {/* Product Image */}
-                                    <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
+                                    <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-[#071922] relative border-b border-slate-200 dark:border-[#174256]">
                                         <img 
                                             src={prod.image} 
                                             alt={prod.title} 
                                             className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                                         />
-                                        <span className="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-[9px] font-bold text-teal-600 dark:text-teal-400 px-3 py-1 rounded-full border border-white/50 dark:border-slate-700 shadow-sm uppercase tracking-wider">
+                                        <span className="absolute top-3 left-3 bg-[#071922]/90 backdrop-blur-md text-[9px] font-black text-[#FFBF00] px-3 py-1 rounded-full border border-[#174256] shadow-sm uppercase tracking-wider">
                                             {prod.category}
                                         </span>
                                     </div>
 
                                     {/* Body */}
                                     <div className="p-5">
-                                        <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-snug line-clamp-2 h-10 mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">{prod.title}</h4>
+                                        <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white leading-snug line-clamp-2 h-10 mb-3 group-hover:text-[#FFBF00] transition-colors duration-300">{prod.title}</h4>
                                         
-                                        <div className="flex items-center gap-1 text-xs mb-3 text-amber-500">
-                                            <Star className="w-3.5 h-3.5 fill-current" />
-                                            <span className="font-semibold text-slate-700 dark:text-slate-300">{prod.rating}</span>
-                                            <span className="text-[10px] text-slate-400 dark:text-slate-500">({prod.reviewsCount} Ulasan)</span>
+                                        <div className="flex items-center gap-1 text-xs mb-3 text-[#FFBF00]">
+                                            <Star className="w-3.5 h-3.5 fill-current text-[#FFBF00]" />
+                                            <span className="font-bold text-[#0F3040] dark:text-white">{prod.rating}</span>
+                                            <span className="text-[10px] text-slate-500 dark:text-slate-400">({prod.reviewsCount} Ulasan)</span>
                                         </div>
 
                                         <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                                             <span>Toko:</span>
-                                            <strong className="text-slate-700 dark:text-slate-300 font-bold">{prod.merchant}</strong>
+                                            <strong className="text-[#0F3040] dark:text-white font-bold">{prod.merchant}</strong>
                                             {prod.isSyariah && (
-                                                <span className="inline-flex items-center bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-500/20 text-[8px] uppercase tracking-wider">
+                                                <span className="inline-flex items-center bg-[#FFBF00]/20 text-[#FFBF00] font-black px-2 py-0.5 rounded-full border border-[#FFBF00]/40 text-[8px] uppercase tracking-wider">
                                                     Syariah Certified
                                                 </span>
                                             )}
@@ -664,13 +573,13 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 </div>
 
                                     {/* Buy action */}
-                                    <div className="p-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                                        <span className="font-extrabold text-base text-teal-600 dark:text-teal-400">Rp{prod.price.toLocaleString('id-ID')}</span>
+                                    <div className="p-5 pt-4 border-t border-slate-200 dark:border-[#174256] flex items-center justify-between">
+                                        <span className="font-black text-base text-[#FFBF00]">Rp{prod.price.toLocaleString('id-ID')}</span>
                                         <button 
                                             onClick={(e) => { e.stopPropagation(); setSelectedProduct(prod); }}
-                                            className="bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+                                            className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-xs py-2.5 px-4 rounded-xl shadow-md shadow-[#FFBF00]/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer uppercase tracking-wider"
                                         >
-                                            <ShoppingCart className="w-3.5 h-3.5" />
+                                            <ShoppingCart className="w-3.5 h-3.5 text-[#0F3040]" />
                                             <span>Keranjang</span>
                                         </button>
                                     </div>
@@ -683,30 +592,25 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             </section>
             </ScrollFadeIn>
 
-            {/* D.2 Merchant Terverifikasi Section with light theme */}
+            {/* D.2 Merchant Terverifikasi Section */}
             <ScrollFadeIn>
-            <section id="merchants" className="py-20 bg-slate-50/70 dark:bg-slate-900/40 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
-                {/* Decorative background shapes */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                    <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:24px_24px]"></div>
-                </div>
-
+            <section id="merchants" className="py-20 bg-slate-50 dark:bg-[#071922] border-b-2 border-slate-300 dark:border-[#174256] relative overflow-hidden text-slate-900 dark:text-white transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
                         <div>
-                            <div className="text-sky-600 text-xs font-bold uppercase tracking-wider mb-2">
+                            <div className="text-[#FFBF00] text-xs font-black uppercase tracking-wider mb-2">
                                 Mitra Vendor
                             </div>
-                            <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Merchant Terverifikasi</h2>
-                            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">
+                            <h2 className="text-3xl font-black tracking-tight text-[#0F3040] dark:text-white">Merchant Terverifikasi</h2>
+                            <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm mt-1">
                                 Daftar kreator dan penyedia aset digital terpercaya di ADMS.
                             </p>
                         </div>
                         <button 
                             onClick={() => onNavigate('merchants')}
-                            className="text-xs font-extrabold bg-white hover:bg-slate-100 text-indigo-600 px-4.5 py-2.5 rounded-xl border border-slate-200/80 dark:border-transparent shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all"
+                            className="text-xs font-black bg-[#FFBF00] hover:bg-[#ffcd33] text-[#0F3040] px-4.5 py-2.5 rounded-xl border-2 border-[#FFBF00] shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all uppercase tracking-wider"
                         >
                             <span>Lihat Semua Merchant</span>
                             <span className="text-sm font-semibold">&rarr;</span>
@@ -723,25 +627,25 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             {merchants.map((merchant) => (
                                 <div 
                                     key={merchant.id}
-                                    className="p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[160px] group dark:backdrop-blur-md"
+                                    className="p-6 bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl hover:border-[#FFBF00] transition-all flex flex-col justify-between min-h-[160px] group shadow-md dark:shadow-xl"
                                 >
                                     <div>
                                         {/* Top profile row */}
                                         <div className="flex items-start gap-3.5 mb-4">
-                                            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                            <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-[#071922] border border-slate-300 dark:border-[#174256] flex items-center justify-center overflow-hidden flex-shrink-0">
                                                 <img
-                                                    src={merchant.logo || merchant.owner?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(merchant.name)}&background=4f46e5&color=fff&bold=true&size=96`}
+                                                    src={merchant.logo || merchant.owner?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(merchant.name)}&background=0F3040&color=FFBF00&bold=true&size=96`}
                                                     alt={merchant.name}
                                                     className="w-full h-full object-cover"
                                                 />
                                             </div>
                                             <div>
-                                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 flex items-center gap-1 leading-snug">
+                                                <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white flex items-center gap-1 leading-snug group-hover:text-[#FFBF00]">
                                                     {merchant.name}
-                                                    <CheckCircle className="w-3.5 h-3.5 text-amber-500 fill-amber-500/10 flex-shrink-0" />
+                                                    <CheckCircle className="w-3.5 h-3.5 text-[#FFBF00] fill-[#FFBF00]/20 flex-shrink-0" />
                                                 </h4>
-                                                <div className="flex items-center gap-1 text-[10px] text-slate-400 dark:text-slate-500 mt-1">
-                                                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">Verified</span>
+                                                <div className="flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400 mt-1">
+                                                    <span className="text-[#FFBF00] font-bold">Verified</span>
                                                     <span>&bull;</span>
                                                     <span>{merchant.products?.length ?? 0} produk aktif</span>
                                                 </div>
@@ -749,20 +653,20 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                         </div>
 
                                         {/* Description */}
-                                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-6 italic">
-                                            "{merchant.description || 'Penyedia aset digital profesional di platform ADMS.'}"
+                                        <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-6 italic">
+                                            &quot;{merchant.description || 'Penyedia aset digital profesional di platform ADMS.'}&quot;
                                         </p>
                                     </div>
 
                                     {/* Bottom Info Row */}
-                                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                                        <span className="text-[10px] text-slate-400 dark:text-slate-500 flex items-center gap-1 font-semibold uppercase tracking-wide">
-                                            <Shield className="w-3.5 h-3.5 text-slate-300 dark:text-slate-400" />
+                                    <div className="pt-4 border-t border-slate-200 dark:border-[#174256] flex items-center justify-between text-xs">
+                                        <span className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1 font-semibold uppercase tracking-wide">
+                                            <Shield className="w-3.5 h-3.5 text-[#FFBF00]" />
                                             Official Merchant
                                         </span>
                                         <button
                                             onClick={isLoggedIn ? onNavigateToProducts : onNavigateToLogin}
-                                            className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors flex items-center gap-0.5"
+                                            className="text-xs font-black text-[#FFBF00] hover:underline transition-colors flex items-center gap-0.5 uppercase tracking-wider"
                                         >
                                             Kunjungi Toko &rarr;
                                         </button>
@@ -775,40 +679,31 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             </section>
             </ScrollFadeIn>
 
-            {/* F. How It Works (Tabbed interactive guide) */}
+            {/* F. How It Works Section */}
             <ScrollFadeIn>
-            <section id="how" className="py-20 bg-[#FBFDFE] dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
-                {/* Decorative background shapes */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                    {/* Subtle dotted grid matrix */}
-                    <div className="absolute inset-0 opacity-[0.25] dark:opacity-[0.08] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:20px_20px]"></div>
-                    {/* Soft colored mesh gradient glowing circles */}
-                    <div className="absolute top-[-10%] right-[-10%] w-[350px] h-[350px] rounded-full bg-sky-400/5 dark:bg-sky-500/5 blur-[80px]"></div>
-                    <div className="absolute bottom-[-10%] left-[-10%] w-[350px] h-[350px] rounded-full bg-indigo-400/5 dark:bg-indigo-500/5 blur-[80px]"></div>
-                </div>
-
+            <section id="how" className="py-20 bg-slate-100 dark:bg-[#071922] border-b-2 border-slate-300 dark:border-[#174256] relative overflow-hidden text-slate-900 dark:text-white transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
                     {/* Section Header */}
                     <div className="text-center mb-10 space-y-3">
-                        <span className="inline-block text-[10px] font-bold text-[#0284c7] bg-sky-50 border border-sky-100 px-3 py-1 rounded-full uppercase tracking-wider">
+                        <span className="inline-block text-[10px] font-black text-[#FFBF00] bg-[#FFBF00]/20 border-2 border-[#FFBF00]/40 px-3 py-1 rounded-full uppercase tracking-wider">
                             Panduan Platform
                         </span>
-                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Cara Kerja ADMS</h2>
-                        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                        <h2 className="text-3xl font-black tracking-tight text-[#0F3040] dark:text-white">Cara Kerja ADMS</h2>
+                        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
                             Proses mudah dan transparan untuk Pembeli, Merchant, maupun Pengiklan.
                         </p>
                     </div>
 
                     {/* Role Tabs */}
                     <div className="flex justify-center mb-16">
-                        <div className="inline-flex bg-slate-100/80 dark:bg-slate-800/85 border border-slate-200/50 dark:border-slate-700/50 p-1 rounded-xl gap-1">
+                        <div className="inline-flex bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] p-1.5 rounded-2xl gap-1 shadow-md">
                             <button
                                 onClick={() => setActiveTab('buyer')}
-                                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
+                                className={`flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                                     activeTab === 'buyer' 
-                                        ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200/30 dark:border-slate-600/30' 
-                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                                        ? 'bg-[#FFBF00] text-[#0F3040] shadow-md' 
+                                        : 'text-slate-600 dark:text-slate-300 hover:text-[#0F3040] dark:hover:text-[#FFBF00]'
                                 }`}
                             >
                                 <ShoppingBag className="w-3.5 h-3.5" />
@@ -816,10 +711,10 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             </button>
                             <button
                                 onClick={() => setActiveTab('merchant')}
-                                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
+                                className={`flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                                     activeTab === 'merchant' 
-                                        ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200/30 dark:border-slate-600/30' 
-                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                                        ? 'bg-[#FFBF00] text-[#0F3040] shadow-md' 
+                                        : 'text-slate-600 dark:text-slate-300 hover:text-[#0F3040] dark:hover:text-[#FFBF00]'
                                 }`}
                             >
                                 <Store className="w-3.5 h-3.5" />
@@ -827,10 +722,10 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             </button>
                             <button
                                 onClick={() => setActiveTab('advertiser')}
-                                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-bold transition-all ${
+                                className={`flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                                     activeTab === 'advertiser' 
-                                        ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm border border-slate-200/30 dark:border-slate-600/30' 
-                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                                        ? 'bg-[#FFBF00] text-[#0F3040] shadow-md' 
+                                        : 'text-slate-600 dark:text-slate-300 hover:text-[#0F3040] dark:hover:text-[#FFBF00]'
                                 }`}
                             >
                                 <Megaphone className="w-3.5 h-3.5" />
@@ -841,141 +736,105 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                     {/* Steps Showcase Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-                        {stepsData[activeTab].map((step, idx) => {
-                            const hoverOutlineClass = activeTab === 'buyer' 
-                                ? 'hover:border-amber-400/70 hover:shadow-amber-500/5 dark:hover:border-amber-500/30 dark:hover:bg-amber-500/5' 
-                                : activeTab === 'merchant'
-                                    ? 'hover:border-indigo-400/70 hover:shadow-indigo-500/5 dark:hover:border-indigo-500/30 dark:hover:bg-indigo-500/5'
-                                    : 'hover:border-sky-400/70 hover:shadow-sky-500/5 dark:hover:border-sky-500/30 dark:hover:bg-sky-500/5';
-                                    
-                            const numberColorClass = activeTab === 'buyer' 
-                                ? 'text-amber-500' 
-                                : activeTab === 'merchant' 
-                                    ? 'text-indigo-500' 
-                                    : 'text-sky-500';
-
-                            const badgeColorClass = activeTab === 'buyer' 
-                                ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-500/20' 
-                                : activeTab === 'merchant' 
-                                    ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-100 dark:border-indigo-500/20' 
-                                    : 'bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-100 dark:border-sky-500/20';
-
-                            return (
-                                <div 
-                                    key={`${activeTab}-${idx}`}
-                                    className={`p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl flex flex-col justify-between min-h-[220px] dark:backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg relative overflow-hidden group ${hoverOutlineClass}`}
-                                >
-                                    {/* Giant Watermark Step Number at top right */}
-                                    <div className={`absolute top-3 right-4 text-5xl font-black select-none opacity-20 dark:opacity-10 group-hover:opacity-40 group-hover:scale-110 transition-all duration-300 font-sans ${numberColorClass}`}>
-                                        {step.num}
-                                    </div>
-
-                                    <div className="relative z-10 space-y-3">
-                                        {/* Step badge */}
-                                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-[8px] font-extrabold uppercase tracking-wider border ${badgeColorClass}`}>
-                                            {step.step}
-                                        </span>
-
-                                        <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-2 pr-6 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                                            {step.title}
-                                        </h4>
-                                        
-                                        <p className="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed font-medium">
-                                            {step.desc}
-                                        </p>
-                                    </div>
-
-                                    {/* Footer with connection indicator */}
-                                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider relative z-10 mt-4">
-                                        <span>Panduan</span>
-                                        {step.arrow && (
-                                            <span className="text-slate-400 dark:text-slate-500 group-hover:translate-x-1.5 transition-transform duration-300">
-                                                &rarr;
-                                            </span>
-                                        )}
-                                    </div>
+                        {stepsData[activeTab].map((step, idx) => (
+                            <div 
+                                key={`${activeTab}-${idx}`}
+                                className="p-6 bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl flex flex-col justify-between min-h-[220px] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#FFBF00] relative overflow-hidden group shadow-md dark:shadow-xl"
+                            >
+                                <div className="absolute top-3 right-4 text-5xl font-black select-none opacity-20 group-hover:opacity-40 transition-all text-[#FFBF00]">
+                                    {step.num}
                                 </div>
-                            );
-                        })}
+
+                                <div className="relative z-10 space-y-3">
+                                    <span className="inline-block px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider border border-[#FFBF00]/40 bg-[#FFBF00]/20 text-[#FFBF00]">
+                                        {step.step}
+                                    </span>
+
+                                    <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white leading-tight mb-2 pr-6 group-hover:text-[#FFBF00] transition-colors">
+                                        {step.title}
+                                    </h4>
+                                    
+                                    <p className="text-[10px] text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                                        {step.desc}
+                                    </p>
+                                </div>
+
+                                <div className="pt-4 border-t border-slate-200 dark:border-[#174256] flex items-center justify-between text-[9px] text-slate-400 font-bold uppercase tracking-wider relative z-10 mt-4">
+                                    <span>Panduan</span>
+                                    {step.arrow && (
+                                        <span className="text-[#FFBF00] group-hover:translate-x-1.5 transition-transform duration-300">
+                                            &rarr;
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
             </ScrollFadeIn>
 
-            {/* F.2 Why Choose ADMS (Keunggulan ADMS) */}
+            {/* F.2 Why Choose ADMS */}
             <ScrollFadeIn>
-            <section className="py-20 bg-white dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
-                {/* Decorative background shapes */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                    {/* Subtle grid pattern */}
-                    <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:30px_30px]"></div>
-                    {/* Soft colored mesh gradient glowing circles */}
-                    <div className="absolute top-[30%] left-[20%] w-[300px] h-[300px] rounded-full bg-emerald-400/5 dark:bg-emerald-500/5 blur-[90px]"></div>
-                    <div className="absolute bottom-[20%] right-[20%] w-[300px] h-[300px] rounded-full bg-sky-400/5 dark:bg-sky-500/5 blur-[90px]"></div>
-                </div>
-
+            <section className="py-20 bg-slate-50 dark:bg-[#071922] border-b-2 border-slate-300 dark:border-[#174256] relative overflow-hidden text-slate-900 dark:text-white transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
                     {/* Header */}
                     <div className="text-center mb-16 space-y-3">
-                        <span className="inline-block text-[10px] font-bold text-[#0284c7] bg-sky-50 border border-sky-100 px-3 py-1 rounded-full uppercase tracking-wider">
+                        <span className="inline-block text-[10px] font-black text-[#FFBF00] bg-[#FFBF00]/20 border-2 border-[#FFBF00]/40 px-3 py-1 rounded-full uppercase tracking-wider">
                             Keunggulan ADMS
                         </span>
-                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Mengapa Memilih Platform ADMS?</h2>
-                        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                        <h2 className="text-3xl font-black tracking-tight text-[#0F3040] dark:text-white">Mengapa Memilih Platform ADMS?</h2>
+                        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
                             Platform modern yang dirancang khusus untuk mempercepat pertumbuhan produk digital dan promosi bisnis Anda.
                         </p>
                     </div>
 
                     {/* Features Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {/* Card 1 */}
-                        <div className="p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px] dark:backdrop-blur-md">
+                        <div className="p-6 bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl hover:border-[#FFBF00] transition-all text-left flex flex-col justify-between min-h-[220px] shadow-md dark:shadow-xl">
                             <div>
-                                <div className="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-100 dark:border-sky-500/20 flex items-center justify-center text-sky-500 mb-6">
-                                    <Download className="w-5 h-5" />
+                                <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-[#071922] border border-slate-300 dark:border-[#174256] flex items-center justify-center text-[#FFBF00] mb-6">
+                                    <Download className="w-5 h-5 text-[#FFBF00]" />
                                 </div>
-                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Akses Instant Digital Download</h4>
-                                <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
+                                <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white leading-tight mb-3">Akses Instant Digital Download</h4>
+                                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                                     Setelah pembayaran berhasil terkonfirmasi, file digital langsung siap diunduh tanpa perlu menunggu konfirmasi manual.
                                 </p>
                             </div>
                         </div>
 
-                        {/* Card 2 */}
-                        <div className="p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px] dark:backdrop-blur-md">
+                        <div className="p-6 bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl hover:border-[#FFBF00] transition-all text-left flex flex-col justify-between min-h-[220px] shadow-md dark:shadow-xl">
                             <div>
-                                <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 flex items-center justify-center text-amber-500 mb-6">
-                                    <Zap className="w-5 h-5" />
+                                <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-[#071922] border border-slate-300 dark:border-[#174256] flex items-center justify-center text-[#FFBF00] mb-6">
+                                    <Zap className="w-5 h-5 text-[#FFBF00]" />
                                 </div>
-                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Iklan Gratis & Promosi Berbayar</h4>
-                                <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
+                                <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white leading-tight mb-3">Iklan Gratis & Promosi Berbayar</h4>
+                                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                                     Dukungan penuh untuk pelaku UMKM dan kreator memasang iklan gratis atau memilih paket boost posisi teratas.
                                 </p>
                             </div>
                         </div>
 
-                        {/* Card 3 */}
-                        <div className="p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px] dark:backdrop-blur-md">
+                        <div className="p-6 bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl hover:border-[#FFBF00] transition-all text-left flex flex-col justify-between min-h-[220px] shadow-md dark:shadow-xl">
                             <div>
-                                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-center text-emerald-500 mb-6">
-                                    <Shield className="w-5 h-5" />
+                                <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-[#071922] border border-slate-300 dark:border-[#174256] flex items-center justify-center text-[#FFBF00] mb-6">
+                                    <Shield className="w-5 h-5 text-[#FFBF00]" />
                                 </div>
-                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Keamanan Transaksi Terjamin</h4>
-                                <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
+                                <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white leading-tight mb-3">Keamanan Transaksi Terjamin</h4>
+                                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                                     Sistem proteksi transaksi dan opsi Payment Gateway terintegrasi untuk menjamin keamanan dana pembeli dan merchant.
                                 </p>
                             </div>
                         </div>
 
-                        {/* Card 4 */}
-                        <div className="p-6 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] text-left flex flex-col justify-between min-h-[220px] dark:backdrop-blur-md">
+                        <div className="p-6 bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl hover:border-[#FFBF00] transition-all text-left flex flex-col justify-between min-h-[220px] shadow-md dark:shadow-xl">
                             <div>
-                                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center text-indigo-500 mb-6">
-                                    <Users className="w-5 h-5" />
+                                <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-[#071922] border border-slate-300 dark:border-[#174256] flex items-center justify-center text-[#FFBF00] mb-6">
+                                    <Users className="w-5 h-5 text-[#FFBF00]" />
                                 </div>
-                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3">Sistem Multi-Vendor Merchant</h4>
-                                <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
+                                <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white leading-tight mb-3">Sistem Multi-Vendor Merchant</h4>
+                                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                                     Siapapun dapat membuka toko digital, mengunggah karya, serta mengelola pesanan dan laporan pendapatan secara mandiri.
                                 </p>
                             </div>
@@ -985,103 +844,97 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             </section>
             </ScrollFadeIn>
 
-            {/* F.3 Testimonial Section with light theme */}
+            {/* F.3 Testimonial Section */}
             <ScrollFadeIn>
-            <section className="py-20 bg-slate-50/70 dark:bg-slate-900/40 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
-                {/* Decorative background shapes */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                    <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.05] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:24px_24px]"></div>
-                </div>
-
+            <section className="py-20 bg-slate-100 dark:bg-[#071922] border-b-2 border-slate-300 dark:border-[#174256] relative overflow-hidden text-slate-900 dark:text-white transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     
                     {/* Header */}
                     <div className="text-center mb-16 space-y-3">
-                        <span className="inline-block text-[10px] font-bold text-[#0284c7] bg-sky-50 border border-sky-100 px-3 py-1 rounded-full uppercase tracking-wider">
-                            Testiomoni Pengguna
+                        <span className="inline-block text-[10px] font-black text-[#FFBF00] bg-[#FFBF00]/20 border-2 border-[#FFBF00]/40 px-3 py-1 rounded-full uppercase tracking-wider">
+                            Testimoni Pengguna
                         </span>
-                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Kata Mereka Tentang ADMS</h2>
-                        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                        <h2 className="text-3xl font-black tracking-tight text-[#0F3040] dark:text-white">Kata Mereka Tentang ADMS</h2>
+                        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
                             Pengalaman nyata dari para pembeli, merchant, dan pengiklan di platform ADMS.
                         </p>
                     </div>
 
                     {/* Testimonials Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* Card 1 */}
-                        <div className="p-8 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px] dark:backdrop-blur-md">
+                        <div className="p-8 bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl hover:border-[#FFBF00] transition-all flex flex-col justify-between min-h-[240px] shadow-md dark:shadow-xl">
                             <div>
-                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-400 mb-4" />
+                                <Quote className="w-8 h-8 text-[#FFBF00] mb-4" />
                                 <div className="flex items-center gap-1 mb-4">
                                     {[...Array(5)].map((_, i) => (
-                                        <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                        <Star key={i} className="w-4 h-4 text-[#FFBF00] fill-[#FFBF00]" />
                                     ))}
                                 </div>
                                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic mb-6">
-                                    "ADMS membantu agensi saya mendapatkan ratusan calon klien dari iklan promosi gratis dan berbayarnya. Konversinya tinggi banget!"
+                                    &quot;ADMS membantu agensi saya mendapatkan ratusan calon klien dari iklan promosi gratis dan berbayarnya. Konversinya tinggi banget!&quot;
                                 </p>
                             </div>
-                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
+                            <div className="pt-4 border-t border-slate-200 dark:border-[#174256] flex items-center gap-3">
                                 <img
-                                    src="https://ui-avatars.com/api/?name=Rian+Prasetya&background=4f46e5&color=fff&bold=true&size=80"
+                                    src="https://ui-avatars.com/api/?name=Rian+Prasetya&background=071922&color=FFBF00&bold=true&size=80"
                                     alt="Rian Prasetya"
-                                    className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
+                                    className="w-10 h-10 rounded-full border border-slate-300 dark:border-[#174256] object-cover"
                                 />
                                 <div>
-                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-200">Rian Prasetya</h5>
-                                    <span className="text-[10px] text-slate-400 dark:text-slate-500">Digital Marketer & Agency Owner</span>
+                                    <h5 className="font-extrabold text-xs text-[#0F3040] dark:text-white">Rian Prasetya</h5>
+                                    <span className="text-[10px] text-slate-500 dark:text-slate-400">Digital Marketer & Agency Owner</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Card 2 */}
-                        <div className="p-8 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px] dark:backdrop-blur-md">
+                        <div className="p-8 bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl hover:border-[#FFBF00] transition-all flex flex-col justify-between min-h-[240px] shadow-md dark:shadow-xl">
                             <div>
-                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-400 mb-4" />
+                                <Quote className="w-8 h-8 text-[#FFBF00] mb-4" />
                                 <div className="flex items-center gap-1 mb-4">
                                     {[...Array(5)].map((_, i) => (
-                                        <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                        <Star key={i} className="w-4 h-4 text-[#FFBF00] fill-[#FFBF00]" />
                                     ))}
                                 </div>
                                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic mb-6">
-                                    "Sebagai merchant di ADMS, penjualan template Canva saya meningkat drastis. Penarikan dana cepat dan pembeli bisa download otomatis."
+                                    &quot;Sebagai merchant di ADMS, penjualan template Canva saya meningkat drastis. Penarikan dana cepat dan pembeli bisa download otomatis.&quot;
                                 </p>
                             </div>
-                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
+                            <div className="pt-4 border-t border-slate-200 dark:border-[#174256] flex items-center gap-3">
                                 <img
-                                    src="https://ui-avatars.com/api/?name=Siti+Rahmawati&background=0ea5e9&color=fff&bold=true&size=80"
+                                    src="https://ui-avatars.com/api/?name=Siti+Rahmawati&background=071922&color=FFBF00&bold=true&size=80"
                                     alt="Siti Rahmawati"
-                                    className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
+                                    className="w-10 h-10 rounded-full border border-slate-300 dark:border-[#174256] object-cover"
                                 />
                                 <div>
-                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-200">Siti Rahmawati</h5>
-                                    <span className="text-[10px] text-slate-400 dark:text-slate-500">Merchant Template Canva</span>
+                                    <h5 className="font-extrabold text-xs text-[#0F3040] dark:text-white">Siti Rahmawati</h5>
+                                    <span className="text-[10px] text-slate-500 dark:text-slate-400">Merchant Template Canva</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Card 3 */}
-                        <div className="p-8 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl hover:shadow-md transition-all hover:scale-[1.01] flex flex-col justify-between min-h-[240px] dark:backdrop-blur-md">
+                        <div className="p-8 bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl hover:border-[#FFBF00] transition-all flex flex-col justify-between min-h-[240px] shadow-md dark:shadow-xl">
                             <div>
-                                <Quote className="w-8 h-8 text-slate-300 dark:text-slate-400 mb-4" />
+                                <Quote className="w-8 h-8 text-[#FFBF00] mb-4" />
                                 <div className="flex items-center gap-1 mb-4">
                                     {[...Array(5)].map((_, i) => (
-                                        <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                        <Star key={i} className="w-4 h-4 text-[#FFBF00] fill-[#FFBF00]" />
                                     ))}
                                 </div>
                                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic mb-6">
-                                    "Source code Next.js yang saya beli di marketplace ADMS sangat memuaskan. Lengkap dengan panduan dan penjual sangat responsif."
+                                    &quot;Source code Next.js yang saya beli di marketplace ADMS sangat memuaskan. Lengkap dengan panduan dan penjual sangat responsif.&quot;
                                 </p>
                             </div>
-                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-3">
+                            <div className="pt-4 border-t border-slate-200 dark:border-[#174256] flex items-center gap-3">
                                 <img
-                                    src="https://ui-avatars.com/api/?name=Deni+Kurniawan&background=10b981&color=fff&bold=true&size=80"
+                                    src="https://ui-avatars.com/api/?name=Deni+Kurniawan&background=071922&color=FFBF00&bold=true&size=80"
                                     alt="Deni Kurniawan"
-                                    className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
+                                    className="w-10 h-10 rounded-full border border-slate-300 dark:border-[#174256] object-cover"
                                 />
                                 <div>
-                                    <h5 className="font-extrabold text-xs text-slate-800 dark:text-slate-200">Deni Kurniawan</h5>
-                                    <span className="text-[10px] text-slate-400 dark:text-slate-500">Pembeli Aset Web Developer</span>
+                                    <h5 className="font-extrabold text-xs text-[#0F3040] dark:text-white">Deni Kurniawan</h5>
+                                    <span className="text-[10px] text-slate-500 dark:text-slate-400">Pembeli Aset Web Developer</span>
                                 </div>
                             </div>
                         </div>
@@ -1090,9 +943,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             </section>
             </ScrollFadeIn>
 
-            {/* F.4 FAQ Section (Frequently Asked Questions) with light theme */}
+            {/* F.4 FAQ Section */}
             <ScrollFadeIn>
-            <section id="faq" className="py-20 bg-white dark:bg-slate-950 border-b border-slate-200/60 dark:border-slate-800/80 relative overflow-hidden text-slate-900 dark:text-slate-100">
+            <section id="faq" className="py-20 bg-slate-50 dark:bg-[#071922] border-b-2 border-slate-300 dark:border-[#174256] relative overflow-hidden text-slate-900 dark:text-white transition-colors duration-300">
                 {/* Decorative background shapes */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
                     <div className="absolute inset-0 opacity-[0.25] dark:opacity-[0.08] bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:20px_20px]"></div>
@@ -1102,12 +955,12 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     
                     {/* Header */}
                     <div className="text-center mb-12 space-y-3">
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#0284c7] bg-sky-50 border border-sky-100 px-3 py-1 rounded-full uppercase tracking-wider">
-                            <HelpCircle className="w-3.5 h-3.5 text-sky-500" />
+                        <span className="inline-flex items-center gap-1 text-[10px] font-black text-[#FFBF00] bg-[#FFBF00]/20 border-2 border-[#FFBF00]/40 px-3 py-1 rounded-full uppercase tracking-wider">
+                            <HelpCircle className="w-3.5 h-3.5 text-[#FFBF00]" />
                             Pertanyaan Umum
                         </span>
-                        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Frequently Asked Questions (FAQ)</h2>
-                        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                        <h2 className="text-3xl font-black tracking-tight text-[#0F3040] dark:text-white">Frequently Asked Questions (FAQ)</h2>
+                        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed font-medium">
                             Jawaban lengkap atas pertanyaan yang sering diajukan mengenai platform ADMS.
                         </p>
                     </div>
@@ -1140,15 +993,15 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             return (
                                 <div 
                                     key={index}
-                                    className="border border-slate-300 dark:border-slate-800/80 rounded-2xl bg-white dark:bg-slate-900/60 overflow-hidden transition-all duration-200 dark:backdrop-blur-md"
+                                    className="border-2 border-slate-300 dark:border-[#174256] rounded-2xl bg-white dark:bg-[#0F3040] overflow-hidden transition-all duration-200 shadow-md"
                                 >
                                     <button
                                         onClick={() => setExpandedFaq(isOpen ? null : index)}
-                                        className="w-full p-6 text-left flex items-center justify-between gap-4 font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
+                                        className="w-full p-6 text-left flex items-center justify-between gap-4 font-black text-xs sm:text-sm text-[#0F3040] dark:text-white hover:bg-slate-50 dark:hover:bg-[#174256]/30 transition-colors cursor-pointer"
                                     >
                                         <span>{faq.q}</span>
                                         <ChevronDown 
-                                            className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-200 ${
+                                            className={`w-4 h-4 text-[#FFBF00] flex-shrink-0 transition-transform duration-200 ${
                                                 isOpen ? 'rotate-180' : ''
                                             }`} 
                                         />
@@ -1156,10 +1009,10 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                     
                                     <div 
                                         className={`transition-all duration-200 ease-in-out overflow-hidden ${
-                                            isOpen ? 'max-h-40 border-t border-slate-100 dark:border-slate-800/60' : 'max-h-0'
+                                            isOpen ? 'max-h-40 border-t border-slate-200 dark:border-[#174256]' : 'max-h-0'
                                         }`}
                                     >
-                                        <div className="p-6 text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed bg-white dark:bg-slate-900/40">
+                                        <div className="p-6 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-[#071922]/50">
                                             {faq.a}
                                         </div>
                                     </div>
@@ -1181,8 +1034,9 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         
                         {/* Company logo/info block (5 cols) */}
                         <div className="md:col-span-5 space-y-6">
-                            <div className="inline-flex items-center gap-2 mb-2">
-                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-12 object-contain" />
+                            <div className="inline-flex items-center gap-3 mb-2">
+                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-10 sm:h-11 w-auto object-contain drop-shadow-md" />
+                                <img src="/assets/Images/adms-text.png" alt="ADMS Text" className="h-6 sm:h-7 w-auto object-contain invert mix-blend-screen" />
                             </div>
                             <p className={`text-xs leading-relaxed max-w-sm ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                                 Platform terpadu Marketplace Produk Digital, Multi-Vendor Merchant, dan Platform Pemasangan Iklan Gratis & Promosi Berbayar untuk mengembangkan bisnis Anda.

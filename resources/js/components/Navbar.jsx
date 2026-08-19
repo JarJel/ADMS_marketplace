@@ -9,6 +9,7 @@ export default function Navbar({
     onLogout, 
     onNavigate, 
     currentView,
+    currentFilter,
     sidebarContent,
     cartCount = 0,
     wishlistCount = 0,
@@ -49,38 +50,49 @@ export default function Navbar({
 
     const unreadNotifCount = notifications ? notifications.filter(n => !n.is_read).length : 0;
 
+    const isHomeActive = currentView === 'homepage';
+    const isDigitalActive = (currentView === 'products' && currentFilter !== 'vendor') || currentView === 'products_digital';
+    const isVendorActive = currentView === 'merchants' || (currentView === 'products' && currentFilter === 'vendor');
+    const isClassifiedsActive = currentView === 'classifieds' || currentView === 'create_ad';
+    const isHelpActive = currentView === 'help_center' || currentView === 'help';
+
     return (
-        <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 shadow-sm font-sans transition-colors duration-300">
+        <header className="sticky top-0 z-50 bg-[#0F3040] border-b border-[#174256] text-white shadow-md font-sans transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
                 
                 {/* Sisi Kiri: Logo dan Burger */}
                 <div className="flex items-center gap-3">
                     <button 
                         onClick={() => setShowSidebar(true)}
-                        className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                        className="p-2 rounded-xl bg-[#071922] text-[#FFBF00] border border-[#174256] hover:border-[#FFBF00] transition-colors cursor-pointer"
                     >
                         <Menu className="w-5 h-5" />
                     </button>
                     <div 
                         onClick={() => onNavigate('homepage')} 
-                        className="flex items-center gap-1.5 sm:gap-2 cursor-pointer active:scale-98 transition-transform"
+                        className="flex items-center gap-2 cursor-pointer active:scale-98 transition-transform"
                     >
                         <img 
                             src="/assets/Images/adms-symbol.png" 
                             alt="ADMS Symbol" 
-                            className="h-8 sm:h-10 w-auto object-contain transition-all duration-300" 
+                            className="h-8 sm:h-9 w-auto object-contain transition-all duration-300 drop-shadow-md" 
+                        />
+                        <img 
+                            src="/assets/Images/adms-text.png" 
+                            alt="ADMS Text" 
+                            className="h-5 sm:h-6 w-auto object-contain invert mix-blend-screen" 
                         />
                     </div>
                 </div>
 
                 {/* Sisi Tengah: Menu Pilihan */}
-                <nav className="hidden md:flex items-center gap-1 bg-slate-100/60 dark:bg-slate-800/60 p-1 rounded-full border border-slate-200/50 dark:border-slate-700/50">
+                <nav className="hidden md:flex items-center gap-1 bg-[#071922]/80 p-1.5 rounded-full border border-[#174256]">
                     <button 
                         onClick={() => onNavigate('homepage')}
-                        className={`text-xs font-bold px-4 py-2 rounded-full transition-all ${
-                            currentView === 'homepage' 
-                                ? 'bg-slate-200/80 dark:bg-slate-700/80 text-slate-900 dark:text-white shadow-sm' 
-                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        className={`text-xs font-bold px-4 py-2 rounded-full transition-all cursor-pointer ${
+                            isHomeActive 
+                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md' 
+                                : 'text-slate-300 hover:text-[#FFBF00]'
                         }`}
                     >
                         Home
@@ -88,9 +100,9 @@ export default function Navbar({
                     <button 
                         onClick={() => onNavigate('products', 'digital')}
                         className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${
-                            currentView === 'products' 
-                                ? 'bg-slate-200/80 dark:bg-slate-700/80 text-slate-900 dark:text-white shadow-sm' 
-                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                            isDigitalActive 
+                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md' 
+                                : 'text-slate-300 hover:text-[#FFBF00]'
                         }`}
                     >
                         Produk Digital
@@ -98,9 +110,9 @@ export default function Navbar({
                     <button 
                         onClick={() => onNavigate('products', 'vendor')}
                         className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${
-                            currentView === 'products' // Simplified for now
-                                ? 'bg-slate-200/80 dark:bg-slate-700/80 text-slate-900 dark:text-white shadow-sm' 
-                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                            isVendorActive 
+                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md' 
+                                : 'text-slate-300 hover:text-[#FFBF00]'
                         }`}
                     >
                         Merchant Vendor
@@ -108,9 +120,9 @@ export default function Navbar({
                     <button 
                         onClick={() => onNavigate('classifieds')}
                         className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${
-                            currentView === 'classifieds' 
-                                ? 'bg-slate-200/80 dark:bg-slate-700/80 text-slate-900 dark:text-white shadow-sm' 
-                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                            isClassifiedsActive 
+                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md' 
+                                : 'text-slate-300 hover:text-[#FFBF00]'
                         }`}
                     >
                         Iklan Gratis
@@ -118,9 +130,9 @@ export default function Navbar({
                     <button 
                         onClick={() => onNavigate('help_center')} 
                         className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${
-                            currentView === 'help_center' 
-                                ? 'bg-slate-200/80 dark:bg-slate-700/80 text-slate-900 dark:text-white shadow-sm' 
-                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                            isHelpActive 
+                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md' 
+                                : 'text-slate-300 hover:text-[#FFBF00]'
                         }`}
                     >
                         Bantuan
@@ -133,25 +145,25 @@ export default function Navbar({
                     {token && user && user.role === 'customer' && (
                         <button 
                             onClick={() => onNavigate('merchant_registration')}
-                            className="hidden md:flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 to-teal-600 hover:from-indigo-500 hover:to-teal-500 text-white text-[10px] font-black px-3.5 py-2 rounded-full shadow-md shadow-indigo-600/10 active:scale-95 transition-all cursor-pointer mr-1"
+                            className="hidden md:flex items-center gap-1.5 bg-[#FFBF00] hover:bg-[#ffcd33] text-[#0F3040] text-[10px] font-black px-3.5 py-2 rounded-full shadow-md active:scale-95 transition-all cursor-pointer mr-1"
                         >
-                            <Store className="w-3.5 h-3.5" />
+                            <Store className="w-3.5 h-3.5 text-[#0F3040]" />
                             <span>Daftar Mitra</span>
                         </button>
                     )}
 
-                    {/* Light/Dark Toggle (always visible) */}
+                    {/* Light/Dark Toggle */}
                     <button 
                         onClick={() => setDarkMode(!darkMode)}
-                        className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors mr-1"
+                        className="p-2 rounded-full bg-[#071922] text-[#FFBF00] border border-[#174256] hover:border-[#FFBF00] transition-colors mr-1 cursor-pointer"
                     >
-                        {darkMode ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4 text-indigo-600" />}
+                        {darkMode ? <Sun className="w-4 h-4 text-[#FFBF00]" /> : <Moon className="w-4 h-4 text-[#FFBF00]" />}
                     </button>
 
                     {token ? (
                         <>
                             {/* Search Icon */}
-                            <button className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">
+                            <button className="p-2 rounded-full bg-[#071922] text-slate-200 border border-[#174256] hover:text-[#FFBF00] transition-colors">
                                 <Search className="w-4 h-4" />
                             </button>
 
@@ -159,44 +171,44 @@ export default function Navbar({
                             <div className="relative">
                                 <button 
                                     onClick={() => onNavigate('cart')} 
-                                    className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer relative"
+                                    className="p-2 rounded-full bg-[#071922] text-slate-200 border border-[#174256] hover:text-[#FFBF00] transition-all active:scale-95 cursor-pointer relative"
                                     title="Keranjang Belanja"
                                 >
                                     <ShoppingCart className="w-4 h-4" />
                                     {cartCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-teal-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white dark:border-slate-900 pointer-events-none">
+                                        <span className="absolute -top-1 -right-1 bg-[#FFBF00] text-[#0F3040] text-[9px] font-black px-1.5 py-0.5 rounded-full border-2 border-[#0F3040] pointer-events-none">
                                             {cartCount}
                                         </span>
                                     )}
                                 </button>
                             </div>
 
-                            {/* Wishlist Icon with red counter badge */}
+                            {/* Wishlist Icon */}
                             <div className="relative">
                                 <button 
                                     onClick={() => onNavigate('wishlist')} 
-                                    className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer relative"
+                                    className="p-2 rounded-full bg-[#071922] text-slate-200 border border-[#174256] hover:text-[#FFBF00] transition-all active:scale-95 cursor-pointer relative"
                                     title="Favorit Saya"
                                 >
                                     <Heart className="w-4 h-4" />
                                     {wishlistCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white dark:border-slate-900 pointer-events-none">
+                                        <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#0F3040] pointer-events-none">
                                             {wishlistCount}
                                         </span>
                                     )}
                                 </button>
                             </div>
 
-                            {/* Notification Bell Icon with red dot badge */}
+                            {/* Notification Bell Icon */}
                             <div className="relative">
                                 <button 
                                     onClick={() => setShowNotifMenu(!showNotifMenu)}
-                                    className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+                                    className="p-2 rounded-full bg-[#071922] text-slate-200 border border-[#174256] hover:text-[#FFBF00] transition-colors"
                                 >
                                     <Bell className="w-4 h-4" />
                                 </button>
                                 {unreadNotifCount > 0 && (
-                                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+                                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-[#FFBF00] rounded-full border-2 border-[#0F3040]"></span>
                                 )}
 
                                 {showNotifMenu && (

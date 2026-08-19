@@ -1,11 +1,56 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
-
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-navy-950: #071922;
+    --color-navy-900: #0F3040;
+    --color-navy-800: #174256;
+    --color-navy-700: #20556d;
+    --color-navy-600: #2a6985;
+    --color-navy-500: #357e9f;
+    --color-navy-400: #4a98bb;
+    --color-navy-100: #e5f2f7;
+
+    --color-gold-500: #FFBF00;
+    --color-gold-400: #ffcc33;
+    --color-gold-600: #e6ac00;
+    --color-gold-700: #cc9900;
+    --color-gold-100: #fff8e6;
+
+    --color-primary: #0F3040;
+    --color-accent: #FFBF00;
 }
+
+/* Global scrollbar styling for Navy theme */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #071922;
+}
+::-webkit-scrollbar-thumb {
+    background: #174256;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #FFBF00;
+}
+
+/* Fix browser autofill background changing to white */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #071922 inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+

@@ -249,17 +249,12 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
     };
 
     return (
-        <div className={`min-h-screen transition-colors duration-300 font-sans pb-16 relative overflow-hidden ${
-            darkMode ? 'bg-[#070E1A] text-slate-100' : 'bg-[#F8FAFC] text-slate-800'
-        }`}>
+        <div className="min-h-screen bg-slate-100 dark:bg-[#071922] text-slate-900 dark:text-white font-sans pb-16 relative overflow-hidden transition-colors duration-300">
             {/* Background decorative patterns */}
             <div className="absolute inset-0 pointer-events-none z-0">
-                {/* Dotted matrix pattern */}
-                <div className="absolute inset-0 opacity-[0.4] dark:opacity-[0.15] bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:20px_20px]"></div>
-                
-                {/* Soft colored mesh gradient glowing circles */}
-                <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-indigo-400/10 dark:bg-indigo-500/5 blur-[120px]"></div>
-                <div className="absolute top-[60%] right-[-10%] w-[600px] h-[600px] rounded-full bg-emerald-400/10 dark:bg-emerald-500/5 blur-[150px]"></div>
+                <div className="absolute inset-0 opacity-[0.08] bg-[radial-gradient(#64748b_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#FFBF00]/5 blur-[120px]"></div>
+                <div className="absolute top-[60%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#174256]/50 blur-[150px]"></div>
             </div>
 
             {/* Top Navbar */}
@@ -269,45 +264,39 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                 onNavigate={onNavigate} 
                 onLogout={onLogout} 
                 darkMode={darkMode} 
-                setDarkMode={setDarkMode} 
+                setDarkMode={setDarkMode}
+                currentView="products"
+                currentFilter={initialFilter}
             />
 
             {/* A. Hero Banner Header */}
-            <div className={`py-12 px-4 sm:px-6 lg:px-8 border-b relative overflow-hidden z-10 transition-colors duration-300 ${
-                darkMode 
-                    ? 'bg-[#0A1B33] text-slate-100 border-slate-800' 
-                    : 'bg-gradient-to-br from-indigo-50/90 via-slate-50 to-white text-slate-900 border-slate-200/80'
-            }`}>
+            <div className="py-12 px-4 sm:px-6 lg:px-8 border-b-2 border-slate-300 dark:border-[#174256] bg-slate-50 dark:bg-[#0F3040] text-slate-900 dark:text-white relative overflow-hidden z-10 transition-colors duration-300">
                 {/* Decorative background grid and circles */}
                 <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-                <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-64 h-64 bg-indigo-500 rounded-full blur-[100px] opacity-20"></div>
-                <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-64 h-64 bg-emerald-500 rounded-full blur-[100px] opacity-20"></div>
+                <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-64 h-64 bg-[#FFBF00] rounded-full blur-[120px] opacity-15"></div>
+                <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-64 h-64 bg-[#174256] rounded-full blur-[120px] opacity-40"></div>
 
                 <div className="max-w-7xl mx-auto text-center relative z-10 space-y-4">
-                    <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider shadow-sm ${
-                        darkMode 
-                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
-                            : 'bg-emerald-100 border-emerald-300 text-emerald-700'
-                    }`}>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Live Marketplace
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-wider bg-[#FFBF00]/20 border-[#FFBF00]/40 text-[#FFBF00] shadow-sm">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#FFBF00] animate-pulse"></span>
+                        Live Marketplace ADMS
                     </div>
-                    <h1 className={`text-3xl sm:text-5xl font-black tracking-tight leading-none ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                    <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-none text-[#0F3040] dark:text-white">
                             {initialFilter === 'digital' ? (
                                 <>
-                                    Katalog <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 dark:from-emerald-400 dark:via-teal-400 dark:to-indigo-400 bg-clip-text text-transparent">Produk Digital</span>
+                                    Katalog <span className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] bg-clip-text text-transparent">Produk Digital</span>
                                 </>
                             ) : initialFilter === 'vendor' ? (
                                 <>
-                                    Katalog <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 dark:from-emerald-400 dark:via-teal-400 dark:to-indigo-400 bg-clip-text text-transparent">Layanan Jasa & Vendor</span>
+                                    Katalog <span className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] bg-clip-text text-transparent">Layanan Jasa & Vendor</span>
                                 </>
                             ) : (
                                 <>
-                                    Katalog <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500 dark:from-emerald-400 dark:via-teal-400 dark:to-indigo-400 bg-clip-text text-transparent">Semua Produk & Jasa</span>
+                                    Katalog <span className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] bg-clip-text text-transparent">Semua Produk & Jasa</span>
                                 </>
                             )}</h1>
-                    <div className="w-16 h-1 bg-gradient-to-r from-emerald-500 to-indigo-500 rounded-full mx-auto my-2"></div>
-                    <p className={`text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                    <div className="w-16 h-1 bg-gradient-to-r from-[#FFBF00] to-[#e6ac00] rounded-full mx-auto my-2"></div>
+                    <p className="text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed text-slate-600 dark:text-slate-300 font-medium">
                         Temukan ratusan aset digital premium mulai dari Source Code aplikasi, E-book bisnis, template Canva/desain, hingga AI Prompt untuk melipatgandakan produktivitas Anda.
                     </p>
                 </div>
@@ -316,9 +305,9 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             {/* B. Main Catalog Section */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 space-y-6 relative z-10">
                 
-                {/* Horizontal Category Filter Pills - Placed above the search bar */}
-                <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-300 dark:border-slate-800/80 shadow-sm p-4 space-y-3 dark:backdrop-blur-md">
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Kategori Pilihan</label>
+                {/* Horizontal Category Filter Pills */}
+                <div className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-300 dark:border-[#174256] shadow-md dark:shadow-lg p-4 space-y-3">
+                    <label className="block text-[10px] font-black uppercase tracking-wider text-[#FFBF00]">Kategori Pilihan</label>
                     {loadingCategories ? (
                         <div className="flex gap-2 overflow-x-auto pb-1">
                             <div className="h-8 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-full w-24 flex-shrink-0"></div>
@@ -327,13 +316,13 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                             <div className="h-8 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-full w-24 flex-shrink-0"></div>
                         </div>
                     ) : (
-                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
                             <button
                                 onClick={() => { setSelectedCategoryId(''); setCurrentPage(1); }}
-                                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap border transition-all active:scale-95 cursor-pointer ${
+                                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black whitespace-nowrap border-2 transition-all active:scale-95 cursor-pointer ${
                                     selectedCategoryId === '' 
-                                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/10' 
-                                        : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200/60 dark:border-slate-700/60 hover:bg-slate-100/80 dark:hover:bg-slate-700/80'
+                                        ? 'bg-[#FFBF00] text-[#0F3040] border-[#FFBF00] shadow-md shadow-[#FFBF00]/20' 
+                                        : 'bg-slate-50 dark:bg-[#071922] text-slate-700 dark:text-slate-300 border-slate-300 dark:border-[#174256] hover:text-[#FFBF00]'
                                 }`}
                             >
                                 <span>Semua Kategori</span>
@@ -341,15 +330,14 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                             
                             {categories.map((cat, idx) => {
                                 const isSelected = selectedCategoryId === cat.id.toString();
-                                const colors = getCategoryColors(idx);
                                 return (
                                     <button
                                         key={cat.id}
                                         onClick={() => { setSelectedCategoryId(cat.id.toString()); setCurrentPage(1); }}
-                                        className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap border transition-all active:scale-95 cursor-pointer ${
+                                        className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black whitespace-nowrap border-2 transition-all active:scale-95 cursor-pointer ${
                                             isSelected 
-                                                ? colors.active + ' shadow-md shadow-indigo-600/10' 
-                                                : `${colors.bg} border-transparent`
+                                                ? 'bg-[#FFBF00] text-[#0F3040] border-[#FFBF00] shadow-md shadow-[#FFBF00]/20' 
+                                                : 'bg-slate-50 dark:bg-[#071922] text-slate-700 dark:text-slate-300 border-slate-300 dark:border-[#174256] hover:text-[#FFBF00]'
                                         }`}
                                     >
                                         <span>{cat.name}</span>
@@ -361,7 +349,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                 </div>
 
                 {/* Unified Search, Price Filter, Sort, View Controls */}
-                <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-300 dark:border-slate-800/80 shadow-sm p-4 flex flex-col xl:flex-row gap-4 items-center justify-between dark:backdrop-blur-md">
+                <div className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-300 dark:border-[#174256] shadow-md dark:shadow-sm p-4 flex flex-col xl:flex-row gap-4 items-center justify-between">
                     
                     {/* Search Form */}
                     <form onSubmit={handleSearchSubmit} className="relative w-full xl:w-[32%]">
@@ -370,34 +358,34 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                             placeholder="Cari produk, template, code..." 
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full text-xs pl-10 pr-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 transition-all font-medium text-slate-800 dark:text-slate-100"
+                            className="w-full text-xs pl-10 pr-4 py-2.5 border-2 border-slate-300 dark:border-[#174256] rounded-xl focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] bg-slate-50 dark:bg-[#071922] transition-all font-medium text-slate-900 dark:text-white placeholder-slate-400"
                         />
-                        <button type="submit" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors">
+                        <button type="submit" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#FFBF00] hover:brightness-110 transition-colors">
                             <Search className="w-4 h-4" />
                         </button>
                     </form>
 
                     {/* Price Range inline filter form */}
-                    <form onSubmit={handleApplyPriceFilter} className="flex items-center gap-1.5 border border-slate-300 dark:border-slate-700/65 rounded-xl px-3 py-1.5 bg-slate-50 dark:bg-slate-800 focus-within:bg-white dark:focus-within:bg-slate-900 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all w-full sm:w-auto">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase whitespace-nowrap px-1">Harga (Rp):</span>
+                    <form onSubmit={handleApplyPriceFilter} className="flex items-center gap-1.5 border-2 border-slate-300 dark:border-[#174256] rounded-xl px-3 py-1.5 bg-slate-50 dark:bg-[#071922] focus-within:border-[#FFBF00] focus-within:ring-1 focus-within:ring-[#FFBF00] transition-all w-full sm:w-auto">
+                        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase whitespace-nowrap px-1">Harga (Rp):</span>
                         <input 
                             type="number" 
                             placeholder="Min" 
                             value={tempMinPrice}
                             onChange={(e) => setTempMinPrice(e.target.value)}
-                            className="w-20 text-xs border-0 bg-transparent focus:outline-none focus:ring-0 font-bold p-0 text-slate-700 dark:text-slate-200 placeholder-slate-400"
+                            className="w-20 text-xs border-0 bg-transparent focus:outline-none focus:ring-0 font-bold p-0 text-slate-900 dark:text-white placeholder-slate-400"
                         />
-                        <span className="text-slate-300 text-xs">-</span>
+                        <span className="text-slate-400 text-xs">-</span>
                         <input 
                             type="number" 
                             placeholder="Max" 
                             value={tempMaxPrice}
                             onChange={(e) => setTempMaxPrice(e.target.value)}
-                            className="w-20 text-xs border-0 bg-transparent focus:outline-none focus:ring-0 font-bold p-0 text-slate-700 dark:text-slate-200 placeholder-slate-400"
+                            className="w-20 text-xs border-0 bg-transparent focus:outline-none focus:ring-0 font-bold p-0 text-slate-900 dark:text-white placeholder-slate-400"
                         />
                         <button 
                             type="submit" 
-                            className="bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 dark:hover:bg-slate-600 text-white text-[9px] font-bold px-2.5 py-1 rounded-lg transition-all active:scale-95 uppercase tracking-wider"
+                            className="bg-[#FFBF00] hover:bg-[#ffcd33] text-[#0F3040] text-[9px] font-black px-2.5 py-1 rounded-lg transition-all active:scale-95 uppercase tracking-wider cursor-pointer"
                         >
                             Set
                         </button>
@@ -407,11 +395,11 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                     <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
                         {/* Sort Dropdown */}
                         <div className="flex items-center gap-2">
-                            <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
+                            <ArrowUpDown className="w-3.5 h-3.5 text-[#FFBF00]" />
                             <select 
                                 value={sortOption}
                                 onChange={(e) => { setSortOption(e.target.value); setCurrentPage(1); }}
-                                className="text-xs border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 bg-slate-50 dark:bg-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-900 transition-all font-bold text-slate-700 dark:text-slate-200"
+                                className="text-xs border-2 border-slate-300 dark:border-[#174256] rounded-xl px-3 py-2 bg-slate-50 dark:bg-[#071922] focus:outline-none focus:border-[#FFBF00] transition-all font-bold text-slate-900 dark:text-white"
                             >
                                 <option value="latest">Terbaru</option>
                                 <option value="oldest">Terlama</option>
@@ -421,13 +409,13 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                         </div>
 
                         {/* Layout View Mode Toggle */}
-                        <div className="flex border border-slate-300 dark:border-slate-700 rounded-xl p-1 bg-slate-50 dark:bg-slate-800 gap-0.5">
+                        <div className="flex border-2 border-slate-300 dark:border-[#174256] rounded-xl p-1 bg-slate-50 dark:bg-[#071922] gap-0.5">
                             <button 
                                 onClick={() => setViewMode('grid')}
                                 className={`p-1.5 rounded-lg transition-all ${
                                     viewMode === 'grid' 
-                                        ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-100 dark:border-slate-600/30' 
-                                        : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
+                                        ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-sm' 
+                                        : 'text-slate-500 dark:text-slate-400 hover:text-[#FFBF00]'
                                 }`}
                                 title="Grid View"
                             >
@@ -437,8 +425,8 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                 onClick={() => setViewMode('list')}
                                 className={`p-1.5 rounded-lg transition-all ${
                                     viewMode === 'list' 
-                                        ? 'bg-white text-indigo-600 shadow-sm border border-slate-100' 
-                                        : 'text-slate-400 hover:text-slate-600'
+                                        ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-sm' 
+                                        : 'text-slate-500 dark:text-slate-400 hover:text-[#FFBF00]'
                                 }`}
                                 title="List View"
                             >
@@ -449,7 +437,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                         {/* Reset Filter Button */}
                         <button 
                             onClick={handleClearFilters}
-                            className="text-xs font-bold text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-indigo-200 px-3 py-2 rounded-xl transition-all uppercase tracking-wider"
+                            className="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-[#FFBF00] bg-slate-100 dark:bg-[#071922] border-2 border-slate-300 dark:border-[#174256] hover:border-[#FFBF00] px-3 py-2 rounded-xl transition-all uppercase tracking-wider cursor-pointer"
                         >
                             Reset
                         </button>
@@ -459,23 +447,23 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                 {/* Active Filters Display Tag List */}
                 {(selectedCategoryId || minPrice || maxPrice || searchQuery) && (
                     <div className="flex flex-wrap gap-2 items-center">
-                        <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Aktif:</span>
+                        <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider">Aktif:</span>
                         {searchQuery && (
-                            <span className="inline-flex items-center gap-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs px-2.5 py-1 rounded-full border border-indigo-100 dark:border-indigo-900/60 font-bold">
+                            <span className="inline-flex items-center gap-1 bg-[#FFBF00]/20 text-[#0F3040] dark:text-[#FFBF00] text-xs px-2.5 py-1 rounded-full border border-[#FFBF00]/40 font-bold">
                                 Cari: "{searchQuery}"
-                                <button onClick={() => { setSearchQuery(''); setCurrentPage(1); }} className="hover:text-indigo-800 dark:hover:text-indigo-300"><X className="w-3 h-3" /></button>
+                                <button onClick={() => { setSearchQuery(''); setCurrentPage(1); }} className="hover:text-amber-800 dark:hover:text-amber-300"><X className="w-3 h-3" /></button>
                             </span>
                         )}
                         {selectedCategoryId && (
-                            <span className="inline-flex items-center gap-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs px-2.5 py-1 rounded-full border border-indigo-100 dark:border-indigo-900/60 font-bold">
+                            <span className="inline-flex items-center gap-1 bg-[#FFBF00]/20 text-[#0F3040] dark:text-[#FFBF00] text-xs px-2.5 py-1 rounded-full border border-[#FFBF00]/40 font-bold">
                                 Kategori: {categories.find(c => c.id?.toString() === selectedCategoryId?.toString())?.name || 'Kategori'}
-                                <button onClick={() => { setSelectedCategoryId(''); setCurrentPage(1); }} className="hover:text-indigo-800 dark:hover:text-indigo-300"><X className="w-3 h-3" /></button>
+                                <button onClick={() => { setSelectedCategoryId(''); setCurrentPage(1); }} className="hover:text-amber-800 dark:hover:text-amber-300"><X className="w-3 h-3" /></button>
                             </span>
                         )}
                         {(minPrice || maxPrice) && (
-                            <span className="inline-flex items-center gap-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-xs px-2.5 py-1 rounded-full border border-indigo-100 dark:border-indigo-900/60 font-bold">
+                            <span className="inline-flex items-center gap-1 bg-[#FFBF00]/20 text-[#0F3040] dark:text-[#FFBF00] text-xs px-2.5 py-1 rounded-full border border-[#FFBF00]/40 font-bold">
                                 Harga: {minPrice ? `Rp${numberFormat(minPrice)}` : '0'} - {maxPrice ? `Rp${numberFormat(maxPrice)}` : 'Limitless'}
-                                <button onClick={() => { setMinPrice(''); setTempMinPrice(''); setMaxPrice(''); setTempMaxPrice(''); setCurrentPage(1); }} className="hover:text-indigo-800 dark:hover:text-indigo-300"><X className="w-3 h-3" /></button>
+                                <button onClick={() => { setMinPrice(''); setTempMinPrice(''); setMaxPrice(''); setTempMaxPrice(''); setCurrentPage(1); }} className="hover:text-amber-800 dark:hover:text-amber-300"><X className="w-3 h-3" /></button>
                             </span>
                         )}
                     </div>
@@ -494,15 +482,15 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                         <SkeletonCard />
                     </div>
                 ) : products.length === 0 ? (
-                    <div className="bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800/80 rounded-2xl p-16 text-center shadow-sm space-y-4 dark:backdrop-blur-md">
-                        <PackageOpen className="w-16 h-16 text-slate-300 mx-auto" />
-                        <h3 className="text-lg font-black text-slate-800 dark:text-slate-200">Tidak ada produk ditemukan</h3>
-                        <p className="text-xs text-slate-400 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
+                    <div className="bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl p-16 text-center shadow-md space-y-4">
+                        <PackageOpen className="w-16 h-16 text-slate-300 dark:text-slate-500 mx-auto" />
+                        <h3 className="text-lg font-black text-[#0F3040] dark:text-white">Tidak ada produk ditemukan</h3>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 max-w-sm mx-auto leading-relaxed">
                             Maaf, kami tidak dapat menemukan produk digital yang cocok dengan filter atau kata kunci pencarian Anda saat ini.
                         </p>
                         <button 
                             onClick={handleClearFilters}
-                            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95"
+                            className="bg-[#FFBF00] hover:bg-[#ffcd33] text-[#0F3040] font-black text-xs px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95 uppercase tracking-wider cursor-pointer"
                         >
                             Bersihkan Semua Filter
                         </button>
@@ -514,7 +502,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                     <div 
                                         key={prod.id}
                                         onClick={() => setSelectedProduct(prod)}
-                                        className="rounded-2xl border border-slate-300 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-xl hover:shadow-indigo-500/5 relative cursor-pointer dark:backdrop-blur-md"
+                                        className="rounded-2xl border-2 border-slate-300 dark:border-[#174256] bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-md dark:shadow-xl hover:border-[#FFBF00] relative cursor-pointer"
                                     >
                                         <button 
                                             onClick={(e) => { e.stopPropagation(); toggleWishlist(prod.id); }}
@@ -530,26 +518,26 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                                     alt={prod.title} 
                                                     className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                                                 />
-                                                <span className="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-[9px] font-bold text-teal-600 dark:text-teal-400 px-3 py-1 rounded-full border border-white/50 dark:border-slate-700 shadow-sm uppercase tracking-wider">
+                                                <span className="absolute top-3 left-3 bg-[#071922]/90 backdrop-blur-md text-[9px] font-black text-[#FFBF00] px-3 py-1 rounded-full border border-[#174256] shadow-sm uppercase tracking-wider">
                                                     {prod.category?.name || 'Kategori'}
                                                 </span>
                                             </div>
 
                                             {/* Body */}
                                             <div className="p-5">
-                                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200 leading-snug line-clamp-2 h-10 mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">{prod.title}</h4>
+                                                <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white leading-snug line-clamp-2 h-10 mb-3 group-hover:text-[#FFBF00] transition-colors duration-300">{prod.title}</h4>
                                                 
-                                                <div className="flex items-center gap-1 text-xs mb-3 text-amber-500">
-                                                    <Star className="w-3.5 h-3.5 fill-current" />
-                                                    <span className="font-semibold text-slate-700 dark:text-slate-300">{prod.average_rating || 5.0}</span>
-                                                    <span className="text-[10px] text-slate-400 dark:text-slate-500">({prod.reviews_count || 0} Ulasan)</span>
+                                                <div className="flex items-center gap-1 text-xs mb-3 text-[#FFBF00]">
+                                                    <Star className="w-3.5 h-3.5 fill-current text-[#FFBF00]" />
+                                                    <span className="font-bold text-[#0F3040] dark:text-white">{prod.average_rating || 5.0}</span>
+                                                    <span className="text-[10px] text-slate-500 dark:text-slate-400">({prod.reviews_count || 0} Ulasan)</span>
                                                 </div>
 
                                                 <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                                                     <span>Toko:</span>
-                                                    <strong className="text-slate-700 dark:text-slate-300 font-bold">{prod.merchant?.store_name || 'ADMS Store'}</strong>
+                                                    <strong className="text-[#0F3040] dark:text-white font-bold">{prod.merchant?.store_name || 'ADMS Store'}</strong>
                                                     {prod.merchant?.is_verified && (
-                                                        <span className="inline-flex items-center bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-500/20 text-[8px] uppercase tracking-wider">
+                                                        <span className="inline-flex items-center bg-[#FFBF00]/20 text-[#FFBF00] font-black px-2 py-0.5 rounded-full border border-[#FFBF00]/40 text-[8px] uppercase tracking-wider">
                                                             Syariah Certified
                                                         </span>
                                                     )}
@@ -559,12 +547,12 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
 
                                         {/* Buy action */}
                                         <div className="p-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                                            <span className="font-extrabold text-base text-teal-600 dark:text-teal-400">Rp{numberFormat(prod.price)}</span>
+                                            <span className="font-black text-base text-[#FFBF00]">Rp{numberFormat(prod.price)}</span>
                                             <button 
                                                 onClick={(e) => { e.stopPropagation(); handleAddToCart(prod.id); }}
-                                                className="bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5"
+                                                className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-xs py-2.5 px-4 rounded-xl shadow-md shadow-[#FFBF00]/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer uppercase tracking-wider"
                                             >
-                                                <ShoppingCart className="w-3.5 h-3.5" />
+                                                <ShoppingCart className="w-3.5 h-3.5 text-[#0F3040]" />
                                                 <span>Keranjang</span>
                                             </button>
                                         </div>
@@ -587,7 +575,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                                 alt={prod.title} 
                                                 className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                                             />
-                                            <span className="absolute top-2 left-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-[8px] font-bold text-teal-600 dark:text-teal-400 px-2 py-0.5 rounded-full border border-white/50 dark:border-slate-700 shadow-sm uppercase tracking-wider">
+                                            <span className="absolute top-2 left-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-[8px] font-bold text-[#FFBF00] px-2 py-0.5 rounded-full border border-white/50 dark:border-slate-700 shadow-sm uppercase tracking-wider">
                                                 {prod.category?.name || 'Kategori'}
                                             </span>
                                         </div>
@@ -595,13 +583,13 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                         {/* Center: Info Body */}
                                         <div className="flex-1 flex flex-col justify-between py-1">
                                             <div className="space-y-2">
-                                                <h4 className="font-extrabold text-base text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300 leading-snug">{prod.title}</h4>
+                                                <h4 className="font-extrabold text-base text-slate-800 dark:text-slate-200 group-hover:text-[#FFBF00] transition-colors duration-300 leading-snug">{prod.title}</h4>
                                                 <p className="text-xs text-slate-400 dark:text-slate-500 line-clamp-2 leading-relaxed">{prod.description || 'Tidak ada deskripsi singkat untuk aset digital ini.'}</p>
                                             </div>
 
                                             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">
-                                                <div className="flex items-center gap-1 text-xs text-amber-500">
-                                                    <Star className="w-3.5 h-3.5 fill-current" />
+                                                <div className="flex items-center gap-1 text-xs text-[#FFBF00]">
+                                                    <Star className="w-3.5 h-3.5 fill-current text-[#FFBF00]" />
                                                     <span className="font-bold text-slate-700 dark:text-slate-300">{prod.average_rating || 5.0}</span>
                                                     <span className="text-[10px] text-slate-400 dark:text-slate-500">({prod.reviews_count || 0} Ulasan)</span>
                                                 </div>
@@ -610,7 +598,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                                     <span>Toko:</span>
                                                     <strong className="text-slate-700 dark:text-slate-300 font-bold">{prod.merchant?.store_name || 'ADMS Store'}</strong>
                                                     {prod.merchant?.is_verified && (
-                                                        <span className="inline-flex items-center bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded border border-emerald-100 dark:border-emerald-500/20 text-[8px] uppercase tracking-wider ml-1">
+                                                        <span className="inline-flex items-center bg-[#FFBF00]/20 text-[#FFBF00] font-bold px-1.5 py-0.5 rounded border border-[#FFBF00]/40 text-[8px] uppercase tracking-wider ml-1">
                                                             Syariah Certified
                                                         </span>
                                                     )}
@@ -622,21 +610,21 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                         <div className="w-full sm:w-[150px] border-t sm:border-t-0 sm:border-l border-slate-100 dark:border-slate-800/80 pt-4 sm:pt-0 sm:pl-4 flex sm:flex-col justify-between sm:justify-center items-center sm:items-stretch gap-3 flex-shrink-0">
                                             <div className="sm:text-center">
                                                 <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase block font-bold tracking-wider">Harga Aset</span>
-                                                <span className="font-black text-lg text-teal-600 dark:text-teal-400 block mt-0.5">Rp{numberFormat(prod.price)}</span>
+                                                <span className="font-black text-lg text-[#FFBF00] block mt-0.5">Rp{numberFormat(prod.price)}</span>
                                             </div>
                                             <div className="flex gap-2 w-auto sm:w-full">
                                                 <button 
                                                     onClick={(e) => { e.stopPropagation(); toggleWishlist(prod.id); }}
-                                                    className="p-2 border border-slate-200 dark:border-slate-700 hover:border-rose-200 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-slate-400 dark:text-slate-500 hover:text-rose-505 rounded-xl transition-all active:scale-95"
+                                                    className="p-2 border border-slate-200 dark:border-slate-700 hover:border-rose-200 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-slate-400 dark:text-slate-500 hover:text-rose-505 rounded-xl transition-all active:scale-95 cursor-pointer"
                                                     title="Simpan Wishlist"
                                                 >
                                                     <Heart className="w-4 h-4" />
                                                 </button>
                                                 <button 
                                                     onClick={(e) => { e.stopPropagation(); handleAddToCart(prod.id); }}
-                                                    className="flex-1 bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2 px-3 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-1"
+                                                    className="flex-1 bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-xs py-2 px-3 rounded-xl shadow-md shadow-[#FFBF00]/20 transition-all active:scale-95 flex items-center justify-center gap-1 cursor-pointer uppercase tracking-wider"
                                                 >
-                                                    <ShoppingCart className="w-3.5 h-3.5" />
+                                                    <ShoppingCart className="w-3.5 h-3.5 text-[#0F3040]" />
                                                     <span className="sm:hidden lg:inline">Keranjang</span>
                                                 </button>
                                             </div>

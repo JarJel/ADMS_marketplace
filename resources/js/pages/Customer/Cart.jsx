@@ -550,7 +550,7 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
                                             <span className={`block font-black text-sm ${darkMode ? 'text-white' : 'text-slate-900'}`}>Total Tagihan</span>
                                             <span className="text-[10px] text-slate-400 font-normal">Sudah termasuk PPN & Lisensi</span>
                                         </div>
-                                        <span className="text-2xl font-black text-transparent bg-gradient-to-r from-emerald-500 to-teal-400 bg-clip-text">
+                                        <span className="text-2xl font-black text-[#FFBF00]">
                                             {formatCurrency(grandTotal)}
                                         </span>
                                     </div>
@@ -560,13 +560,13 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
                                 <button 
                                     onClick={handleCheckout}
                                     disabled={selectedItemsList.length === 0}
-                                    className={`w-full font-black text-sm py-4 px-6 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer group ${
+                                    className={`w-full font-black text-xs sm:text-sm py-4 px-6 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer group uppercase tracking-wider ${
                                         selectedItemsList.length > 0
-                                            ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-white shadow-emerald-500/25 active:scale-98'
+                                            ? 'bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] shadow-[#FFBF00]/20 active:scale-98'
                                             : 'bg-slate-800 text-slate-500 cursor-not-allowed shadow-none'
                                     }`}
                                 >
-                                    <CreditCard className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                    <CreditCard className="w-5 h-5 group-hover:scale-110 transition-transform text-[#0F3040]" />
                                     <span>
                                         {selectedItemsList.length > 0 
                                             ? `Lanjut ke Pembayaran (${selectedItemsList.length})` 

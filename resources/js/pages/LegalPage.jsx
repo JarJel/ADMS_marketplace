@@ -235,8 +235,9 @@ export default function LegalPage({ type, user, token, darkMode, setDarkMode, on
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
                         {/* Company info block */}
                         <div className="md:col-span-5 space-y-6">
-                            <div className="inline-flex items-center gap-2 mb-2">
-                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-12 object-contain" />
+                            <div className="inline-flex items-center gap-3 mb-2">
+                                <img src="/assets/Images/adms-symbol.png" alt="ADMS Symbol" className="h-10 sm:h-11 w-auto object-contain drop-shadow-md" />
+                                <img src="/assets/Images/adms-text.png" alt="ADMS Text" className="h-6 sm:h-7 w-auto object-contain invert mix-blend-screen" />
                             </div>
                             <p className="text-sm text-slate-400 leading-relaxed pr-0 md:pr-12">
                                 Platform marketplace produk digital dan periklanan terpercaya. Temukan, jual, dan promosikan bisnis Anda dalam satu ekosistem yang saling terintegrasi.

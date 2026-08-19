@@ -67,45 +67,45 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 px-4 py-12 relative overflow-hidden font-sans">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#05131b] via-[#0F3040] to-[#071922] px-4 py-12 relative overflow-hidden font-sans">
             {/* Visual lights decoration */}
-            <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-teal-500/10 blur-[150px]"></div>
-            <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-indigo-600/10 blur-[150px]"></div>
+            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#FFBF00]/10 blur-[160px] pointer-events-none"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[55%] h-[55%] rounded-full bg-[#174256]/50 blur-[180px] pointer-events-none"></div>
 
             <div className="max-w-md w-full z-10">
-                <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl shadow-black/50">
+                <div className="bg-[#0F3040]/90 backdrop-blur-2xl border-2 border-[#174256] hover:border-[#FFBF00]/40 rounded-3xl p-8 sm:p-9 shadow-2xl shadow-black/80 transition-all duration-300">
                     
                     {/* Brand Logo & Name */}
                     <div className="text-center mb-6">
-                        <div className="flex items-center justify-center gap-2.5 mb-3 hover:scale-105 transition-transform duration-300">
+                        <div className="flex items-center justify-center gap-2.5 mb-3 hover:scale-105 transition-transform duration-300 cursor-pointer">
                             <img 
                                 src="/assets/Images/adms-symbol.png" 
                                 alt="ADMS Symbol" 
-                                className="h-12 w-auto object-contain"
+                                className="h-11 w-auto object-contain drop-shadow-md"
                             />
                             <img 
                                 src="/assets/Images/adms-text.png" 
                                 alt="ADMS Text" 
-                                className="h-8 w-auto object-contain invert mix-blend-screen"
+                                className="h-7 w-auto object-contain invert mix-blend-screen"
                             />
                         </div>
-                        <h2 className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-indigo-400 bg-clip-text text-transparent">
+                        <h2 className="text-2xl font-black text-[#FFBF00] tracking-tight">
                             Daftar Akun Baru
                         </h2>
-                        <p className="text-xs text-slate-400 mt-1">
-                            Gabung ADMS (Armada Digital Marketing Syariah)
+                        <p className="text-xs font-bold text-slate-300 mt-1 uppercase tracking-wider">
+                            Armada Digital Marketing Syariah
                         </p>
                     </div>
 
                     {/* Alerts */}
                     {error && (
-                        <div className="mb-5 p-4 rounded-lg bg-red-950/50 border border-red-800/40 text-red-400 text-xs">
+                        <div className="mb-5 p-4 rounded-2xl bg-rose-950/80 border border-rose-700/60 text-rose-300 text-xs font-semibold shadow-inner">
                             {error}
                         </div>
                     )}
 
                     {success && (
-                        <div className="mb-5 p-4 rounded-lg bg-emerald-950/50 border border-emerald-800/40 text-emerald-400 text-xs flex items-center gap-2">
+                        <div className="mb-5 p-4 rounded-2xl bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 text-xs font-semibold flex items-center gap-2 shadow-inner">
                             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                             Registrasi Sukses! Mengalihkan ke halaman masuk...
                         </div>
@@ -115,7 +115,7 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                     <form onSubmit={handleRegister} className="space-y-4 text-left">
                         {/* Name */}
                         <div>
-                            <label className="block text-xs font-bold text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-slate-200 mb-1.5">
                                 Nama Lengkap
                             </label>
                             <input 
@@ -123,14 +123,14 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                                 required
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+                                className="w-full bg-[#071922] border border-[#174256] rounded-2xl px-4 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
                                 placeholder="Masukkan nama lengkap Anda"
                             />
                         </div>
 
                         {/* Email */}
                         <div>
-                            <label className="block text-xs font-bold text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-slate-200 mb-1.5">
                                 Alamat Email
                             </label>
                             <input 
@@ -138,14 +138,14 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+                                className="w-full bg-[#071922] border border-[#174256] rounded-2xl px-4 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
                                 placeholder="nama@email.com"
                             />
                         </div>
 
                         {/* Phone */}
                         <div>
-                            <label className="block text-xs font-bold text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-slate-200 mb-1.5">
                                 Nomor HP / WA
                             </label>
                             <input 
@@ -153,14 +153,14 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                                 required
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+                                className="w-full bg-[#071922] border border-[#174256] rounded-2xl px-4 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
                                 placeholder="Contoh: 08123456789"
                             />
                         </div>
 
                         {/* Password */}
                         <div>
-                            <label className="block text-xs font-bold text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-slate-200 mb-1.5">
                                 Password
                             </label>
                             <div className="relative">
@@ -170,13 +170,13 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                                     minLength={8}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 pr-10 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+                                    className="w-full bg-[#071922] border border-[#174256] rounded-2xl px-4 py-3 pr-10 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
                                     placeholder="Minimal 8 karakter"
                                 />
                                 <button 
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
                                 >
                                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                 </button>
@@ -185,7 +185,7 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
 
                         {/* Confirm Password */}
                         <div>
-                            <label className="block text-xs font-bold text-slate-300 mb-1">
+                            <label className="block text-xs font-bold text-slate-200 mb-1.5">
                                 Konfirmasi Password
                             </label>
                             <div className="relative">
@@ -194,7 +194,7 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                                     required
                                     value={passwordConfirmation}
                                     onChange={(e) => setPasswordConfirmation(e.target.value)}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 pr-10 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+                                    className="w-full bg-[#071922] border border-[#174256] rounded-2xl px-4 py-3 pr-10 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
                                     placeholder="Ulangi password"
                                 />
                             </div>
@@ -203,18 +203,18 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                         <button 
                             type="submit"
                             disabled={loading || success}
-                            className="w-full bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-semibold py-3 px-4 rounded-lg text-xs shadow-lg hover:shadow-teal-500/20 active:scale-[0.98] transition-all disabled:opacity-50 mt-4 cursor-pointer"
+                            className="w-full bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black py-3.5 px-4 rounded-2xl text-xs shadow-xl shadow-[#FFBF00]/20 active:scale-[0.98] transition-all disabled:opacity-50 mt-4 cursor-pointer uppercase tracking-wider"
                         >
                             {loading ? 'Mendaftarkan Akun...' : 'Daftar Sekarang'}
                         </button>
                     </form>
 
-                    <div className="mt-6 text-center">
-                        <p className="text-xs text-slate-400">
+                    <div className="mt-6 text-center border-t border-[#174256]/80 pt-4">
+                        <p className="text-xs text-slate-300">
                             Sudah punya akun?{' '}
                             <button 
                                 onClick={onNavigateToLogin}
-                                className="text-teal-400 hover:underline font-semibold cursor-pointer"
+                                className="text-[#FFBF00] hover:underline font-extrabold cursor-pointer ml-1"
                             >
                                 Masuk di sini
                             </button>
@@ -226,3 +226,4 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
         </div>
     );
 }
+

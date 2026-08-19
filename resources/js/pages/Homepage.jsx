@@ -9,7 +9,6 @@ import {
     LayoutTemplate, Book, Globe, Video, Headphones, GraduationCap, TrendingUp, Wrench, Handshake, MoreHorizontal,
     Heart, ShoppingCart, X, Phone, ChevronLeft, ChevronRight
 } from 'lucide-react';
-import debounce from 'lodash.debounce';
 
 // Reusable scroll fade-in animation component using Intersection Observer
 function ScrollFadeIn({ children, className = '' }) {

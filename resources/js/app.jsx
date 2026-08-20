@@ -469,6 +469,7 @@ function App() {
                         cartCount={cartCount}
                         wishlistCount={wishlistCount}
                         notifications={notifications}
+                        setNotifications={setNotifications}
                     />
                 );
         }

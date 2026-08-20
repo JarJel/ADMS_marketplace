@@ -5,7 +5,7 @@ import {
     CreditCard, Package, User, Store, RefreshCcw, ShieldCheck 
 } from 'lucide-react';
 
-export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavigate, onLogout }) {
+export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavigate, onLogout, cartCount = 0, wishlistCount = 0, notifications = [], setNotifications }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState('Semua');
     const [openFaqs, setOpenFaqs] = useState({});
@@ -121,6 +121,10 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                 onLogout={onLogout}
                 onNavigate={onNavigate} 
                 currentView="help_center"
+                cartCount={cartCount}
+                wishlistCount={wishlistCount}
+                notifications={notifications}
+                setNotifications={setNotifications}
             />
 
             {/* 2. Hero Section Bantuan */}

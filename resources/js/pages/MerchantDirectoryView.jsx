@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, MapPin, CheckCircle, Store, AlertCircle, Phone, ArrowLeft } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
-export default function MerchantDirectoryView({ user, token, onNavigate, darkMode, setDarkMode, onLogout }) {
+export default function MerchantDirectoryView({ user, token, onNavigate, darkMode, setDarkMode, onLogout, cartCount = 0, wishlistCount = 0, notifications = [], setNotifications }) {
     const [merchants, setMerchants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -59,6 +59,10 @@ export default function MerchantDirectoryView({ user, token, onNavigate, darkMod
                 darkMode={darkMode} 
                 setDarkMode={setDarkMode} 
                 currentView="merchants"
+                cartCount={cartCount}
+                wishlistCount={wishlistCount}
+                notifications={notifications}
+                setNotifications={setNotifications}
             />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">

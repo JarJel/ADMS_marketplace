@@ -17,6 +17,7 @@ import Cart from './pages/Customer/Cart';
 import Checkout from './pages/Customer/Checkout';
 import AdmsChatWidget from './components/Chatbot/AdmsChatWidget';
 import LegalPage from './pages/LegalPage';
+import Pricing from './pages/Pricing';
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem('auth_token'));
@@ -223,6 +224,12 @@ function App() {
         } else if (path === '/register') {
             setView('register');
         } else if (path === '/customer' || path.startsWith('/customer/')) {
+            const parts = path.split('/');
+            if (parts.length > 2 && parts[2]) {
+                setDashboardTab(parts[2]);
+            } else {
+                setDashboardTab('overview');
+            }
             setView('customer_dashboard');
         } else if (path === '/merchant' || path.startsWith('/merchant/')) {
             setView('merchant_dashboard');
@@ -240,6 +247,8 @@ function App() {
             setView('cart');
         } else if (path === '/checkout') {
             setView('checkout');
+        } else if (path === '/pricing') {
+            setView('pricing');
         } else {
             setView('homepage');
         }
@@ -329,6 +338,10 @@ function App() {
             navigateTo('cart', '/cart');
         } else if (targetView === 'checkout') {
             navigateTo('checkout', '/checkout');
+        } else if (targetView === 'package_checkout') {
+            navigateTo('package_checkout', '/package-checkout');
+        } else if (targetView === 'pricing') {
+            navigateTo('pricing', '/pricing');
         } else if (targetView === 'wishlist') {
             setDashboardTab('wishlist');
             navigateTo('customer_dashboard', '/customer');
@@ -336,8 +349,9 @@ function App() {
             setDashboardTab('overview');
             routeUser(user);
         } else if (targetView === 'customer_dashboard') {
-            setDashboardTab('overview');
-            navigateTo('customer_dashboard', '/customer');
+            const tab = filter && filter !== 'all' ? filter : 'overview';
+            setDashboardTab(tab);
+            navigateTo('customer_dashboard', `/customer/${tab}`);
         } else if (targetView === 'merchant_dashboard') {
             setDashboardTab('overview');
             navigateTo('merchant_dashboard', '/merchant');
@@ -429,6 +443,8 @@ function App() {
                 return <Cart {...dashboardProps} />;
             case 'checkout':
                 return <Checkout {...dashboardProps} />;
+            case 'pricing':
+                return <Pricing {...dashboardProps} />;
             case 'login':
                 return (
                     <Login 

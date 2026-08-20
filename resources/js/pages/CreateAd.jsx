@@ -155,16 +155,18 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
         setStep((prev) => prev - 1);
     };
 
+    const isPremium = user?.active_package_id && user?.package_expires_at && new Date(user.package_expires_at) > new Date();
+
     const handleFileUpload = (e) => {
         const files = Array.from(e.target.files);
         if (!files.length) return;
 
-        const maxFiles = 5;
+        const maxFiles = isPremium ? 5 : 2;
         const currentCount = photos.length;
         const remaining = maxFiles - currentCount;
 
         if (files.length > remaining) {
-            alert(`Batas maksimal foto adalah ${maxFiles} file.`);
+            alert(`Batas maksimal foto adalah ${maxFiles} file. ${isPremium ? '' : 'Upgrade paket premium untuk upload hingga 5 foto.'}`);
             return;
         }
 
@@ -293,7 +295,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                             Kembali ke Beranda
                         </button>
                         <div className="ml-auto text-right">
-                            <h2 className="text-sm font-extrabold text-slate-800">Pembuat Iklan Gratis</h2>
+                            <h2 className="text-sm font-extrabold text-slate-800">{isPremium ? 'Pembuat Iklan Premium' : 'Pembuat Iklan Gratis'}</h2>
                             <p className="text-xs text-slate-400">Halaman Khusus Iklan Baris Klasifikasi</p>
                         </div>
                     </div>
@@ -307,8 +309,16 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                     <Megaphone className="w-7 h-7 text-[#0F3040]" />
                                 </div>
                                 <div>
-                                    <h1 className="text-xl sm:text-2xl font-black text-white">Buat Iklan Baris Baru</h1>
-                                    <p className="text-sm text-slate-300 mt-1 opacity-90">Isi semua detail di bawah untuk mempromosikan produk Anda gratis.</p>
+                                    <div className="flex items-center gap-2">
+                                        <h1 className="text-xl sm:text-2xl font-black text-white">Buat Iklan Baris Baru</h1>
+                                        {isPremium && (
+                                            <span className="bg-emerald-500/20 border border-emerald-500 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1">
+                                                <ShieldCheck className="w-3 h-3" />
+                                                Premium
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="text-sm text-slate-300 mt-1 opacity-90">Isi semua detail di bawah untuk {isPremium ? 'mempromosikan produk Anda dengan fitur premium.' : 'mempromosikan produk Anda gratis.'}</p>
                                 </div>
                             </div>
 
@@ -482,7 +492,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                     />
                                                     <Camera className="w-12 h-12 text-slate-400 group-hover:text-[#0f172a] transition-colors mb-3" />
                                                     <span className="text-sm font-bold text-slate-700">Klik atau Tarik Foto ke Sini</span>
-                                                    <span className="text-xs text-slate-500 mt-1">Maksimal 5 foto (Format JPG/PNG)</span>
+                                                    <span className="text-xs text-slate-500 mt-1">Maksimal {isPremium ? 5 : 2} foto (Format JPG/PNG)</span>
                                                 </div>
 
                                                 {errors.photos && <span className="text-xs text-rose-500 font-bold">{errors.photos}</span>}

@@ -155,6 +155,10 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
 
             return true;
         }).sort((a, b) => {
+            // Priority for premium ads
+            if (a.is_premium && !b.is_premium) return -1;
+            if (!a.is_premium && b.is_premium) return 1;
+
             if (sortBy === 'Harga Terendah') {
                 return a.price - b.price;
             } else if (sortBy === 'Harga Tertinggi') {
@@ -162,7 +166,14 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             } else {
                 const dateB = b.date ? new Date(b.date).getTime() : 0;
                 const dateA = a.date ? new Date(a.date).getTime() : 0;
-                return dateB - dateA;
+                
+                // Jika tanggal valid dan berbeda, urutkan berdasarkan tanggal terbaru
+                if (!isNaN(dateB) && !isNaN(dateA) && dateB !== dateA) {
+                    return dateB - dateA;
+                }
+                
+                // Fallback: urutkan berdasarkan ID terbesar (terbaru) jika format tanggal tidak bisa di-parse
+                return (b.id || 0) - (a.id || 0);
             }
         });
     }, [ads, debouncedSearchQuery, debouncedSearchLocation, selectedCategory, filterCondition, minPrice, maxPrice, sortBy]);
@@ -254,14 +265,23 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                             />
                         </div>
 
-                        {/* Zap CTA Button */}
-                        <button 
-                            onClick={() => onNavigate('create_ad', '/pasang-iklan')}
-                            className="w-full md:w-auto md:flex-shrink-0 bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-xs sm:text-sm px-6 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#FFBF00]/20 active:scale-95 cursor-pointer uppercase tracking-wider"
-                        >
-                            <Zap className="w-4 h-4 fill-current text-[#0F3040]" />
-                            <span>Pasang Iklan Gratis</span>
-                        </button>
+                        {/* CTA Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto md:flex-shrink-0">
+                            <button 
+                                onClick={() => onNavigate('pricing', '/pricing')}
+                                className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:brightness-110 text-white font-black text-xs sm:text-sm px-5 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/30 active:scale-95 cursor-pointer uppercase tracking-wider"
+                            >
+                                <Star className="w-4 h-4 fill-current text-white" />
+                                <span>Iklan Premium</span>
+                            </button>
+                            <button 
+                                onClick={() => onNavigate('create_ad', '/pasang-iklan')}
+                                className="w-full sm:w-auto bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-xs sm:text-sm px-5 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#FFBF00]/20 active:scale-95 cursor-pointer uppercase tracking-wider"
+                            >
+                                <Zap className="w-4 h-4 fill-current text-[#0F3040]" />
+                                <span>Iklan Gratis</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -434,12 +454,18 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 <div 
                                     key={ad.id}
                                     onClick={() => { setSelectedAd(ad); handleAdClick(ad.id); }}
-                                    className={`bg-[#0F3040] text-white rounded-2xl border-2 border-[#174256] overflow-hidden flex cursor-pointer group hover:border-[#FFBF00] transition-all shadow-xl ${
+                                    className={`bg-[#0F3040] text-white rounded-2xl border-2 ${ad.is_premium ? 'border-[#FFBF00]/50 hover:border-[#FFBF00]' : 'border-[#174256] hover:border-[#FFBF00]'} overflow-hidden flex cursor-pointer group transition-all shadow-xl relative ${
                                         viewMode === 'grid' 
                                             ? 'flex-col justify-between'
                                             : 'flex-row items-center gap-4 p-4'
                                     }`}
                                 >
+                                    {ad.is_premium && (
+                                        <div className="absolute top-3 right-3 z-20 bg-[#FFBF00] text-[#0F3040] text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-md">
+                                            Premium
+                                        </div>
+                                    )}
+                                    
                                     {/* Image */}
                                     <div className={`overflow-hidden bg-[#071922] relative flex-shrink-0 border-b border-[#174256] ${
                                         viewMode === 'grid' 
@@ -451,7 +477,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                             alt={ad.title} 
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                         />
-                                        <span className="absolute top-2.5 left-2.5 bg-[#071922]/90 backdrop-blur-md text-[9px] font-black text-[#FFBF00] px-2.5 py-0.5 rounded-full border border-[#174256] shadow uppercase">
+                                        <span className={`absolute ${ad.is_premium ? 'top-10' : 'top-2.5'} left-2.5 sm:top-2.5 bg-[#071922]/90 backdrop-blur-md text-[9px] font-black text-[#FFBF00] px-2.5 py-0.5 rounded-full border border-[#174256] shadow uppercase`}>
                                             {ad.category}
                                         </span>
                                     </div>

@@ -59,17 +59,29 @@ class AdController extends Controller
         }
 
         $images = $request->file('images', []);
-        if (count($images) > 2) {
+        
+        $isPremium = false;
+        $activePackage = null;
+        if ($user->active_package_id && $user->package_expires_at && $user->package_expires_at > now()) {
+            $isPremium = true;
+            $activePackage = Package::find($user->active_package_id);
+        }
+
+        $maxImages = $isPremium ? 5 : 2;
+
+        if (count($images) > $maxImages) {
             return response()->json([
                 'success' => false,
-                'message' => 'Maksimal gambar untuk iklan gratis adalah 2.'
+                'message' => "Maksimal gambar untuk iklan " . ($isPremium ? 'premium' : 'gratis') . " adalah {$maxImages}."
             ], 400);
         }
 
-        $freePackage = Package::where('type', 'free')->first();
-        if (!$freePackage) {
-            // Temporary mock package if none exists for testing
-            $freePackage = (object) ['id' => 1, 'duration_days' => 7];
+        if (!$isPremium || !$activePackage) {
+            $activePackage = Package::where('type', 'free')->first();
+            if (!$activePackage) {
+                // Temporary mock package if none exists for testing
+                $activePackage = (object) ['id' => 1, 'duration_days' => 7];
+            }
         }
 
         DB::beginTransaction();
@@ -85,8 +97,8 @@ class AdController extends Controller
                 'whatsapp' => $request->whatsapp,
                 'condition' => $request->condition ?? 'Baru',
                 'website_url' => $request->website_url,
-                'duration_days' => $freePackage->duration_days,
-                'package_id' => $freePackage->id,
+                'duration_days' => $activePackage->duration_days,
+                'package_id' => $activePackage->id,
                 'status' => 'approved',
                 'owner_id' => $user->id,
             ]);

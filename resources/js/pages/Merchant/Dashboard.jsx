@@ -36,6 +36,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
     const [orders, setOrders] = useState([]);
     const [historyOrders, setHistoryOrders] = useState([]);
     const [ads, setAds] = useState([]);
+    const [packageSubscriptions, setPackageSubscriptions] = useState([]);
     
     const [loading, setLoading] = useState(true);
     const [payoutAmount, setPayoutAmount] = useState('');
@@ -46,16 +47,23 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
-        if (activeTab === 'overview') fetchDashboardData();
+        if (activeTab === 'overview') {
+            fetchDashboardData();
+            fetchPackageSubscriptions();
+        }
         if (activeTab === 'products') fetchProducts();
         if (activeTab === 'orders') fetchOrders();
         if (activeTab === 'history') fetchHistoryOrders();
-        if (activeTab === 'ads') fetchAds();
+        if (activeTab === 'ads') {
+            fetchAds();
+            fetchPackageSubscriptions();
+        }
     }, [activeTab]);
 
     // Fetch incoming orders on initial load for notifications
     useEffect(() => {
         if (activeTab !== 'orders') fetchOrders();
+        fetchPackageSubscriptions();
     }, []);
 
     const fetchDashboardData = async () => {
@@ -74,6 +82,18 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
         } finally {
             setLoading(false);
         }
+    };
+
+    const fetchPackageSubscriptions = async () => {
+        try {
+            const res = await fetch('/api/customer/package-subscriptions', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success) {
+                setPackageSubscriptions(data.data);
+            }
+        } catch (err) {}
     };
 
     const fetchProducts = async () => {
@@ -201,6 +221,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
                             accNumber={accNumber} setAccNumber={setAccNumber}
                             payoutMsg={payoutMsg} submitting={submitting}
                             handlePayoutRequest={handlePayoutRequest}
+                            packageSubscriptions={packageSubscriptions}
                         />
                     )}
                     
@@ -231,6 +252,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
                             ads={ads}
                             fetchAds={fetchAds}
                             token={token}
+                            packageSubscriptions={packageSubscriptions}
                         />
                     )}
                 </>

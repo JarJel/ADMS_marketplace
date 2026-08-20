@@ -25,7 +25,7 @@ const SkeletonCard = () => (
     </div>
 );
 
-export default function ProductsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout, initialFilter, initialSearchQuery, initialMerchantId, onAddToCart, cartCount }) {
+export default function ProductsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout, initialFilter, initialSearchQuery, initialMerchantId, onAddToCart, cartCount = 0, wishlistCount = 0, notifications = [], setNotifications }) {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -267,6 +267,10 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                 setDarkMode={setDarkMode}
                 currentView="products"
                 currentFilter={initialFilter}
+                cartCount={cartCount}
+                wishlistCount={wishlistCount}
+                notifications={notifications}
+                setNotifications={setNotifications}
             />
 
             {/* A. Hero Banner Header */}

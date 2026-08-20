@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
-export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMode, onLogout }) {
+export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMode, onLogout, cartCount = 0, wishlistCount = 0, notifications = [], setNotifications }) {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -275,6 +275,10 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                 onLogout={onLogout}
                 onNavigate={onNavigate} 
                 currentView="create_ad"
+                cartCount={cartCount}
+                wishlistCount={wishlistCount}
+                notifications={notifications}
+                setNotifications={setNotifications}
             />
 
             {!success ? (

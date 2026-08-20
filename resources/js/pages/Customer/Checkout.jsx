@@ -124,14 +124,14 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
 
     return (
         <div className={`min-h-screen font-sans transition-colors duration-300 relative overflow-hidden ${
-            darkMode ? 'bg-[#060c18] text-slate-100' : 'bg-slate-50 text-slate-900'
+            darkMode ? 'bg-[#071922] text-slate-100' : 'bg-slate-50 text-slate-900'
         }`}>
             {/* Ambient Glows */}
             <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[150px] pointer-events-none -translate-y-1/2 translate-x-1/4 ${
-                darkMode ? 'bg-indigo-600/10' : 'bg-indigo-300/20'
+                darkMode ? 'bg-[#FFBF00]/10' : 'bg-[#FFBF00]/20'
             }`}></div>
             <div className={`absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-[150px] pointer-events-none translate-y-1/3 -translate-x-1/4 ${
-                darkMode ? 'bg-emerald-500/10' : 'bg-emerald-300/20'
+                darkMode ? 'bg-[#0F3040]/40' : 'bg-emerald-300/20'
             }`}></div>
 
             {/* Navbar */}
@@ -155,7 +155,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                         onClick={() => onNavigate('cart')}
                         className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                             darkMode 
-                                ? 'border-slate-800 bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white' 
+                                ? 'border-[#174256] bg-[#0F3040] hover:bg-[#174256] text-slate-300 hover:text-white' 
                                 : 'border-slate-200 bg-white hover:bg-slate-100 text-slate-700 shadow-sm'
                         }`}
                     >
@@ -165,11 +165,11 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
 
                     {/* Progress Indicator Bar */}
                     <div className="flex items-center gap-2 text-xs font-bold">
-                        <span className="text-emerald-500 flex items-center gap-1">
+                        <span className="text-[#FFBF00] flex items-center gap-1">
                             <CheckCircle2 className="w-4 h-4" /> 1. Keranjang
                         </span>
                         <span className="text-slate-400">&rarr;</span>
-                        <span className="text-teal-400 flex items-center gap-1 bg-teal-500/10 border border-teal-500/30 px-3 py-1 rounded-full">
+                        <span className="text-[#FFBF00] flex items-center gap-1 bg-[#FFBF00]/10 border border-[#FFBF00]/30 px-3 py-1 rounded-full">
                             <CreditCard className="w-4 h-4" /> 2. Pembayaran & Checkout
                         </span>
                         <span className="text-slate-400">&rarr;</span>
@@ -191,16 +191,16 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
 
                 {checkoutItems.length === 0 ? (
                     <div className={`rounded-3xl border p-12 text-center max-w-xl mx-auto backdrop-blur-xl ${
-                        darkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200'
+                        darkMode ? 'bg-[#0F3040] border-[#174256]' : 'bg-white border-slate-200'
                     }`}>
                         <ShoppingBag className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                         <h3 className="font-bold text-lg mb-2">Tidak Ada Produk untuk Di-checkout</h3>
                         <p className="text-xs text-slate-400 mb-6">Silakan pilih produk dari keranjang belanja Anda terlebih dahulu.</p>
                         <button 
                             onClick={() => onNavigate('cart')}
-                            className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 px-6 rounded-xl text-xs"
+                            className="px-6 py-2.5 bg-[#FFBF00] text-[#0F3040] font-black rounded-xl text-xs hover:bg-[#ffcc33] transition-all cursor-pointer"
                         >
-                            Ke Keranjang Belanja
+                            Kembali ke Keranjang
                         </button>
                     </div>
                 ) : (
@@ -211,12 +211,12 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                             
                             {/* 1. Customer Details Card */}
                             <div className={`rounded-3xl border p-6 backdrop-blur-xl ${
-                                darkMode ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+                                darkMode ? 'bg-[#0F3040] border-[#174256]' : 'bg-white border-slate-200 shadow-sm'
                             }`}>
                                 <h3 className={`font-bold text-base mb-4 flex items-center gap-2 ${
                                     darkMode ? 'text-white' : 'text-slate-900'
                                 }`}>
-                                    <FileText className="w-5 h-5 text-teal-500" /> Information Pemesan
+                                    <FileText className="w-5 h-5 text-[#FFBF00]" /> Information Pemesan
                                 </h3>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -231,7 +231,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                             value={customerInfo.name}
                                             onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
                                             className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-1 ${
-                                                darkMode ? 'bg-slate-950 border-slate-800 text-white focus:border-teal-500' : 'bg-slate-50 border-slate-300 text-slate-800 focus:border-teal-500'
+                                                darkMode ? 'bg-[#071922] border-[#174256] text-white focus:border-[#FFBF00]' : 'bg-slate-50 border-slate-300 text-slate-800 focus:border-[#FFBF00]'
                                             }`}
                                         />
                                     </div>
@@ -246,7 +246,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                             value={customerInfo.email}
                                             onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})}
                                             className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-1 ${
-                                                darkMode ? 'bg-slate-950 border-slate-800 text-white focus:border-teal-500' : 'bg-slate-50 border-slate-300 text-slate-800 focus:border-teal-500'
+                                                darkMode ? 'bg-[#071922] border-[#174256] text-white focus:border-[#FFBF00]' : 'bg-slate-50 border-slate-300 text-slate-800 focus:border-[#FFBF00]'
                                             }`}
                                         />
                                     </div>
@@ -261,7 +261,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                             value={customerInfo.phone}
                                             onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
                                             className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none focus:ring-1 ${
-                                                darkMode ? 'bg-slate-950 border-slate-800 text-white focus:border-teal-500' : 'bg-slate-50 border-slate-300 text-slate-800 focus:border-teal-500'
+                                                darkMode ? 'bg-[#071922] border-[#174256] text-white focus:border-[#FFBF00]' : 'bg-slate-50 border-slate-300 text-slate-800 focus:border-[#FFBF00]'
                                             }`}
                                         />
                                     </div>
@@ -270,12 +270,12 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
 
                             {/* 2. Payment Method Selector */}
                             <div className={`rounded-3xl border p-6 backdrop-blur-xl ${
-                                darkMode ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+                                darkMode ? 'bg-[#0F3040] border-[#174256]' : 'bg-white border-slate-200 shadow-sm'
                             }`}>
                                 <h3 className={`font-bold text-base mb-4 flex items-center gap-2 ${
                                     darkMode ? 'text-white' : 'text-slate-900'
                                 }`}>
-                                    <CreditCard className="w-5 h-5 text-teal-500" /> Metode Pembayaran Resmi ADMS
+                                    <CreditCard className="w-5 h-5 text-[#FFBF00]" /> Metode Pembayaran Resmi ADMS
                                 </h3>
 
                                 <div className="space-y-3 mb-6">
@@ -284,12 +284,12 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                         onClick={() => setPaymentMethod('qris')}
                                         className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
                                             paymentMethod === 'qris'
-                                                ? 'bg-teal-500/10 border-teal-500 text-white shadow-md shadow-teal-500/10'
-                                                : (darkMode ? 'bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700' : 'bg-slate-50 border-slate-200 text-slate-700')
+                                                ? 'bg-[#FFBF00]/10 border-[#FFBF00] text-white shadow-md shadow-[#FFBF00]/10'
+                                                : (darkMode ? 'bg-[#071922]/60 border-[#174256] text-slate-300 hover:border-slate-700' : 'bg-slate-50 border-slate-200 text-slate-700')
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shrink-0 shadow-md">
+                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FFBF00] to-amber-600 flex items-center justify-center text-[#0F3040] shrink-0 shadow-md">
                                                 <QrCode className="w-5 h-5" />
                                             </div>
                                             <div>
@@ -302,7 +302,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                             name="payment_method"
                                             checked={paymentMethod === 'qris'}
                                             onChange={() => setPaymentMethod('qris')}
-                                            className="w-4 h-4 accent-teal-500 cursor-pointer"
+                                            className="w-4 h-4 accent-[#FFBF00] cursor-pointer"
                                         />
                                     </label>
 
@@ -311,12 +311,12 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                         onClick={() => setPaymentMethod('transfer_bsi')}
                                         className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
                                             paymentMethod === 'transfer_bsi'
-                                                ? 'bg-teal-500/10 border-teal-500 text-white shadow-md shadow-teal-500/10'
-                                                : (darkMode ? 'bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700' : 'bg-slate-50 border-slate-200 text-slate-700')
+                                                ? 'bg-[#FFBF00]/10 border-[#FFBF00] text-white shadow-md shadow-[#FFBF00]/10'
+                                                : (darkMode ? 'bg-[#071922]/60 border-[#174256] text-slate-300 hover:border-slate-700' : 'bg-slate-50 border-slate-200 text-slate-700')
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-700 flex items-center justify-center text-white shrink-0 shadow-md">
+                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0F3040] to-[#174256] border border-[#FFBF00]/40 flex items-center justify-center text-[#FFBF00] shrink-0 shadow-md">
                                                 <Building2 className="w-5 h-5" />
                                             </div>
                                             <div>
@@ -329,7 +329,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                             name="payment_method"
                                             checked={paymentMethod === 'transfer_bsi'}
                                             onChange={() => setPaymentMethod('transfer_bsi')}
-                                            className="w-4 h-4 accent-teal-500 cursor-pointer"
+                                            className="w-4 h-4 accent-[#FFBF00] cursor-pointer"
                                         />
                                     </label>
 
@@ -338,8 +338,8 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                         onClick={() => setPaymentMethod('transfer_bca')}
                                         className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
                                             paymentMethod === 'transfer_bca'
-                                                ? 'bg-teal-500/10 border-teal-500 text-white shadow-md shadow-teal-500/10'
-                                                : (darkMode ? 'bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700' : 'bg-slate-50 border-slate-200 text-slate-700')
+                                                ? 'bg-[#FFBF00]/10 border-[#FFBF00] text-white shadow-md shadow-[#FFBF00]/10'
+                                                : (darkMode ? 'bg-[#071922]/60 border-[#174256] text-slate-300 hover:border-slate-700' : 'bg-slate-50 border-slate-200 text-slate-700')
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">
@@ -356,7 +356,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                             name="payment_method"
                                             checked={paymentMethod === 'transfer_bca'}
                                             onChange={() => setPaymentMethod('transfer_bca')}
-                                            className="w-4 h-4 accent-teal-500 cursor-pointer"
+                                            className="w-4 h-4 accent-[#FFBF00] cursor-pointer"
                                         />
                                     </label>
                                 </div>
@@ -364,7 +364,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                 {/* Dynamic Instructions Box */}
                                 {paymentMethod === 'qris' && (
                                     <div className={`p-4 rounded-2xl border text-center space-y-3 ${
-                                        darkMode ? 'bg-slate-950/90 border-slate-800' : 'bg-emerald-50/50 border-emerald-200'
+                                        darkMode ? 'bg-[#071922] border-[#174256]' : 'bg-amber-50/50 border-amber-200'
                                     }`}>
                                         <div className="w-48 h-48 mx-auto bg-white p-3 rounded-2xl shadow-md border flex flex-col items-center justify-center">
                                             <img 
@@ -381,18 +381,18 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
 
                                 {paymentMethod === 'transfer_bsi' && (
                                     <div className={`p-4 rounded-2xl border space-y-3 text-xs ${
-                                        darkMode ? 'bg-slate-950/90 border-slate-800' : 'bg-slate-100 border-slate-200'
+                                        darkMode ? 'bg-[#071922] border-[#174256]' : 'bg-slate-100 border-slate-200'
                                     }`}>
-                                        <div className="flex items-center justify-between p-3 bg-slate-900 border border-slate-800 rounded-xl">
+                                        <div className="flex items-center justify-between p-3 bg-[#0F3040] border border-[#174256] rounded-xl">
                                             <div>
                                                 <span className="text-[10px] text-slate-400 block uppercase font-bold">{paymentConfig?.bsi?.name ?? 'Bank Syariah Indonesia (BSI)'}</span>
-                                                <strong className="text-base text-teal-400 font-mono">{paymentConfig?.bsi?.number ?? '...'}</strong>
+                                                <strong className="text-base text-[#FFBF00] font-mono">{paymentConfig?.bsi?.number ?? '...'}</strong>
                                                 <span className="block text-[10px] text-slate-400">a.n. {paymentConfig?.bsi?.account_name ?? 'PT. Armada Digital Marketing Syariah'}</span>
                                             </div>
                                             <button
                                                 type="button"
                                                 onClick={() => handleCopy(paymentConfig?.bsi?.number?.replace(/-/g, '') ?? '', 'bsi')}
-                                                className="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white font-bold text-[10px] rounded-lg flex items-center gap-1 transition-all"
+                                                className="px-3 py-1.5 bg-[#FFBF00] hover:bg-[#ffcc33] text-[#0F3040] font-bold text-[10px] rounded-lg flex items-center gap-1 transition-all"
                                             >
                                                 {copiedText === 'bsi' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                                                 <span>{copiedText === 'bsi' ? 'Tersalin' : 'Salin Rek'}</span>
@@ -403,9 +403,9 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
 
                                 {paymentMethod === 'transfer_bca' && (
                                     <div className={`p-4 rounded-2xl border space-y-3 text-xs ${
-                                        darkMode ? 'bg-slate-950/90 border-slate-800' : 'bg-slate-100 border-slate-200'
+                                        darkMode ? 'bg-[#071922] border-[#174256]' : 'bg-slate-100 border-slate-200'
                                     }`}>
-                                        <div className="flex items-center justify-between p-3 bg-slate-900 border border-slate-800 rounded-xl">
+                                        <div className="flex items-center justify-between p-3 bg-[#0F3040] border border-[#174256] rounded-xl">
                                             <div>
                                                 <span className="text-[10px] text-slate-400 block uppercase font-bold">{paymentConfig?.bca?.name ?? 'Bank BCA'}</span>
                                                 <strong className="text-base text-blue-400 font-mono">{paymentConfig?.bca?.number ?? '...'}</strong>
@@ -430,13 +430,13 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                         <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
                             <div className={`rounded-3xl border p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl ${
                                 darkMode 
-                                    ? 'bg-gradient-to-br from-slate-900 to-[#0c162b] border-slate-800 shadow-black/60' 
+                                    ? 'bg-gradient-to-br from-[#0F3040] to-[#071922] border-[#174256] shadow-black/60' 
                                     : 'bg-white border-slate-200 shadow-xl'
                             }`}>
                                 <h3 className={`font-black text-lg mb-4 flex items-center gap-2 ${
                                     darkMode ? 'text-white' : 'text-slate-900'
                                 }`}>
-                                    <ShoppingBag className="w-5 h-5 text-teal-500" /> Ringkasan Produk ({checkoutItems.length})
+                                    <ShoppingBag className="w-5 h-5 text-[#FFBF00]" /> Ringkasan Produk ({checkoutItems.length})
                                 </h3>
 
                                 {/* Product items list */}

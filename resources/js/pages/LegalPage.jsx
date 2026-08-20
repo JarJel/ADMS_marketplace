@@ -143,7 +143,7 @@ const legalData = {
     }
 };
 
-export default function LegalPage({ type, user, token, darkMode, setDarkMode, onLogout, onNavigate }) {
+export default function LegalPage({ type, user, token, darkMode, setDarkMode, onLogout, onNavigate, cartCount = 0, wishlistCount = 0, notifications = [], setNotifications }) {
     const data = legalData[type] || legalData['terms'];
 
     // Handle SEO tags
@@ -173,6 +173,10 @@ export default function LegalPage({ type, user, token, darkMode, setDarkMode, on
                 onLogout={onLogout} 
                 onNavigate={onNavigate}
                 currentView={`legal_${type}`}
+                cartCount={cartCount}
+                wishlistCount={wishlistCount}
+                notifications={notifications}
+                setNotifications={setNotifications}
             />
 
             {/* 2. Main Content Area */}

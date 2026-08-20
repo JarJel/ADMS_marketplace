@@ -397,23 +397,23 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
 
     const renderSidebar = (closeSidebar) => (
         <div className="space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 text-center shadow-sm">
+            <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 p-6 text-center shadow-sm">
                 <div className="relative w-20 h-20 mx-auto mb-4">
-                    <div className="w-full h-full rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 border border-slate-100 dark:border-slate-700 shadow-sm">
+                    <div className="w-full h-full rounded-full bg-slate-200 dark:bg-navy-800 flex items-center justify-center text-slate-400 dark:text-slate-500 border border-slate-100 dark:border-navy-700 shadow-sm">
                         <User className="w-10 h-10" />
                     </div>
-                    <span className="absolute bottom-0 right-0 bg-teal-600 dark:bg-teal-500 text-white p-1 rounded-full border-2 border-white dark:border-slate-900 shadow-sm">
+                    <span className="absolute bottom-0 right-0 bg-gold-500 text-navy-950 p-1 rounded-full border-2 border-white dark:border-navy-900 shadow-sm">
                         <ShieldCheck className="w-3.5 h-3.5" />
                     </span>
                 </div>
                 <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100">{profileName}</h3>
-                <span className="inline-block bg-indigo-50 dark:bg-indigo-900/30 text-[10px] font-bold text-indigo-700 dark:text-indigo-400 px-3 py-1 rounded-full mt-1.5 uppercase tracking-wider">
+                <span className="inline-block bg-gold-500/10 text-gold-600 dark:text-gold-400 border border-gold-500/20 text-[10px] font-bold px-3 py-1 rounded-full mt-1.5 uppercase tracking-wider">
                     Customer
                 </span>
             </div>
 
             {/* Navigation Menu */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3 shadow-sm space-y-1">
+            <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 p-3 shadow-sm space-y-1">
                 {menuItems.map((item) => (
                     <button
                         key={item.id}
@@ -424,8 +424,8 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                         }}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                             activeTab === item.id 
-                                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/10' 
-                                : 'text-slate-500 dark:text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-800 hover:text-slate-800 dark:text-slate-100 dark:hover:text-slate-200'
+                                ? 'bg-gradient-to-r from-gold-500 to-amber-500 text-navy-950 font-extrabold shadow-md shadow-gold-500/20' 
+                                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-navy-800 hover:text-navy-900 dark:hover:text-gold-400'
                         }`}
                     >
                         {item.icon}
@@ -435,7 +435,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
 
                 <button
                     onClick={onLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all mt-4 border-t border-slate-100 dark:border-slate-800 pt-4 cursor-pointer"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all mt-4 border-t border-slate-100 dark:border-navy-800 pt-4 cursor-pointer"
                 >
                     <LogOut className="w-4 h-4 text-rose-600 dark:text-rose-400" />
                     <span>Keluar Akun</span>
@@ -445,7 +445,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
     );
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans pb-16">
+        <div className="min-h-screen bg-slate-50 dark:bg-navy-950 text-slate-800 dark:text-slate-200 font-sans pb-16">
             <Navbar 
                 user={user} 
                 token={token} 
@@ -466,15 +466,15 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                         {/* 1. Tab Overview */}
                         {activeTab === 'overview' && (
                             <div className="space-y-6">
-                                <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl border border-indigo-950/50 p-8 sm:p-10 shadow-xl text-left">
-                                    <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-                                    <div className="absolute bottom-0 left-10 w-36 h-36 bg-teal-500/5 rounded-full blur-2xl pointer-events-none"></div>
+                                <div className="relative overflow-hidden bg-gradient-to-r from-navy-950 via-navy-900 to-navy-950 rounded-3xl border border-navy-800 p-8 sm:p-10 shadow-xl text-left">
+                                    <div className="absolute top-0 right-0 w-48 h-48 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                                    <div className="absolute bottom-0 left-10 w-36 h-36 bg-gold-400/5 rounded-full blur-2xl pointer-events-none"></div>
                                     <div className="relative z-10 space-y-2">
-                                        <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest bg-indigo-500/20 px-3.5 py-1.5 rounded-full border border-indigo-400/20">
+                                        <span className="text-[10px] font-black text-gold-400 uppercase tracking-widest bg-gold-500/15 px-3.5 py-1.5 rounded-full border border-gold-500/20">
                                             Dashboard Pelanggan
                                         </span>
                                         <h1 className="text-xl sm:text-3xl font-black text-white leading-tight mt-2">
-                                            Halo, <span className="text-transparent bg-gradient-to-r from-indigo-400 to-teal-300 bg-clip-text font-black">{profileName}</span>! Selamat datang kembali.
+                                            Halo, <span className="text-transparent bg-gradient-to-r from-gold-400 via-amber-300 to-gold-500 bg-clip-text font-black">{profileName}</span>! Selamat datang kembali.
                                         </h1>
                                         <p className="text-xs text-slate-300 font-semibold">{today}</p>
                                     </div>
@@ -489,9 +489,9 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             setActiveTab('purchases');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className="group relative overflow-hidden bg-white dark:bg-slate-900 rounded-3xl border border-slate-300 dark:border-slate-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-indigo-500/10 hover:border-indigo-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-gold-500/10 hover:border-gold-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-gold-500/50"
                                     >
-                                        <div className="p-4 bg-indigo-50 dark:bg-indigo-950/40 rounded-2xl text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
+                                        <div className="p-4 bg-gold-500/10 dark:bg-navy-800 rounded-2xl text-gold-500 dark:text-gold-400 border border-gold-500/20 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
                                             <ShoppingBag className="w-6 h-6" />
                                         </div>
                                         <div className="pointer-events-none">
@@ -507,9 +507,9 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             setActiveTab('ads');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className="group relative overflow-hidden bg-white dark:bg-slate-900 rounded-3xl border border-slate-300 dark:border-slate-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-teal-500/10 hover:border-teal-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-gold-500/10 hover:border-gold-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-gold-500/50"
                                     >
-                                        <div className="p-4 bg-teal-50 dark:bg-teal-950/40 rounded-2xl text-teal-600 dark:text-teal-400 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
+                                        <div className="p-4 bg-gold-500/10 dark:bg-navy-800 rounded-2xl text-gold-500 dark:text-gold-400 border border-gold-500/20 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
                                             <Tag className="w-6 h-6" />
                                         </div>
                                         <div className="pointer-events-none">
@@ -525,7 +525,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             setActiveTab('wishlist');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className="group relative overflow-hidden bg-white dark:bg-slate-900 rounded-3xl border border-slate-300 dark:border-slate-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-rose-500/10 hover:border-rose-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-rose-500/50"
+                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-rose-500/10 hover:border-rose-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-rose-500/50"
                                     >
                                         <div className="p-4 bg-rose-50 dark:bg-rose-950/40 rounded-2xl text-rose-600 dark:text-rose-400 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
                                             <Heart className="w-6 h-6" />
@@ -543,9 +543,9 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             setActiveTab('purchases');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className="group relative overflow-hidden bg-white dark:bg-slate-900 rounded-3xl border border-slate-300 dark:border-slate-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-amber-500/10 hover:border-amber-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-gold-500/10 hover:border-gold-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-gold-500/50"
                                     >
-                                        <div className="p-4 bg-amber-50 dark:bg-amber-950/40 rounded-2xl text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
+                                        <div className="p-4 bg-gold-500/10 dark:bg-navy-800 rounded-2xl text-gold-500 dark:text-gold-400 border border-gold-500/20 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
                                             <CreditCard className="w-6 h-6" />
                                         </div>
                                         <div className="pointer-events-none">
@@ -555,16 +555,16 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                     </button>
                                 </div>
 
-                                {/* 1. Recent Transactions Table (Transaksinya di atas) */}
-                                <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-300 dark:border-slate-800 shadow-md shadow-slate-200/70 dark:shadow-none overflow-hidden text-left mb-10">
-                                    <div className="p-6 sm:p-7 border-b-2 border-slate-300 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-900/50">
+                                {/* 1. Recent Transactions Table */}
+                                <div className="bg-white dark:bg-navy-900 rounded-3xl border-2 border-slate-300 dark:border-navy-800 shadow-md shadow-slate-200/70 dark:shadow-none overflow-hidden text-left mb-10">
+                                    <div className="p-6 sm:p-7 border-b-2 border-slate-300 dark:border-navy-800 flex items-center justify-between bg-slate-50/70 dark:bg-navy-950/50">
                                         <div>
                                             <h3 className="font-bold text-lg sm:text-xl text-slate-800 dark:text-slate-100">Transaksi Terbaru</h3>
                                             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Riwayat 3 transaksi terakhir pembelian produk digital Anda.</p>
                                         </div>
                                         <button 
                                             onClick={() => setActiveTab('purchases')}
-                                            className="text-xs sm:text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 font-bold px-4 py-2 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/50 rounded-xl border border-indigo-200 dark:border-indigo-800 transition-colors cursor-pointer"
+                                            className="text-xs sm:text-sm text-gold-500 dark:text-gold-400 font-bold px-4 py-2 bg-gold-500/10 hover:bg-gold-500/20 dark:bg-navy-800 dark:hover:bg-navy-700 rounded-xl border border-gold-500/20 transition-colors cursor-pointer"
                                         >
                                             Lihat Semua
                                         </button>
@@ -572,24 +572,24 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                     <div className="overflow-x-auto">
                                         {purchases && purchases.length > 0 ? (
                                             <table className="w-full text-sm border-collapse">
-                                                <thead className="bg-slate-200/80 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold text-xs uppercase border-b-2 border-slate-300 dark:border-slate-700">
+                                                <thead className="bg-slate-200/80 dark:bg-navy-950 text-slate-800 dark:text-slate-200 font-bold text-xs uppercase border-b-2 border-slate-300 dark:border-navy-800">
                                                     <tr>
-                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">ID Transaksi</th>
-                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Merchant</th>
-                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Tanggal</th>
-                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Total</th>
+                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">ID Transaksi</th>
+                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Merchant</th>
+                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Tanggal</th>
+                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Total</th>
                                                         <th className="px-6 py-4 text-left tracking-wider">Status</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200 font-medium text-sm">
+                                                <tbody className="divide-y divide-slate-200 dark:divide-navy-800 text-slate-800 dark:text-slate-200 font-medium text-sm">
                                                     {purchases.slice(0, 3).map((p) => (
-                                                        <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
-                                                            <td className="px-6 py-4.5 font-medium font-mono text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">
+                                                        <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-navy-800/40 transition-colors">
+                                                            <td className="px-6 py-4.5 font-medium font-mono text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">
                                                                 {p.order_number || (p.id ? (p.id.length > 12 ? `${p.id.substring(0, 8)}...` : p.id) : '-')}
                                                             </td>
-                                                            <td className="px-6 py-4.5 font-medium text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{p.merchant?.name || 'Merchant'}</td>
-                                                            <td className="px-6 py-4.5 text-slate-600 dark:text-slate-400 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
-                                                            <td className="px-6 py-4.5 font-bold text-teal-600 dark:text-teal-400 text-sm sm:text-base border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{formatCurrency(p.total_amount || p.total || 0)}</td>
+                                                            <td className="px-6 py-4.5 font-medium text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{p.merchant?.name || 'Merchant'}</td>
+                                                            <td className="px-6 py-4.5 text-slate-600 dark:text-slate-400 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
+                                                            <td className="px-6 py-4.5 font-bold text-gold-500 dark:text-gold-400 text-sm sm:text-base border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{formatCurrency(p.total_amount || p.total || 0)}</td>
                                                             <td className="px-6 py-4.5">
                                                                 <span className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
                                                                     (p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid' || p.status?.toLowerCase() === 'verified') 
@@ -606,14 +606,14 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                 </tbody>
                                             </table>
                                         ) : (
-                                            <div className="py-12 text-center text-slate-400 text-sm font-medium bg-slate-50/50 dark:bg-slate-900/20">
+                                            <div className="py-12 text-center text-slate-400 text-sm font-medium bg-slate-50/50 dark:bg-navy-950/20">
                                                 Belum ada riwayat transaksi
                                             </div>
                                         )}
                                     </div>
                                 </div>
 
-                                {/* 2. Recommended Products Horizontal Carousel (Bergeser dari Kanan ke Kiri / Kiri ke Kanan) */}
+                                {/* 2. Recommended Products Horizontal Carousel */}
                                 <div className="mb-10 text-left">
                                     <div className="flex items-center justify-between mb-5">
                                         <div>
@@ -623,21 +623,21 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                         <div className="flex items-center gap-2">
                                             <button 
                                                 onClick={() => scrollRecommended('left')}
-                                                className="p-2 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer"
+                                                className="p-2 rounded-xl border border-slate-300 dark:border-navy-800 bg-white dark:bg-navy-900 text-slate-600 dark:text-slate-300 hover:bg-gold-500/10 dark:hover:bg-navy-800 hover:text-gold-500 transition-colors shadow-sm cursor-pointer"
                                                 title="Geser Kiri"
                                             >
                                                 <ChevronLeft className="w-4.5 h-4.5" />
                                             </button>
                                             <button 
                                                 onClick={() => scrollRecommended('right')}
-                                                className="p-2 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition-colors shadow-sm cursor-pointer"
+                                                className="p-2 rounded-xl border border-slate-300 dark:border-navy-800 bg-white dark:bg-navy-900 text-slate-600 dark:text-slate-300 hover:bg-gold-500/10 dark:hover:bg-navy-800 hover:text-gold-500 transition-colors shadow-sm cursor-pointer"
                                                 title="Geser Kanan"
                                             >
                                                 <ChevronRight className="w-4.5 h-4.5" />
                                             </button>
                                             <button 
                                                 onClick={() => onNavigate('classifieds')}
-                                                className="text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 transition-colors ml-2 cursor-pointer"
+                                                className="text-xs sm:text-sm font-bold text-gold-500 hover:text-gold-400 dark:text-gold-400 transition-colors ml-2 cursor-pointer"
                                             >
                                                 Lihat Semua &rarr;
                                             </button>
@@ -656,14 +656,14 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                     setSelectedProduct(prod);
                                                     setIsDetailModalOpen(true);
                                                 }}
-                                                className="min-w-[280px] sm:min-w-[300px] max-w-[320px] flex-shrink-0 snap-start rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden flex flex-col justify-between group transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/10 hover:border-indigo-500/30 relative cursor-pointer"
+                                                className="min-w-[280px] sm:min-w-[300px] max-w-[320px] flex-shrink-0 snap-start rounded-2xl border border-slate-300 dark:border-navy-800 bg-white dark:bg-navy-900 overflow-hidden flex flex-col justify-between group transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-gold-500/10 hover:border-gold-500/40 relative cursor-pointer"
                                             >
                                                 <button 
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         toggleWishlist(prod);
                                                     }}
-                                                    className={`absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-full shadow-sm transition-all cursor-pointer ${
+                                                    className={`absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-navy-900/90 backdrop-blur-sm rounded-full shadow-sm transition-all cursor-pointer ${
                                                         wishlist.some(item => item.id === prod.id || item.product_id === prod.id)
                                                             ? 'text-rose-500 fill-rose-500 scale-110'
                                                             : 'text-slate-400 dark:text-slate-500 hover:text-rose-500'
@@ -673,18 +673,18 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                     <Heart className={`w-4 h-4 ${wishlist.some(item => item.id === prod.id || item.product_id === prod.id) ? 'fill-current text-rose-500' : ''}`} />
                                                 </button>
                                                 <div>
-                                                    <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
+                                                    <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-navy-950 relative">
                                                         <img 
                                                             src={prod.image} 
                                                             alt={prod.title} 
                                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                         />
-                                                        <span className="absolute top-3 left-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur text-xs font-semibold text-teal-600 dark:text-teal-400 px-2.5 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                                                        <span className="absolute top-3 left-3 bg-white/95 dark:bg-navy-950/95 backdrop-blur text-xs font-semibold text-gold-600 dark:text-gold-400 px-2.5 py-0.5 rounded-lg border border-gold-200 dark:border-gold-500/30 shadow-sm">
                                                             {prod.category}
                                                         </span>
                                                     </div>
                                                     <div className="p-4.5 flex flex-col gap-2">
-                                                        <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 min-h-[44px] group-hover:text-indigo-500 transition-colors">{prod.title}</h4>
+                                                        <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 min-h-[44px] group-hover:text-gold-500 transition-colors">{prod.title}</h4>
                                                         
                                                         <div className="flex items-center gap-1.5 text-xs text-amber-500">
                                                             <Star className="w-3.5 h-3.5 fill-current" />
@@ -699,15 +699,15 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                     </div>
                                                 </div>
 
-                                                <div className="p-4.5 pt-2.5 flex items-center justify-between border-t border-slate-200 dark:border-slate-800/50 mt-2">
-                                                    <span className="font-bold text-sm sm:text-base text-teal-600 dark:text-teal-400">{formatCurrency(prod.price)}</span>
+                                                <div className="p-4.5 pt-2.5 flex items-center justify-between border-t border-slate-200 dark:border-navy-800/50 mt-2">
+                                                    <span className="font-bold text-sm sm:text-base text-gold-500 dark:text-gold-400">{formatCurrency(prod.price)}</span>
                                                     <button 
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             setSelectedProduct(prod);
                                                             setIsDetailModalOpen(true);
                                                         }}
-                                                        className="bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-xs py-2 px-3.5 sm:px-4 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+                                                        className="bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-400 hover:to-amber-400 text-navy-950 font-extrabold text-xs py-2 px-3.5 sm:px-4 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
                                                         title="Buka Detail & Tambah ke Keranjang"
                                                     >
                                                         <ShoppingCart className="w-3.5 h-3.5" />
@@ -723,33 +723,33 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
 
                         {/* 2. Tab Purchases (Transaksi Saya) */}
                         {activeTab === 'purchases' && (
-                            <div className="bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-300 dark:border-slate-800 shadow-md shadow-slate-200/70 dark:shadow-none overflow-hidden text-left">
-                                <div className="p-6 sm:p-7 border-b-2 border-slate-300 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50">
+                            <div className="bg-white dark:bg-navy-900 rounded-3xl border-2 border-slate-300 dark:border-navy-800 shadow-md shadow-slate-200/70 dark:shadow-none overflow-hidden text-left">
+                                <div className="p-6 sm:p-7 border-b-2 border-slate-300 dark:border-navy-800 bg-slate-50/70 dark:bg-navy-950/50">
                                     <h3 className="font-bold text-lg sm:text-xl text-slate-800 dark:text-slate-100">Daftar Transaksi Saya</h3>
                                     <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Riwayat lengkap pembelian produk digital Anda.</p>
                                 </div>
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-sm border-collapse">
-                                        <thead className="bg-slate-200/80 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold text-xs uppercase border-b-2 border-slate-300 dark:border-slate-700">
+                                        <thead className="bg-slate-200/80 dark:bg-navy-950 text-slate-800 dark:text-slate-200 font-bold text-xs uppercase border-b-2 border-slate-300 dark:border-navy-800">
                                             <tr>
-                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">ID Transaksi</th>
-                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Merchant</th>
-                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Tanggal</th>
-                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Total</th>
-                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-slate-700/60 last:border-r-0">Status</th>
+                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">ID Transaksi</th>
+                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Merchant</th>
+                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Tanggal</th>
+                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Total</th>
+                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Status</th>
                                                 <th className="px-6 py-4 text-center tracking-wider">Aksi</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200 font-medium text-sm">
+                                        <tbody className="divide-y divide-slate-200 dark:divide-navy-800 text-slate-800 dark:text-slate-200 font-medium text-sm">
                                             {purchases.map((p) => (
-                                                <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
-                                                    <td className="px-6 py-4.5 font-medium font-mono text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">
+                                                <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-navy-800/40 transition-colors">
+                                                    <td className="px-6 py-4.5 font-medium font-mono text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">
                                                         {p.order_number || (p.id ? (p.id.length > 12 ? `${p.id.substring(0, 8)}...` : p.id) : '-')}
                                                     </td>
-                                                    <td className="px-6 py-4.5 font-medium text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{p.merchant?.name || 'Merchant'}</td>
-                                                    <td className="px-6 py-4.5 text-slate-600 dark:text-slate-400 text-sm border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
-                                                    <td className="px-6 py-4.5 font-bold text-teal-600 dark:text-teal-400 text-sm sm:text-base border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">{formatCurrency(p.total_amount || p.total || 0)}</td>
-                                                    <td className="px-6 py-4.5 border-r border-slate-200/70 dark:border-slate-800/50 last:border-r-0">
+                                                    <td className="px-6 py-4.5 font-medium text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{p.merchant?.name || 'Merchant'}</td>
+                                                    <td className="px-6 py-4.5 text-slate-600 dark:text-slate-400 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
+                                                    <td className="px-6 py-4.5 font-bold text-gold-500 dark:text-gold-400 text-sm sm:text-base border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{formatCurrency(p.total_amount || p.total || 0)}</td>
+                                                    <td className="px-6 py-4.5 border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">
                                                         <span className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
                                                             (p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid' || p.status?.toLowerCase() === 'verified') 
                                                                 ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30' 
@@ -762,13 +762,13 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                     </td>
                                                     <td className="px-6 py-4.5 text-center">
                                                         <div className="flex justify-center gap-2">
-                                                            <button className="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm border border-slate-300 dark:border-slate-700">
+                                                            <button className="px-3.5 py-1.5 bg-slate-100 dark:bg-navy-800 hover:bg-slate-200 dark:hover:bg-navy-700 text-slate-700 dark:text-slate-200 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm border border-slate-300 dark:border-navy-700">
                                                                 <FileText className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                                                                 Invoice
                                                             </button>
                                                             {(p.status === 'completed' || p.status === 'PAID') && (
-                                                                <button className="px-3.5 py-1.5 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm border border-indigo-300 dark:border-indigo-800">
-                                                                    <Star className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 fill-current" />
+                                                                <button className="px-3.5 py-1.5 bg-gold-500/10 dark:bg-navy-800 hover:bg-gold-500/20 text-gold-600 dark:text-gold-400 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm border border-gold-500/30">
+                                                                    <Star className="w-3.5 h-3.5 text-gold-500 dark:text-gold-400 fill-current" />
                                                                     Rating
                                                                 </button>
                                                             )}
@@ -785,26 +785,26 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                         {/* 3. Tab Downloads (Unduhan File) */}
                         {activeTab === 'downloads' && (
                             <div className="space-y-6 text-left">
-                                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+                                <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 p-6 shadow-sm">
                                     <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100">Aset Digital Siap Unduh</h3>
                                     <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Semua file produk yang telah Anda beli secara amanah.</p>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     {downloads.map((d) => (
-                                        <div key={d.id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
-                                            <div className="aspect-[16/10] w-full bg-slate-100 relative">
+                                        <div key={d.id} className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+                                            <div className="aspect-[16/10] w-full bg-slate-100 dark:bg-navy-950 relative">
                                                 <img src={d.image} alt={d.title} className="w-full h-full object-cover" />
                                             </div>
                                             <div className="p-5 space-y-3 flex-1 flex flex-col justify-between">
                                                 <div className="space-y-1">
                                                     <h4 className="font-extrabold text-xs text-slate-800 dark:text-slate-100 leading-snug line-clamp-2">{d.title}</h4>
                                                     <span className="block text-[10px] text-slate-400 dark:text-slate-500">Oleh: <span className="font-semibold">{d.merchant}</span></span>
-                                                    <span className="inline-block bg-indigo-50 text-[9px] font-bold text-indigo-600 px-2 py-0.5 rounded-md mt-1">{d.size}</span>
+                                                    <span className="inline-block bg-gold-500/10 text-[9px] font-bold text-gold-500 px-2 py-0.5 rounded-md mt-1 border border-gold-500/20">{d.size}</span>
                                                 </div>
 
-                                                <a href={`/api/customer/orders/items/${d.order_item_id}/download`} target="_blank" rel="noreferrer" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer mt-4 shadow-sm">
-                                                    <Download className="w-4 h-4" />
+                                                <a href={`/api/customer/orders/items/${d.order_item_id}/download`} target="_blank" rel="noreferrer" className="w-full bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-400 hover:to-amber-400 text-navy-950 font-extrabold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer mt-4 shadow-md shadow-gold-500/20">
+                                                    <Download className="w-4 h-4 text-navy-950" />
                                                     <span>Unduh File Sekarang</span>
                                                 </a>
                                             </div>
@@ -826,7 +826,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                         alt="Banner Iklan" 
                                         className="w-full h-full object-cover transition-opacity duration-500 ease-in-out"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-r from-teal-900/90 via-teal-900/60 to-transparent flex flex-col justify-center p-6 sm:p-10 transition-all duration-500">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-navy-950/90 via-navy-900/70 to-transparent flex flex-col justify-center p-6 sm:p-10 transition-all duration-500">
                                         <h2 className="text-xl sm:text-3xl font-extrabold text-white mb-1 sm:mb-2 leading-tight">
                                             {bannerSlides[currentSlide].title.split('\n').map((line, i) => (
                                                 <React.Fragment key={i}>
@@ -834,13 +834,13 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                 </React.Fragment>
                                             ))}
                                         </h2>
-                                        <p className="text-teal-100 text-[10px] sm:text-xs max-w-sm hidden sm:block mb-4 line-clamp-2">
+                                        <p className="text-slate-300 text-[10px] sm:text-xs max-w-sm hidden sm:block mb-4 line-clamp-2">
                                             {bannerSlides[currentSlide].subtitle}
                                         </p>
                                         <div className="w-fit mt-2 sm:mt-0">
                                             <button 
                                                 onClick={() => onNavigate('create_ad')}
-                                                className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold text-xs py-2 px-5 rounded shadow-sm transition-colors cursor-pointer"
+                                                className="bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-400 hover:to-amber-400 text-navy-950 font-extrabold text-xs py-2 px-5 rounded shadow-md shadow-gold-500/20 transition-all cursor-pointer"
                                             >
                                                 {bannerSlides[currentSlide].ctaText}
                                             </button>
@@ -852,7 +852,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             <div 
                                                 key={idx} 
                                                 onClick={() => setCurrentSlide(idx)}
-                                                className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === idx ? 'w-4 bg-white' : 'w-2 bg-white/40 hover:bg-white/60'}`}
+                                                className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === idx ? 'w-4 bg-gold-400' : 'w-2 bg-white/40 hover:bg-white/60'}`}
                                             ></div>
                                         ))}
                                     </div>
@@ -860,24 +860,24 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
 
                                 {editingAd && (
                                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                                        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl w-full max-w-lg">
-                                            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                                        <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 shadow-2xl w-full max-w-lg">
+                                            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-navy-800">
                                                 <h3 className="font-extrabold text-slate-800 dark:text-white text-base">Edit Iklan</h3>
                                                 <button onClick={() => setEditingAd(null)} className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xl font-bold leading-none">&times;</button>
                                             </div>
                                             <form onSubmit={handleSaveEditAd} className="p-6 space-y-4">
                                                 <div>
                                                     <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Judul Iklan</label>
-                                                    <input type="text" value={editForm.title} onChange={e => setEditForm(p => ({ ...p, title: e.target.value }))} required className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                                    <input type="text" value={editForm.title} onChange={e => setEditForm(p => ({ ...p, title: e.target.value }))} required className="w-full border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold-500" />
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-3">
                                                     <div>
                                                         <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Harga (Rp)</label>
-                                                        <input type="number" value={editForm.price} onChange={e => setEditForm(p => ({ ...p, price: e.target.value }))} className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                                        <input type="number" value={editForm.price} onChange={e => setEditForm(p => ({ ...p, price: e.target.value }))} className="w-full border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold-500" />
                                                     </div>
                                                     <div>
                                                         <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Kondisi</label>
-                                                        <select value={editForm.condition} onChange={e => setEditForm(p => ({ ...p, condition: e.target.value }))} className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500">
+                                                        <select value={editForm.condition} onChange={e => setEditForm(p => ({ ...p, condition: e.target.value }))} className="w-full border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold-500">
                                                             <option value="baru">Baru</option>
                                                             <option value="bekas">Bekas</option>
                                                         </select>
@@ -885,26 +885,26 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                 </div>
                                                 <div>
                                                     <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Lokasi</label>
-                                                    <input type="text" value={editForm.location} onChange={e => setEditForm(p => ({ ...p, location: e.target.value }))} required className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                                    <input type="text" value={editForm.location} onChange={e => setEditForm(p => ({ ...p, location: e.target.value }))} required className="w-full border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold-500" />
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-3">
                                                     <div>
                                                         <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Nama Kontak</label>
-                                                        <input type="text" value={editForm.contact_name} onChange={e => setEditForm(p => ({ ...p, contact_name: e.target.value }))} required className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                                        <input type="text" value={editForm.contact_name} onChange={e => setEditForm(p => ({ ...p, contact_name: e.target.value }))} required className="w-full border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold-500" />
                                                     </div>
                                                     <div>
                                                         <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">WhatsApp</label>
-                                                        <input type="text" value={editForm.whatsapp} onChange={e => setEditForm(p => ({ ...p, whatsapp: e.target.value }))} required className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500" />
+                                                        <input type="text" value={editForm.whatsapp} onChange={e => setEditForm(p => ({ ...p, whatsapp: e.target.value }))} required className="w-full border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold-500" />
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Deskripsi</label>
-                                                    <textarea value={editForm.description} onChange={e => setEditForm(p => ({ ...p, description: e.target.value }))} rows={3} required className="w-full border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none" />
+                                                    <textarea value={editForm.description} onChange={e => setEditForm(p => ({ ...p, description: e.target.value }))} rows={3} required className="w-full border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold-500 resize-none" />
                                                 </div>
                                                 {editMsg && <p className="text-red-500 text-xs font-semibold">{editMsg}</p>}
                                                 <div className="flex justify-end gap-2 pt-2">
-                                                    <button type="button" onClick={() => setEditingAd(null)} className="px-5 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors">Batal</button>
-                                                    <button type="submit" disabled={editSaving} className="px-5 py-2.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-60 text-white text-xs font-bold rounded-xl transition-colors">{editSaving ? 'Menyimpan...' : 'Simpan Perubahan'}</button>
+                                                    <button type="button" onClick={() => setEditingAd(null)} className="px-5 py-2.5 bg-slate-100 dark:bg-navy-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors">Batal</button>
+                                                    <button type="submit" disabled={editSaving} className="px-5 py-2.5 bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-400 hover:to-amber-400 text-navy-950 text-xs font-extrabold rounded-xl transition-all shadow-md shadow-gold-500/20">{editSaving ? 'Menyimpan...' : 'Simpan Perubahan'}</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -913,8 +913,8 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
 
                                 {viewingAd && (
                                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                                        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative">
-                                            <div className="bg-white dark:bg-slate-900 z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700 shrink-0 rounded-t-2xl">
+                                        <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative">
+                                            <div className="bg-white dark:bg-navy-900 z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-navy-800 shrink-0 rounded-t-2xl">
                                                 <h3 className="font-extrabold text-slate-800 dark:text-white text-lg">Detail Iklan</h3>
                                                 <button onClick={() => { setViewingAd(null); setSelectedAdImage(0); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-2xl font-bold leading-none cursor-pointer">&times;</button>
                                             </div>
@@ -928,7 +928,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                             
                                                     return (
                                                         <>
-                                                            <div className="w-full h-64 sm:h-80 rounded-xl overflow-hidden mb-4 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                                            <div className="w-full h-64 sm:h-80 rounded-xl overflow-hidden mb-4 bg-slate-100 dark:bg-navy-950 border border-slate-200 dark:border-navy-800">
                                                                 <img 
                                                                     src={adImages[selectedAdImage] || adImages[0]} 
                                                                     onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/600x400/e2e8f0/475569?text=No+Image`; }}
@@ -937,12 +937,12 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                                 />
                                                             </div>
                                                             {adImages.length > 1 && (
-                                                                <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
+                                                                <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-navy-800">
                                                                     {adImages.map((img, idx) => (
                                                                         <div 
                                                                             key={idx}
                                                                             onClick={() => setSelectedAdImage(idx)}
-                                                                            className={`w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-lg overflow-hidden border-2 cursor-pointer transition-all duration-200 ${selectedAdImage === idx ? 'border-teal-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                                                                            className={`w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-lg overflow-hidden border-2 cursor-pointer transition-all duration-200 ${selectedAdImage === idx ? 'border-gold-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
                                                                         >
                                                                             <img src={img} onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/100x100/e2e8f0/475569?text=Img`; }} alt={`${viewingAd.title} ${idx + 1}`} className="w-full h-full object-cover" />
                                                                         </div>
@@ -954,16 +954,16 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                 })()}
                                                 <h2 className="text-2xl font-extrabold text-slate-800 dark:text-white mb-2">{viewingAd.title}</h2>
                                                 {viewingAd.price && (
-                                                    <div className="text-xl font-bold text-teal-600 dark:text-teal-400 mb-4">
+                                                    <div className="text-xl font-bold text-gold-500 dark:text-gold-400 mb-4">
                                                         Rp {Number(viewingAd.price).toLocaleString('id-ID')}
                                                     </div>
                                                 )}
                                                 
-                                                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 dark:text-slate-400 mb-6 pb-6 border-b border-slate-200 dark:border-slate-700">
-                                                    <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {viewingAd.created_at ? new Date(viewingAd.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : 'Hari ini'}</span>
-                                                    <span className="flex items-center gap-1.5"><Tag className="w-4 h-4" /> {viewingAd.category?.name || viewingAd.category}</span>
-                                                    <span className="flex items-center gap-1.5"><User className="w-4 h-4" /> {viewingAd.contact_name || viewingAd.merchant?.name || user?.name || 'Pengiklan'}</span>
-                                                    <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> {viewingAd.location || 'Lokasi tidak diketahui'}</span>
+                                                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 dark:text-slate-400 mb-6 pb-6 border-b border-slate-200 dark:border-navy-800">
+                                                    <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-gold-500" /> {viewingAd.created_at ? new Date(viewingAd.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : 'Hari ini'}</span>
+                                                    <span className="flex items-center gap-1.5"><Tag className="w-4 h-4 text-gold-500" /> {viewingAd.category?.name || viewingAd.category}</span>
+                                                    <span className="flex items-center gap-1.5"><User className="w-4 h-4 text-gold-500" /> {viewingAd.contact_name || viewingAd.merchant?.name || user?.name || 'Pengiklan'}</span>
+                                                    <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-gold-500" /> {viewingAd.location || 'Lokasi tidak diketahui'}</span>
                                                 </div>
 
                                                 <div className="mb-4">
@@ -974,7 +974,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                 </div>
                                             </div>
 
-                                            <div className="bg-slate-50 dark:bg-slate-800 p-4 sm:p-6 border-t border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 rounded-b-2xl">
+                                            <div className="bg-slate-50 dark:bg-navy-950 p-4 sm:p-6 border-t border-slate-200 dark:border-navy-800 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 rounded-b-2xl">
                                                 <div className="text-sm text-slate-600 dark:text-slate-400">
                                                     Penjual: <span className="font-bold text-slate-800 dark:text-white">{viewingAd.contact_name || viewingAd.merchant?.name || user?.name || 'Pengiklan'}</span>
                                                 </div>
@@ -992,34 +992,34 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                     </div>
                                 )}
 
-                                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                                    <div className="bg-slate-50 dark:bg-slate-800 p-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
-                                        <RefreshCw className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                                <div className="bg-white dark:bg-navy-900 border border-slate-200 dark:border-navy-800 rounded-2xl overflow-hidden shadow-sm">
+                                    <div className="bg-slate-50 dark:bg-navy-950 p-4 border-b border-slate-200 dark:border-navy-800 flex items-center gap-2">
+                                        <RefreshCw className="w-4 h-4 text-gold-500 dark:text-gold-400" />
                                         <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">Iklan Baris Saya</h3>
                                     </div>
-                                    <div className="divide-y divide-slate-200 dark:divide-slate-800">
+                                    <div className="divide-y divide-slate-200 dark:divide-navy-800">
                                         {advertisements.map((ad) => (
                                             <div key={ad.id} className="p-4 flex flex-col sm:flex-row gap-4">
-                                                <div className="w-full sm:w-[130px] h-[100px] shrink-0 border border-slate-200 dark:border-slate-700 p-1 bg-white dark:bg-slate-800">
+                                                <div className="w-full sm:w-[130px] h-[100px] shrink-0 border border-slate-200 dark:border-navy-800 p-1 bg-white dark:bg-navy-950 rounded-xl overflow-hidden">
                                                     <img 
                                                         src={ad.media?.[0]?.url || ad.images?.[0]?.url || ad.image_url || ad.image || ad.thumbnail || `https://picsum.photos/seed/ad-${ad.id || Math.random()}/200/150`} 
                                                         onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/200x150/e2e8f0/475569?text=No+Image`; }}
                                                         alt={ad.title} 
-                                                        className="w-full h-full object-cover"
+                                                        className="w-full h-full object-cover rounded-lg"
                                                     />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <h4 className="font-semibold text-[15px] text-teal-600 dark:text-teal-400 hover:underline cursor-pointer leading-tight mb-1 truncate">{ad.title}</h4>
+                                                    <h4 className="font-semibold text-[15px] text-gold-500 dark:text-gold-400 hover:underline cursor-pointer leading-tight mb-1 truncate">{ad.title}</h4>
                                                     
                                                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500 dark:text-slate-400 mb-2">
                                                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {ad.created_at ? new Date(ad.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : 'Hari ini'}</span>
-                                                        <span className="flex items-center gap-1"><Tag className="w-3 h-3" /> <span className="text-teal-600 dark:text-teal-400">{ad.category?.name || ad.category}</span></span>
+                                                        <span className="flex items-center gap-1"><Tag className="w-3 h-3" /> <span className="text-gold-500 dark:text-gold-400">{ad.category?.name || ad.category}</span></span>
                                                         <span className="flex items-center gap-1"><User className="w-3 h-3" /> {ad.contact_name || ad.merchant?.name || user?.name || 'Pengiklan'}</span>
                                                         <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {ad.location || 'Lokasi tidak diketahui'}</span>
                                                     </div>
                                                     
                                                     <p className="text-[12px] text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">
-                                                        {ad.description || 'Tidak ada deskripsi yang tersedia untuk iklan ini. Silakan tambahkan deskripsi agar pembeli lebih tertarik.'} <span onClick={() => setViewingAd(ad)} className="text-teal-600 dark:text-teal-400 font-semibold cursor-pointer whitespace-nowrap hover:underline">Selengkapnya &gt;</span>
+                                                        {ad.description || 'Tidak ada deskripsi yang tersedia untuk iklan ini.'} <span onClick={() => setViewingAd(ad)} className="text-gold-500 dark:text-gold-400 font-semibold cursor-pointer whitespace-nowrap hover:underline">Selengkapnya &gt;</span>
                                                     </p>
                                                 </div>
                                             </div>
@@ -1030,40 +1030,40 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                             
                             {/* Right Column: Blog / Tips Sidebar */}
                             <div className="lg:col-span-1 space-y-6">
-                                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+                                    <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 p-5 shadow-sm">
                                         <div className="flex items-center gap-2 mb-4">
-                                            <FileText className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                                            <FileText className="w-5 h-5 text-gold-500 dark:text-gold-400" />
                                             <h3 className="font-extrabold text-slate-800 dark:text-white text-base">Artikel & Tips Bisnis</h3>
                                         </div>
                                         <div className="space-y-4">
                                             {/* Blog Card 1 */}
                                             <a href="#" className="block group">
-                                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-slate-100">
+                                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-slate-100 dark:bg-navy-950">
                                                     <img src="https://images.unsplash.com/photo-1432828684209-661664157b85?w=600&auto=format&fit=crop&q=80" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400/e2e8f0/475569?text=Tips+Bisnis'; }} alt="Blog" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                                 </div>
-                                                <span className="text-[10px] font-bold text-amber-500 mb-1 block uppercase tracking-wider">Strategi Jualan</span>
-                                                <h4 className="font-bold text-slate-800 dark:text-slate-100 text-sm leading-tight group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">5 Cara Membuat Deskripsi Iklan yang Menarik Pembeli</h4>
+                                                <span className="text-[10px] font-bold text-gold-500 mb-1 block uppercase tracking-wider">Strategi Jualan</span>
+                                                <h4 className="font-bold text-slate-800 dark:text-slate-100 text-sm leading-tight group-hover:text-gold-500 dark:group-hover:text-gold-400 transition-colors">5 Cara Membuat Deskripsi Iklan yang Menarik Pembeli</h4>
                                                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Pelajari teknik copywriting sederhana untuk meningkatkan konversi penjualan Anda secara drastis.</p>
                                             </a>
-                                            <hr className="border-slate-100 dark:border-slate-800" />
+                                            <hr className="border-slate-100 dark:border-navy-800" />
                                             {/* Blog Card 2 */}
                                             <a href="#" className="block group">
-                                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-slate-100">
+                                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-slate-100 dark:bg-navy-950">
                                                     <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&auto=format&fit=crop&q=80" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400/e2e8f0/475569?text=Panduan'; }} alt="Blog" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                                 </div>
-                                                <span className="text-[10px] font-bold text-amber-500 mb-1 block uppercase tracking-wider">Panduan</span>
-                                                <h4 className="font-bold text-slate-800 dark:text-slate-100 text-sm leading-tight group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">Cara Memfoto Produk Hanya Bermodal Smartphone</h4>
+                                                <span className="text-[10px] font-bold text-gold-500 mb-1 block uppercase tracking-wider">Panduan</span>
+                                                <h4 className="font-bold text-slate-800 dark:text-slate-100 text-sm leading-tight group-hover:text-gold-500 dark:group-hover:text-gold-400 transition-colors">Cara Memfoto Produk Hanya Bermodal Smartphone</h4>
                                                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Tidak perlu kamera mahal. Gunakan teknik pencahayaan ini untuk hasil foto produk profesional.</p>
                                             </a>
                                         </div>
                                     </div>
 
                                     {/* Info Panel Mini */}
-                                    <div className="bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl p-5 text-white shadow-lg relative overflow-hidden">
-                                        <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
-                                        <h4 className="font-extrabold text-lg mb-2">Butuh Bantuan?</h4>
-                                        <p className="text-teal-100 text-xs mb-4">Tim support kami siap membantu kendala Anda 24/7. Jangan ragu untuk menghubungi kami.</p>
-                                        <a href="https://wa.me/6281121211933" target="_blank" rel="noopener noreferrer" className="block text-center w-full py-2.5 bg-white text-teal-700 hover:bg-slate-50 font-bold text-xs rounded-xl transition-colors shadow-sm">Hubungi CS Sekarang</a>
+                                    <div className="bg-gradient-to-br from-navy-900 via-navy-800 to-navy-950 border border-navy-700 rounded-2xl p-5 text-white shadow-lg relative overflow-hidden">
+                                        <div className="absolute -top-4 -right-4 w-24 h-24 bg-gold-500/10 rounded-full blur-2xl"></div>
+                                        <h4 className="font-extrabold text-lg mb-2 text-white">Butuh Bantuan?</h4>
+                                        <p className="text-slate-300 text-xs mb-4">Tim support kami siap membantu kendala Anda 24/7. Jangan ragu untuk menghubungi kami.</p>
+                                        <a href="https://wa.me/6281121211933" target="_blank" rel="noopener noreferrer" className="block text-center w-full py-2.5 bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-400 hover:to-amber-400 text-navy-950 font-extrabold text-xs rounded-xl transition-all shadow-md shadow-gold-500/20">Hubungi CS Sekarang</a>
                                     </div>
                                 </div>
                             </div>
@@ -1072,14 +1072,14 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                         {/* 5. Tab Wishlist */}
                         {activeTab === 'wishlist' && (
                             <div className="space-y-6 text-left">
-                                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+                                <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 p-6 shadow-sm">
                                     <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100">Favorit & Wishlist</h3>
                                     <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Produk dan iklan baris yang Anda simpan untuk dibeli nanti.</p>
                                 </div>
 
                                 {wishlist.length === 0 ? (
-                                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-16 text-center shadow-sm">
-                                        <Heart className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+                                    <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 p-16 text-center shadow-sm">
+                                        <Heart className="w-12 h-12 text-slate-300 dark:text-navy-700 mx-auto mb-3" />
                                         <h4 className="font-extrabold text-slate-700 dark:text-slate-200 text-sm">Wishlist Anda Kosong</h4>
                                         <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-xs mx-auto">Mulai cari produk halal pilihan dan tambahkan ke favorit Anda.</p>
                                     </div>
@@ -1088,18 +1088,18 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                         {wishlist.map((item) => {
                                             const product = item.product || item;
                                             return (
-                                                <div key={item.id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex items-center justify-between p-4 gap-4 relative group">
+                                                <div key={item.id} className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 overflow-hidden shadow-sm flex items-center justify-between p-4 gap-4 relative group">
                                                     <div className="flex items-center gap-4">
-                                                        <img src={product.thumbnail || product.image || 'https://via.placeholder.com/150'} alt={product.title} className="w-16 h-16 rounded-xl object-cover border border-slate-100 dark:border-slate-800" />
+                                                        <img src={product.thumbnail || product.image || 'https://via.placeholder.com/150'} alt={product.title} className="w-16 h-16 rounded-xl object-cover border border-slate-100 dark:border-navy-800" />
                                                         <div className="space-y-1">
                                                             <h4 className="font-extrabold text-xs text-slate-800 dark:text-slate-100 leading-snug line-clamp-1">{product.title}</h4>
-                                                            <span className="block font-black text-sm text-teal-600">{formatCurrency(product.price)}</span>
+                                                            <span className="block font-black text-sm text-gold-500 dark:text-gold-400">{formatCurrency(product.price)}</span>
                                                         </div>
                                                     </div>
 
                                                     <button 
                                                         onClick={() => handleRemoveFromWishlist(item.id)}
-                                                        className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition-colors shadow-sm cursor-pointer"
+                                                        className="p-2 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 rounded-xl hover:bg-rose-100 transition-colors shadow-sm cursor-pointer border border-rose-500/20"
                                                         title="Hapus dari Favorit"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -1114,37 +1114,37 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
 
                         {/* 6. Tab Settings (Pengaturan Akun) */}
                         {activeTab === 'settings' && (
-                            <form onSubmit={handleProfileSave} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8 space-y-8 text-left">
+                            <form onSubmit={handleProfileSave} className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 shadow-sm p-6 sm:p-8 space-y-8 text-left">
                                 <div>
                                     <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100">Pengaturan Profil</h3>
                                     <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Perbarui informasi pribadi dan keamanan kata sandi Anda.</p>
                                 </div>
 
                                 {saveSuccess && (
-                                    <div className="p-4 rounded-xl bg-teal-50 border border-teal-100 text-teal-800 text-xs font-bold flex items-center gap-2">
-                                        <Check className="w-4 h-4 text-teal-600" />
+                                    <div className="p-4 rounded-xl bg-gold-500/10 border border-gold-500/30 text-gold-600 dark:text-gold-400 text-xs font-bold flex items-center gap-2">
+                                        <Check className="w-4 h-4 text-gold-500" />
                                         Profil Anda berhasil diperbarui dan disimpan!
                                     </div>
                                 )}
                                 {saveError && (
-                                    <div className="p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-xs font-bold">
+                                    <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-xs font-bold">
                                         {saveError}
                                     </div>
                                 )}
 
                                 {/* Profile Photo Upload UI */}
-                                <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-slate-100 dark:border-slate-800">
+                                <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-slate-100 dark:border-navy-800">
                                     {avatarUrl ? (
-                                        <img src={avatarUrl} alt="Profile Preview" className="w-16 h-16 rounded-full object-cover border border-slate-100 dark:border-slate-800 shadow-sm" />
+                                        <img src={avatarUrl} alt="Profile Preview" className="w-16 h-16 rounded-full object-cover border border-gold-500/40 shadow-sm" />
                                     ) : (
-                                        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700">
+                                        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-navy-800 flex items-center justify-center border border-slate-200 dark:border-navy-700">
                                             <User className="w-8 h-8 text-slate-400" />
                                         </div>
                                     )}
                                     <div className="space-y-1 text-center sm:text-left">
                                         <input ref={avatarInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleAvatarUpload} />
-                                        <button type="button" onClick={() => avatarInputRef.current?.click()} className="px-4 py-2 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
-                                            <Upload className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                                        <button type="button" onClick={() => avatarInputRef.current?.click()} className="px-4 py-2 border border-slate-200 dark:border-navy-700 hover:bg-slate-50 dark:bg-navy-800 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
+                                            <Upload className="w-4 h-4 text-gold-500" />
                                             Unggah Foto Baru
                                         </button>
                                         <span className="block text-[10px] text-slate-400 dark:text-slate-500">JPG, PNG, atau WEBP. Maks 2MB.</span>
@@ -1154,82 +1154,82 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                 {/* Form Grid */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-4">
-                                        <h4 className="font-extrabold text-xs text-slate-800 dark:text-slate-100 pb-2 border-b border-slate-100 dark:border-slate-800">Detail Personal</h4>
+                                        <h4 className="font-extrabold text-xs text-slate-800 dark:text-slate-100 pb-2 border-b border-slate-100 dark:border-navy-800">Detail Personal</h4>
                                         <div>
-                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 mb-1">Nama Lengkap</label>
+                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Nama Lengkap</label>
                                             <input 
                                                 type="text" 
                                                 required
                                                 value={profileName}
                                                 onChange={(e) => setProfileName(e.target.value)}
-                                                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                                                className="w-full bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-colors"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 mb-1">Nomor Telepon</label>
+                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Nomor Telepon</label>
                                             <input 
                                                 type="text" 
                                                 required
                                                 value={profilePhone}
                                                 onChange={(e) => setProfilePhone(e.target.value)}
-                                                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                                                className="w-full bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-colors"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 mb-1">Alamat Email</label>
+                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Alamat Email</label>
                                             <input 
                                                 type="email" 
                                                 required
                                                 value={profileEmail}
                                                 onChange={(e) => setProfileEmail(e.target.value)}
-                                                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                                                className="w-full bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-colors"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-4">
-                                        <h4 className="font-extrabold text-xs text-slate-800 dark:text-slate-100 pb-2 border-b border-slate-100 dark:border-slate-800">Ganti Kata Sandi</h4>
+                                        <h4 className="font-extrabold text-xs text-slate-800 dark:text-slate-100 pb-2 border-b border-slate-100 dark:border-navy-800">Ganti Kata Sandi</h4>
                                         <div>
-                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 mb-1">Kata Sandi Lama</label>
+                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Kata Sandi Lama</label>
                                             <input 
                                                 type="password" 
                                                 value={oldPassword}
                                                 onChange={(e) => setOldPassword(e.target.value)}
-                                                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                                                className="w-full bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-colors"
                                                 placeholder="••••••••"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 mb-1">Kata Sandi Baru</label>
+                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Kata Sandi Baru</label>
                                             <input 
                                                 type="password" 
                                                 value={newPassword}
                                                 onChange={(e) => setNewPassword(e.target.value)}
-                                                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                                                className="w-full bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-colors"
                                                 placeholder="Minimal 8 karakter"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 dark:text-slate-500 mb-1">Konfirmasi Kata Sandi Baru</label>
+                                            <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Konfirmasi Kata Sandi Baru</label>
                                             <input 
                                                 type="password" 
                                                 value={confirmPassword}
                                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                                                className="w-full bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800 rounded-xl px-4 py-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition-colors"
                                                 placeholder="Ulangi sandi baru"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                                <div className="pt-6 border-t border-slate-100 dark:border-navy-800 flex justify-end">
                                     <button
                                         type="submit"
                                         disabled={isSaving}
-                                        className="bg-teal-600 hover:bg-teal-500 disabled:opacity-60 text-white font-extrabold text-xs py-3 px-6 rounded-xl flex items-center gap-1.5 transition-colors shadow-md cursor-pointer"
+                                        className="bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-400 hover:to-amber-400 text-navy-950 font-extrabold text-xs py-3 px-6 rounded-xl flex items-center gap-1.5 transition-all shadow-md shadow-gold-500/20 cursor-pointer disabled:opacity-60"
                                     >
                                         {isSaving ? (
-                                            <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span><span>Menyimpan...</span></>
+                                            <><span className="w-4 h-4 border-2 border-navy-950 border-t-transparent rounded-full animate-spin"></span><span>Menyimpan...</span></>
                                         ) : (
                                             <><Check className="w-4 h-4" /><span>Simpan Perubahan</span></>
                                         )}
@@ -1240,15 +1240,15 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
 
                         {/* 7. Tab Merchant Registration */}
                         {activeTab === 'merchant_registration' && (
-                            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8 space-y-6 text-left">
+                            <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 shadow-sm p-6 sm:p-8 space-y-6 text-left">
                                 <div>
                                     <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100">Pendaftaran Mitra Merchant</h3>
                                     <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Gabung menjadi Merchant resmi ADMS untuk menjual produk digital dan jasa Anda sesuai syariat.</p>
                                 </div>
 
                                 {user?.merchant ? (
-                                    <div className="p-8 text-center space-y-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800">
-                                        <div className="w-16 h-16 bg-amber-50 dark:bg-amber-950/30 rounded-full flex items-center justify-center mx-auto text-amber-500">
+                                    <div className="p-8 text-center space-y-4 bg-slate-50 dark:bg-navy-950 rounded-2xl border border-slate-100 dark:border-navy-800">
+                                        <div className="w-16 h-16 bg-gold-500/10 rounded-full flex items-center justify-center mx-auto text-gold-500 border border-gold-500/20">
                                             <Store className="w-8 h-8" />
                                         </div>
                                         <div className="space-y-1">
@@ -1257,7 +1257,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                 Toko Anda <strong>"{user.merchant.name}"</strong> sedang ditinjau oleh Tim Admin ADMS. Proses moderasi ini memakan waktu maksimal 24 jam untuk memverifikasi kepatuhan syariah dan dokumen Anda.
                                             </p>
                                         </div>
-                                        <div className="inline-block bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-black px-4 py-2 rounded-full border border-amber-500/20 uppercase tracking-wider">
+                                        <div className="inline-block bg-gold-500/10 text-gold-500 dark:text-gold-400 text-[10px] font-black px-4 py-2 rounded-full border border-gold-500/20 uppercase tracking-wider">
                                             Sedang Ditinjau Admin
                                         </div>
                                     </div>
@@ -1284,7 +1284,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                     placeholder="Nama Toko Anda"
                                                     value={regStoreName}
                                                     onChange={(e) => handleStoreNameChange(e.target.value)}
-                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none"
+                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-navy-800 rounded-xl bg-slate-50 dark:bg-navy-950 focus:bg-white dark:focus:bg-navy-950 focus:border-gold-500 outline-none text-slate-800 dark:text-slate-100"
                                                 />
                                                 {regErrors.name && <span className="text-[10px] text-rose-500 font-bold">{regErrors.name[0]}</span>}
                                             </div>
@@ -1297,7 +1297,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                     placeholder="nama-toko-anda"
                                                     value={regStoreSlug}
                                                     onChange={(e) => setRegStoreSlug(e.target.value)}
-                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-100 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none font-mono"
+                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-navy-800 rounded-xl bg-slate-100 dark:bg-navy-950 focus:bg-white dark:focus:bg-navy-950 focus:border-gold-500 outline-none font-mono text-slate-800 dark:text-slate-100"
                                                 />
                                                 {regErrors.slug && <span className="text-[10px] text-rose-500 font-bold">{regErrors.slug[0]}</span>}
                                             </div>
@@ -1311,7 +1311,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                 placeholder="Jelaskan produk atau jasa halal yang Anda tawarkan..."
                                                 value={regDescription}
                                                 onChange={(e) => setRegDescription(e.target.value)}
-                                                className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none resize-none"
+                                                className="w-full text-xs p-3.5 border border-slate-200 dark:border-navy-800 rounded-xl bg-slate-50 dark:bg-navy-950 focus:bg-white dark:focus:bg-navy-950 focus:border-gold-500 outline-none resize-none text-slate-800 dark:text-slate-100"
                                             />
                                             {regErrors.description && <span className="text-[10px] text-rose-500 font-bold">{regErrors.description[0]}</span>}
                                         </div>
@@ -1325,7 +1325,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                     placeholder="Sleman, Yogyakarta"
                                                     value={regLocation}
                                                     onChange={(e) => setRegLocation(e.target.value)}
-                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none"
+                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-navy-800 rounded-xl bg-slate-50 dark:bg-navy-950 focus:bg-white dark:focus:bg-navy-950 focus:border-gold-500 outline-none text-slate-800 dark:text-slate-100"
                                                 />
                                                 {regErrors.location && <span className="text-[10px] text-rose-500 font-bold">{regErrors.location[0]}</span>}
                                             </div>
@@ -1338,20 +1338,20 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                     placeholder="0812345678"
                                                     value={regWhatsapp}
                                                     onChange={(e) => setRegWhatsapp(e.target.value)}
-                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none"
+                                                    className="w-full text-xs p-3.5 border border-slate-200 dark:border-navy-800 rounded-xl bg-slate-50 dark:bg-navy-950 focus:bg-white dark:focus:bg-navy-950 focus:border-gold-500 outline-none text-slate-800 dark:text-slate-100"
                                                 />
                                                 {regErrors.contact_whatsapp && <span className="text-[10px] text-rose-500 font-bold">{regErrors.contact_whatsapp[0]}</span>}
                                             </div>
                                         </div>
 
                                         {/* Sertifikasi Syariah Checkbox */}
-                                        <div className="border-t border-slate-100 dark:border-slate-800 pt-6 space-y-4">
+                                        <div className="border-t border-slate-100 dark:border-navy-800 pt-6 space-y-4">
                                             <label className="flex items-center gap-2.5 text-xs font-bold text-slate-800 dark:text-slate-200 cursor-pointer">
                                                 <input 
                                                     type="checkbox" 
                                                     checked={regSyariahCertified}
                                                     onChange={(e) => setRegSyariahCertified(e.target.checked)}
-                                                    className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-slate-300 rounded"
+                                                    className="w-4 h-4 text-gold-500 focus:ring-gold-500 border-slate-300 rounded"
                                                 />
                                                 <span>Toko Kami Memiliki Sertifikasi Syariah / Halal (Opsional)</span>
                                             </label>
@@ -1365,7 +1365,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                             placeholder="ID3411000123456"
                                                             value={regSyariahCertNumber}
                                                             onChange={(e) => setRegSyariahCertNumber(e.target.value)}
-                                                            className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none"
+                                                            className="w-full text-xs p-3.5 border border-slate-200 dark:border-navy-800 rounded-xl bg-slate-50 dark:bg-navy-950 focus:bg-white dark:focus:bg-navy-950 focus:border-gold-500 outline-none text-slate-800 dark:text-slate-100"
                                                         />
                                                     </div>
 
@@ -1376,7 +1376,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                             placeholder="BPJPH Kemenag / MUI"
                                                             value={regSyariahCertBody}
                                                             onChange={(e) => setRegSyariahCertBody(e.target.value)}
-                                                            className="w-full text-xs p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-slate-950 focus:border-indigo-500 outline-none"
+                                                            className="w-full text-xs p-3.5 border border-slate-200 dark:border-navy-800 rounded-xl bg-slate-50 dark:bg-navy-950 focus:bg-white dark:focus:bg-navy-950 focus:border-gold-500 outline-none text-slate-800 dark:text-slate-100"
                                                         />
                                                     </div>
                                                 </div>
@@ -1386,16 +1386,16 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                         <button 
                                             type="submit" 
                                             disabled={regLoading}
-                                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-indigo-500/20 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                                            className="w-full bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-400 hover:to-amber-400 text-navy-950 font-extrabold py-3.5 px-4 rounded-xl shadow-md shadow-gold-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                                         >
                                             {regLoading ? (
                                                 <>
-                                                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                                    <span className="w-4 h-4 border-2 border-navy-950 border-t-transparent rounded-full animate-spin"></span>
                                                     <span>Memproses Pendaftaran...</span>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <Store className="w-4 h-4" />
+                                                    <Store className="w-4 h-4 text-navy-950" />
                                                     <span>Ajukan Pendaftaran Merchant</span>
                                                 </>
                                             )}

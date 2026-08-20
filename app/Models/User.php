@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'role', 'status'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'role', 'status', 'active_package_id', 'package_expires_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -39,6 +39,11 @@ class User extends Authenticatable
     public function merchant()
     {
         return $this->hasOne(Merchant::class, 'owner_id');
+    }
+
+    public function activePackage()
+    {
+        return $this->belongsTo(Package::class, 'active_package_id');
     }
 
     public function advertisements()

@@ -10,6 +10,7 @@ use App\Http\Controllers\Customer\MerchantRegistrationController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\NotificationController;
 use App\Http\Controllers\Customer\PromoController;
+use App\Http\Controllers\Customer\PackageOrderController;
 
 use App\Http\Controllers\Merchant\StoreController as MerchantStoreController;
 use App\Http\Controllers\Merchant\ProductController as MerchantProductController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\Admin\CategoryAndPackageController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController;
 use App\Http\Controllers\Admin\OverviewController as AdminOverviewController;
+use App\Http\Controllers\Admin\PackageSubscriptionController as AdminPackageSubscriptionController;
 
 use App\Http\Controllers\Public\ProductController as PublicProductController;
 use App\Http\Controllers\Public\CategoryController as PublicCategoryController;
@@ -95,7 +97,7 @@ Route::get('/public/merchants', function () {
 
 Route::get('/public/ads', function () {
     $ads = \App\Models\Advertisement::where('status', 'approved')
-        ->with(['category', 'media'])
+        ->with(['category', 'media', 'package'])
         ->get()
         ->map(function ($ad) {
             return [
@@ -109,7 +111,8 @@ Route::get('/public/ads', function () {
                 'whatsapp' => $ad->whatsapp,
                 'image' => $ad->media->first()?->url ?? 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop',
                 'desc' => $ad->description,
-                'date' => $ad->created_at->format('Y-m-d')
+                'date' => $ad->created_at->format('Y-m-d'),
+                'is_premium' => $ad->package && $ad->package->type !== 'free'
             ];
         });
 
@@ -160,6 +163,10 @@ Route::middleware('auth.custom')->group(function () {
     Route::get('/customer/orders', [OrderController::class, 'getOrders']);
     Route::get('/customer/orders/{id}', [OrderController::class, 'getOrderDetail']);
     Route::get('/customer/orders/items/{orderItemId}/download', [OrderController::class, 'downloadProduct']);
+
+    // Package Subscriptions
+    Route::get('/customer/package-subscriptions', [PackageOrderController::class, 'index']);
+    Route::post('/customer/package-checkout', [PackageOrderController::class, 'checkout']);
 
     // Product Reviews
     Route::post('/customer/reviews', [ReviewController::class, 'storeReview']);
@@ -232,6 +239,11 @@ Route::middleware('auth.custom')->group(function () {
         Route::post('/admin/categories', [CategoryAndPackageController::class, 'storeCategory']);
         Route::put('/admin/categories/{id}', [CategoryAndPackageController::class, 'updateCategory']);
         Route::put('/admin/packages/{id}', [CategoryAndPackageController::class, 'updateAdPackage']);
+
+        // Package Verification
+        Route::get('/admin/package-subscriptions', [AdminPackageSubscriptionController::class, 'index']);
+        Route::post('/admin/package-subscriptions/{id}/approve', [AdminPackageSubscriptionController::class, 'approve']);
+        Route::post('/admin/package-subscriptions/{id}/reject', [AdminPackageSubscriptionController::class, 'reject']);
 
         // Audit Logs
         Route::get('/admin/audit-logs', [AuditLogController::class, 'getAuditLogs']);

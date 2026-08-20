@@ -7,7 +7,7 @@ import {
     Shield, CheckCircle, Smartphone, ExternalLink, HelpCircle,
     LayoutGrid, Share2, ShoppingBag, Store, Download, Zap, Users, Quote, ChevronDown,
     LayoutTemplate, Book, Globe, Video, Headphones, GraduationCap, TrendingUp, Wrench, Handshake, MoreHorizontal,
-    Heart, ShoppingCart, X, Phone, ChevronLeft, ChevronRight
+    Heart, ShoppingCart, X, Phone, ChevronLeft, ChevronRight, MapPin
 } from 'lucide-react';
 
 // Reusable scroll fade-in animation component using Intersection Observer
@@ -114,7 +114,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
         try {
             const res = await fetch('/api/public/ads', { headers: { 'Accept': 'application/json' } });
             const data = await res.json();
-            if (data.success) setVipAds(data.data.slice(0, 4));
+            if (data.success) setVipAds(data.data);
         } catch (e) {}
     };
 
@@ -587,6 +587,87 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                 </div>
                                 ));
                             })()}
+                        </div>
+                    )}
+                </div>
+            </section>
+            </ScrollFadeIn>
+
+            {/* D.1 Premium Ads Section */}
+            <ScrollFadeIn>
+            <section className="py-20 bg-slate-50 dark:bg-[#071922] border-b-2 border-slate-300 dark:border-[#174256] relative overflow-hidden text-slate-900 dark:text-white transition-colors duration-300">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    
+                    {/* Header */}
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4 border-b-2 border-slate-300 dark:border-[#174256] pb-6">
+                        <div>
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFBF00]/20 border-2 border-[#FFBF00]/40 text-[10px] font-black uppercase tracking-wider text-[#FFBF00] mb-3">
+                                <Star className="w-3 h-3 fill-current text-[#FFBF00] animate-pulse" />
+                                Eksklusif
+                            </div>
+                            <h2 className="text-3xl font-black tracking-tight text-[#0F3040] dark:text-white leading-tight">
+                                Iklan Premium <span className="text-[#FFBF00]">Pilihan</span>
+                            </h2>
+                            <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm mt-2 font-medium">
+                                Penawaran istimewa dari para mitra dan pengguna premium ADMS.
+                            </p>
+                        </div>
+                        <button 
+                            onClick={onNavigateToClassifieds}
+                            className="inline-flex items-center gap-2 text-xs font-black text-[#0F3040] bg-[#FFBF00] hover:bg-[#ffcd33] px-4 py-2.5 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer uppercase tracking-wider"
+                        >
+                            <span>Lihat Semua Iklan</span>
+                            <span className="text-sm font-semibold">&rarr;</span>
+                        </button>
+                    </div>
+
+                    {/* Premium Ads Grid */}
+                    {vipAds.filter(ad => ad.is_premium).length === 0 ? (
+                        <div className="text-center py-10 text-slate-400">Belum ada iklan premium saat ini.</div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {vipAds.filter(ad => ad.is_premium).slice(0, 4).map((ad) => (
+                                <div 
+                                    key={ad.id}
+                                    onClick={() => onNavigateToClassifieds()}
+                                    className="bg-white dark:bg-[#0F3040] rounded-2xl overflow-hidden border-2 border-[#FFBF00]/50 dark:border-[#FFBF00]/30 shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col hover:-translate-y-1 relative"
+                                >
+                                    <div className="absolute top-3 right-3 z-10 bg-[#FFBF00] text-[#0F3040] text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-md">
+                                        Premium
+                                    </div>
+                                    <div className="w-full h-40 sm:h-48 overflow-hidden relative bg-slate-100 dark:bg-[#071922]">
+                                        <img 
+                                            src={ad.image} 
+                                            alt={ad.title} 
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x300/e2e8f0/475569?text=No+Image'; }}
+                                        />
+                                        <div className="absolute bottom-2 left-2 right-2 flex justify-between items-center z-10">
+                                            <span className="bg-[#071922]/70 backdrop-blur-md text-[#FFBF00] text-[9px] font-bold px-2 py-0.5 rounded-full border border-[#174256]">
+                                                {ad.category}
+                                            </span>
+                                            <span className="bg-slate-900/70 backdrop-blur-md text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
+                                                {ad.condition}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="p-4 sm:p-5 flex flex-col flex-grow">
+                                        <div className="flex-grow">
+                                            <h3 className="font-extrabold text-[#0F3040] dark:text-white text-sm sm:text-base leading-tight mb-2 group-hover:text-[#FFBF00] transition-colors line-clamp-2">
+                                                {ad.title}
+                                            </h3>
+                                        </div>
+                                        <div className="mt-4 pt-3 border-t border-slate-200 dark:border-[#174256] flex flex-col gap-1.5">
+                                            <span className="font-black text-lg text-[#FFBF00]">
+                                                {ad.price > 0 ? `Rp${ad.price.toLocaleString('id-ID')}` : 'Gratis'}
+                                            </span>
+                                            <span className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
+                                                <MapPin className="w-3 h-3 text-[#FFBF00]" /> {ad.location}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     )}
                 </div>

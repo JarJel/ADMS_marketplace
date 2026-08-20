@@ -9,6 +9,15 @@ import ProductDetailModal from '../../components/ProductDetailModal';
 
 export default function CustomerDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode, initialTab = 'overview', refreshSession, onAddToCart, onToggleWishlist, cartCount, wishlistCount, notifications }) {
     const [activeTab, setActiveTab] = useState(initialTab);
+
+    const handleTabChange = (tabId) => {
+        if (onNavigate) {
+            onNavigate('customer_dashboard', tabId);
+        } else {
+            setActiveTab(tabId);
+            window.history.pushState(null, '', `/customer/${tabId}`);
+        }
+    };
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const recommendedRef = useRef(null);
@@ -37,6 +46,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
     const [downloads, setDownloads] = useState([]);
     const [advertisements, setAdvertisements] = useState([]);
     const [wishlist, setWishlist] = useState([]);
+    const [packageSubscriptions, setPackageSubscriptions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -154,6 +164,15 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                 const adsData = await adsRes.json();
                 if (adsData.success) {
                     setAdvertisements(adsData.data);
+                }
+
+                // Fetch package subscriptions
+                const subsRes = await fetch('/api/customer/package-subscriptions', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const subsData = await subsRes.json();
+                if (subsData.success) {
+                    setPackageSubscriptions(subsData.data);
                 }
 
                 // Fetch recommended products from database
@@ -387,6 +406,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
         { id: 'purchases', name: 'Transaksi Saya', icon: <ShoppingBag className="w-4 h-4" /> },
         { id: 'downloads', name: 'Unduhan File', icon: <Download className="w-4 h-4" /> },
         { id: 'ads', name: 'Iklan Saya', icon: <Megaphone className="w-4 h-4" /> },
+        { id: 'package-subscriptions', name: 'Paket & Langganan', icon: <ShieldCheck className="w-4 h-4" /> },
         { id: 'wishlist', name: 'Favorit / Wishlist', icon: <Heart className="w-4 h-4" /> },
         { id: 'settings', name: 'Pengaturan Akun', icon: <Settings className="w-4 h-4" /> }
     ];
@@ -407,9 +427,16 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                     </span>
                 </div>
                 <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100">{profileName}</h3>
-                <span className="inline-block bg-gold-500/10 text-gold-600 dark:text-gold-400 border border-gold-500/20 text-[10px] font-bold px-3 py-1 rounded-full mt-1.5 uppercase tracking-wider">
-                    Customer
-                </span>
+                <div className="mt-1.5 flex flex-col items-center gap-1">
+                    <span className="inline-block bg-gold-500/10 text-gold-600 dark:text-gold-400 border border-gold-500/20 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        Customer
+                    </span>
+                    {packageSubscriptions.some(sub => sub.status === 'active') && (
+                        <span className="inline-block bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                            Premium: {packageSubscriptions.find(sub => sub.status === 'active').package?.name || 'Aktif'}
+                        </span>
+                    )}
+                </div>
             </div>
 
             {/* Navigation Menu */}
@@ -418,7 +445,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                     <button
                         key={item.id}
                         onClick={() => {
-                            setActiveTab(item.id);
+                            handleTabChange(item.id);
                             setSaveSuccess(false);
                             if (closeSidebar) closeSidebar();
                         }}
@@ -469,24 +496,33 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                 <div className="relative overflow-hidden bg-gradient-to-r from-navy-950 via-navy-900 to-navy-950 rounded-3xl border border-navy-800 p-8 sm:p-10 shadow-xl text-left">
                                     <div className="absolute top-0 right-0 w-48 h-48 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"></div>
                                     <div className="absolute bottom-0 left-10 w-36 h-36 bg-gold-400/5 rounded-full blur-2xl pointer-events-none"></div>
-                                    <div className="relative z-10 space-y-2">
-                                        <span className="text-[10px] font-black text-gold-400 uppercase tracking-widest bg-gold-500/15 px-3.5 py-1.5 rounded-full border border-gold-500/20">
-                                            Dashboard Pelanggan
-                                        </span>
-                                        <h1 className="text-xl sm:text-3xl font-black text-white leading-tight mt-2">
-                                            Halo, <span className="text-transparent bg-gradient-to-r from-gold-400 via-amber-300 to-gold-500 bg-clip-text font-black">{profileName}</span>! Selamat datang kembali.
-                                        </h1>
-                                        <p className="text-xs text-slate-300 font-semibold">{today}</p>
+                                    <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                                        <div className="space-y-2">
+                                            <span className="text-[10px] font-black text-gold-400 uppercase tracking-widest bg-gold-500/15 px-3.5 py-1.5 rounded-full border border-gold-500/20">
+                                                Dashboard Pelanggan
+                                            </span>
+                                            <h1 className="text-xl sm:text-3xl font-black text-white leading-tight mt-2">
+                                                Halo, <span className="text-transparent bg-gradient-to-r from-gold-400 via-amber-300 to-gold-500 bg-clip-text font-black">{profileName}</span>! Selamat datang kembali.
+                                            </h1>
+                                            <p className="text-xs text-slate-300 font-semibold">{today}</p>
+                                        </div>
+                                        <button 
+                                            onClick={() => onNavigate('create_ad')}
+                                            className="w-full sm:w-auto bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-400 hover:to-amber-400 text-navy-950 font-extrabold text-sm py-3.5 px-6 rounded-2xl shadow-lg shadow-gold-500/20 hover:shadow-gold-500/40 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
+                                        >
+                                            <Megaphone className="w-5 h-5" />
+                                            Pasang Iklan Baru
+                                        </button>
                                     </div>
                                 </div>
 
                                 {/* Mini stats widgets grid */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 text-center">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-10 text-center">
                                     <button 
                                         type="button"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            setActiveTab('purchases');
+                                            handleTabChange('purchases');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
                                         className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-gold-500/10 hover:border-gold-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-gold-500/50"
@@ -504,7 +540,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                         type="button"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            setActiveTab('ads');
+                                            handleTabChange('ads');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
                                         className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-gold-500/10 hover:border-gold-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-gold-500/50"
@@ -522,7 +558,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                         type="button"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            setActiveTab('wishlist');
+                                            handleTabChange('wishlist');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
                                         className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-rose-500/10 hover:border-rose-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-rose-500/50"
@@ -540,7 +576,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                         type="button"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            setActiveTab('purchases');
+                                            handleTabChange('purchases');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
                                         className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-gold-500/10 hover:border-gold-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-gold-500/50"
@@ -553,6 +589,23 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             <span className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">{formatCurrency(purchases.filter(p => p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid').reduce((sum, p) => sum + parseFloat(p.total_amount || p.total || 0), 0))}</span>
                                         </div>
                                     </button>
+                                    <button 
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleTabChange('package-subscriptions');
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-emerald-500/10 hover:border-emerald-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                                    >
+                                        <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 rounded-2xl text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
+                                            <ShieldCheck className="w-6 h-6" />
+                                        </div>
+                                        <div className="pointer-events-none">
+                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Paket Langganan</span>
+                                            <span className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">{packageSubscriptions.length} <span className="text-sm font-normal text-slate-400">Paket</span></span>
+                                        </div>
+                                    </button>
                                 </div>
 
                                 {/* 1. Recent Transactions Table */}
@@ -563,7 +616,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Riwayat 3 transaksi terakhir pembelian produk digital Anda.</p>
                                         </div>
                                         <button 
-                                            onClick={() => setActiveTab('purchases')}
+                                            onClick={() => handleTabChange('purchases')}
                                             className="text-xs sm:text-sm text-gold-500 dark:text-gold-400 font-bold px-4 py-2 bg-gold-500/10 hover:bg-gold-500/20 dark:bg-navy-800 dark:hover:bg-navy-700 rounded-xl border border-gold-500/20 transition-colors cursor-pointer"
                                         >
                                             Lihat Semua
@@ -1236,6 +1289,72 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                     </button>
                                 </div>
                             </form>
+                        )}
+
+                        {/* Package Subscriptions Tab */}
+                        {activeTab === 'package-subscriptions' && (
+                            <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 shadow-sm overflow-hidden">
+                                <div className="p-6 border-b border-slate-100 dark:border-navy-800">
+                                    <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100">Riwayat Langganan Paket</h3>
+                                    <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Pantau status paket iklan yang Anda pesan.</p>
+                                </div>
+                                
+                                {isLoading ? (
+                                    <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-500"></div></div>
+                                ) : packageSubscriptions.length === 0 ? (
+                                    <div className="p-12 text-center">
+                                        <div className="w-16 h-16 bg-slate-50 dark:bg-navy-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300 dark:text-slate-600">
+                                            <ShieldCheck className="w-8 h-8" />
+                                        </div>
+                                        <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300">Belum Ada Langganan</h4>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 max-w-sm mx-auto">Anda belum pernah membeli paket langganan iklan.</p>
+                                        <button 
+                                            onClick={() => onNavigate('pricing', '/pricing')}
+                                            className="mt-6 text-xs font-bold bg-navy-950 dark:bg-gold-500 text-white dark:text-navy-950 px-6 py-2.5 rounded-lg shadow-sm hover:opacity-90 transition-opacity"
+                                        >
+                                            Lihat Paket Tersedia
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="divide-y divide-slate-100 dark:divide-navy-800">
+                                        {packageSubscriptions.map((sub) => (
+                                            <div key={sub.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                                <div>
+                                                    <div className="flex items-center gap-3 mb-1.5">
+                                                        <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm">
+                                                            {sub.package?.name}
+                                                        </h4>
+                                                        <span className={`text-[10px] font-black px-2.5 py-0.5 rounded uppercase tracking-wider ${
+                                                            sub.status === 'active' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20' : 
+                                                            sub.status === 'pending' ? 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20' : 
+                                                            'bg-slate-50 text-slate-500 dark:bg-slate-500/10 dark:text-slate-400 border border-slate-200 dark:border-slate-500/20'
+                                                        }`}>
+                                                            {sub.status}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                                                        Total: {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(sub.total_amount)} &bull; {sub.payment_method}
+                                                    </p>
+                                                    <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">
+                                                        Dipesan pada {new Date(sub.created_at).toLocaleDateString('id-ID')}
+                                                        {sub.status === 'active' && sub.expires_at && ` - Aktif s/d ${new Date(sub.expires_at).toLocaleDateString('id-ID')}`}
+                                                    </p>
+                                                </div>
+                                                
+                                                {sub.status === 'active' && (
+                                                    <button 
+                                                        onClick={() => onNavigate('create_ad', '/pasang-iklan')}
+                                                        className="text-xs font-bold bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-400 hover:to-amber-400 text-navy-950 px-5 py-2.5 rounded-lg shadow-sm shadow-gold-500/20 transition-all flex items-center gap-2 whitespace-nowrap"
+                                                    >
+                                                        <Megaphone className="w-3.5 h-3.5" />
+                                                        Pasang Iklan Premium
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         )}
 
                         {/* 7. Tab Merchant Registration */}

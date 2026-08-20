@@ -73,27 +73,49 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
         try {
             if (token) {
                 const firstItem = checkoutItems[0];
-                const merchantId = firstItem.product?.merchant_id || firstItem.merchant_id;
-                const res = await fetch('/api/customer/orders', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        checkout_from_cart: true,
-                        merchant_id: merchantId,
-                        payment_method: paymentMethod,
-                        total_amount: grandTotal,
-                        customer_name: customerInfo.name,
-                        customer_email: customerInfo.email,
-                        customer_phone: customerInfo.phone,
-                        notes: customerInfo.notes,
-                    })
-                });
-                const data = await res.json();
-                if (data.invoice_number) orderInvoice = data.invoice_number;
+                if (firstItem.isPackage) {
+                    const res = await fetch('/api/customer/package-checkout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            package_id: firstItem.product.id,
+                            payment_method: paymentMethod
+                        })
+                    });
+                    const data = await res.json();
+                    if (!data.success) {
+                        alert(data.message || 'Terjadi kesalahan saat memproses pesanan paket.');
+                        setIsSubmitting(false);
+                        return;
+                    }
+                    orderInvoice = 'INV-PKG-' + Date.now().toString(36).toUpperCase();
+                } else {
+                    const merchantId = firstItem.product?.merchant_id || firstItem.merchant_id;
+                    const res = await fetch('/api/customer/orders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            checkout_from_cart: true,
+                            merchant_id: merchantId,
+                            payment_method: paymentMethod,
+                            total_amount: grandTotal,
+                            customer_name: customerInfo.name,
+                            customer_email: customerInfo.email,
+                            customer_phone: customerInfo.phone,
+                            notes: customerInfo.notes,
+                        })
+                    });
+                    const data = await res.json();
+                    if (data.invoice_number) orderInvoice = data.invoice_number;
+                }
             }
         } catch (err) {
         }
@@ -182,7 +204,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                     <h1 className={`text-3xl sm:text-4xl font-black tracking-tight leading-tight ${
                         darkMode ? 'text-white' : 'text-slate-900'
                     }`}>
-                        Pembayaran & Lisensi Produk
+                        {checkoutItems.length > 0 && checkoutItems[0].isPackage ? 'Pembayaran Paket Iklan' : 'Pembayaran & Lisensi Produk'}
                     </h1>
                     <p className={`text-xs sm:text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                         Lengkapi informasi pesanan dan pilih metode pembayaran resmi ADMS Syariah.
@@ -537,7 +559,11 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                         </span>
 
                         <h3 className="text-2xl font-black mb-1 text-white">Transaksi Berhasil!</h3>
-                        <p className="text-xs text-slate-300 mb-6">File produk digital siap langsung diunduh.</p>
+                        <p className="text-xs text-slate-300 mb-6">
+                            {checkoutItems[0]?.isPackage 
+                                ? 'Pesanan paket Anda sedang menunggu verifikasi admin.' 
+                                : 'File produk digital siap langsung diunduh.'}
+                        </p>
 
                         <div className="bg-[#071922] border border-[#174256] rounded-2xl p-4 text-xs text-left space-y-2 mb-6 font-mono">
                             <div className="flex justify-between border-b border-[#174256] pb-2 text-slate-300">
@@ -562,12 +588,16 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                             <button 
                                 onClick={() => {
                                     setIsSuccessModalOpen(false);
-                                    onNavigate('customer');
+                                    if (checkoutItems[0]?.isPackage && user?.role === 'merchant') {
+                                        onNavigate('merchant');
+                                    } else {
+                                        onNavigate('customer');
+                                    }
                                 }}
                                 className="w-full py-3.5 px-6 bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-xs rounded-xl shadow-lg shadow-[#FFBF00]/20 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
                             >
                                 <Download className="w-4 h-4 text-[#0F3040]" />
-                                <span>Unduh Produk Saya di Dashboard</span>
+                                <span>{checkoutItems[0]?.isPackage ? 'Lihat Status di Dashboard' : 'Unduh Produk Saya di Dashboard'}</span>
                             </button>
 
                             <button 

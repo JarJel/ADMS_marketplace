@@ -3,6 +3,7 @@ import AdminSidebar from './AdminSidebar';
 import { AdminOverview } from './AdminOverview';
 import { AdminAnalytics } from './AdminAnalytics';
 import { AdminProducts } from './AdminProducts';
+import { AdminPackageSubscriptions } from './AdminPackageSubscriptions';
 
 export default function AdminDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode, cartCount, wishlistCount, notifications }) {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -869,6 +870,8 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                             </div>
                         )}
                     </div>
+                ) : activeTab === 'package-subscriptions' ? (
+                    <AdminPackageSubscriptions token={token} />
                 ) : activeTab === 'ads-reports' ? (
                     <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
                         <h2 className="text-2xl font-black text-white flex items-center gap-3 mb-8">

@@ -37,7 +37,7 @@ export default function ProductsTab({ products, handleDeleteProduct, fetchProduc
                 {products.map(p => (
                   <tr key={p.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-6 py-4 font-semibold text-slate-900">{p.title}</td>
-                    <td className="px-6 py-4 font-medium text-slate-600">Rp{p.price.toLocaleString('id-ID')}</td>
+                    <td className="px-6 py-4 font-medium text-slate-600">Rp{parseFloat(p.price || 0).toLocaleString('id-ID')}</td>
                     <td className="px-6 py-4 font-medium text-slate-600">
                       <span className="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-xs font-semibold">{p.stock}</span>
                     </td>

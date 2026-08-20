@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
     LayoutDashboard, ShoppingBag, ShoppingCart, Download, Megaphone, Heart, Settings, 
     LogOut, CreditCard, Star, FileText, Upload, User, ShieldCheck, Check, Trash2, MapPin, Tag, Store,
-    ChevronLeft, ChevronRight
+    ChevronLeft, ChevronRight, Clock, RefreshCw
 } from 'lucide-react';
 import Navbar from '../../components/Navbar';
 import ProductDetailModal from '../../components/ProductDetailModal';
@@ -39,7 +39,43 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
     const [wishlist, setWishlist] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    useEffect(() => {
+        let timer;
+        if (activeTab === 'ads') {
+            timer = setInterval(() => {
+                setCurrentSlide(prev => (prev + 1) % 3);
+            }, 5000);
+        }
+        return () => {
+            if (timer) clearInterval(timer);
+        };
+    }, [activeTab]);
+
+    const bannerSlides = [
+        {
+            image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&auto=format&fit=crop&q=80",
+            title: "Beriklan Lebih Mudah\ndan Cepat!",
+            subtitle: "Manfaatkan fitur premium kami untuk menjangkau jutaan calon pembeli setiap harinya. Desain profesional dan SEO friendly.",
+            ctaText: "Pasang Iklan Baru",
+        },
+        {
+            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80",
+            title: "Tingkatkan Penjualan\nAnda Hari Ini",
+            subtitle: "Dapatkan eksposur maksimal dengan layanan iklan VIP kami. Jangkau target audiens Anda dengan lebih tepat.",
+            ctaText: "Mulai Beriklan",
+        },
+        {
+            image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&auto=format&fit=crop&q=80",
+            title: "Platform Terpercaya\nJutaan Pengguna",
+            subtitle: "Bergabunglah dengan komunitas seller terbaik. Platform aman, cepat, dan mudah digunakan.",
+            ctaText: "Gabung Sekarang",
+        }
+    ];
+
     const [editingAd, setEditingAd] = useState(null);
+    const [viewingAd, setViewingAd] = useState(null);
+    const [selectedAdImage, setSelectedAdImage] = useState(0);
+    const [currentSlide, setCurrentSlide] = useState(0);
     const [editForm, setEditForm] = useState({});
     const [editSaving, setEditSaving] = useState(false);
     const [editMsg, setEditMsg] = useState(null);
@@ -355,7 +391,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
         { id: 'settings', name: 'Pengaturan Akun', icon: <Settings className="w-4 h-4" /> }
     ];
 
-    if (user && user.role === 'customer') {
+    if (user && user.role === 'user') {
         menuItems.push({ id: 'merchant_registration', name: 'Daftar Mitra Merchant', icon: <Store className="w-4 h-4" /> });
     }
 
@@ -780,19 +816,46 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
 
                         {/* 4. Tab Ads (Iklan Saya) */}
                         {activeTab === 'ads' && (
-                            <div className="space-y-6 text-left">
-                                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex items-center justify-between">
-                                    <div>
-                                        <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100">Iklan Baris Saya</h3>
-                                        <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Kelola semua listing iklan gratis dan premium Anda.</p>
+                            <div className="text-left grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                {/* Left Column: Banner & Ads List */}
+                                <div className="lg:col-span-2 space-y-6">
+                                    {/* Hero Section / Banner */}
+                                <div className="mb-6 relative w-full h-[140px] sm:h-[180px] md:h-[240px] rounded-lg overflow-hidden shadow-sm group">
+                                    <img 
+                                        src={bannerSlides[currentSlide].image} 
+                                        alt="Banner Iklan" 
+                                        className="w-full h-full object-cover transition-opacity duration-500 ease-in-out"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-teal-900/90 via-teal-900/60 to-transparent flex flex-col justify-center p-6 sm:p-10 transition-all duration-500">
+                                        <h2 className="text-xl sm:text-3xl font-extrabold text-white mb-1 sm:mb-2 leading-tight">
+                                            {bannerSlides[currentSlide].title.split('\n').map((line, i) => (
+                                                <React.Fragment key={i}>
+                                                    {line}<br className="hidden sm:block"/>
+                                                </React.Fragment>
+                                            ))}
+                                        </h2>
+                                        <p className="text-teal-100 text-[10px] sm:text-xs max-w-sm hidden sm:block mb-4 line-clamp-2">
+                                            {bannerSlides[currentSlide].subtitle}
+                                        </p>
+                                        <div className="w-fit mt-2 sm:mt-0">
+                                            <button 
+                                                onClick={() => onNavigate('create_ad')}
+                                                className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold text-xs py-2 px-5 rounded shadow-sm transition-colors cursor-pointer"
+                                            >
+                                                {bannerSlides[currentSlide].ctaText}
+                                            </button>
+                                        </div>
                                     </div>
-                                    <button 
-                                        onClick={() => onNavigate('create_ad')}
-                                        className="bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
-                                    >
-                                        <Megaphone className="w-4 h-4" />
-                                        Pasang Iklan Baru
-                                    </button>
+                                    {/* Slider Dots */}
+                                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+                                        {bannerSlides.map((_, idx) => (
+                                            <div 
+                                                key={idx} 
+                                                onClick={() => setCurrentSlide(idx)}
+                                                className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === idx ? 'w-4 bg-white' : 'w-2 bg-white/40 hover:bg-white/60'}`}
+                                            ></div>
+                                        ))}
+                                    </div>
                                 </div>
 
                                 {editingAd && (
@@ -848,44 +911,160 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                     </div>
                                 )}
 
-                                <div className="space-y-4">
-                                    {advertisements.map((ad) => (
-                                        <div key={ad.id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                            <div className="space-y-2">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="bg-slate-100 text-slate-600 dark:text-slate-300 font-extrabold text-[9px] px-2 py-0.5 rounded uppercase">
-                                                        {ad.category?.name || ad.category}
-                                                    </span>
-                                                    <span className={`font-bold text-[9px] px-2 py-0.5 rounded uppercase ${
-                                                        (ad.package?.name === 'VIP Premium' || ad.package === 'VIP Premium') ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-100 text-emerald-800'
-                                                    }`}>
-                                                        {ad.package?.name || ad.package || 'Gratis'}
-                                                    </span>
-                                                </div>
-                                                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-100 leading-snug">{ad.title}</h4>
+                                {viewingAd && (
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                                        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative">
+                                            <div className="bg-white dark:bg-slate-900 z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700 shrink-0 rounded-t-2xl">
+                                                <h3 className="font-extrabold text-slate-800 dark:text-white text-lg">Detail Iklan</h3>
+                                                <button onClick={() => { setViewingAd(null); setSelectedAdImage(0); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-2xl font-bold leading-none cursor-pointer">&times;</button>
+                                            </div>
+                                            <div className="p-6 overflow-y-auto">
+                                                {(() => {
+                                                    const adImages = viewingAd.media?.length > 0 
+                                                        ? viewingAd.media.map(m => m.url) 
+                                                        : (viewingAd.images?.length > 0 
+                                                            ? viewingAd.images.map(img => img.url)
+                                                            : [viewingAd.image_url || viewingAd.image || viewingAd.thumbnail || `https://picsum.photos/seed/ad-${viewingAd.id}/600/400`].filter(Boolean));
+                                                            
+                                                    return (
+                                                        <>
+                                                            <div className="w-full h-64 sm:h-80 rounded-xl overflow-hidden mb-4 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                                                <img 
+                                                                    src={adImages[selectedAdImage] || adImages[0]} 
+                                                                    onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/600x400/e2e8f0/475569?text=No+Image`; }}
+                                                                    alt={viewingAd.title} 
+                                                                    className="w-full h-full object-contain transition-all duration-300"
+                                                                />
+                                                            </div>
+                                                            {adImages.length > 1 && (
+                                                                <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
+                                                                    {adImages.map((img, idx) => (
+                                                                        <div 
+                                                                            key={idx}
+                                                                            onClick={() => setSelectedAdImage(idx)}
+                                                                            className={`w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-lg overflow-hidden border-2 cursor-pointer transition-all duration-200 ${selectedAdImage === idx ? 'border-teal-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                                                                        >
+                                                                            <img src={img} onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/100x100/e2e8f0/475569?text=Img`; }} alt={`${viewingAd.title} ${idx + 1}`} className="w-full h-full object-cover" />
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </>
+                                                    );
+                                                })()}
+                                                <h2 className="text-2xl font-extrabold text-slate-800 dark:text-white mb-2">{viewingAd.title}</h2>
+                                                {viewingAd.price && (
+                                                    <div className="text-xl font-bold text-teal-600 dark:text-teal-400 mb-4">
+                                                        Rp {Number(viewingAd.price).toLocaleString('id-ID')}
+                                                    </div>
+                                                )}
                                                 
-                                                <div className="flex items-center gap-4 text-[10px] text-slate-400 dark:text-slate-500">
-                                                    <span>Views: <strong className="text-slate-600 dark:text-slate-300">{ad.views_count || ad.views || 0}</strong></span>
-                                                    <span>Clicks: <strong className="text-slate-600 dark:text-slate-300">{ad.clicks_count || ad.clicks || 0}</strong></span>
-                                                    <span className="flex items-center gap-1">
-                                                        <span className={`w-1.5 h-1.5 rounded-full ${ad.status === 'active' || ad.status === 'Published' ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
-                                                        <span className="font-bold uppercase">{ad.status}</span>
-                                                    </span>
+                                                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 dark:text-slate-400 mb-6 pb-6 border-b border-slate-200 dark:border-slate-700">
+                                                    <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {viewingAd.created_at ? new Date(viewingAd.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : 'Hari ini'}</span>
+                                                    <span className="flex items-center gap-1.5"><Tag className="w-4 h-4" /> {viewingAd.category?.name || viewingAd.category}</span>
+                                                    <span className="flex items-center gap-1.5"><User className="w-4 h-4" /> {viewingAd.contact_name || viewingAd.merchant?.name || user?.name || 'Pengiklan'}</span>
+                                                    <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> {viewingAd.location || 'Lokasi tidak diketahui'}</span>
+                                                </div>
+
+                                                <div className="mb-4">
+                                                    <h4 className="font-bold text-slate-800 dark:text-white mb-2 text-lg">Deskripsi Iklan</h4>
+                                                    <p className="text-slate-600 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
+                                                        {viewingAd.description || 'Tidak ada deskripsi yang tersedia untuk iklan ini.'}
+                                                    </p>
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center gap-2">
-                                                <button onClick={() => handleOpenEditAd(ad)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors cursor-pointer">
-                                                    Edit Iklan
-                                                </button>
-                                                {(ad.package?.name !== 'VIP Premium' && ad.package !== 'VIP Premium') && (
-                                                    <button onClick={() => handleUpgradeAd(ad.id)} className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-extrabold rounded-xl transition-colors shadow-sm cursor-pointer">
-                                                        Upgrade ke VIP
-                                                    </button>
-                                                )}
+                                            <div className="bg-slate-50 dark:bg-slate-800 p-4 sm:p-6 border-t border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 rounded-b-2xl">
+                                                <div className="text-sm text-slate-600 dark:text-slate-400">
+                                                    Penjual: <span className="font-bold text-slate-800 dark:text-white">{viewingAd.contact_name || viewingAd.merchant?.name || user?.name || 'Pengiklan'}</span>
+                                                </div>
+                                                <a 
+                                                    href={`https://wa.me/${(viewingAd.whatsapp || viewingAd.merchant?.contact_whatsapp || '')?.replace(/[^0-9]/g, '')}`} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className="w-full sm:w-auto px-6 py-3 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-sm transition-colors cursor-pointer"
+                                                >
+                                                    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                                                    Konsultasi Chat WA
+                                                </a>
                                             </div>
                                         </div>
-                                    ))}
+                                    </div>
+                                )}
+
+                                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                    <div className="bg-slate-50 dark:bg-slate-800 p-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                                        <RefreshCw className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                                        <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">Iklan Baris Saya</h3>
+                                    </div>
+                                    <div className="divide-y divide-slate-200 dark:divide-slate-800">
+                                        {advertisements.map((ad) => (
+                                            <div key={ad.id} className="p-4 flex flex-col sm:flex-row gap-4">
+                                                <div className="w-full sm:w-[130px] h-[100px] shrink-0 border border-slate-200 dark:border-slate-700 p-1 bg-white dark:bg-slate-800">
+                                                    <img 
+                                                        src={ad.media?.[0]?.url || ad.images?.[0]?.url || ad.image_url || ad.image || ad.thumbnail || `https://picsum.photos/seed/ad-${ad.id || Math.random()}/200/150`} 
+                                                        onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/200x150/e2e8f0/475569?text=No+Image`; }}
+                                                        alt={ad.title} 
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <h4 className="font-semibold text-[15px] text-teal-600 dark:text-teal-400 hover:underline cursor-pointer leading-tight mb-1 truncate">{ad.title}</h4>
+                                                    
+                                                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500 dark:text-slate-400 mb-2">
+                                                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {ad.created_at ? new Date(ad.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : 'Hari ini'}</span>
+                                                        <span className="flex items-center gap-1"><Tag className="w-3 h-3" /> <span className="text-teal-600 dark:text-teal-400">{ad.category?.name || ad.category}</span></span>
+                                                        <span className="flex items-center gap-1"><User className="w-3 h-3" /> {ad.contact_name || ad.merchant?.name || user?.name || 'Pengiklan'}</span>
+                                                        <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {ad.location || 'Lokasi tidak diketahui'}</span>
+                                                    </div>
+                                                    
+                                                    <p className="text-[12px] text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">
+                                                        {ad.description || 'Tidak ada deskripsi yang tersedia untuk iklan ini. Silakan tambahkan deskripsi agar pembeli lebih tertarik.'} <span onClick={() => setViewingAd(ad)} className="text-teal-600 dark:text-teal-400 font-semibold cursor-pointer whitespace-nowrap hover:underline">Selengkapnya &gt;</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Right Column: Blog / Tips Sidebar */}
+                            <div className="lg:col-span-1 space-y-6">
+                                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <FileText className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                                            <h3 className="font-extrabold text-slate-800 dark:text-white text-base">Artikel & Tips Bisnis</h3>
+                                        </div>
+                                        <div className="space-y-4">
+                                            {/* Blog Card 1 */}
+                                            <a href="#" className="block group">
+                                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-slate-100">
+                                                    <img src="https://images.unsplash.com/photo-1432828684209-661664157b85?w=600&auto=format&fit=crop&q=80" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400/e2e8f0/475569?text=Tips+Bisnis'; }} alt="Blog" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                                </div>
+                                                <span className="text-[10px] font-bold text-amber-500 mb-1 block uppercase tracking-wider">Strategi Jualan</span>
+                                                <h4 className="font-bold text-slate-800 dark:text-slate-100 text-sm leading-tight group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">5 Cara Membuat Deskripsi Iklan yang Menarik Pembeli</h4>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Pelajari teknik copywriting sederhana untuk meningkatkan konversi penjualan Anda secara drastis.</p>
+                                            </a>
+                                            <hr className="border-slate-100 dark:border-slate-800" />
+                                            {/* Blog Card 2 */}
+                                            <a href="#" className="block group">
+                                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-slate-100">
+                                                    <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&auto=format&fit=crop&q=80" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400/e2e8f0/475569?text=Panduan'; }} alt="Blog" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                                </div>
+                                                <span className="text-[10px] font-bold text-amber-500 mb-1 block uppercase tracking-wider">Panduan</span>
+                                                <h4 className="font-bold text-slate-800 dark:text-slate-100 text-sm leading-tight group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">Cara Memfoto Produk Hanya Bermodal Smartphone</h4>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Tidak perlu kamera mahal. Gunakan teknik pencahayaan ini untuk hasil foto produk profesional.</p>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    {/* Info Panel Mini */}
+                                    <div className="bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl p-5 text-white shadow-lg relative overflow-hidden">
+                                        <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+                                        <h4 className="font-extrabold text-lg mb-2">Butuh Bantuan?</h4>
+                                        <p className="text-teal-100 text-xs mb-4">Tim support kami siap membantu kendala Anda 24/7. Jangan ragu untuk menghubungi kami.</p>
+                                        <a href="https://wa.me/6281121211933" target="_blank" rel="noopener noreferrer" className="block text-center w-full py-2.5 bg-white text-teal-700 hover:bg-slate-50 font-bold text-xs rounded-xl transition-colors shadow-sm">Hubungi CS Sekarang</a>
+                                    </div>
                                 </div>
                             </div>
                         )}

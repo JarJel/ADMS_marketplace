@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { 
     Search, MapPin, Zap, Filter, ArrowUpDown, LayoutGrid, List,
     Phone, ExternalLink, X, HelpCircle, Star, MessageSquare, AlertCircle,
-    Rss, Clock, Tag, ChevronRight,
+    Rss, Clock, Tag, ChevronRight, FileText,
     Globe, Car, Bike, Smartphone, Monitor, Home, Map as MapIcon, Wrench, Briefcase, Shirt, Sofa
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
@@ -14,11 +14,25 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
     const [ads, setAds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
+    const [currentSlide, setCurrentSlide] = useState(0);
     const itemsPerPage = 12;
     const recentBlogs = [];
 
     useEffect(() => {
         fetchAds();
+    }, []);
+
+    const heroSlides = [
+        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1449844908441-8829872d2607?w=1600&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1555636222-cae831e670b3?w=1600&auto=format&fit=crop&q=80"
+    ];
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentSlide(prev => (prev + 1) % heroSlides.length);
+        }, 5000);
+        return () => clearInterval(interval);
     }, []);
 
     const fetchAds = async () => {
@@ -178,10 +192,28 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             />
 
             {/* A. Hero Portal Banner */}
-            <section className="bg-[#0F3040] text-white py-16 relative overflow-hidden border-b-2 border-[#174256]">
+            <section className="bg-[#0F3040] text-white py-16 sm:py-24 relative overflow-hidden border-b-2 border-[#174256]">
+                {/* Background Slides */}
+                {heroSlides.map((slide, idx) => (
+                    <div 
+                        key={idx}
+                        className={`absolute inset-0 transition-all duration-[3000ms] ease-in-out ${idx === currentSlide ? 'opacity-30 scale-105' : 'opacity-0 scale-100'}`}
+                    >
+                        <img 
+                            src={slide} 
+                            alt={`Hero ${idx}`}
+                            className="w-full h-full object-cover" 
+                        />
+                    </div>
+                ))}
+                
+                {/* Gradient Overlays for Readability */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#071922] via-transparent to-[#071922]"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0F3040] via-[#0F3040]/40 to-transparent"></div>
+                
                 {/* Glow effects decoration */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#FFBF00]/10 rounded-full blur-[140px] pointer-events-none"></div>
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#174256]/50 rounded-full blur-[120px] pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#FFBF00]/15 rounded-full blur-[140px] pointer-events-none"></div>
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#174256]/60 rounded-full blur-[120px] pointer-events-none"></div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
 
@@ -322,7 +354,9 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                     </div>
                 </div>
 
-                {/* Toolbar (Sort & View Options) */}
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-8">
+                    <div className="lg:col-span-3 space-y-6">
+                        {/* Toolbar (Sort & View Options) */}
                 <div className="bg-[#0F3040] rounded-2xl border-2 border-[#174256] p-4 shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-white">
                     <div>
                         <h2 className="font-black text-white text-sm sm:text-base">
@@ -503,6 +537,47 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                             </button>
                         </div>
                     )}
+                </div>
+                </div>
+
+                {/* Right Column: Blog / Tips Sidebar */}
+                <div className="lg:col-span-1 space-y-6">
+                    <div className="bg-[#0F3040] rounded-2xl border-2 border-[#174256] p-5 shadow-xl">
+                        <div className="flex items-center gap-2 mb-4">
+                            <FileText className="w-5 h-5 text-[#FFBF00]" />
+                            <h3 className="font-extrabold text-white text-base">Artikel & Tips Bisnis</h3>
+                        </div>
+                        <div className="space-y-4">
+                            {/* Blog Card 1 */}
+                            <a href="#" className="block group">
+                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-[#071922] border border-[#174256]">
+                                    <img src="https://images.unsplash.com/photo-1432828684209-661664157b85?w=600&auto=format&fit=crop&q=80" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400/e2e8f0/475569?text=Tips+Bisnis'; }} alt="Blog" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                </div>
+                                <span className="text-[10px] font-bold text-[#FFBF00] mb-1 block uppercase tracking-wider">Strategi Jualan</span>
+                                <h4 className="font-bold text-white text-sm leading-tight group-hover:text-[#FFBF00] transition-colors">5 Cara Membuat Deskripsi Iklan yang Menarik Pembeli</h4>
+                                <p className="text-xs text-slate-300 mt-1 line-clamp-2">Pelajari teknik copywriting sederhana untuk meningkatkan konversi penjualan Anda secara drastis.</p>
+                            </a>
+                            <hr className="border-[#174256]" />
+                            {/* Blog Card 2 */}
+                            <a href="#" className="block group">
+                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-[#071922] border border-[#174256]">
+                                    <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&auto=format&fit=crop&q=80" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400/e2e8f0/475569?text=Panduan'; }} alt="Blog" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                </div>
+                                <span className="text-[10px] font-bold text-[#FFBF00] mb-1 block uppercase tracking-wider">Panduan</span>
+                                <h4 className="font-bold text-white text-sm leading-tight group-hover:text-[#FFBF00] transition-colors">Cara Memfoto Produk Hanya Bermodal Smartphone</h4>
+                                <p className="text-xs text-slate-300 mt-1 line-clamp-2">Tidak perlu kamera mahal. Gunakan teknik pencahayaan ini untuk hasil foto produk profesional.</p>
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Info Panel Mini */}
+                    <div className="bg-gradient-to-br from-[#FFBF00] to-[#ffcd33] rounded-2xl p-5 text-[#0F3040] shadow-lg relative overflow-hidden">
+                        <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/30 rounded-full blur-2xl"></div>
+                        <h4 className="font-extrabold text-lg mb-2">Butuh Bantuan?</h4>
+                        <p className="text-[#071922]/80 text-xs mb-4 font-bold">Tim support kami siap membantu kendala Anda 24/7. Jangan ragu untuk menghubungi kami.</p>
+                        <a href="https://wa.me/6281121211933" target="_blank" rel="noopener noreferrer" className="block text-center w-full py-2.5 bg-[#0F3040] text-white hover:bg-[#071922] font-black text-xs rounded-xl transition-colors shadow-sm">Hubungi CS Sekarang</a>
+                    </div>
+                </div>
                 </div>
             </section>
 

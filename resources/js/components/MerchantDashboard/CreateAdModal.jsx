@@ -9,6 +9,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState(null);
+  const [isPaid, setIsPaid] = useState(false);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -147,6 +148,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
     }
     formDataToSend.append('location', `${formData.kota}, ${formData.provinsi}`);
     formDataToSend.append('whatsapp', formData.contactPhone);
+    formDataToSend.append('contact_name', formData.contactName);
     formDataToSend.append('package_id', selectedPackageId);
 
     photos.forEach((photo, index) => {
@@ -597,9 +599,13 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
                         <CreditCard className="w-4 h-4 text-cyan-400" />
                         <span className="font-bold text-xs">Premium Boost</span>
                       </div>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold animate-pulse">
-                        Sponsor VIP
-                      </span>
+                      {isPaid ? (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-600 font-bold">LUNAS</span>
+                      ) : (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold animate-pulse">
+                          Sponsor VIP
+                        </span>
+                      )}
                     </div>
                     <p className={`text-[10px] mt-1 ${adType === 'premium' ? 'text-slate-300' : 'text-slate-500'}`}>
                       Penempatan teratas di beranda utama & prioritas tinggi.
@@ -630,6 +636,40 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
           )}
         </div>
 
+        {/* STEP 7: Pembayaran QRIS */}
+        {step === 7 && (
+          <div className="px-6 py-5 overflow-y-auto flex-1 space-y-5">
+            <h4 className="font-extrabold text-sm text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+              <CreditCard className="w-4 h-4 text-cyan-600" />
+              Langkah 7: Pembayaran Paket Premium
+            </h4>
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-center shadow-sm">
+              <h5 className="font-black text-lg text-slate-800 mb-2">Invoice Pembayaran</h5>
+              <p className="text-sm text-slate-500 mb-4">Silakan scan kode QRIS berikut menggunakan aplikasi dompet digital atau m-banking Anda.</p>
+              
+              <div className="bg-white p-4 inline-block rounded-2xl border border-slate-200 shadow-sm mb-4">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS" className="w-48 h-48 mx-auto opacity-80" />
+                <p className="text-[10px] font-bold text-slate-400 mt-2">DUMMY QRIS (SIMULASI)</p>
+              </div>
+              
+              <div className="space-y-2 text-left max-w-sm mx-auto bg-white p-4 rounded-xl border border-slate-100">
+                <div className="flex justify-between text-xs font-bold text-slate-600">
+                  <span>Layanan:</span>
+                  <span>Paket Premium Boost</span>
+                </div>
+                <div className="flex justify-between text-xs font-bold text-slate-600">
+                  <span>Harga:</span>
+                  <span>Rp{adPackages.find(p => p.id === selectedPackageId)?.price?.toLocaleString('id-ID') || 0}</span>
+                </div>
+                <div className="flex justify-between text-sm font-black text-slate-900 border-t border-slate-100 pt-2 mt-2">
+                  <span>Total Tagihan:</span>
+                  <span>Rp{adPackages.find(p => p.id === selectedPackageId)?.price?.toLocaleString('id-ID') || 0}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Form Footer Buttons */}
         <div className="bg-slate-50 border-t border-slate-200 px-6 py-4 flex items-center justify-between shrink-0">
           <div>
@@ -655,17 +695,37 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
                 Lanjutkan
                 <ArrowRight className="w-4 h-4" />
               </button>
-            ) : (
+            ) : step === 6 ? (
+              adType === 'premium' && !isPaid ? (
+                <button
+                  type="button"
+                  onClick={() => setStep(7)}
+                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
+                >
+                  Bayar Paket Premium
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={loading}
+                  className="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors disabled:opacity-70"
+                >
+                  {loading ? <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span> : <Check className="w-4 h-4" />}
+                  {loading ? 'Menyimpan...' : 'Publikasikan Iklan'}
+                </button>
+              )
+            ) : step === 7 ? (
               <button
                 type="button"
-                onClick={handleSubmit}
-                disabled={loading}
-                className="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors disabled:opacity-70"
+                onClick={() => { setIsPaid(true); setStep(6); }}
+                className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 transition-colors"
               >
-                {loading ? <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span> : <Check className="w-4 h-4" />}
-                {loading ? 'Menyimpan...' : 'Publikasikan Iklan'}
+                <Check className="w-4 h-4" />
+                Konfirmasi Pembayaran
               </button>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

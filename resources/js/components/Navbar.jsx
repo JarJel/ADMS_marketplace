@@ -142,7 +142,7 @@ export default function Navbar({
                 {/* Sisi Kanan: Conditional render based on Auth status */}
                 <div className="flex items-center gap-3">
                     {/* Daftar Mitra button for Customer */}
-                    {token && user && user.role === 'customer' && (
+                    {token && user && user.role === 'user' && (
                         <button 
                             onClick={() => onNavigate('merchant_registration')}
                             className="hidden md:flex items-center gap-1.5 bg-[#FFBF00] hover:bg-[#ffcd33] text-[#0F3040] text-[10px] font-black px-3.5 py-2 rounded-full shadow-md active:scale-95 transition-all cursor-pointer mr-1"

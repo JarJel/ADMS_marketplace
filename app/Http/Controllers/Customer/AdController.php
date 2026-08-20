@@ -19,7 +19,7 @@ class AdController extends Controller
     public function getAds(Request $request)
     {
         $ads = Advertisement::where('owner_id', $request->user()->id)
-            ->with(['category', 'package'])
+            ->with(['category', 'package', 'media', 'merchant'])
             ->latest()
             ->get();
 

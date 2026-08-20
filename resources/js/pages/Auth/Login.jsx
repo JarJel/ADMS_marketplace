@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     Shield, ArrowRight, CheckCircle, Store, Eye, EyeOff, Mail, Lock, 
     Sparkles, BadgeCheck, ShoppingBag, Megaphone, UserCheck, ChevronRight 
@@ -18,6 +18,19 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    useEffect(() => {
+        setEmail('');
+        setPassword('');
+        setPasswordConfirmation('');
+        setToken('');
+        setError(null);
+        setSuccessMsg(null);
+        setAuthMode('login');
+        setShowPassword(false);
+        setShowConfirmPassword(false);
+    }, []);
 
     // Quick Test Account Handler
     const handleSelectTestAccount = (accEmail) => {
@@ -211,7 +224,7 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
 
                     {/* Login Form */}
                     {authMode === 'login' && (
-                        <form onSubmit={handleLoginSubmit} className="space-y-4 text-left">
+                        <form onSubmit={handleLoginSubmit} className="space-y-4 text-left" autoComplete="off">
                             <div>
                                 <label className="block text-xs font-bold text-slate-200 mb-1.5">
                                     Email / Nomor Telepon
@@ -221,10 +234,11 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
                                     <input 
                                         type="text"
                                         required
+                                        autoComplete="off"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         className="w-full bg-[#071922] border border-[#174256] rounded-2xl pl-11 pr-4 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
-                                        placeholder="admin@adms.id"
+                                        placeholder="nama@gmail.com"
                                     />
                                 </div>
                             </div>
@@ -247,6 +261,7 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
                                     <input 
                                         type={showPassword ? "text" : "password"}
                                         required
+                                        autoComplete="new-password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         className="w-full bg-[#071922] border border-[#174256] rounded-2xl pl-11 pr-11 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
@@ -281,7 +296,7 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
 
                     {/* Forgot Password Form */}
                     {authMode === 'forgot' && (
-                        <form onSubmit={handleForgotSubmit} className="space-y-4 text-left">
+                        <form onSubmit={handleForgotSubmit} className="space-y-4 text-left" autoComplete="off">
                             <div>
                                 <label className="block text-xs font-bold text-slate-200 mb-1.5">
                                     Alamat Email
@@ -291,6 +306,7 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
                                     <input 
                                         type="email"
                                         required
+                                        autoComplete="off"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         className="w-full bg-[#071922] border border-[#174256] rounded-2xl pl-11 pr-4 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all"
@@ -319,7 +335,7 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
 
                     {/* Reset Password Form */}
                     {authMode === 'reset' && (
-                        <form onSubmit={handleResetSubmit} className="space-y-3.5 text-left">
+                        <form onSubmit={handleResetSubmit} className="space-y-3.5 text-left" autoComplete="off">
                             <div>
                                 <label className="block text-xs font-bold text-slate-200 mb-1">
                                     Email Konfirmasi
@@ -340,6 +356,7 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
                                 <input 
                                     type="text"
                                     required
+                                    autoComplete="off"
                                     value={token}
                                     onChange={(e) => setToken(e.target.value)}
                                     className="w-full bg-[#071922] border border-[#174256] rounded-2xl px-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all"
@@ -357,6 +374,7 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
                                         type={showPassword ? "text" : "password"}
                                         required
                                         minLength={8}
+                                        autoComplete="new-password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         className="w-full bg-[#071922] border border-[#174256] rounded-2xl pl-11 pr-11 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all"
@@ -379,13 +397,21 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <input 
-                                        type={showPassword ? "text" : "password"}
+                                        type={showConfirmPassword ? "text" : "password"}
                                         required
+                                        autoComplete="new-password"
                                         value={passwordConfirmation}
                                         onChange={(e) => setPasswordConfirmation(e.target.value)}
                                         className="w-full bg-[#071922] border border-[#174256] rounded-2xl pl-11 pr-11 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all"
                                         placeholder="Ulangi password baru"
                                     />
+                                    <button 
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                                    >
+                                        {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    </button>
                                 </div>
                             </div>
 

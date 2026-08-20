@@ -70,7 +70,7 @@ class AdController extends Controller
                 'description' => $request->description,
                 'price' => $request->price,
                 'location' => $request->location,
-                'contact_name' => $merchant->name,
+                'contact_name' => $request->filled('contact_name') ? $request->contact_name : $merchant->name,
                 'whatsapp' => $request->whatsapp,
                 'condition' => 'baru',
                 'duration_days' => $package->duration_days,

@@ -12,10 +12,12 @@ import {
   History
 } from 'lucide-react';
 
-export default function MerchantLayout({ children, user, onLogout, activeTab, setActiveTab, pendingOrders = [] }) {
+export default function MerchantLayout({ children, user, onLogout, activeTab, setActiveTab, pendingOrders = [], onNavigate }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const merchantName = user?.name || "Merchant";
+  const storeName = user?.merchant?.name || "Toko Merchant";
 
   const newOrders = pendingOrders.filter(o => o.status === 'pending');
   const incomingOrdersCount = newOrders.length;
@@ -45,11 +47,11 @@ export default function MerchantLayout({ children, user, onLogout, activeTab, se
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="h-16 flex items-center justify-between px-6 border-b border-slate-200 shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-sm shadow-indigo-200">
-              <span className="text-white font-bold text-xl">M</span>
+          <div className="flex items-center gap-2 overflow-hidden">
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-sm shadow-indigo-200 shrink-0">
+              <span className="text-white font-bold text-xl">{storeName.charAt(0).toUpperCase()}</span>
             </div>
-            <span className="font-bold text-xl tracking-tight text-slate-900">MajuJaya</span>
+            <span className="font-bold text-xl tracking-tight text-slate-900 truncate" title={storeName}>{storeName}</span>
           </div>
           <button className="md:hidden text-slate-500" onClick={() => setSidebarOpen(false)}>
             <X size={20} />
@@ -189,14 +191,47 @@ export default function MerchantLayout({ children, user, onLogout, activeTab, se
             
             <div className="h-8 w-px bg-slate-200 mx-1 hidden sm:block"></div>
             
-            <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <img 
-                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(merchantName)}&background=4F46E5&color=fff`}
-                alt="Profile" 
-                className="w-9 h-9 rounded-full border border-slate-200 object-cover shadow-sm"
-              />
-              <span className="text-sm font-medium text-slate-700 hidden sm:block">{merchantName}</span>
-            </button>
+            <div className="relative">
+              <button 
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              >
+                <img 
+                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(merchantName)}&background=4F46E5&color=fff`}
+                  alt="Profile" 
+                  className="w-9 h-9 rounded-full border border-slate-200 object-cover shadow-sm"
+                />
+                <span className="text-sm font-medium text-slate-700 hidden sm:block">{merchantName}</span>
+              </button>
+
+              {showProfileDropdown && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-slate-100 z-50 py-1 overflow-hidden transform origin-top-right transition-all">
+                  <div className="px-4 py-2 border-b border-slate-100 mb-1 bg-slate-50">
+                    <p className="text-sm font-bold text-slate-800">{merchantName}</p>
+                    <p className="text-xs text-slate-500 uppercase font-semibold">{user?.role || 'Merchant'}</p>
+                  </div>
+                  <button 
+                    onClick={() => {
+                        setShowProfileDropdown(false);
+                        if (onNavigate) onNavigate('customer_dashboard');
+                    }}
+                    className="w-full text-left px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors flex items-center gap-2"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    Kembali ke Dashboard Customer
+                  </button>
+                  <button 
+                    onClick={onLogout}
+                    className="w-full text-left px-4 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors border-t border-slate-100 mt-1 flex items-center gap-2"
+                  >
+                    <LogOut size={14} />
+                    Keluar Akun
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 

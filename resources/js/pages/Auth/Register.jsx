@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
 export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
@@ -13,6 +13,19 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    useEffect(() => {
+        setName('');
+        setEmail('');
+        setPhone('');
+        setPassword('');
+        setPasswordConfirmation('');
+        setError(null);
+        setSuccess(false);
+        setShowPassword(false);
+        setShowConfirmPassword(false);
+    }, []);
 
     const handleRegister = async (e) => {
         if (e) e.preventDefault();
@@ -112,7 +125,7 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                     )}
 
                     {/* Form */}
-                    <form onSubmit={handleRegister} className="space-y-4 text-left">
+                    <form onSubmit={handleRegister} className="space-y-4 text-left" autoComplete="off">
                         {/* Name */}
                         <div>
                             <label className="block text-xs font-bold text-slate-200 mb-1.5">
@@ -121,6 +134,7 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                             <input 
                                 type="text"
                                 required
+                                autoComplete="off"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 className="w-full bg-[#071922] border border-[#174256] rounded-2xl px-4 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
@@ -136,6 +150,7 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                             <input 
                                 type="email"
                                 required
+                                autoComplete="off"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full bg-[#071922] border border-[#174256] rounded-2xl px-4 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
@@ -151,6 +166,7 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                             <input 
                                 type="text"
                                 required
+                                autoComplete="off"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
                                 className="w-full bg-[#071922] border border-[#174256] rounded-2xl px-4 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
@@ -168,6 +184,7 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                                     type={showPassword ? "text" : "password"}
                                     required
                                     minLength={8}
+                                    autoComplete="new-password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="w-full bg-[#071922] border border-[#174256] rounded-2xl px-4 py-3 pr-10 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
@@ -190,13 +207,21 @@ export default function Register({ onRegisterSuccess, onNavigateToLogin }) {
                             </label>
                             <div className="relative">
                                 <input 
-                                    type={showPassword ? "text" : "password"}
+                                    type={showConfirmPassword ? "text" : "password"}
                                     required
+                                    autoComplete="new-password"
                                     value={passwordConfirmation}
                                     onChange={(e) => setPasswordConfirmation(e.target.value)}
                                     className="w-full bg-[#071922] border border-[#174256] rounded-2xl px-4 py-3 pr-10 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] transition-all shadow-inner"
                                     placeholder="Ulangi password"
                                 />
+                                <button 
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                                >
+                                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
                             </div>
                         </div>
 

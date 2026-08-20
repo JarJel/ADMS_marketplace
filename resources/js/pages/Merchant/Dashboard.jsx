@@ -184,6 +184,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
             activeTab={activeTab} 
             setActiveTab={setActiveTab}
             pendingOrders={orders}
+            onNavigate={onNavigate}
         >
             {loading ? (
                 <div className="flex justify-center items-center h-64 text-slate-500">

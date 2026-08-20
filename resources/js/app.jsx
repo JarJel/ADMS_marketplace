@@ -335,6 +335,12 @@ function App() {
         } else if (targetView === 'dashboard') {
             setDashboardTab('overview');
             routeUser(user);
+        } else if (targetView === 'customer_dashboard') {
+            setDashboardTab('overview');
+            navigateTo('customer_dashboard', '/customer');
+        } else if (targetView === 'merchant_dashboard') {
+            setDashboardTab('overview');
+            navigateTo('merchant_dashboard', '/merchant');
         }
     };
 

@@ -10,7 +10,7 @@ import Navbar from '../components/Navbar';
 // Classifieds catalog view component with DB seeder data
 
 
-export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout }) {
+export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMode, setDarkMode, onLogout, cartCount = 0, wishlistCount = 0, notifications = [], setNotifications }) {
     const [ads, setAds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -186,7 +186,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
     }, [filteredAds, currentPage]);
 
     return (
-        <div className="min-h-screen bg-[#071922] text-white transition-colors duration-300 font-sans pb-20">
+        <div className="min-h-screen bg-slate-100 dark:bg-[#071922] text-slate-900 dark:text-white transition-colors duration-300 font-sans pb-20">
             {/* Header Navbar */}
             <Navbar 
                 user={user} 
@@ -196,10 +196,14 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                 onLogout={onLogout}
                 onNavigate={onNavigate} 
                 currentView="classifieds"
+                cartCount={cartCount}
+                wishlistCount={wishlistCount}
+                notifications={notifications}
+                setNotifications={setNotifications}
             />
 
             {/* A. Hero Portal Banner */}
-            <section className="bg-[#0F3040] text-white py-16 sm:py-24 relative overflow-hidden border-b-2 border-[#174256]">
+            <section className="bg-slate-50 dark:bg-[#0F3040] text-slate-900 dark:text-white py-16 sm:py-24 relative overflow-hidden border-b-2 border-slate-200 dark:border-[#174256]">
                 {/* Background Slides */}
                 {heroSlides.map((slide, idx) => (
                     <div 

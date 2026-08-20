@@ -47,7 +47,7 @@ function ScrollFadeIn({ children, className = '' }) {
     );
 }
 
-export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, onNavigateToRegister, onNavigateToDashboard, onNavigateToCreateAd, onNavigateToClassifieds, onNavigateToProducts, onNavigate, onLogout, darkMode, setDarkMode, onAddToCart, onToggleWishlist, cartCount, wishlistCount, notifications }) {
+export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, onNavigateToRegister, onNavigateToDashboard, onNavigateToCreateAd, onNavigateToClassifieds, onNavigateToProducts, onNavigate, onLogout, darkMode, setDarkMode, onAddToCart, onToggleWishlist, cartCount, wishlistCount, notifications, setNotifications }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchInput, setSearchInput] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Semua');
@@ -241,39 +241,40 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                 cartCount={cartCount}
                 wishlistCount={wishlistCount}
                 notifications={notifications}
+                setNotifications={setNotifications}
                 currentView="homepage"
             />
 
             {/* B. Hero Section */}
             <ScrollFadeIn>
-            <section className="py-16 transition-colors duration-300 relative overflow-hidden bg-[#0F3040] dark:bg-[#071922] text-white border-b-2 border-[#174256]">
+            <section className="py-16 transition-colors duration-300 relative overflow-hidden bg-slate-50 dark:bg-[#071922] text-slate-900 dark:text-white border-b-2 border-slate-200 dark:border-[#174256]">
                 {/* Background ambient glow effects */}
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[140px] pointer-events-none -translate-y-1/2 translate-x-1/4 bg-[#FFBF00]/10"></div>
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none translate-y-1/3 -translate-x-1/4 bg-[#174256]/50"></div>
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[140px] pointer-events-none -translate-y-1/2 translate-x-1/4 bg-amber-400/10 dark:bg-[#FFBF00]/10"></div>
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none translate-y-1/3 -translate-x-1/4 bg-teal-500/10 dark:bg-[#174256]/50"></div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
                     
                     {/* Copywriting (7 columns) */}
                     <div className="space-y-6 lg:col-span-7">
 
-                        <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-tight text-white">
-                            Temukan <span className="text-[#FFBF00] bg-clip-text text-transparent bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00]">Produk Digital</span>.<br />
-                            <span className="text-[#FFBF00] bg-clip-text text-transparent bg-gradient-to-r from-[#FFBF00] to-[#e6ac00]">Pasang Iklan</span>. Kembangkan Bisnis.
+                        <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">
+                            Temukan <span className="text-teal-600 dark:text-[#FFBF00] bg-clip-text text-transparent bg-gradient-to-r from-teal-600 via-amber-500 to-teal-600 dark:from-[#FFBF00] dark:via-[#ffcd33] dark:to-[#FFBF00]">Produk Digital</span>.<br />
+                            <span className="text-amber-600 dark:text-[#FFBF00] bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-teal-600 dark:from-[#FFBF00] dark:to-[#e6ac00]">Pasang Iklan</span>. Kembangkan Bisnis.
                         </h1>
 
-                        <p className="text-sm sm:text-base leading-relaxed max-w-xl text-slate-300">
+                        <p className="text-sm sm:text-base leading-relaxed max-w-xl text-slate-600 dark:text-slate-300">
                             ADMS adalah platform marketplace dan digital advertising terpadu yang membantu Anda menemukan produk digital terbaik, berjualan sebagai merchant, dan mempromosikan bisnis dalam satu ekosistem.
                         </p>
 
                         {/* Search Bar inside Hero */}
-                        <div className="max-w-lg mt-8 relative flex items-center rounded-2xl p-1.5 pl-4 shadow-xl border-2 bg-[#0F3040] border-[#174256] text-white">
-                            <Search className="w-4 h-4 mr-2.5 flex-shrink-0 text-[#FFBF00]" />
+                        <div className="max-w-lg mt-8 relative flex items-center rounded-2xl p-1.5 pl-4 shadow-xl border-2 bg-white dark:bg-[#0F3040] border-slate-200 dark:border-[#174256] text-slate-900 dark:text-white">
+                            <Search className="w-4 h-4 mr-2.5 flex-shrink-0 text-amber-500 dark:text-[#FFBF00]" />
                             <input 
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Cari produk digital, jasa, atau iklan promosi..."
-                                className="w-full bg-transparent focus:outline-none text-xs sm:text-sm text-white placeholder-slate-400 font-medium"
+                                className="w-full bg-transparent focus:outline-none text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 font-medium"
                             />
                             <button 
                                 onClick={() => onNavigate('products', 'all', searchQuery)}
@@ -284,8 +285,8 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         </div>
 
                         {/* Popular Tags */}
-                        <p className="text-[11px] font-medium text-slate-400">
-                            Pencarian Populer: <span className="text-[#FFBF00] font-semibold">Template Canva &bull; Ebook Marketing &bull; Source Code Web</span>
+                        <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                            Pencarian Populer: <span className="text-teal-600 dark:text-[#FFBF00] font-semibold">Template Canva &bull; Ebook Marketing &bull; Source Code Web</span>
                         </p>
 
                         {/* CTA Buttons */}
@@ -298,23 +299,23 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                             </a>
                             <button 
                                 onClick={onNavigateToCreateAd}
-                                className="font-bold py-3.5 px-6 rounded-xl text-xs flex items-center gap-1.5 border-2 border-[#174256] hover:border-[#FFBF00] text-slate-200 bg-[#0F3040] hover:bg-[#0F3040]/80 transition-all cursor-pointer shadow-md"
+                                className="font-bold py-3.5 px-6 rounded-xl text-xs flex items-center gap-1.5 border-2 border-slate-300 dark:border-[#174256] hover:border-amber-400 dark:hover:border-[#FFBF00] text-slate-700 dark:text-slate-200 bg-white hover:bg-slate-100 dark:bg-[#0F3040] dark:hover:bg-[#0F3040]/80 transition-all cursor-pointer shadow-md"
                             >
-                                <Megaphone className="w-3.5 h-3.5 text-[#FFBF00]" />
+                                <Megaphone className="w-3.5 h-3.5 text-amber-500 dark:text-[#FFBF00]" />
                                 Pasang Iklan Gratis
                             </button>
                         </div>
 
                         {/* Core benefits checklist */}
-                        <div className="flex flex-wrap items-center gap-6 pt-4 text-xs font-bold text-slate-300">
+                        <div className="flex flex-wrap items-center gap-6 pt-4 text-xs font-bold text-slate-600 dark:text-slate-300">
                             <span className="flex items-center gap-1.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-[#FFBF00]" /> Instan Download
+                                <CheckCircle className="w-3.5 h-3.5 text-amber-500 dark:text-[#FFBF00]" /> Instan Download
                             </span>
                             <span className="flex items-center gap-1.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-[#FFBF00]" /> Verified Merchant
+                                <CheckCircle className="w-3.5 h-3.5 text-amber-500 dark:text-[#FFBF00]" /> Verified Merchant
                             </span>
                             <span className="flex items-center gap-1.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-[#FFBF00]" /> Iklan Gratis Rp0
+                                <CheckCircle className="w-3.5 h-3.5 text-amber-500 dark:text-[#FFBF00]" /> Iklan Gratis Rp0
                             </span>
                         </div>
                     </div>
@@ -323,16 +324,16 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                     <div className="relative flex justify-center lg:justify-end lg:col-span-5 pt-8 lg:pt-0">
                         <div className="relative w-full max-w-[600px]">
                             {/* Ambient glow blobs behind card */}
-                            <div className="absolute -top-16 -right-16 w-64 h-64 bg-[#FFBF00]/10 rounded-full blur-[80px] pointer-events-none"></div>
-                            <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-[#174256]/50 rounded-full blur-[80px] pointer-events-none"></div>
+                            <div className="absolute -top-16 -right-16 w-64 h-64 bg-amber-400/10 dark:bg-[#FFBF00]/10 rounded-full blur-[80px] pointer-events-none"></div>
+                            <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-teal-500/10 dark:bg-[#174256]/50 rounded-full blur-[80px] pointer-events-none"></div>
 
                             {/* Main card */}
-                            <div className="w-full rounded-3xl backdrop-blur-xl border-2 border-[#174256] p-5 relative overflow-hidden bg-[#0F3040] shadow-2xl text-white">
+                            <div className="w-full rounded-3xl backdrop-blur-xl border-2 border-slate-200 dark:border-[#174256] p-5 relative overflow-hidden bg-white dark:bg-[#0F3040] shadow-2xl text-slate-900 dark:text-white">
                                 {/* Top shimmer border */}
                                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#FFBF00] to-transparent"></div>
 
                                 {/* Slider Image container */}
-                                <div className="relative w-full rounded-2xl overflow-hidden shadow-lg group border border-[#174256]">
+                                <div className="relative w-full rounded-2xl overflow-hidden shadow-lg group border border-slate-200 dark:border-[#174256]">
                                     <div className="block relative aspect-[4/3] md:aspect-[16/10] overflow-hidden bg-[#071922]">
                                         <img 
                                             src={promoSlides[currentPromoSlide].image} 

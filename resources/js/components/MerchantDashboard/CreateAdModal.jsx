@@ -114,11 +114,26 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
 
   const handlePhotoUpload = (e) => {
     if (e.target.files) {
-      const newFiles = Array.from(e.target.files).map(file => ({
-        file,
-        preview: URL.createObjectURL(file)
-      }));
-      setPhotos(prev => [...prev, ...newFiles]);
+      const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+      const validFiles = [];
+      let hasError = false;
+
+      Array.from(e.target.files).forEach(file => {
+        if (file.size > MAX_SIZE) {
+          hasError = true;
+        } else {
+          validFiles.push({
+            file,
+            preview: URL.createObjectURL(file)
+          });
+        }
+      });
+
+      if (hasError) {
+        setMsg({ type: 'error', text: 'Beberapa foto gagal ditambahkan karena ukurannya melebihi batas 2MB.' });
+      }
+
+      setPhotos(prev => [...prev, ...validFiles]);
     }
   };
 
@@ -267,7 +282,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
                   placeholder="Contoh: Toyota Avanza 2022 Siap Pakai Murah"
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-slate-900 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-900 bg-white placeholder-slate-400 focus:ring-2 focus:ring-slate-900 focus:outline-none"
                 />
               </div>
 
@@ -294,7 +309,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
                     placeholder="Contoh: Hatchback, Mobil Bekas"
                     value={formData.subcategory}
                     onChange={handleChange}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-slate-900 focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-900 bg-white placeholder-slate-400 focus:ring-2 focus:ring-slate-900 focus:outline-none"
                   />
                 </div>
               </div>
@@ -335,7 +350,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
                   placeholder="Contoh: 185000000"
                   value={formData.price}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-slate-900 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-900 bg-white placeholder-slate-400 focus:ring-2 focus:ring-slate-900 focus:outline-none"
                 />
               </div>
             </div>
@@ -357,7 +372,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
                   placeholder="Tuliskan spesifikasi lengkap, kelebihan, riwayat pemakaian, atau penawaran produk Anda secara mendetail..."
                   value={formData.description}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-slate-900 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-900 bg-white placeholder-slate-400 focus:ring-2 focus:ring-slate-900 focus:outline-none"
                 ></textarea>
               </div>
             </div>
@@ -386,7 +401,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
               >
                 <ImageIcon className="w-8 h-8 text-slate-400 mx-auto group-hover:scale-110 transition-transform" />
                 <p className="text-xs font-bold text-slate-800 mt-2">Pilih dari Perangkat Anda atau Seret & lepas</p>
-                <p className="text-[10px] text-slate-500 mt-0.5">Mendukung format JPG, PNG, WEBP (maks. 5MB per file)</p>
+                <p className="text-[10px] text-slate-500 mt-0.5">Mendukung format JPG, PNG, WEBP (maks. 2MB per file)</p>
               </div>
 
               <div className="flex justify-center">
@@ -468,7 +483,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
                   placeholder="Contoh: Lengkong, Sumur Bandung"
                   value={formData.kecamatan}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-slate-900 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-900 bg-white placeholder-slate-400 focus:ring-2 focus:ring-slate-900 focus:outline-none"
                 />
               </div>
             </div>
@@ -491,7 +506,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
                     name="contactName"
                     value={formData.contactName}
                     onChange={handleChange}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-slate-900 focus:outline-none"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-900 bg-white placeholder-slate-400 focus:ring-2 focus:ring-slate-900 focus:outline-none"
                   />
                 </div>
               </div>
@@ -506,7 +521,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
                     placeholder="Contoh: 081234567890"
                     value={formData.contactPhone}
                     onChange={handleChange}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-slate-900 focus:outline-none"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-900 bg-white placeholder-slate-400 focus:ring-2 focus:ring-slate-900 focus:outline-none"
                   />
                 </div>
               </div>
@@ -520,7 +535,7 @@ export default function CreateAdModal({ token, isOpen, onClose, fetchAds }) {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-slate-900 focus:outline-none"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-900 bg-white placeholder-slate-400 focus:ring-2 focus:ring-slate-900 focus:outline-none"
                   />
                 </div>
               </div>

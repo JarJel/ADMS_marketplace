@@ -162,7 +162,14 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             } else {
                 const dateB = b.date ? new Date(b.date).getTime() : 0;
                 const dateA = a.date ? new Date(a.date).getTime() : 0;
-                return dateB - dateA;
+                
+                // Jika tanggal valid dan berbeda, urutkan berdasarkan tanggal terbaru
+                if (!isNaN(dateB) && !isNaN(dateA) && dateB !== dateA) {
+                    return dateB - dateA;
+                }
+                
+                // Fallback: urutkan berdasarkan ID terbesar (terbaru) jika format tanggal tidak bisa di-parse
+                return (b.id || 0) - (a.id || 0);
             }
         });
     }, [ads, debouncedSearchQuery, debouncedSearchLocation, selectedCategory, filterCondition, minPrice, maxPrice, sortBy]);

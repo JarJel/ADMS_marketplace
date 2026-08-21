@@ -113,7 +113,11 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
         try {
             const res = await fetch('/api/public/ads', { headers: { 'Accept': 'application/json' } });
             const data = await res.json();
-            if (data.success) setVipAds(data.data.slice(0, 4));
+            if (data.success) {
+                // Filter premium ads first, then take the top 4
+                const premiums = data.data.filter(ad => ad.is_premium);
+                setVipAds(premiums.slice(0, 4));
+            }
         } catch (e) { }
     };
 

@@ -23,7 +23,7 @@ class StoreController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Anda sudah memiliki toko yang terdaftar.'
-            ], 400);
+            ], 409);
         }
 
         $validator = Validator::make($request->all(), [
@@ -59,9 +59,31 @@ class StoreController extends Controller
             'syariah_cert_body' => $request->syariah_cert_body,
         ]);
 
+        // Update user role to merchant
+        $user->update(['role' => 'merchant']);
+
         return response()->json([
             'success' => true,
             'message' => 'Pendaftaran toko berhasil diajukan dan sedang menunggu verifikasi admin.',
+            'data' => $merchant
+        ], 201);
+    }
+
+    /**
+     * Get logged in user's merchant data.
+     */
+    public function getMyMerchant(Request $request)
+    {
+        $merchant = $request->user()->merchant;
+        if (!$merchant) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data merchant tidak ditemukan.'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
             'data' => $merchant
         ], 200);
     }

@@ -186,6 +186,7 @@ Route::middleware('auth.custom')->group(function () {
     
     // Register store (Only requires login, no merchant role check yet)
     Route::post('/merchant/register', [MerchantStoreController::class, 'registerStore'])->name('merchant.store.register');
+    Route::get('/merchant/me', [MerchantStoreController::class, 'getMyMerchant']);
 
     // Protected Merchant Actions (Requires login & merchant role & verified store profile check)
     Route::middleware('auth.merchant')->group(function () {

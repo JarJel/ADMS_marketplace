@@ -46,8 +46,8 @@ class AdController extends Controller
             'price' => 'nullable|numeric|min:0',
             'location' => 'required|string',
             'whatsapp' => 'required|string',
-            'package_id' => 'required|exists:packages,id',
-            'images' => 'required|array',
+            'package_id' => 'nullable|exists:packages,id',
+            'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -59,7 +59,29 @@ class AdController extends Controller
             ], 422);
         }
 
-        $package = Package::find($request->package_id);
+        $isPremium = false;
+        $activePackage = null;
+        if ($user->active_package_id && $user->package_expires_at && $user->package_expires_at > now()) {
+            $isPremium = true;
+            $activePackage = Package::find($user->active_package_id);
+        }
+
+        if (!$isPremium || !$activePackage) {
+            $activePackage = Package::where('type', 'free')->first();
+            if (!$activePackage) {
+                $activePackage = (object) ['id' => 1, 'duration_days' => 7];
+            }
+        }
+
+        $images = $request->file('images', []);
+        $maxImages = $isPremium ? 5 : 2;
+
+        if (count($images) > $maxImages) {
+            return response()->json([
+                'success' => false,
+                'message' => "Maksimal gambar untuk iklan " . ($isPremium ? 'premium' : 'gratis') . " adalah {$maxImages}."
+            ], 400);
+        }
 
         DB::beginTransaction();
 
@@ -72,16 +94,15 @@ class AdController extends Controller
                 'location' => $request->location,
                 'contact_name' => $request->filled('contact_name') ? $request->contact_name : $merchant->name,
                 'whatsapp' => $request->whatsapp,
-                'condition' => 'baru',
-                'duration_days' => $package->duration_days,
-                'package_id' => $package->id,
-                'status' => 'approved', // Immediately approved based on user request
+                'condition' => $request->condition ?? 'baru',
+                'duration_days' => $activePackage->duration_days,
+                'package_id' => $activePackage->id,
+                'status' => 'approved', // Automatically approved to show on homepage
                 'merchant_id' => $merchant->id,
                 'owner_id' => $user->id,
             ]);
 
             // Save images
-            $images = $request->file('images', []);
             foreach ($images as $key => $imageFile) {
                 $path = $imageFile->store('ads', 'public');
                 $media = new Media([

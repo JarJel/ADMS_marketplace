@@ -69,17 +69,17 @@ class AdmsCatalogSeeder extends Seeder
         }
 
         // Get a merchant_id (if not exists, create a dummy one)
-        $merchant = DB::table('merchants')->first();
+        $merchant = DB::table('merchants')->where('name', 'ADMS')->first();
         if (!$merchant) {
             // we need a user for merchant
-            $user = DB::table('users')->where('role', 'merchant')->first();
+            $user = DB::table('users')->where('email', 'adms@adms.id')->first();
             if (!$user) {
                 $userId = Str::uuid();
                 DB::table('users')->insert([
                     'id' => $userId,
-                    'name' => 'Dummy Merchant User',
-                    'email' => 'merchant@adms.id',
-                    'phone' => '08123456789',
+                    'name' => 'ADMS Official',
+                    'email' => 'adms@adms.id',
+                    'phone' => '08111111111',
                     'password' => bcrypt('password'),
                     'role' => 'merchant',
                     'created_at' => now(),
@@ -92,10 +92,13 @@ class AdmsCatalogSeeder extends Seeder
             $merchantId = Str::uuid();
             DB::table('merchants')->insert([
                 'id' => $merchantId,
-                'user_id' => $userId,
-                'name' => 'ADMS Official Store',
+                'owner_id' => $userId,
+                'name' => 'ADMS',
+                'slug' => 'adms',
                 'description' => 'Official store for ADMS services',
-                'status' => 'active',
+                'is_verified' => true,
+                'location' => 'Jakarta, Indonesia',
+                'contact_whatsapp' => '08111111111',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -161,11 +164,12 @@ class AdmsCatalogSeeder extends Seeder
             $existingProduct = DB::table('products')->where('slug', $prod['slug'])->first();
 
             if ($existingProduct) {
-                // Update if price differs
-                if ($existingProduct->price != $prod['price']) {
+                // Update if price differs or merchant is different
+                if ($existingProduct->price != $prod['price'] || $existingProduct->merchant_id !== $merchantId) {
                     DB::table('products')->where('id', $existingProduct->id)->update([
                         'price' => $prod['price'],
                         'price_type' => $prod['price_type'],
+                        'merchant_id' => $merchantId,
                         'updated_at' => now(),
                     ]);
                     $updatedProducts++;

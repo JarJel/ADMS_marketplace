@@ -6,26 +6,7 @@ import {
 
 const fmt = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
 
-export const AdminOverview = ({ onNavigate, token }) => {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await fetch('/api/admin/stats', {
-          headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-        });
-        const data = await res.json();
-        if (data.success) setStats(data.data);
-      } catch (e) {
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, [token]);
-
+export const AdminOverview = ({ onNavigate, stats, loading }) => {
   const maxChart = stats?.chartData ? Math.max(...stats.chartData.map(d => d.value), 1) : 1;
 
   if (loading) {

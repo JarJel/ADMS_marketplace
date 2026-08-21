@@ -40,7 +40,7 @@ export const AdminProducts = ({ token }) => {
       if (data.success) {
         const d = data.data;
         setProducts(d.data ?? d);
-        if (d.last_page) setMeta({ current_page: d.current_page, last_page: d.last_page, total: d.total });
+        if (d.last_page) setMeta({ current_page: d.current_page, last_page: d.last_page, total: d.total, per_page: d.per_page || 20 });
       }
     } catch (e) {
     } finally {
@@ -120,6 +120,7 @@ export const AdminProducts = ({ token }) => {
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
               <tr>
+                <th className="px-6 py-4 font-bold w-12 text-center">No.</th>
                 <th className="px-6 py-4 font-bold">Info Produk</th>
                 <th className="px-6 py-4 font-bold">Harga</th>
                 <th className="px-6 py-4 font-bold">Status</th>
@@ -129,12 +130,17 @@ export const AdminProducts = ({ token }) => {
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
               {loading ? (
                 [...Array(5)].map((_, i) => (
-                  <tr key={i}><td colSpan="4" className="px-6 py-4"><div className="h-4 bg-slate-100 rounded animate-pulse"></div></td></tr>
+                  <tr key={i}><td colSpan="5" className="px-6 py-4"><div className="h-4 bg-slate-100 rounded animate-pulse"></div></td></tr>
                 ))
               ) : products.length === 0 ? (
-                <tr><td colSpan="4" className="px-6 py-10 text-center text-slate-500">Tidak ada produk yang ditemukan.</td></tr>
-              ) : products.map((p) => (
+                <tr><td colSpan="5" className="px-6 py-10 text-center text-slate-500">Tidak ada produk yang ditemukan.</td></tr>
+              ) : products.map((p, idx) => {
+                const rowIndex = (page - 1) * (meta?.per_page || 20) + idx + 1;
+                return (
                 <tr key={p.id} className={`hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors ${actionLoading === p.id ? 'opacity-60' : ''}`}>
+                  <td className="px-6 py-4 text-center font-bold text-slate-400">
+                    {rowIndex}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700 overflow-hidden">
@@ -192,7 +198,7 @@ export const AdminProducts = ({ token }) => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         </div>

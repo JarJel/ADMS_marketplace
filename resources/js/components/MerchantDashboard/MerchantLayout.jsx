@@ -103,7 +103,7 @@ export default function MerchantLayout({ children, user, onLogout, activeTab, se
               </div>
               <span className="font-bold text-sm text-white truncate">{storeName}</span>
             </div>
-            <h1 className="text-lg sm:text-xl font-black text-white hidden md:block">Selamat datang, {merchantName} 👋</h1>
+            <h1 className="text-lg sm:text-xl font-black text-white hidden md:block">Selamat datang, {merchantName}</h1>
           </div>
           
           <div className="flex items-center gap-3 sm:gap-4">
@@ -244,7 +244,7 @@ export default function MerchantLayout({ children, user, onLogout, activeTab, se
         {/* Tab Content Rendering */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 scroll-smooth bg-[#0B2330] text-slate-100">
           <div className="max-w-7xl mx-auto space-y-6">
-            <h1 className="text-xl font-black text-white sm:hidden mb-4">Selamat datang, {merchantName} 👋</h1>
+            <h1 className="text-xl font-black text-white sm:hidden mb-4">Selamat datang, {merchantName}</h1>
             {children}
           </div>
         </div>

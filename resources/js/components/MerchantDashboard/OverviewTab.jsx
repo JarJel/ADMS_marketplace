@@ -1,5 +1,5 @@
 import React from 'react';
-import { DollarSign, ShoppingCart, Package, TrendingUp, AlertCircle, ChevronRight, BarChart2, Eye, MapPin, MousePointerClick, Crown } from 'lucide-react';
+import { DollarSign, ShoppingCart, Package, TrendingUp, AlertCircle, ChevronRight, BarChart2, Eye, MapPin, MousePointerClick, Crown, Wallet, Star } from 'lucide-react';
 
 export default function OverviewTab({ 
   stats, 
@@ -113,7 +113,8 @@ export default function OverviewTab({
         {/* Withdrawal Form */}
         <div className="lg:col-span-2 bg-[#071922] rounded-2xl p-5 sm:p-6 shadow-xl border border-[#174256]">
           <h2 className="text-lg font-black text-white mb-4 flex items-center gap-2">
-            💸 Tarik Dana Hasil Penjualan
+            <Wallet className="text-[#FFBF00]" size={20} />
+            Tarik Dana Hasil Penjualan
           </h2>
 
           {payoutMsg && (
@@ -348,7 +349,11 @@ export default function OverviewTab({
                       <div key={rev.id} className="border-b border-[#174256] pb-4 last:border-0 last:pb-0">
                           <div className="flex justify-between items-center mb-2">
                               <span className="font-bold text-white text-sm">{rev.user.name}</span>
-                              <span className="text-yellow-400 text-xs">{'⭐'.repeat(rev.rating)}</span>
+                              <div className="flex items-center gap-0.5">
+                                  {[...Array(rev.rating || 5)].map((_, i) => (
+                                      <Star key={i} className="w-3.5 h-3.5 fill-[#FFBF00] text-[#FFBF00]" />
+                                  ))}
+                              </div>
                           </div>
                           <p className="text-sm text-slate-300 italic">"{rev.comment}"</p>
                       </div>

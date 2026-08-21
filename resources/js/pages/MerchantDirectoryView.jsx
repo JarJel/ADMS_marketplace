@@ -123,103 +123,124 @@ export default function MerchantDirectoryView({ user, token, onNavigate, darkMod
                         ))}
                     </div>
                 ) : filteredMerchants.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {filteredMerchants.map((merchant) => (
-                                <div 
-                                    key={merchant.id} 
-                                    className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-300 dark:border-[#174256] p-6 flex flex-col justify-between hover:border-[#FFBF00] hover:-translate-y-1.5 transition-all duration-300 group shadow-md dark:shadow-xl"
-                                >
-                                    <div>
-                                        {/* Top Profile Card */}
-                                        <div className="flex items-start gap-4 mb-5">
-                                            <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-[#071922] border border-slate-300 dark:border-[#174256] flex items-center justify-center overflow-hidden flex-shrink-0 relative group-hover:scale-105 transition-transform duration-300 shadow-sm">
-                                                <img 
-                                                    src={merchant.logo || 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?q=80&w=150&auto=format&fit=crop'} 
-                                                    alt={merchant.store_name || merchant.name} 
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="font-black text-[#0F3040] dark:text-[#FFBF00] text-sm sm:text-base truncate flex items-center gap-1.5 transition-colors">
-                                                    {merchant.store_name || merchant.name}
-                                                    {merchant.is_verified && (
-                                                        <CheckCircle className="w-4 h-4 text-[#FFBF00] flex-shrink-0 fill-[#FFBF00]/20" title="Toko Terverifikasi" />
-                                                    )}
-                                                </h3>
-                                                
-                                                {merchant.is_verified ? (
-                                                    <span className="inline-flex items-center bg-[#FFBF00]/20 text-[#FFBF00] font-black px-2 py-0.5 rounded-full border border-[#FFBF00]/40 text-[8px] uppercase tracking-wider mt-1.5">
-                                                        Syariah Certified
-                                                    </span>
-                                                ) : (
-                                                    <span className="inline-block text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold mt-1">Penjual Terdaftar</span>
+                    (() => {
+                        const renderMerchantCard = (merchant, isRightCol = false) => (
+                            <div 
+                                key={merchant.id} 
+                                className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-300 dark:border-[#174256] p-2.5 sm:p-6 flex flex-col justify-between hover:border-[#FFBF00] hover:-translate-y-1.5 transition-all duration-300 group shadow-md dark:shadow-xl relative"
+                            >
+                                <div>
+                                    {/* Top Profile Card */}
+                                    <div className="flex items-start gap-2 sm:gap-4 mb-2.5 sm:mb-5">
+                                        <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-slate-100 dark:bg-[#071922] border border-slate-300 dark:border-[#174256] flex items-center justify-center overflow-hidden flex-shrink-0 relative group-hover:scale-105 transition-transform duration-300 shadow-sm">
+                                            <img 
+                                                src={merchant.logo || 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?q=80&w=150&auto=format&fit=crop'} 
+                                                alt={merchant.store_name || merchant.name} 
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="font-black text-[#0F3040] dark:text-[#FFBF00] text-xs sm:text-base truncate flex items-center gap-1 transition-colors">
+                                                <span className="truncate">{merchant.store_name || merchant.name}</span>
+                                                {merchant.is_verified && (
+                                                    <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FFBF00] flex-shrink-0 fill-[#FFBF00]/20" title="Toko Terverifikasi" />
+                                                )}
+                                            </h3>
+                                            
+                                            {merchant.is_verified ? (
+                                                <span className="inline-flex items-center bg-[#FFBF00]/20 text-[#FFBF00] font-black px-1.5 py-0.5 rounded-full border border-[#FFBF00]/40 text-[7px] sm:text-[8px] uppercase tracking-wider mt-0.5 sm:mt-1.5">
+                                                    Syariah Certified
+                                                </span>
+                                            ) : (
+                                                <span className="inline-block text-[8px] sm:text-[9px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold mt-0.5">Penjual Terdaftar</span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Description */}
+                                    <div className="mb-2 sm:mb-4">
+                                        <p className={`text-[10px] sm:text-xs text-slate-600 dark:text-slate-300 leading-snug sm:leading-relaxed ${
+                                            isRightCol ? 'line-clamp-3 sm:line-clamp-2' : 'line-clamp-2'
+                                        }`}>
+                                            {merchant.description || 'Belum ada deskripsi lengkap untuk merchant mitra ini.'}
+                                        </p>
+                                    </div>
+
+                                    {/* Mini Product Showcase */}
+                                    {merchant.products && merchant.products.length > 0 && (
+                                        <div className="mb-2 sm:mb-5 pt-2 sm:pt-3 border-t border-slate-200 dark:border-[#174256]">
+                                            <p className="text-[8px] sm:text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Produk Unggulan</p>
+                                            <div className="flex gap-1.5 overflow-hidden">
+                                                {merchant.products.map(product => (
+                                                    <div key={product.id} className="relative group/prod flex-shrink-0 w-8 h-8 sm:w-12 sm:h-12 rounded-md sm:rounded-lg bg-slate-100 dark:bg-[#071922] overflow-hidden border border-slate-300 dark:border-[#174256]">
+                                                        <img 
+                                                            src={product.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop'} 
+                                                            alt={product.title} 
+                                                            className="w-full h-full object-cover group-hover/prod:scale-110 transition-transform"
+                                                        />
+                                                    </div>
+                                                ))}
+                                                {merchant.products.length >= 3 && (
+                                                    <div className="flex-shrink-0 w-8 h-8 sm:w-12 sm:h-12 rounded-md sm:rounded-lg bg-slate-100 dark:bg-[#071922] border border-slate-300 dark:border-[#174256] border-dashed flex items-center justify-center text-slate-400 text-[10px] sm:text-xs font-bold">
+                                                        +
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
+                                    )}
+                                </div>
 
-                                        {/* Description */}
-                                        <div className="mb-4">
-                                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">
-                                                {merchant.description || 'Belum ada deskripsi lengkap untuk merchant mitra ini.'}
-                                            </p>
-                                        </div>
-
-                                        {/* Mini Product Showcase */}
-                                        {merchant.products && merchant.products.length > 0 && (
-                                            <div className="mb-5 pt-3 border-t border-slate-200 dark:border-[#174256]">
-                                                <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Produk Unggulan</p>
-                                                <div className="flex gap-2 overflow-hidden">
-                                                    {merchant.products.map(product => (
-                                                        <div key={product.id} className="relative group/prod flex-shrink-0 w-12 h-12 rounded-lg bg-slate-100 dark:bg-[#071922] overflow-hidden border border-slate-300 dark:border-[#174256]">
-                                                            <img 
-                                                                src={product.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop'} 
-                                                                alt={product.title} 
-                                                                className="w-full h-full object-cover group-hover/prod:scale-110 transition-transform"
-                                                            />
-                                                        </div>
-                                                    ))}
-                                                    {merchant.products.length >= 3 && (
-                                                        <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-slate-100 dark:bg-[#071922] border border-slate-300 dark:border-[#174256] border-dashed flex items-center justify-center text-slate-400 text-xs font-bold">
-                                                            +
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        )}
+                                {/* Bottom Info Bar */}
+                                <div className="pt-2 sm:pt-4 border-t border-slate-200 dark:border-[#174256] mt-auto flex items-center justify-between gap-1 sm:gap-4">
+                                    <div className="flex items-center gap-1 text-[9px] sm:text-[11px] text-slate-500 dark:text-slate-400 min-w-0">
+                                        <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0 text-[#FFBF00]" />
+                                        <span className="truncate">{merchant.location || 'Indonesia'}</span>
                                     </div>
-
-                                    {/* Bottom Info Bar */}
-                                    <div className="pt-4 border-t border-slate-200 dark:border-[#174256] mt-auto flex items-center justify-between gap-4">
-                                        <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 min-w-0">
-                                            <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-[#FFBF00]" />
-                                            <span className="truncate">{merchant.location || 'Indonesia'}</span>
-                                        </div>
-                                        
-                                        <div className="flex items-center gap-2 flex-shrink-0">
-                                            {merchant.contact_whatsapp && (
-                                                <a 
-                                                    href={`https://wa.me/${merchant.contact_whatsapp}?text=Halo%20${encodeURIComponent(merchant.store_name || merchant.name)},%20saya%2520menemukan%20toko%20Anda%20di%20ADMS%20Marketplace`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="p-2 bg-slate-100 dark:bg-[#071922] hover:bg-slate-200 dark:hover:bg-[#174256] text-[#FFBF00] border border-slate-300 dark:border-[#174256] rounded-xl transition-all active:scale-95 flex items-center justify-center"
-                                                    title="Hubungi Penjual"
-                                                >
-                                                    <Phone className="w-3.5 h-3.5" />
-                                                </a>
-                                            )}
-                                            <button 
-                                                onClick={() => {
-                                                    onNavigate('products', 'semua', '', merchant.id);
-                                                }}
-                                                className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-[10px] px-3.5 py-2 rounded-xl transition-all active:scale-95 cursor-pointer uppercase tracking-wider"
+                                    
+                                    <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                                        {merchant.contact_whatsapp && (
+                                            <a 
+                                                href={`https://wa.me/${merchant.contact_whatsapp}?text=Halo%20${encodeURIComponent(merchant.store_name || merchant.name)},%20saya%2520menemukan%20toko%20Anda%20di%20ADMS%20Marketplace`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="p-1.5 sm:p-2 bg-slate-100 dark:bg-[#071922] hover:bg-slate-200 dark:hover:bg-[#174256] text-[#FFBF00] border border-slate-300 dark:border-[#174256] rounded-lg sm:rounded-xl transition-all active:scale-95 flex items-center justify-center"
+                                                title="Hubungi Penjual"
                                             >
-                                                Kunjungi &rarr;
-                                            </button>
-                                        </div>
+                                                <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                                            </a>
+                                        )}
+                                        <button 
+                                            onClick={() => {
+                                                onNavigate('products', 'semua', '', merchant.id);
+                                            }}
+                                            className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-[9px] sm:text-[10px] px-2 py-1.5 sm:px-3.5 sm:py-2 rounded-lg sm:rounded-xl transition-all active:scale-95 cursor-pointer uppercase tracking-wider"
+                                        >
+                                            Kunjungi
+                                        </button>
                                     </div>
                                 </div>
-                        ))}
-                    </div>
+                            </div>
+                        );
+
+                        return (
+                            <>
+                                {/* True 2-Column Masonry Layout for Mobile (< sm) */}
+                                <div className="flex sm:hidden gap-1.5 items-start">
+                                    <div className="flex-1 flex flex-col gap-1.5">
+                                        {filteredMerchants.filter((_, idx) => idx % 2 === 0).map(m => renderMerchantCard(m, false))}
+                                    </div>
+                                    <div className="flex-1 flex flex-col gap-1.5">
+                                        {filteredMerchants.filter((_, idx) => idx % 2 === 1).map(m => renderMerchantCard(m, true))}
+                                    </div>
+                                </div>
+
+                                {/* Standard Grid Layout for Tablet/Desktop (>= sm) */}
+                                <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                                    {filteredMerchants.map(m => renderMerchantCard(m, false))}
+                                </div>
+                            </>
+                        );
+                    })()
                 ) : (
                     <div className="bg-[#0F3040] rounded-2xl border border-[#174256] p-16 text-center shadow-sm max-w-md mx-auto space-y-4">
                         <div className="w-16 h-16 bg-[#071922] rounded-full flex items-center justify-center mx-auto text-[#FFBF00]">

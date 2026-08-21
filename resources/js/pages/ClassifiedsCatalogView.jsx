@@ -223,8 +223,8 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                 ))}
                 
                 {/* Gradient Overlays for Readability */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#071922] via-transparent to-[#071922]"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0F3040] via-[#0F3040]/40 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 dark:from-[#071922] via-slate-900/40 dark:via-transparent to-slate-900/70 dark:to-[#071922]"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 dark:from-[#0F3040] via-slate-900/40 dark:via-[#0F3040]/40 to-transparent"></div>
                 
                 {/* Glow effects decoration */}
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#FFBF00]/15 rounded-full blur-[140px] pointer-events-none"></div>
@@ -235,33 +235,33 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                     <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight max-w-3xl mx-auto text-white">
                         Cari Barang Bekas, Jasa & Properti Terdekat
                     </h1>
-                    <p className="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+                    <p className="text-slate-200 dark:text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
                         Temukan penawaran terbaik dari jutaan penjual terverifikasi. Pasang iklan Anda 100% gratis tanpa komisi.
                     </p>
 
                     {/* Floating Search Widget */}
-                    <div className="max-w-4xl mx-auto bg-[#071922] border-2 border-[#174256] rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-2xl flex flex-col md:flex-row gap-3 items-center mt-10">
+                    <div className="max-w-4xl mx-auto bg-white/95 dark:bg-[#071922] border-2 border-slate-200 dark:border-[#174256] rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-2xl flex flex-col md:flex-row gap-3 items-center mt-10 backdrop-blur-md">
                         {/* Keyword Input */}
-                        <div className="w-full flex items-center bg-[#05131b] border-2 border-[#174256] rounded-xl p-3 pl-4">
-                            <Search className="w-4 h-4 text-[#FFBF00] mr-2.5 flex-shrink-0" />
+                        <div className="w-full flex items-center bg-slate-50 dark:bg-[#05131b] border-2 border-slate-200 dark:border-[#174256] rounded-xl p-3 pl-4">
+                            <Search className="w-4 h-4 text-amber-500 dark:text-[#FFBF00] mr-2.5 flex-shrink-0" />
                             <input 
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Cari mobil bekas, handphone, laptop..."
-                                className="w-full bg-transparent text-white focus:outline-none text-xs sm:text-sm placeholder-slate-400 font-medium"
+                                className="w-full bg-transparent text-slate-900 dark:text-white focus:outline-none text-xs sm:text-sm placeholder-slate-400 font-medium"
                             />
                         </div>
 
                         {/* Location Input */}
-                        <div className="w-full flex items-center bg-[#05131b] border-2 border-[#174256] rounded-xl p-3 pl-4">
-                            <MapPin className="w-4 h-4 text-[#FFBF00] mr-2.5 flex-shrink-0" />
+                        <div className="w-full flex items-center bg-slate-50 dark:bg-[#05131b] border-2 border-slate-200 dark:border-[#174256] rounded-xl p-3 pl-4">
+                            <MapPin className="w-4 h-4 text-amber-500 dark:text-[#FFBF00] mr-2.5 flex-shrink-0" />
                             <input 
                                 type="text"
                                 value={searchLocation}
                                 onChange={(e) => setSearchLocation(e.target.value)}
                                 placeholder="Semua Lokasi / Kota..."
-                                className="w-full bg-transparent text-white focus:outline-none text-xs sm:text-sm placeholder-slate-400 font-medium"
+                                className="w-full bg-transparent text-slate-900 dark:text-white focus:outline-none text-xs sm:text-sm placeholder-slate-400 font-medium"
                             />
                         </div>
 
@@ -269,7 +269,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                         <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto md:flex-shrink-0">
                             <button 
                                 onClick={() => onNavigate('pricing', '/pricing')}
-                                className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:brightness-110 text-white font-black text-xs sm:text-sm px-5 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/30 active:scale-95 cursor-pointer uppercase tracking-wider"
+                                className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-indigo-600 hover:brightness-110 text-white font-black text-xs sm:text-sm px-5 py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-500/30 active:scale-95 cursor-pointer uppercase tracking-wider"
                             >
                                 <Star className="w-4 h-4 fill-current text-white" />
                                 <span>Iklan Premium</span>
@@ -287,7 +287,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             </section>
 
             {/* B. Navigasi Kategori Cepat */}
-            <section className="py-6 bg-[#071922] border-b-2 border-[#174256]">
+            <section className="py-6 bg-white dark:bg-[#071922] border-b-2 border-slate-200 dark:border-[#174256] transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2">
                         {categories.map((cat) => (
@@ -297,7 +297,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 className={`flex items-center gap-1.5 px-4.5 py-2 rounded-full text-xs font-black whitespace-nowrap transition-all cursor-pointer border ${
                                     selectedCategory === cat.name 
                                         ? 'bg-[#FFBF00] text-[#0F3040] border-[#FFBF00] shadow-md shadow-[#FFBF00]/20' 
-                                        : 'bg-[#0F3040] text-slate-300 border-[#174256] hover:text-[#FFBF00]'
+                                        : 'bg-slate-100 dark:bg-[#0F3040] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-[#174256] hover:text-slate-900 dark:hover:text-[#FFBF00]'
                                 }`}
                             >
                                 <span>{cat.icon}</span>
@@ -312,33 +312,33 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             <section className="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
                 
                 {/* Horizontal Filter Box (Top Filter) */}
-                <div className="bg-[#0F3040] rounded-2xl border-2 border-[#174256] p-5 sm:p-6 shadow-xl space-y-5 text-left">
-                    <div className="flex items-center justify-between border-b-2 border-[#174256] pb-3">
-                        <span className="font-black text-xs uppercase tracking-wider text-[#FFBF00] flex items-center gap-1.5">
-                            <Filter className="w-4 h-4 text-[#FFBF00]" />
-                            Filter Pencarian Iklan
+                <div className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-200 dark:border-[#174256] p-3.5 sm:p-6 shadow-xl space-y-3.5 sm:space-y-5 text-left transition-colors duration-300">
+                    <div className="flex items-center justify-between border-b-2 border-slate-200 dark:border-[#174256] pb-2.5 sm:pb-3 gap-2">
+                        <span className="font-black text-[10px] sm:text-xs uppercase tracking-wider text-amber-600 dark:text-[#FFBF00] flex items-center gap-1.5 truncate">
+                            <Filter className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 dark:text-[#FFBF00] shrink-0" />
+                            <span className="truncate">Filter Pencarian Iklan</span>
                         </span>
                         <button 
                             onClick={handleClearFilters}
-                            className="text-xs font-black text-[#FFBF00] hover:underline transition-colors cursor-pointer uppercase tracking-wider"
+                            className="text-[10px] sm:text-xs font-black text-amber-600 dark:text-[#FFBF00] hover:underline transition-colors cursor-pointer uppercase tracking-wider whitespace-nowrap shrink-0"
                         >
                             Bersihkan Filter
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-6 items-end">
                         {/* Filter Kondisi */}
-                        <div className="lg:col-span-6 space-y-2">
-                            <label className="block text-xs font-black text-white uppercase tracking-wider">Kondisi Barang / Jasa</label>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <div className="lg:col-span-6 space-y-1.5 sm:space-y-2">
+                            <label className="block text-[10px] sm:text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Kondisi Barang / Jasa</label>
+                            <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
                                 {['Semua', 'Baru', 'Bekas', 'Jasa'].map((cond) => (
                                     <button
                                         key={cond}
                                         onClick={() => setFilterCondition(cond)}
-                                        className={`text-xs py-2.5 px-3 rounded-xl border-2 font-black transition-all cursor-pointer ${
+                                        className={`text-[10px] sm:text-xs py-2 px-1 sm:px-3 rounded-xl border-2 font-black transition-all cursor-pointer text-center truncate ${
                                             filterCondition === cond 
                                                 ? 'bg-[#FFBF00] text-[#0F3040] border-[#FFBF00] shadow-md' 
-                                                : 'bg-[#071922] text-slate-300 border-[#174256] hover:text-[#FFBF00]'
+                                                : 'bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-[#174256] hover:text-slate-900 dark:hover:text-[#FFBF00]'
                                         }`}
                                     >
                                         {cond}
@@ -348,31 +348,31 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                         </div>
 
                         {/* Filter Rentang Harga */}
-                        <div className="lg:col-span-6 space-y-2">
-                            <label className="block text-xs font-black text-white uppercase tracking-wider">Rentang Harga (Rp)</label>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div className="lg:col-span-6 space-y-1.5 sm:space-y-2">
+                            <label className="block text-[10px] sm:text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Rentang Harga (Rp)</label>
+                            <div className="grid grid-cols-2 gap-2">
                                 <input 
                                     type="number"
                                     value={minPrice}
                                     onChange={(e) => setMinPrice(e.target.value)}
-                                    placeholder="Harga Minimum"
-                                    className="w-full text-xs p-2.5 border-2 border-[#174256] bg-[#071922] text-white rounded-xl outline-none focus:border-[#FFBF00] placeholder-slate-400 font-medium"
+                                    placeholder="Min (Rp)"
+                                    className="w-full text-xs p-2 sm:p-2.5 border-2 border-slate-200 dark:border-[#174256] bg-slate-50 dark:bg-[#071922] text-slate-900 dark:text-white rounded-xl outline-none focus:border-[#FFBF00] placeholder-slate-400 font-medium"
                                 />
                                 <input 
                                     type="number"
                                     value={maxPrice}
                                     onChange={(e) => setMaxPrice(e.target.value)}
-                                    placeholder="Harga Maksimum"
-                                    className="w-full text-xs p-2.5 border-2 border-[#174256] bg-[#071922] text-white rounded-xl outline-none focus:border-[#FFBF00] placeholder-slate-400 font-medium"
+                                    placeholder="Max (Rp)"
+                                    className="w-full text-xs p-2 sm:p-2.5 border-2 border-slate-200 dark:border-[#174256] bg-slate-50 dark:bg-[#071922] text-slate-900 dark:text-white rounded-xl outline-none focus:border-[#FFBF00] placeholder-slate-400 font-medium"
                                 />
                             </div>
                         </div>
                     </div>
 
                     {/* Security Information Info Box */}
-                    <div className="bg-[#071922] border border-[#174256] rounded-xl p-3.5 flex items-center gap-3 text-left">
-                        <AlertCircle className="w-4 h-4 text-[#FFBF00] flex-shrink-0" />
-                        <p className="text-[11px] text-slate-300 font-medium leading-relaxed">
+                    <div className="bg-slate-50 dark:bg-[#071922] border border-slate-200 dark:border-[#174256] rounded-xl p-3 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 text-left">
+                        <AlertCircle className="w-4 h-4 text-amber-500 dark:text-[#FFBF00] flex-shrink-0" />
+                        <p className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-300 font-medium leading-tight sm:leading-relaxed">
                             Semua iklan gratis telah melalui moderasi tim keamanan untuk mencegah spam dan penipuan.
                         </p>
                     </div>
@@ -381,45 +381,45 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-8">
                     <div className="lg:col-span-3 space-y-6">
                         {/* Toolbar (Sort & View Options) */}
-                <div className="bg-[#0F3040] rounded-2xl border-2 border-[#174256] p-4 shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-white">
+                <div className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-200 dark:border-[#174256] p-4 shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-slate-900 dark:text-white transition-colors duration-300">
                     <div>
-                        <h2 className="font-black text-white text-sm sm:text-base">
+                        <h2 className="font-black text-slate-900 dark:text-white text-sm sm:text-base">
                             Menampilkan {filteredAds.length} Iklan Gratis
                         </h2>
-                        <p className="text-[10px] sm:text-xs text-slate-300 mt-1 font-medium">
-                            Kategori aktif: <strong className="text-[#FFBF00] font-black">{selectedCategory}</strong>
+                        <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-300 mt-1 font-medium">
+                            Kategori aktif: <strong className="text-amber-600 dark:text-[#FFBF00] font-black">{selectedCategory}</strong>
                         </p>
                     </div>
 
                     <div className="flex items-center gap-3 w-full sm:w-auto">
                         {/* View toggles */}
-                        <div className="flex bg-[#071922] border-2 border-[#174256] rounded-lg p-1">
+                        <div className="flex bg-slate-100 dark:bg-[#071922] border-2 border-slate-200 dark:border-[#174256] rounded-lg p-1">
                             <button 
                                 onClick={() => setViewMode('grid')}
-                                className={`p-1.5 sm:p-2 rounded-md transition-all cursor-pointer ${viewMode === 'grid' ? 'bg-[#FFBF00] text-[#0F3040] font-black' : 'text-slate-300'}`}
+                                className={`p-1.5 sm:p-2 rounded-md transition-all cursor-pointer ${viewMode === 'grid' ? 'bg-[#FFBF00] text-[#0F3040] font-black' : 'text-slate-600 dark:text-slate-300'}`}
                             >
                                 <LayoutGrid className="w-4 h-4" />
                             </button>
                             <button 
                                 onClick={() => setViewMode('list')}
-                                className={`p-1.5 sm:p-2 rounded-md transition-all cursor-pointer ${viewMode === 'list' ? 'bg-[#FFBF00] text-[#0F3040] font-black' : 'text-slate-300'}`}
+                                className={`p-1.5 sm:p-2 rounded-md transition-all cursor-pointer ${viewMode === 'list' ? 'bg-[#FFBF00] text-[#0F3040] font-black' : 'text-slate-600 dark:text-slate-300'}`}
                             >
                                 <List className="w-4 h-4" />
                             </button>
                         </div>
                         
                         {/* Sort dropdown */}
-                        <div className="flex-1 sm:flex-none relative bg-[#071922] border-2 border-[#174256] rounded-lg px-3 py-2 flex items-center justify-between">
+                        <div className="flex-1 sm:flex-none relative bg-slate-100 dark:bg-[#071922] border-2 border-slate-200 dark:border-[#174256] rounded-lg px-3 py-2 flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <ArrowUpDown className="w-3.5 h-3.5 text-[#FFBF00]" />
+                                <ArrowUpDown className="w-3.5 h-3.5 text-amber-500 dark:text-[#FFBF00]" />
                                 <select 
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
-                                    className="bg-transparent text-xs sm:text-sm text-white font-bold focus:outline-none appearance-none cursor-pointer pr-4"
+                                    className="bg-transparent text-xs sm:text-sm text-slate-900 dark:text-white font-bold focus:outline-none appearance-none cursor-pointer pr-4"
                                 >
-                                    <option value="Terbaru" className="bg-[#0F3040] text-white">Terbaru</option>
-                                    <option value="Harga Terendah" className="bg-[#0F3040] text-white">Harga Terendah</option>
-                                    <option value="Harga Tertinggi" className="bg-[#0F3040] text-white">Harga Tertinggi</option>
+                                    <option value="Terbaru" className="bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white">Terbaru</option>
+                                    <option value="Harga Terendah" className="bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white">Harga Terendah</option>
+                                    <option value="Harga Tertinggi" className="bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white">Harga Tertinggi</option>
                                 </select>
                             </div>
                         </div>
@@ -445,73 +445,139 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                         </div>
                     ) : filteredAds.length > 0 ? (
                         <>
-                        <div key={`results-${viewMode}`} className={
-                            viewMode === 'grid' 
-                                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" 
-                                : "flex flex-col gap-4"
-                        }>
-                            {paginatedAds.map((ad) => (
-                                <div 
-                                    key={ad.id}
-                                    onClick={() => { setSelectedAd(ad); handleAdClick(ad.id); }}
-                                    className={`bg-[#0F3040] text-white rounded-2xl border-2 ${ad.is_premium ? 'border-[#FFBF00]/50 hover:border-[#FFBF00]' : 'border-[#174256] hover:border-[#FFBF00]'} overflow-hidden flex cursor-pointer group transition-all shadow-xl relative ${
-                                        viewMode === 'grid' 
-                                            ? 'flex-col justify-between'
-                                            : 'flex-row items-center gap-4 p-4'
-                                    }`}
-                                >
-                                    {ad.is_premium && (
-                                        <div className="absolute top-3 right-3 z-20 bg-[#FFBF00] text-[#0F3040] text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-md">
-                                            Premium
-                                        </div>
-                                    )}
-                                    
-                                    {/* Image */}
-                                    <div className={`overflow-hidden bg-[#071922] relative flex-shrink-0 border-b border-[#174256] ${
-                                        viewMode === 'grid' 
-                                            ? 'aspect-[4/3] w-full'
-                                            : 'w-24 h-24 sm:w-32 sm:h-32 rounded-xl border border-[#174256]'
-                                    }`}>
-                                        <img 
-                                            src={ad.image} 
-                                            alt={ad.title} 
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                        />
-                                        <span className={`absolute ${ad.is_premium ? 'top-10' : 'top-2.5'} left-2.5 sm:top-2.5 bg-[#071922]/90 backdrop-blur-md text-[9px] font-black text-[#FFBF00] px-2.5 py-0.5 rounded-full border border-[#174256] shadow uppercase`}>
-                                            {ad.category}
-                                        </span>
-                                    </div>
-
-                                    {/* Content info */}
-                                    <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
-                                        <div>
-                                            <div className="flex items-center justify-between gap-2 mb-1.5 text-[10px] text-slate-400">
-                                                <span className="bg-[#071922] px-2 py-0.5 rounded-md border border-[#174256] text-[#FFBF00] font-black uppercase">
-                                                    {ad.condition}
-                                                </span>
-                                                <span>{ad.date}</span>
+                        {viewMode === 'grid' ? (
+                            (() => {
+                                const renderAdCard = (ad, isRightCol = false) => (
+                                    <div 
+                                        key={ad.id}
+                                        onClick={() => { setSelectedAd(ad); handleAdClick(ad.id); }}
+                                        className={`bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white rounded-2xl border-2 ${ad.is_premium ? 'border-[#FFBF00]/60 hover:border-[#FFBF00]' : 'border-slate-200 dark:border-[#174256] hover:border-amber-400 dark:hover:border-[#FFBF00]'} overflow-hidden flex flex-col justify-between cursor-pointer group transition-all shadow-md dark:shadow-xl relative w-full min-w-0`}
+                                    >
+                                        {ad.is_premium && (
+                                            <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-20 bg-[#FFBF00] text-[#0F3040] text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-md">
+                                                Premium
                                             </div>
-                                            <h3 className="font-extrabold text-sm sm:text-base text-white leading-snug line-clamp-2 group-hover:text-[#FFBF00] transition-colors">
-                                                {ad.title}
-                                            </h3>
+                                        )}
+                                        
+                                        {/* Image */}
+                                        <div className={`overflow-hidden bg-slate-100 dark:bg-[#071922] relative flex-shrink-0 border-b border-slate-200 dark:border-[#174256] ${
+                                            isRightCol ? 'aspect-[4/3] sm:aspect-[4/3] w-full' : 'aspect-[16/10] sm:aspect-[4/3] w-full'
+                                        }`}>
+                                            <img 
+                                                src={ad.image} 
+                                                alt={ad.title} 
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            />
+                                            <span className={`absolute ${ad.is_premium ? 'top-8' : 'top-2'} left-2 sm:top-2.5 sm:left-2.5 bg-white/90 dark:bg-[#071922]/90 backdrop-blur-md text-[8px] sm:text-[9px] font-black text-slate-800 dark:text-[#FFBF00] px-2 py-0.5 rounded-full border border-slate-200 dark:border-[#174256] shadow uppercase`}>
+                                                {ad.category}
+                                            </span>
                                         </div>
 
-                                        <div>
-                                            <div className="text-base sm:text-lg font-black text-[#FFBF00] mb-2">
-                                                {ad.price > 0 ? `Rp${new Intl.NumberFormat('id-ID').format(ad.price)}` : 'Hubungi Kontak'}
+                                        {/* Content info */}
+                                        <div className="p-2 sm:p-4 flex-1 min-w-0 flex flex-col justify-between space-y-2">
+                                            <div>
+                                                <div className="flex items-center justify-between gap-1 mb-1 text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 min-w-0">
+                                                    <span className="bg-slate-100 dark:bg-[#071922] px-1.5 py-0.5 rounded-md border border-slate-200 dark:border-[#174256] text-[#0F3040] dark:text-[#FFBF00] font-black uppercase text-[7px] sm:text-[8px] shrink-0">
+                                                        {ad.condition}
+                                                    </span>
+                                                    <span className="text-[8px] sm:text-[10px] shrink-0">{ad.date}</span>
+                                                </div>
+                                                <h3 className="font-extrabold text-xs sm:text-base text-slate-900 dark:text-white leading-snug line-clamp-2 h-7 sm:h-12 group-hover:text-amber-600 dark:group-hover:text-[#FFBF00] transition-colors">
+                                                    {ad.title}
+                                                </h3>
                                             </div>
-                                            <div className="flex items-center justify-between text-[11px] text-slate-400 border-t border-[#174256] pt-2.5">
-                                                <span className="font-bold text-white truncate max-w-[120px]">{ad.advertiser}</span>
-                                                <span className="flex items-center gap-1 text-slate-300">
-                                                    <MapPin className="w-3 h-3 text-[#FFBF00]" />
-                                                    {ad.location}
-                                                </span>
+
+                                            <div className="min-w-0">
+                                                <div className="text-xs sm:text-lg font-black text-amber-600 dark:text-[#FFBF00] mb-1 truncate">
+                                                    {ad.price > 0 ? `Rp${new Intl.NumberFormat('id-ID').format(ad.price)}` : 'Hubungi Kontak'}
+                                                </div>
+                                                <div className="flex items-center justify-between text-[8px] sm:text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-[#174256] pt-1.5 gap-1 min-w-0">
+                                                    <span className="font-bold text-slate-800 dark:text-white truncate max-w-[50px] sm:max-w-[120px]">{ad.advertiser}</span>
+                                                    <span className="flex items-center gap-0.5 text-slate-600 dark:text-slate-300 truncate min-w-0 max-w-[60px] sm:max-w-none">
+                                                        <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-amber-500 dark:text-[#FFBF00] shrink-0" />
+                                                        <span className="truncate">{ad.location}</span>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                );
+
+                                return (
+                                    <>
+                                        {/* True 2-Column Masonry Layout for Mobile (< sm) */}
+                                        <div className="flex sm:hidden gap-1.5 items-start w-full min-w-0">
+                                            <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+                                                {paginatedAds.filter((_, idx) => idx % 2 === 0).map(ad => renderAdCard(ad, false))}
+                                            </div>
+                                            <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+                                                {paginatedAds.filter((_, idx) => idx % 2 === 1).map(ad => renderAdCard(ad, true))}
+                                            </div>
+                                        </div>
+
+                                        {/* Standard Grid Layout for Tablet/Desktop (>= sm) */}
+                                        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {paginatedAds.map(ad => renderAdCard(ad, false))}
+                                        </div>
+                                    </>
+                                );
+                            })()
+                        ) : (
+                            /* List Layout Display */
+                            <div className="flex flex-col gap-4">
+                                {paginatedAds.map((ad) => (
+                                    <div 
+                                        key={ad.id}
+                                        onClick={() => { setSelectedAd(ad); handleAdClick(ad.id); }}
+                                        className={`bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white rounded-2xl border-2 ${ad.is_premium ? 'border-[#FFBF00]/60 hover:border-[#FFBF00]' : 'border-slate-200 dark:border-[#174256] hover:border-amber-400 dark:hover:border-[#FFBF00]'} overflow-hidden flex items-center gap-4 p-4 cursor-pointer group transition-all shadow-md dark:shadow-xl relative`}
+                                    >
+                                        {ad.is_premium && (
+                                            <div className="absolute top-3 right-3 z-20 bg-[#FFBF00] text-[#0F3040] text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-md">
+                                                Premium
+                                            </div>
+                                        )}
+                                        
+                                        <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-xl border border-slate-200 dark:border-[#174256] overflow-hidden bg-slate-100 dark:bg-[#071922] relative flex-shrink-0">
+                                            <img 
+                                                src={ad.image} 
+                                                alt={ad.title} 
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            />
+                                            <span className="absolute top-2 left-2 bg-white/90 dark:bg-[#071922]/90 backdrop-blur-md text-[8px] font-black text-slate-800 dark:text-[#FFBF00] px-2 py-0.5 rounded-full border border-slate-200 dark:border-[#174256] shadow uppercase">
+                                                {ad.category}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex-1 flex flex-col justify-between space-y-2">
+                                            <div>
+                                                <div className="flex items-center justify-between gap-2 mb-1 text-[10px] text-slate-500 dark:text-slate-400">
+                                                    <span className="bg-slate-100 dark:bg-[#071922] px-2 py-0.5 rounded-md border border-slate-200 dark:border-[#174256] text-[#0F3040] dark:text-[#FFBF00] font-black uppercase text-[8px]">
+                                                        {ad.condition}
+                                                    </span>
+                                                    <span>{ad.date}</span>
+                                                </div>
+                                                <h3 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white leading-snug line-clamp-2 group-hover:text-amber-600 dark:group-hover:text-[#FFBF00] transition-colors">
+                                                    {ad.title}
+                                                </h3>
+                                            </div>
+
+                                            <div>
+                                                <div className="text-sm sm:text-lg font-black text-amber-600 dark:text-[#FFBF00] mb-1">
+                                                    {ad.price > 0 ? `Rp${new Intl.NumberFormat('id-ID').format(ad.price)}` : 'Hubungi Kontak'}
+                                                </div>
+                                                <div className="flex items-center justify-between text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-[#174256] pt-1.5">
+                                                    <span className="font-bold text-slate-800 dark:text-white truncate max-w-[120px]">{ad.advertiser}</span>
+                                                    <span className="flex items-center gap-1 text-slate-600 dark:text-slate-300">
+                                                        <MapPin className="w-3 h-3 text-amber-500 dark:text-[#FFBF00]" />
+                                                        {ad.location}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                         {/* Pagination controls */}
                         {totalPages > 1 && (
@@ -519,7 +585,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 <button
                                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                     disabled={currentPage === 1}
-                                    className="p-2 rounded-xl bg-[#0F3040] border-2 border-[#174256] text-white disabled:opacity-40 hover:border-[#FFBF00] transition-all cursor-pointer disabled:cursor-not-allowed"
+                                    className="p-2 rounded-xl bg-white dark:bg-[#0F3040] border-2 border-slate-200 dark:border-[#174256] text-slate-900 dark:text-white disabled:opacity-40 hover:border-[#FFBF00] transition-all cursor-pointer disabled:cursor-not-allowed"
                                 >
                                     <ChevronLeft className="w-4 h-4" />
                                 </button>
@@ -531,7 +597,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                         className={`w-9 h-9 rounded-xl font-black text-xs border-2 transition-all cursor-pointer ${
                                             currentPage === i + 1
                                                 ? 'bg-[#FFBF00] text-[#0F3040] border-[#FFBF00] shadow-md'
-                                                : 'bg-[#0F3040] text-white border-[#174256] hover:border-[#FFBF00]'
+                                                : 'bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white border-slate-200 dark:border-[#174256] hover:border-[#FFBF00]'
                                         }`}
                                     >
                                         {i + 1}
@@ -541,7 +607,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                 <button
                                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                                     disabled={currentPage === totalPages}
-                                    className="p-2 rounded-xl bg-[#0F3040] border-2 border-[#174256] text-white disabled:opacity-40 hover:border-[#FFBF00] transition-all cursor-pointer disabled:cursor-not-allowed"
+                                    className="p-2 rounded-xl bg-white dark:bg-[#0F3040] border-2 border-slate-200 dark:border-[#174256] text-slate-900 dark:text-white disabled:opacity-40 hover:border-[#FFBF00] transition-all cursor-pointer disabled:cursor-not-allowed"
                                 >
                                     <ChevronRight className="w-4 h-4" />
                                 </button>
@@ -549,13 +615,13 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                         )}
                         </>
                     ) : (
-                        <div className="bg-[#0F3040] border-2 border-[#174256] rounded-2xl p-12 text-center space-y-4">
-                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#071922] border border-[#174256] text-[#FFBF00]">
+                        <div className="bg-white dark:bg-[#0F3040] border-2 border-slate-200 dark:border-[#174256] rounded-2xl p-12 text-center space-y-4">
+                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-[#071922] border border-slate-200 dark:border-[#174256] text-amber-500 dark:text-[#FFBF00]">
                                 <Search className="w-8 h-8" />
                             </div>
                             <div className="space-y-1">
-                                <h4 className="font-extrabold text-white text-base">Iklan Tidak Ditemukan</h4>
-                                <p className="text-xs text-slate-300 max-w-sm mx-auto">
+                                <h4 className="font-extrabold text-slate-900 dark:text-white text-base">Iklan Tidak Ditemukan</h4>
+                                <p className="text-xs text-slate-600 dark:text-slate-300 max-w-sm mx-auto">
                                     Maaf, tidak ada penawaran iklan yang cocok dengan filter atau kata kunci pencarian Anda.
                                 </p>
                             </div>
@@ -568,34 +634,46 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                         </div>
                     )}
                 </div>
+
+                {/* Mobile Section Divider Line */}
+                <div className="block lg:hidden my-8 relative">
+                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                        <div className="w-full border-t-2 border-slate-300 dark:border-[#174256]"></div>
+                    </div>
+                    <div className="relative flex justify-center text-[10px] uppercase">
+                        <span className="bg-slate-200 dark:bg-[#071922] px-4 py-1 rounded-full text-slate-600 dark:text-[#FFBF00] font-black border-2 border-slate-300 dark:border-[#174256] shadow-sm tracking-wider">
+                            Tips & Edukasi Bisnis
+                        </span>
+                    </div>
+                </div>
                 </div>
 
                 {/* Right Column: Blog / Tips Sidebar */}
                 <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-[#0F3040] rounded-2xl border-2 border-[#174256] p-5 shadow-xl">
+                    <div className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-200 dark:border-[#174256] p-5 shadow-xl transition-colors duration-300">
                         <div className="flex items-center gap-2 mb-4">
-                            <FileText className="w-5 h-5 text-[#FFBF00]" />
-                            <h3 className="font-extrabold text-white text-base">Artikel & Tips Bisnis</h3>
+                            <FileText className="w-5 h-5 text-amber-500 dark:text-[#FFBF00]" />
+                            <h3 className="font-extrabold text-slate-900 dark:text-white text-base">Artikel & Tips Bisnis</h3>
                         </div>
                         <div className="space-y-4">
                             {/* Blog Card 1 */}
                             <a href="#" className="block group">
-                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-[#071922] border border-[#174256]">
+                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-slate-100 dark:bg-[#071922] border border-slate-200 dark:border-[#174256]">
                                     <img src="https://images.unsplash.com/photo-1432828684209-661664157b85?w=600&auto=format&fit=crop&q=80" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400/e2e8f0/475569?text=Tips+Bisnis'; }} alt="Blog" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                 </div>
-                                <span className="text-[10px] font-bold text-[#FFBF00] mb-1 block uppercase tracking-wider">Strategi Jualan</span>
-                                <h4 className="font-bold text-white text-sm leading-tight group-hover:text-[#FFBF00] transition-colors">5 Cara Membuat Deskripsi Iklan yang Menarik Pembeli</h4>
-                                <p className="text-xs text-slate-300 mt-1 line-clamp-2">Pelajari teknik copywriting sederhana untuk meningkatkan konversi penjualan Anda secara drastis.</p>
+                                <span className="text-[10px] font-bold text-amber-600 dark:text-[#FFBF00] mb-1 block uppercase tracking-wider">Strategi Jualan</span>
+                                <h4 className="font-bold text-slate-900 dark:text-white text-sm leading-tight group-hover:text-amber-600 dark:group-hover:text-[#FFBF00] transition-colors">5 Cara Membuat Deskripsi Iklan yang Menarik Pembeli</h4>
+                                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 line-clamp-2">Pelajari teknik copywriting sederhana untuk meningkatkan konversi penjualan Anda secara drastis.</p>
                             </a>
-                            <hr className="border-[#174256]" />
+                            <hr className="border-slate-200 dark:border-[#174256]" />
                             {/* Blog Card 2 */}
                             <a href="#" className="block group">
-                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-[#071922] border border-[#174256]">
+                                <div className="w-full h-32 rounded-xl overflow-hidden mb-3 bg-slate-100 dark:bg-[#071922] border border-slate-200 dark:border-[#174256]">
                                     <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&auto=format&fit=crop&q=80" onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x400/e2e8f0/475569?text=Panduan'; }} alt="Blog" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                 </div>
-                                <span className="text-[10px] font-bold text-[#FFBF00] mb-1 block uppercase tracking-wider">Panduan</span>
-                                <h4 className="font-bold text-white text-sm leading-tight group-hover:text-[#FFBF00] transition-colors">Cara Memfoto Produk Hanya Bermodal Smartphone</h4>
-                                <p className="text-xs text-slate-300 mt-1 line-clamp-2">Tidak perlu kamera mahal. Gunakan teknik pencahayaan ini untuk hasil foto produk profesional.</p>
+                                <span className="text-[10px] font-bold text-amber-600 dark:text-[#FFBF00] mb-1 block uppercase tracking-wider">Panduan</span>
+                                <h4 className="font-bold text-slate-900 dark:text-white text-sm leading-tight group-hover:text-amber-600 dark:group-hover:text-[#FFBF00] transition-colors">Cara Memfoto Produk Hanya Bermodal Smartphone</h4>
+                                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 line-clamp-2">Tidak perlu kamera mahal. Gunakan teknik pencahayaan ini untuk hasil foto produk profesional.</p>
                             </a>
                         </div>
                     </div>
@@ -612,39 +690,39 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
             </section>
 
             {/* C-2. Blog Section */}
-            <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t-2 border-[#174256]">
+            <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t-2 border-slate-200 dark:border-[#174256]">
                 <div className="mb-8 flex items-center gap-3">
                     <div className="bg-[#FFBF00]/20 p-2.5 rounded-xl border border-[#FFBF00]/40">
-                        <Rss className="w-6 h-6 text-[#FFBF00]" />
+                        <Rss className="w-6 h-6 text-amber-500 dark:text-[#FFBF00]" />
                     </div>
-                    <h2 className="text-2xl font-black text-white">Artikel Blog Terbaru</h2>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">Artikel Blog Terbaru</h2>
                 </div>
 
                 <div className="space-y-6">
                     {recentBlogs.map((blog) => (
-                        <div key={blog.id} className="bg-[#0F3040] rounded-2xl border-2 border-[#174256] shadow-xl overflow-hidden flex flex-col md:flex-row group hover:border-[#FFBF00] transition-all">
-                            <div className="md:w-64 flex-shrink-0 relative overflow-hidden bg-[#071922] border-b md:border-b-0 md:border-r border-[#174256]">
+                        <div key={blog.id} className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-200 dark:border-[#174256] shadow-xl overflow-hidden flex flex-col md:flex-row group hover:border-[#FFBF00] transition-all">
+                            <div className="md:w-64 flex-shrink-0 relative overflow-hidden bg-slate-100 dark:bg-[#071922] border-b md:border-b-0 md:border-r border-slate-200 dark:border-[#174256]">
                                 <img src={blog.image} alt={blog.title} className="w-full h-full object-cover min-h-[160px] group-hover:scale-105 transition-transform duration-500" />
                             </div>
                             <div className="p-6 md:p-8 flex flex-col justify-center flex-1 text-left">
-                                <h3 className="text-lg md:text-xl font-black text-[#FFBF00] hover:underline cursor-pointer mb-2 transition-colors">
+                                <h3 className="text-lg md:text-xl font-black text-amber-600 dark:text-[#FFBF00] hover:underline cursor-pointer mb-2 transition-colors">
                                     {blog.title}
                                 </h3>
-                                <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-400 mb-4">
+                                <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500 dark:text-slate-400 mb-4">
                                     <div className="flex items-center gap-1.5">
-                                        <Clock className="w-3.5 h-3.5 text-[#FFBF00]" />
+                                        <Clock className="w-3.5 h-3.5 text-amber-500 dark:text-[#FFBF00]" />
                                         {blog.date}
                                     </div>
                                     <div className="flex items-center gap-1.5">
-                                        <Tag className="w-3.5 h-3.5 text-[#FFBF00]" />
+                                        <Tag className="w-3.5 h-3.5 text-amber-500 dark:text-[#FFBF00]" />
                                         {blog.category}
                                     </div>
                                 </div>
-                                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4 line-clamp-3">
+                                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4 line-clamp-3">
                                     {blog.excerpt}
                                 </p>
                                 <div>
-                                    <button className="inline-flex items-center gap-1 text-xs font-black text-[#FFBF00] hover:underline transition-colors uppercase tracking-wider cursor-pointer">
+                                    <button className="inline-flex items-center gap-1 text-xs font-black text-amber-600 dark:text-[#FFBF00] hover:underline transition-colors uppercase tracking-wider cursor-pointer">
                                         <span>Selengkapnya</span>
                                         <ChevronRight className="w-4 h-4" />
                                     </button>
@@ -657,20 +735,20 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
 
             {/* D. ClassifiedDetailModal Popup */}
             {selectedAd && (
-                <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
-                    <div className="bg-[#0F3040] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative text-left border-2 border-[#174256] text-white">
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-[#0F3040] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative text-left border-2 border-slate-200 dark:border-[#174256] text-slate-900 dark:text-white transition-colors">
                         {/* Close button */}
                         <button 
                             onClick={() => setSelectedAd(null)}
-                            className="absolute top-4 right-4 p-2 bg-[#071922] hover:bg-[#174256] text-[#FFBF00] border border-[#174256] rounded-full transition-colors z-10 cursor-pointer shadow-md"
+                            className="absolute top-4 right-4 p-2 bg-slate-100 dark:bg-[#071922] hover:bg-slate-200 dark:hover:bg-[#174256] text-slate-700 dark:text-[#FFBF00] border border-slate-200 dark:border-[#174256] rounded-full transition-colors z-10 cursor-pointer shadow-md"
                         >
                             <X className="w-4 h-4" />
                         </button>
 
                         {/* Image banner */}
-                        <div className="aspect-[16/9] w-full bg-[#071922] relative border-b-2 border-[#174256]">
+                        <div className="aspect-[16/9] w-full bg-slate-100 dark:bg-[#071922] relative border-b-2 border-slate-200 dark:border-[#174256]">
                             <img src={selectedAd.image} alt={selectedAd.title} className="w-full h-full object-cover" />
-                            <span className="absolute top-4 left-4 bg-[#071922]/90 backdrop-blur-md border border-[#174256] text-xs font-black text-[#FFBF00] px-3.5 py-1 rounded-full shadow uppercase">
+                            <span className="absolute top-4 left-4 bg-white/90 dark:bg-[#071922]/90 backdrop-blur-md border border-slate-200 dark:border-[#174256] text-xs font-black text-slate-800 dark:text-[#FFBF00] px-3.5 py-1 rounded-full shadow uppercase">
                                 {selectedAd.category}
                             </span>
                         </div>
@@ -678,39 +756,39 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                         {/* Modal Body content */}
                         <div className="p-6 sm:p-8 space-y-6">
                             <div className="space-y-2">
-                                <span className="inline-block bg-[#071922] border border-[#174256] text-[10px] font-black uppercase text-[#FFBF00] px-2.5 py-1 rounded-md">
+                                <span className="inline-block bg-slate-100 dark:bg-[#071922] border border-slate-200 dark:border-[#174256] text-[10px] font-black uppercase text-amber-600 dark:text-[#FFBF00] px-2.5 py-1 rounded-md">
                                     Kondisi: {selectedAd.condition}
                                 </span>
-                                <h3 className="text-lg sm:text-xl font-black text-white leading-snug">
+                                <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-snug">
                                     {selectedAd.title}
                                 </h3>
-                                <div className="flex flex-wrap gap-4 text-xs text-slate-300 pt-1">
-                                    <span className="font-bold text-white">Pengiklan: {selectedAd.advertiser}</span>
-                                    <span className="flex items-center gap-1 text-slate-300">
-                                        <MapPin className="w-3.5 h-3.5 text-[#FFBF00]" />
+                                <div className="flex flex-wrap gap-4 text-xs text-slate-500 dark:text-slate-300 pt-1">
+                                    <span className="font-bold text-slate-800 dark:text-white">Pengiklan: {selectedAd.advertiser}</span>
+                                    <span className="flex items-center gap-1 text-slate-600 dark:text-slate-300">
+                                        <MapPin className="w-3.5 h-3.5 text-amber-500 dark:text-[#FFBF00]" />
                                         {selectedAd.location}
                                     </span>
                                 </div>
                             </div>
 
                             {/* Price block */}
-                            <div className="p-4 rounded-2xl bg-[#071922] border-2 border-[#174256] flex items-center justify-between">
-                                <span className="text-xs font-bold text-slate-300">Harga Penawaran:</span>
-                                <span className="text-xl font-black text-[#FFBF00]">
+                            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#071922] border-2 border-slate-200 dark:border-[#174256] flex items-center justify-between">
+                                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Harga Penawaran:</span>
+                                <span className="text-xl font-black text-amber-600 dark:text-[#FFBF00]">
                                     {selectedAd.price > 0 ? `Rp${new Intl.NumberFormat('id-ID').format(selectedAd.price)}` : 'Hubungi Kontak'}
                                 </span>
                             </div>
 
                             {/* Description block */}
                             <div className="space-y-2">
-                                <h5 className="font-black text-xs uppercase tracking-wider text-[#FFBF00]">Deskripsi Lengkap</h5>
-                                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
+                                <h5 className="font-black text-xs uppercase tracking-wider text-amber-600 dark:text-[#FFBF00]">Deskripsi Lengkap</h5>
+                                <p className="text-slate-700 dark:text-slate-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line">
                                     {selectedAd.desc}
                                 </p>
                             </div>
 
                             {/* Action block */}
-                            <div className="pt-6 border-t border-[#174256] flex flex-col sm:flex-row gap-3 items-center justify-between">
+                            <div className="pt-6 border-t border-slate-200 dark:border-[#174256] flex flex-col sm:flex-row gap-3 items-center justify-between">
                                 <span className="text-[10px] text-slate-400">Dipublikasikan pada: {selectedAd.date}</span>
                                 
                                 <a 

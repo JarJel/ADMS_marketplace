@@ -88,37 +88,67 @@ export default function OverviewTab({
                         Lihat Semua
                     </button>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-xs">
-                        <thead className="bg-slate-50 text-slate-400 font-bold text-[10px] uppercase border-b border-slate-100">
-                            <tr>
-                                <th className="px-6 py-4 text-left">ID Transaksi</th>
-                                <th className="px-6 py-4 text-left">Merchant</th>
-                                <th className="px-6 py-4 text-left">Tanggal</th>
-                                <th className="px-6 py-4 text-left">Total</th>
-                                <th className="px-6 py-4 text-left">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
-                            {purchases.slice(0, 3).map((p) => (
-                                <tr key={p.id}>
-                                    <td className="px-6 py-4 font-bold text-slate-800">{p.id}</td>
-                                    <td className="px-6 py-4">{p.merchant}</td>
-                                    <td className="px-6 py-4">{p.date}</td>
-                                    <td className="px-6 py-4 font-bold text-indigo-600">{formatCurrency(p.total)}</td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-block font-bold px-2 py-0.5 rounded text-[10px] ${
-                                            p.status === 'PAID' ? 'bg-emerald-100 text-emerald-800' :
-                                            p.status === 'PENDING' ? 'bg-amber-100 text-amber-800' :
-                                            'bg-rose-100 text-rose-800'
-                                        }`}>
-                                            {p.status}
-                                        </span>
-                                    </td>
+                <div>
+                    {/* Mobile View: Cards */}
+                    <div className="block sm:hidden divide-y divide-slate-100">
+                        {purchases.slice(0, 3).map((p) => (
+                            <div key={p.id} className="p-4 space-y-2 text-xs">
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="font-mono font-bold text-slate-800">{p.id}</span>
+                                    <span className={`inline-block font-bold px-2 py-0.5 rounded text-[10px] ${
+                                        p.status === 'PAID' ? 'bg-emerald-100 text-emerald-800' :
+                                        p.status === 'PENDING' ? 'bg-amber-100 text-amber-800' :
+                                        'bg-rose-100 text-rose-800'
+                                    }`}>
+                                        {p.status}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="font-semibold text-slate-700">{p.merchant}</p>
+                                        <p className="text-[11px] text-slate-400">{p.date}</p>
+                                    </div>
+                                    <div className="font-bold text-indigo-600">
+                                        {formatCurrency(p.total)}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Desktop View: Table */}
+                    <div className="hidden sm:block overflow-x-auto w-full">
+                        <table className="w-full text-xs">
+                            <thead className="bg-slate-50 text-slate-400 font-bold text-[10px] uppercase border-b border-slate-100">
+                                <tr>
+                                    <th className="px-4 sm:px-6 py-4 text-left whitespace-nowrap">ID Transaksi</th>
+                                    <th className="px-4 sm:px-6 py-4 text-left whitespace-nowrap">Merchant</th>
+                                    <th className="px-4 sm:px-6 py-4 text-left whitespace-nowrap">Tanggal</th>
+                                    <th className="px-4 sm:px-6 py-4 text-left whitespace-nowrap">Total</th>
+                                    <th className="px-4 sm:px-6 py-4 text-left whitespace-nowrap">Status</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
+                                {purchases.slice(0, 3).map((p) => (
+                                    <tr key={p.id}>
+                                        <td className="px-4 sm:px-6 py-4 font-bold text-slate-800 whitespace-nowrap">{p.id}</td>
+                                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">{p.merchant}</td>
+                                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">{p.date}</td>
+                                        <td className="px-4 sm:px-6 py-4 font-bold text-indigo-600 whitespace-nowrap">{formatCurrency(p.total)}</td>
+                                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                            <span className={`inline-block font-bold px-2 py-0.5 rounded text-[10px] ${
+                                                p.status === 'PAID' ? 'bg-emerald-100 text-emerald-800' :
+                                                p.status === 'PENDING' ? 'bg-amber-100 text-amber-800' :
+                                                'bg-rose-100 text-rose-800'
+                                            }`}>
+                                                {p.status}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
     LayoutDashboard, ShoppingBag, ShoppingCart, Download, Megaphone, Heart, Settings, 
     LogOut, CreditCard, Star, FileText, Upload, User, ShieldCheck, Check, Trash2, MapPin, Tag, Store,
-    ChevronLeft, ChevronRight, Clock, RefreshCw
+    ChevronLeft, ChevronRight, Clock, RefreshCw, Sun, Moon, Search
 } from 'lucide-react';
 import Navbar from '../../components/Navbar';
 import ProductDetailModal from '../../components/ProductDetailModal';
@@ -46,6 +46,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
     const [downloads, setDownloads] = useState([]);
     const [advertisements, setAdvertisements] = useState([]);
     const [wishlist, setWishlist] = useState([]);
+    const [wishlistSearchQuery, setWishlistSearchQuery] = useState('');
     const [packageSubscriptions, setPackageSubscriptions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -110,76 +111,78 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
 
     const [recommendedProducts, setRecommendedProducts] = useState([]);
 
+    // Fetch public recommended products immediately without waiting for auth
+    useEffect(() => {
+        const fetchRecommended = async () => {
+            try {
+                const recRes = await fetch('/api/public/products/recommended');
+                const recData = await recRes.json();
+                if (recData.success && recData.data && recData.data.length > 0) {
+                    setRecommendedProducts(recData.data);
+                }
+            } catch (err) {}
+        };
+        fetchRecommended();
+    }, []);
+
     useEffect(() => {
         if (!token) return;
 
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                // Fetch orders
-                const ordersRes = await fetch('/api/customer/orders', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const ordersData = await ordersRes.json();
-                if (ordersData.success) {
-                    const orders = ordersData.data.data || ordersData.data;
-                    setPurchases(orders);
-                    
-                    // Extract downloads from paid orders
-                    let downloadableItems = [];
-                    orders.forEach(order => {
-                        if (order.status === 'completed' || order.status === 'PAID') {
-                            if (order.items) {
-                                order.items.forEach(item => {
-                                    if (item.product) {
-                                        downloadableItems.push({
-                                            order_item_id: item.id,
-                                            id: item.product.id,
-                                            title: item.product.title,
-                                            merchant: order.merchant?.name || 'Merchant',
-                                            size: 'Aset Digital', // Mocked size or fetch from product details
-                                            image: item.product.thumbnail
-                                        });
-                                    }
-                                });
+                const headers = { 'Authorization': `Bearer ${token}` };
+
+                // Fetch all endpoints concurrently in parallel
+                const [ordersRes, wishlistRes, adsRes, subsRes] = await Promise.allSettled([
+                    fetch('/api/customer/orders', { headers }),
+                    fetch('/api/customer/wishlist', { headers }),
+                    fetch('/api/customer/ads', { headers }),
+                    fetch('/api/customer/package-subscriptions', { headers })
+                ]);
+
+                if (ordersRes.status === 'fulfilled' && ordersRes.value.ok) {
+                    const ordersData = await ordersRes.value.json();
+                    if (ordersData.success) {
+                        const orders = ordersData.data.data || ordersData.data;
+                        setPurchases(orders);
+                        
+                        let downloadableItems = [];
+                        orders.forEach(order => {
+                            if (order.status === 'completed' || order.status === 'PAID') {
+                                if (order.items) {
+                                    order.items.forEach(item => {
+                                        if (item.product) {
+                                            downloadableItems.push({
+                                                order_item_id: item.id,
+                                                id: item.product.id,
+                                                title: item.product.title,
+                                                merchant: order.merchant?.name || 'Merchant',
+                                                size: 'Aset Digital',
+                                                image: item.product.thumbnail
+                                            });
+                                        }
+                                    });
+                                }
                             }
-                        }
-                    });
-                    setDownloads(downloadableItems);
+                        });
+                        setDownloads(downloadableItems);
+                    }
                 }
 
-                // Fetch wishlist
-                const wishlistRes = await fetch('/api/customer/wishlist', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const wishlistData = await wishlistRes.json();
-                if (wishlistData.success) {
-                    setWishlist(wishlistData.data);
+                if (wishlistRes.status === 'fulfilled' && wishlistRes.value.ok) {
+                    const wishlistData = await wishlistRes.value.json();
+                    if (wishlistData.success) setWishlist(wishlistData.data);
                 }
 
-                // Fetch ads
-                const adsRes = await fetch('/api/customer/ads', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const adsData = await adsRes.json();
-                if (adsData.success) {
-                    setAdvertisements(adsData.data);
+                if (adsRes.status === 'fulfilled' && adsRes.value.ok) {
+                    const adsData = await adsRes.value.json();
+                    if (adsData.success) setAdvertisements(adsData.data);
                 }
 
-                // Fetch package subscriptions
-                const subsRes = await fetch('/api/customer/package-subscriptions', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const subsData = await subsRes.json();
-                if (subsData.success) {
-                    setPackageSubscriptions(subsData.data);
-                }
-
-                // Fetch recommended products from database
-                const recRes = await fetch('/api/public/products/recommended');
-                const recData = await recRes.json();
-                if (recData.success && recData.data && recData.data.length > 0) {
-                    setRecommendedProducts(recData.data);
+                if (subsRes.status === 'fulfilled' && subsRes.value.ok) {
+                    const subsData = await subsRes.value.json();
+                    if (subsData.success) setPackageSubscriptions(subsData.data);
                 }
             } catch (error) {
             } finally {
@@ -461,8 +464,17 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                 ))}
 
                 <button
+                    type="button"
+                    onClick={() => setDarkMode(!darkMode)}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-navy-800 transition-all mt-4 border-t border-slate-100 dark:border-navy-800 pt-4 cursor-pointer"
+                >
+                    {darkMode ? <Sun className="w-4 h-4 text-[#FFBF00]" /> : <Moon className="w-4 h-4 text-slate-500" />}
+                    <span>{darkMode ? 'Mode Terang' : 'Mode Gelap'}</span>
+                </button>
+
+                <button
                     onClick={onLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all mt-4 border-t border-slate-100 dark:border-navy-800 pt-4 cursor-pointer"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all mt-1 cursor-pointer"
                 >
                     <LogOut className="w-4 h-4 text-rose-600 dark:text-rose-400" />
                     <span>Keluar Akun</span>
@@ -517,7 +529,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                 </div>
 
                                 {/* Mini stats widgets grid */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-10 text-center">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4 mb-8 text-left">
                                     <button 
                                         type="button"
                                         onClick={(e) => {
@@ -525,14 +537,16 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             handleTabChange('purchases');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-gold-500/10 hover:border-gold-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-gold-500/50"
+                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-2xl border border-slate-300 dark:border-navy-800 p-3.5 sm:p-4 shadow-sm hover:shadow-md hover:border-gold-500/40 transition-all duration-300 flex items-center gap-3 cursor-pointer active:scale-95 w-full focus:outline-none"
                                     >
-                                        <div className="p-4 bg-gold-500/10 dark:bg-navy-800 rounded-2xl text-gold-500 dark:text-gold-400 border border-gold-500/20 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
-                                            <ShoppingBag className="w-6 h-6" />
+                                        <div className="p-2.5 sm:p-3 bg-gold-500/10 dark:bg-navy-800 rounded-xl text-gold-500 dark:text-gold-400 border border-gold-500/20 group-hover:scale-110 transition-transform duration-300 shrink-0 pointer-events-none">
+                                            <ShoppingBag className="w-5 h-5" />
                                         </div>
-                                        <div className="pointer-events-none">
-                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Total Transaksi</span>
-                                            <span className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">{purchases.length} <span className="text-sm font-normal text-slate-400">Pembelian</span></span>
+                                        <div className="min-w-0 flex-1 pointer-events-none">
+                                            <span className="block text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate mb-0.5">Total Transaksi</span>
+                                            <span className="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 truncate block">
+                                                {purchases.length} <span className="text-xs font-normal text-slate-400">Pembelian</span>
+                                            </span>
                                         </div>
                                     </button>
 
@@ -543,14 +557,16 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             handleTabChange('ads');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-gold-500/10 hover:border-gold-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-gold-500/50"
+                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-2xl border border-slate-300 dark:border-navy-800 p-3.5 sm:p-4 shadow-sm hover:shadow-md hover:border-gold-500/40 transition-all duration-300 flex items-center gap-3 cursor-pointer active:scale-95 w-full focus:outline-none"
                                     >
-                                        <div className="p-4 bg-gold-500/10 dark:bg-navy-800 rounded-2xl text-gold-500 dark:text-gold-400 border border-gold-500/20 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
-                                            <Tag className="w-6 h-6" />
+                                        <div className="p-2.5 sm:p-3 bg-gold-500/10 dark:bg-navy-800 rounded-xl text-gold-500 dark:text-gold-400 border border-gold-500/20 group-hover:scale-110 transition-transform duration-300 shrink-0 pointer-events-none">
+                                            <Tag className="w-5 h-5" />
                                         </div>
-                                        <div className="pointer-events-none">
-                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Iklan Aktif</span>
-                                            <span className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">{advertisements.filter(ad => ad.status === 'active' || ad.status === 'Published' || ad.status === 'approved').length} <span className="text-sm font-normal text-slate-400">Unit</span></span>
+                                        <div className="min-w-0 flex-1 pointer-events-none">
+                                            <span className="block text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate mb-0.5">Iklan Aktif</span>
+                                            <span className="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 truncate block">
+                                                {advertisements.filter(ad => ad.status === 'active' || ad.status === 'Published' || ad.status === 'approved').length} <span className="text-xs font-normal text-slate-400">Unit</span>
+                                            </span>
                                         </div>
                                     </button>
 
@@ -561,14 +577,16 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             handleTabChange('wishlist');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-rose-500/10 hover:border-rose-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-rose-500/50"
+                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-2xl border border-slate-300 dark:border-navy-800 p-3.5 sm:p-4 shadow-sm hover:shadow-md hover:border-rose-500/40 transition-all duration-300 flex items-center gap-3 cursor-pointer active:scale-95 w-full focus:outline-none"
                                     >
-                                        <div className="p-4 bg-rose-50 dark:bg-rose-950/40 rounded-2xl text-rose-600 dark:text-rose-400 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
-                                            <Heart className="w-6 h-6" />
+                                        <div className="p-2.5 sm:p-3 bg-rose-50 dark:bg-rose-950/40 rounded-xl text-rose-600 dark:text-rose-400 border border-rose-500/20 group-hover:scale-110 transition-transform duration-300 shrink-0 pointer-events-none">
+                                            <Heart className="w-5 h-5" />
                                         </div>
-                                        <div className="pointer-events-none">
-                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Disimpan</span>
-                                            <span className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">{wishlist.length} <span className="text-sm font-normal text-slate-400">Favorit</span></span>
+                                        <div className="min-w-0 flex-1 pointer-events-none">
+                                            <span className="block text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate mb-0.5">Disimpan</span>
+                                            <span className="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 truncate block">
+                                                {wishlist.length} <span className="text-xs font-normal text-slate-400">Favorit</span>
+                                            </span>
                                         </div>
                                     </button>
 
@@ -579,16 +597,19 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             handleTabChange('purchases');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-gold-500/10 hover:border-gold-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-gold-500/50"
+                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-2xl border border-slate-300 dark:border-navy-800 p-3.5 sm:p-4 shadow-sm hover:shadow-md hover:border-gold-500/40 transition-all duration-300 flex items-center gap-3 cursor-pointer active:scale-95 w-full focus:outline-none"
                                     >
-                                        <div className="p-4 bg-gold-500/10 dark:bg-navy-800 rounded-2xl text-gold-500 dark:text-gold-400 border border-gold-500/20 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
-                                            <CreditCard className="w-6 h-6" />
+                                        <div className="p-2.5 sm:p-3 bg-gold-500/10 dark:bg-navy-800 rounded-xl text-gold-500 dark:text-gold-400 border border-gold-500/20 group-hover:scale-110 transition-transform duration-300 shrink-0 pointer-events-none">
+                                            <CreditCard className="w-5 h-5" />
                                         </div>
-                                        <div className="pointer-events-none">
-                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Pengeluaran</span>
-                                            <span className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">{formatCurrency(purchases.filter(p => p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid').reduce((sum, p) => sum + parseFloat(p.total_amount || p.total || 0), 0))}</span>
+                                        <div className="min-w-0 flex-1 pointer-events-none">
+                                            <span className="block text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate mb-0.5">Pengeluaran</span>
+                                            <span className="text-sm sm:text-base lg:text-lg font-black text-gold-500 dark:text-gold-400 truncate block" title={formatCurrency(purchases.filter(p => p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid').reduce((sum, p) => sum + parseFloat(p.total_amount || p.total || 0), 0))}>
+                                                {formatCurrency(purchases.filter(p => p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid').reduce((sum, p) => sum + parseFloat(p.total_amount || p.total || 0), 0))}
+                                            </span>
                                         </div>
                                     </button>
+
                                     <button 
                                         type="button"
                                         onClick={(e) => {
@@ -596,14 +617,16 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             handleTabChange('package-subscriptions');
                                             window.scrollTo({ top: 0, behavior: 'smooth' });
                                         }}
-                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-3xl border border-slate-300 dark:border-navy-800 p-6 shadow-sm shadow-slate-200/60 dark:shadow-none hover:shadow-lg hover:shadow-emerald-500/10 hover:border-emerald-500/40 transition-all duration-300 flex items-center gap-5 text-left cursor-pointer active:scale-95 w-full focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                                        className="group relative overflow-hidden bg-white dark:bg-navy-900 rounded-2xl border border-slate-300 dark:border-navy-800 p-3.5 sm:p-4 shadow-sm hover:shadow-md hover:border-emerald-500/40 transition-all duration-300 flex items-center gap-3 cursor-pointer active:scale-95 w-full focus:outline-none"
                                     >
-                                        <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 rounded-2xl text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300 pointer-events-none">
-                                            <ShieldCheck className="w-6 h-6" />
+                                        <div className="p-2.5 sm:p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 group-hover:scale-110 transition-transform duration-300 shrink-0 pointer-events-none">
+                                            <ShieldCheck className="w-5 h-5" />
                                         </div>
-                                        <div className="pointer-events-none">
-                                            <span className="block text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-1">Paket Langganan</span>
-                                            <span className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">{packageSubscriptions.length} <span className="text-sm font-normal text-slate-400">Paket</span></span>
+                                        <div className="min-w-0 flex-1 pointer-events-none">
+                                            <span className="block text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider truncate mb-0.5">Paket Langganan</span>
+                                            <span className="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 truncate block">
+                                                {packageSubscriptions.length} <span className="text-xs font-normal text-slate-400">Paket</span>
+                                            </span>
                                         </div>
                                     </button>
                                 </div>
@@ -622,29 +645,18 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                             Lihat Semua
                                         </button>
                                     </div>
-                                    <div className="overflow-x-auto">
+                                    <div>
                                         {purchases && purchases.length > 0 ? (
-                                            <table className="w-full text-sm border-collapse">
-                                                <thead className="bg-slate-200/80 dark:bg-navy-950 text-slate-800 dark:text-slate-200 font-bold text-xs uppercase border-b-2 border-slate-300 dark:border-navy-800">
-                                                    <tr>
-                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">ID Transaksi</th>
-                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Merchant</th>
-                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Tanggal</th>
-                                                        <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Total</th>
-                                                        <th className="px-6 py-4 text-left tracking-wider">Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-slate-200 dark:divide-navy-800 text-slate-800 dark:text-slate-200 font-medium text-sm">
+                                            <>
+                                                {/* Mobile View: Stacked Cards */}
+                                                <div className="block sm:hidden divide-y divide-slate-200 dark:divide-navy-800">
                                                     {purchases.slice(0, 3).map((p) => (
-                                                        <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-navy-800/40 transition-colors">
-                                                            <td className="px-6 py-4.5 font-medium font-mono text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">
-                                                                {p.order_number || (p.id ? (p.id.length > 12 ? `${p.id.substring(0, 8)}...` : p.id) : '-')}
-                                                            </td>
-                                                            <td className="px-6 py-4.5 font-medium text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{p.merchant?.name || 'Merchant'}</td>
-                                                            <td className="px-6 py-4.5 text-slate-600 dark:text-slate-400 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
-                                                            <td className="px-6 py-4.5 font-bold text-gold-500 dark:text-gold-400 text-sm sm:text-base border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{formatCurrency(p.total_amount || p.total || 0)}</td>
-                                                            <td className="px-6 py-4.5">
-                                                                <span className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
+                                                        <div key={p.id} className="p-4 space-y-2.5 hover:bg-slate-50/80 dark:hover:bg-navy-800/40 transition-colors">
+                                                            <div className="flex items-center justify-between gap-2">
+                                                                <span className="font-mono font-bold text-xs text-slate-900 dark:text-slate-100">
+                                                                    {p.order_number || (p.id ? (p.id.length > 12 ? `${p.id.substring(0, 8)}...` : p.id) : '-')}
+                                                                </span>
+                                                                <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${
                                                                     (p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid' || p.status?.toLowerCase() === 'verified') 
                                                                         ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30' 
                                                                         : (p.status?.toLowerCase() === 'failed' || p.status?.toLowerCase() === 'cancelled')
@@ -653,11 +665,59 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                                 }`}>
                                                                     {p.status}
                                                                 </span>
-                                                            </td>
-                                                        </tr>
+                                                            </div>
+                                                            
+                                                            <div className="flex items-center justify-between text-xs pt-0.5">
+                                                                <div className="space-y-0.5">
+                                                                    <p className="font-semibold text-slate-800 dark:text-slate-200">{p.merchant?.name || 'Merchant'}</p>
+                                                                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</p>
+                                                                </div>
+                                                                <div className="text-right font-bold text-sm text-gold-500 dark:text-gold-400">
+                                                                    {formatCurrency(p.total_amount || p.total || 0)}
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     ))}
-                                                </tbody>
-                                            </table>
+                                                </div>
+
+                                                {/* Desktop View: Table */}
+                                                <div className="hidden sm:block overflow-x-auto w-full">
+                                                    <table className="w-full text-sm border-collapse">
+                                                        <thead className="bg-slate-200/80 dark:bg-navy-950 text-slate-800 dark:text-slate-200 font-bold text-xs uppercase border-b-2 border-slate-300 dark:border-navy-800">
+                                                            <tr>
+                                                                <th className="px-4 sm:px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0 whitespace-nowrap">ID Transaksi</th>
+                                                                <th className="px-4 sm:px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0 whitespace-nowrap">Merchant</th>
+                                                                <th className="px-4 sm:px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0 whitespace-nowrap">Tanggal</th>
+                                                                <th className="px-4 sm:px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0 whitespace-nowrap">Total</th>
+                                                                <th className="px-4 sm:px-6 py-4 text-left tracking-wider whitespace-nowrap">Status</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-slate-200 dark:divide-navy-800 text-slate-800 dark:text-slate-200 font-medium text-sm">
+                                                            {purchases.slice(0, 3).map((p) => (
+                                                                <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-navy-800/40 transition-colors">
+                                                                    <td className="px-4 sm:px-6 py-4.5 font-medium font-mono text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0 whitespace-nowrap">
+                                                                        {p.order_number || (p.id ? (p.id.length > 12 ? `${p.id.substring(0, 8)}...` : p.id) : '-')}
+                                                                    </td>
+                                                                    <td className="px-4 sm:px-6 py-4.5 font-medium text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0 whitespace-nowrap">{p.merchant?.name || 'Merchant'}</td>
+                                                                    <td className="px-4 sm:px-6 py-4.5 text-slate-600 dark:text-slate-400 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0 whitespace-nowrap">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
+                                                                    <td className="px-4 sm:px-6 py-4.5 font-bold text-gold-500 dark:text-gold-400 text-sm sm:text-base border-r border-slate-200/70 dark:border-navy-800 last:border-r-0 whitespace-nowrap">{formatCurrency(p.total_amount || p.total || 0)}</td>
+                                                                    <td className="px-4 sm:px-6 py-4.5 whitespace-nowrap">
+                                                                        <span className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
+                                                                            (p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid' || p.status?.toLowerCase() === 'verified') 
+                                                                                ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30' 
+                                                                                : (p.status?.toLowerCase() === 'failed' || p.status?.toLowerCase() === 'cancelled')
+                                                                                    ? 'bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30'
+                                                                                    : 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30'
+                                                                        }`}>
+                                                                            {p.status}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </>
                                         ) : (
                                             <div className="py-12 text-center text-slate-400 text-sm font-medium bg-slate-50/50 dark:bg-navy-950/20">
                                                 Belum ada riwayat transaksi
@@ -728,8 +788,12 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                 <div>
                                                     <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-navy-950 relative">
                                                         <img 
-                                                            src={prod.image} 
-                                                            alt={prod.title} 
+                                                            src={prod.image || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=600&auto=format&fit=crop'} 
+                                                            alt=""
+                                                            onError={(e) => {
+                                                                e.target.onerror = null;
+                                                                e.target.src = 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=600&auto=format&fit=crop';
+                                                            }}
                                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                         />
                                                         <span className="absolute top-3 left-3 bg-white/95 dark:bg-navy-950/95 backdrop-blur text-xs font-semibold text-gold-600 dark:text-gold-400 px-2.5 py-0.5 rounded-lg border border-gold-200 dark:border-gold-500/30 shadow-sm">
@@ -776,34 +840,31 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
 
                         {/* 2. Tab Purchases (Transaksi Saya) */}
                         {activeTab === 'purchases' && (
-                            <div className="bg-white dark:bg-navy-900 rounded-3xl border-2 border-slate-300 dark:border-navy-800 shadow-md shadow-slate-200/70 dark:shadow-none overflow-hidden text-left">
-                                <div className="p-6 sm:p-7 border-b-2 border-slate-300 dark:border-navy-800 bg-slate-50/70 dark:bg-navy-950/50">
-                                    <h3 className="font-bold text-lg sm:text-xl text-slate-800 dark:text-slate-100">Daftar Transaksi Saya</h3>
-                                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Riwayat lengkap pembelian produk digital Anda.</p>
-                                </div>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-sm border-collapse">
-                                        <thead className="bg-slate-200/80 dark:bg-navy-950 text-slate-800 dark:text-slate-200 font-bold text-xs uppercase border-b-2 border-slate-300 dark:border-navy-800">
-                                            <tr>
-                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">ID Transaksi</th>
-                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Merchant</th>
-                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Tanggal</th>
-                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Total</th>
-                                                <th className="px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0">Status</th>
-                                                <th className="px-6 py-4 text-center tracking-wider">Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-slate-200 dark:divide-navy-800 text-slate-800 dark:text-slate-200 font-medium text-sm">
+                            <div className="space-y-4 text-left">
+                                <button 
+                                    type="button"
+                                    onClick={() => handleTabChange('overview')}
+                                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-200/80 hover:bg-slate-300 dark:bg-navy-800 dark:hover:bg-navy-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold transition-all cursor-pointer border border-slate-300 dark:border-navy-700 shadow-sm"
+                                >
+                                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    <span>Kembali</span>
+                                </button>
+
+                                <div className="bg-white dark:bg-navy-900 rounded-3xl border-2 border-slate-300 dark:border-navy-800 shadow-md shadow-slate-200/70 dark:shadow-none overflow-hidden">
+                                    <div className="p-6 sm:p-7 border-b-2 border-slate-300 dark:border-navy-800 bg-slate-50/70 dark:bg-navy-950/50">
+                                        <h3 className="font-bold text-lg sm:text-xl text-slate-800 dark:text-slate-100">Daftar Transaksi Saya</h3>
+                                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Riwayat lengkap pembelian produk digital Anda.</p>
+                                    </div>
+                                    <div>
+                                        {/* Mobile View: Stacked Cards */}
+                                        <div className="block sm:hidden divide-y divide-slate-200 dark:divide-navy-800">
                                             {purchases.map((p) => (
-                                                <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-navy-800/40 transition-colors">
-                                                    <td className="px-6 py-4.5 font-medium font-mono text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">
-                                                        {p.order_number || (p.id ? (p.id.length > 12 ? `${p.id.substring(0, 8)}...` : p.id) : '-')}
-                                                    </td>
-                                                    <td className="px-6 py-4.5 font-medium text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{p.merchant?.name || 'Merchant'}</td>
-                                                    <td className="px-6 py-4.5 text-slate-600 dark:text-slate-400 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
-                                                    <td className="px-6 py-4.5 font-bold text-gold-500 dark:text-gold-400 text-sm sm:text-base border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">{formatCurrency(p.total_amount || p.total || 0)}</td>
-                                                    <td className="px-6 py-4.5 border-r border-slate-200/70 dark:border-navy-800 last:border-r-0">
-                                                        <span className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
+                                                <div key={p.id} className="p-4 space-y-3 hover:bg-slate-50/80 dark:hover:bg-navy-800/40 transition-colors">
+                                                    <div className="flex items-center justify-between gap-2">
+                                                        <span className="font-mono font-bold text-xs text-slate-900 dark:text-slate-100">
+                                                            {p.order_number || (p.id ? (p.id.length > 12 ? `${p.id.substring(0, 8)}...` : p.id) : '-')}
+                                                        </span>
+                                                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${
                                                             (p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid' || p.status?.toLowerCase() === 'verified') 
                                                                 ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30' 
                                                                 : (p.status?.toLowerCase() === 'failed' || p.status?.toLowerCase() === 'cancelled')
@@ -812,28 +873,90 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                         }`}>
                                                             {p.status}
                                                         </span>
-                                                    </td>
-                                                    <td className="px-6 py-4.5 text-center">
-                                                        <div className="flex justify-center gap-2">
-                                                            <button className="px-3.5 py-1.5 bg-slate-100 dark:bg-navy-800 hover:bg-slate-200 dark:hover:bg-navy-700 text-slate-700 dark:text-slate-200 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm border border-slate-300 dark:border-navy-700">
-                                                                <FileText className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-                                                                Invoice
-                                                            </button>
-                                                            {(p.status === 'completed' || p.status === 'PAID') && (
-                                                                <button className="px-3.5 py-1.5 bg-gold-500/10 dark:bg-navy-800 hover:bg-gold-500/20 text-gold-600 dark:text-gold-400 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm border border-gold-500/30">
-                                                                    <Star className="w-3.5 h-3.5 text-gold-500 dark:text-gold-400 fill-current" />
-                                                                    Rating
-                                                                </button>
-                                                            )}
+                                                    </div>
+                                                    
+                                                    <div className="flex items-center justify-between text-xs pt-0.5">
+                                                        <div className="space-y-0.5">
+                                                            <p className="font-semibold text-slate-800 dark:text-slate-200">{p.merchant?.name || 'Merchant'}</p>
+                                                            <p className="text-[11px] text-slate-500 dark:text-slate-400">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</p>
                                                         </div>
-                                                    </td>
-                                                </tr>
+                                                        <div className="text-right font-bold text-sm text-gold-500 dark:text-gold-400">
+                                                            {formatCurrency(p.total_amount || p.total || 0)}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-navy-800/60">
+                                                        <button className="flex-1 py-1.5 bg-slate-100 dark:bg-navy-800 hover:bg-slate-200 dark:hover:bg-navy-700 text-slate-700 dark:text-slate-200 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-sm border border-slate-300 dark:border-navy-700">
+                                                            <FileText className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                                                            Invoice
+                                                        </button>
+                                                        {(p.status === 'completed' || p.status === 'PAID') && (
+                                                            <button className="flex-1 py-1.5 bg-gold-500/10 dark:bg-navy-800 hover:bg-gold-500/20 text-gold-600 dark:text-gold-400 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-sm border border-gold-500/30">
+                                                                <Star className="w-3.5 h-3.5 text-gold-500 dark:text-gold-400 fill-current" />
+                                                                Rating
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        </div>
+
+                                        {/* Desktop View: Table */}
+                                        <div className="hidden sm:block overflow-x-auto w-full">
+                                            <table className="w-full text-sm border-collapse">
+                                                <thead className="bg-slate-200/80 dark:bg-navy-950 text-slate-800 dark:text-slate-200 font-bold text-xs uppercase border-b-2 border-slate-300 dark:border-navy-800">
+                                                    <tr>
+                                                        <th className="px-4 sm:px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0 whitespace-nowrap">ID Transaksi</th>
+                                                        <th className="px-4 sm:px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0 whitespace-nowrap">Merchant</th>
+                                                        <th className="px-4 sm:px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0 whitespace-nowrap">Tanggal</th>
+                                                        <th className="px-4 sm:px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0 whitespace-nowrap">Total</th>
+                                                        <th className="px-4 sm:px-6 py-4 text-left tracking-wider border-r border-slate-300/60 dark:border-navy-800 last:border-r-0 whitespace-nowrap">Status</th>
+                                                        <th className="px-4 sm:px-6 py-4 text-center tracking-wider whitespace-nowrap">Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-200 dark:divide-navy-800 text-slate-800 dark:text-slate-200 font-medium text-sm">
+                                                    {purchases.map((p) => (
+                                                        <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-navy-800/40 transition-colors">
+                                                            <td className="px-4 sm:px-6 py-4.5 font-medium font-mono text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0 whitespace-nowrap">
+                                                                {p.order_number || (p.id ? (p.id.length > 12 ? `${p.id.substring(0, 8)}...` : p.id) : '-')}
+                                                            </td>
+                                                            <td className="px-4 sm:px-6 py-4.5 font-medium text-slate-900 dark:text-slate-100 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0 whitespace-nowrap">{p.merchant?.name || 'Merchant'}</td>
+                                                            <td className="px-4 sm:px-6 py-4.5 text-slate-600 dark:text-slate-400 text-sm border-r border-slate-200/70 dark:border-navy-800 last:border-r-0 whitespace-nowrap">{new Date(p.created_at || new Date()).toLocaleDateString('id-ID')}</td>
+                                                            <td className="px-4 sm:px-6 py-4.5 font-bold text-gold-500 dark:text-gold-400 text-sm sm:text-base border-r border-slate-200/70 dark:border-navy-800 last:border-r-0 whitespace-nowrap">{formatCurrency(p.total_amount || p.total || 0)}</td>
+                                                            <td className="px-4 sm:px-6 py-4.5 border-r border-slate-200/70 dark:border-navy-800 last:border-r-0 whitespace-nowrap">
+                                                                <span className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
+                                                                    (p.status?.toLowerCase() === 'completed' || p.status?.toLowerCase() === 'paid' || p.status?.toLowerCase() === 'verified') 
+                                                                        ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30' 
+                                                                        : (p.status?.toLowerCase() === 'failed' || p.status?.toLowerCase() === 'cancelled')
+                                                                            ? 'bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30'
+                                                                            : 'bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30'
+                                                                }`}>
+                                                                    {p.status}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-4 sm:px-6 py-4.5 text-center whitespace-nowrap">
+                                                                <div className="flex justify-center gap-2">
+                                                                    <button className="px-3.5 py-1.5 bg-slate-100 dark:bg-navy-800 hover:bg-slate-200 dark:hover:bg-navy-700 text-slate-700 dark:text-slate-200 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm border border-slate-300 dark:border-navy-700">
+                                                                        <FileText className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                                                                        Invoice
+                                                                    </button>
+                                                                    {(p.status === 'completed' || p.status === 'PAID') && (
+                                                                        <button className="px-3.5 py-1.5 bg-gold-500/10 dark:bg-navy-800 hover:bg-gold-500/20 text-gold-600 dark:text-gold-400 font-semibold rounded-lg text-xs transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm border border-gold-500/30">
+                                                                            <Star className="w-3.5 h-3.5 text-gold-500 dark:text-gold-400 fill-current" />
+                                                                            Rating
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                             </div>
-                        )}
+                        </div>
+                    )}
 
                         {/* 3. Tab Downloads (Unduhan File) */}
                         {activeTab === 'downloads' && (
@@ -1125,9 +1248,35 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                         {/* 5. Tab Wishlist */}
                         {activeTab === 'wishlist' && (
                             <div className="space-y-6 text-left">
-                                <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 p-6 shadow-sm">
-                                    <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100">Favorit & Wishlist</h3>
-                                    <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Produk dan iklan baris yang Anda simpan untuk dibeli nanti.</p>
+                                <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div>
+                                        <h3 className="font-extrabold text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                                            <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
+                                            <span>Favorit & Wishlist</span>
+                                        </h3>
+                                        <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Produk dan iklan baris yang Anda simpan untuk dibeli nanti.</p>
+                                    </div>
+
+                                    {/* Search Input Box */}
+                                    <div className="relative w-full sm:w-72 shrink-0">
+                                        <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+                                        <input 
+                                            type="text"
+                                            value={wishlistSearchQuery}
+                                            onChange={(e) => setWishlistSearchQuery(e.target.value)}
+                                            placeholder="Cari di favorit..."
+                                            className="w-full text-xs pl-10 pr-8 py-2.5 bg-slate-50 dark:bg-navy-950 border border-slate-200 dark:border-navy-800 rounded-xl focus:outline-none focus:border-gold-500 font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400 transition-all"
+                                        />
+                                        {wishlistSearchQuery && (
+                                            <button 
+                                                type="button"
+                                                onClick={() => setWishlistSearchQuery('')}
+                                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs p-1"
+                                            >
+                                                ✕
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
 
                                 {wishlist.length === 0 ? (
@@ -1136,32 +1285,68 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                         <h4 className="font-extrabold text-slate-700 dark:text-slate-200 text-sm">Wishlist Anda Kosong</h4>
                                         <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-xs mx-auto">Mulai cari produk halal pilihan dan tambahkan ke favorit Anda.</p>
                                     </div>
-                                ) : (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {wishlist.map((item) => {
-                                            const product = item.product || item;
-                                            return (
-                                                <div key={item.id} className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 overflow-hidden shadow-sm flex items-center justify-between p-4 gap-4 relative group">
-                                                    <div className="flex items-center gap-4">
-                                                        <img src={product.thumbnail || product.image || 'https://via.placeholder.com/150'} alt={product.title} className="w-16 h-16 rounded-xl object-cover border border-slate-100 dark:border-navy-800" />
-                                                        <div className="space-y-1">
-                                                            <h4 className="font-extrabold text-xs text-slate-800 dark:text-slate-100 leading-snug line-clamp-1">{product.title}</h4>
-                                                            <span className="block font-black text-sm text-gold-500 dark:text-gold-400">{formatCurrency(product.price)}</span>
-                                                        </div>
-                                                    </div>
+                                ) : (() => {
+                                    const filteredWishlist = wishlist.filter(item => {
+                                        const product = item.product || item;
+                                        const query = wishlistSearchQuery.toLowerCase().trim();
+                                        if (!query) return true;
+                                        const title = (product.title || product.name || '').toLowerCase();
+                                        const merchant = (product.merchant || '').toLowerCase();
+                                        const category = (product.category || '').toLowerCase();
+                                        return title.includes(query) || merchant.includes(query) || category.includes(query);
+                                    });
 
-                                                    <button 
-                                                        onClick={() => handleRemoveFromWishlist(item.id)}
-                                                        className="p-2 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 rounded-xl hover:bg-rose-100 transition-colors shadow-sm cursor-pointer border border-rose-500/20"
-                                                        title="Hapus dari Favorit"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </button>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                )}
+                                    if (filteredWishlist.length === 0) {
+                                        return (
+                                            <div className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 p-12 text-center shadow-sm">
+                                                <Search className="w-10 h-10 text-slate-300 dark:text-navy-700 mx-auto mb-3" />
+                                                <h4 className="font-extrabold text-slate-700 dark:text-slate-200 text-sm">Tidak Ditemukan</h4>
+                                                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Tidak ada produk favorit yang cocok dengan kata kunci &quot;{wishlistSearchQuery}&quot;</p>
+                                                <button 
+                                                    onClick={() => setWishlistSearchQuery('')}
+                                                    className="mt-4 text-xs font-bold text-amber-600 dark:text-gold-400 hover:underline"
+                                                >
+                                                    Bersihkan Pencarian
+                                                </button>
+                                            </div>
+                                        );
+                                    }
+
+                                    return (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                                            {filteredWishlist.map((item) => {
+                                                const product = item.product || item;
+                                                return (
+                                                    <div key={item.id} className="bg-white dark:bg-navy-900 rounded-2xl border border-slate-200 dark:border-navy-800 overflow-hidden shadow-sm flex items-center justify-between p-4 gap-4 relative group hover:border-gold-500/50 transition-all">
+                                                        <div className="flex items-center gap-4 min-w-0 flex-1">
+                                                            <img 
+                                                                src={product.thumbnail || product.image || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=300&auto=format&fit=crop'} 
+                                                                alt=""
+                                                                onError={(e) => {
+                                                                    e.target.onerror = null;
+                                                                    e.target.src = 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=300&auto=format&fit=crop';
+                                                                }}
+                                                                className="w-16 h-16 rounded-xl object-cover border border-slate-100 dark:border-navy-800 shrink-0" 
+                                                            />
+                                                            <div className="space-y-1 min-w-0 flex-1">
+                                                                <h4 className="font-extrabold text-xs text-slate-800 dark:text-slate-100 leading-snug truncate">{product.title || product.name}</h4>
+                                                                <span className="block font-black text-sm text-gold-500 dark:text-gold-400">{formatCurrency(product.price)}</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <button 
+                                                            onClick={() => handleRemoveFromWishlist(item.id)}
+                                                            className="p-2 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 rounded-xl hover:bg-rose-100 transition-colors shadow-sm cursor-pointer border border-rose-500/20 shrink-0"
+                                                            title="Hapus dari Favorit"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    );
+                                })()}
                             </div>
                         )}
 

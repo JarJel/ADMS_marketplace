@@ -10,9 +10,9 @@ export default function OrdersTab({ orders, handleUpdateOrderStatus }) {
       </div>
       
       {orders && orders.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {orders.map(o => (
-            <div key={o.id} className="bg-[#071922] shadow-xl border border-[#174256] rounded-2xl p-6 flex flex-col justify-between hover:border-[#FFBF00] transition-all">
+            <div key={o.id} className="bg-[#071922] shadow-xl border border-[#174256] rounded-2xl p-4 sm:p-6 flex flex-col justify-between hover:border-[#FFBF00] transition-all">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h4 className="font-black text-white text-lg">{o.order_number}</h4>

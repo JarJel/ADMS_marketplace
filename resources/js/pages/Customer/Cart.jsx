@@ -482,14 +482,14 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
                         </div>
 
                         {/* Order Summary Sticky Panel (5 Columns) */}
-                        <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-24">
+                        <div className="lg:col-span-5 space-y-3 sticky bottom-3 lg:top-24 z-30">
                             {/* Promo Code Form */}
-                            <form onSubmit={handleApplyPromo} className={`rounded-2xl border p-4 ${darkMode ? 'bg-[#0F3040] border-[#174256]' : 'bg-white border-slate-200 shadow-xs'}`}>
-                                <p className={`text-xs font-bold mb-2 flex items-center gap-1.5 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                            <form onSubmit={handleApplyPromo} className={`rounded-xl border p-3 ${darkMode ? 'bg-[#0F3040] border-[#174256]' : 'bg-white border-slate-200 shadow-xs'}`}>
+                                <p className={`text-xs font-bold mb-1.5 flex items-center gap-1.5 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                                     <Tag className="w-3.5 h-3.5 text-[#FFBF00]" /> Kode Promo / Voucher
                                 </p>
                                 {promoApplied ? (
-                                    <div className="flex items-center gap-2 text-[#FFBF00] text-xs font-bold bg-[#FFBF00]/10 border border-[#FFBF00]/30 rounded-xl px-3 py-2">
+                                    <div className="flex items-center gap-2 text-[#FFBF00] text-xs font-bold bg-[#FFBF00]/10 border border-[#FFBF00]/30 rounded-lg px-3 py-1.5">
                                         <CheckCircle className="w-4 h-4 shrink-0" />
                                         <span>{promoLabel} — {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(discount)} diterapkan!</span>
                                     </div>
@@ -501,56 +501,56 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
                                                 value={promoCode}
                                                 onChange={(e) => { setPromoCode(e.target.value); setPromoError(''); }}
                                                 placeholder="Masukkan kode promo..."
-                                                className={`flex-1 text-xs rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#FFBF00] ${darkMode ? 'bg-[#071922] border-[#174256] text-white placeholder-slate-500' : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'}`}
+                                                className={`flex-1 text-xs rounded-lg border px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#FFBF00] ${darkMode ? 'bg-[#071922] border-[#174256] text-white placeholder-slate-500' : 'bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400'}`}
                                             />
-                                            <button type="submit" className="bg-[#FFBF00] hover:bg-[#ffcc33] text-[#0F3040] text-xs font-extrabold px-4 py-2 rounded-xl transition-colors">
+                                            <button type="submit" className="bg-[#FFBF00] hover:bg-[#ffcc33] text-[#0F3040] text-xs font-extrabold px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer">
                                                 Pakai
                                             </button>
                                         </div>
-                                        {promoError && <p className="mt-1.5 text-xs text-rose-500 font-medium">{promoError}</p>}
+                                        {promoError && <p className="mt-1 text-xs text-rose-500 font-medium">{promoError}</p>}
                                     </>
                                 )}
                             </form>
 
-                            <div className={`rounded-3xl border p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl ${
+                            <div className={`rounded-2xl border p-4 sm:p-5 shadow-xl relative overflow-hidden backdrop-blur-xl transition-all ${
                                 darkMode
-                                    ? 'bg-gradient-to-br from-[#0F3040] to-[#071922] border-[#174256] shadow-black/60'
-                                    : 'bg-white border-slate-200/90 shadow-xl'
+                                    ? 'bg-gradient-to-br from-[#0F3040] to-[#071922] border-[#174256] shadow-black/50'
+                                    : 'bg-white border-slate-200 shadow-lg'
                             }`}>
                                 {/* Shimmer Border Line Top */}
                                 <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FFBF00]/60 to-transparent"></div>
 
-                                <h3 className={`font-extrabold text-lg mb-5 flex items-center gap-2 ${
+                                <h3 className={`font-bold text-sm sm:text-base mb-3 flex items-center gap-2 ${
                                     darkMode ? 'text-white' : 'text-slate-900'
                                 }`}>
-                                    <ShoppingCart className="w-5 h-5 text-[#FFBF00]" /> Ringkasan Belanja
+                                    <ShoppingCart className="w-4 h-4 text-[#FFBF00]" /> Ringkasan Belanja
                                 </h3>
 
                                 {/* Cost Breakdown */}
-                                <div className="space-y-3 text-xs mb-6 border-t border-slate-200 dark:border-[#174256] pt-4">
+                                <div className="space-y-2 text-xs mb-3.5 border-t border-slate-200 dark:border-[#174256] pt-3">
                                     <div className="flex justify-between text-slate-500 dark:text-slate-400">
-                                        <span>Total Subtotal ({selectedItemsList.length} produk dipilih)</span>
+                                        <span>Subtotal ({selectedItemsList.length} produk)</span>
                                         <span className="font-semibold text-slate-700 dark:text-slate-200">{formatCurrency(subtotal)}</span>
                                     </div>
 
                                     {discount > 0 && (
                                         <div className="flex justify-between text-[#FFBF00] font-semibold">
-                                            <span>{promoLabel || 'Potongan Voucher Promo'}</span>
+                                            <span>{promoLabel || 'Diskon Promo'}</span>
                                             <span>- {formatCurrency(discount)}</span>
                                         </div>
                                     )}
 
                                     <div className="flex justify-between text-slate-500 dark:text-slate-400">
-                                        <span>Biaya Layanan Platform</span>
-                                        <span className="text-[#FFBF00] font-bold uppercase text-[10px] bg-[#FFBF00]/10 px-2 py-0.5 rounded border border-[#FFBF00]/20">Gratis Rp 0</span>
+                                        <span>Biaya Layanan</span>
+                                        <span className="text-[#FFBF00] font-bold uppercase text-[10px] bg-[#FFBF00]/10 px-2 py-0.5 rounded border border-[#FFBF00]/20">Gratis</span>
                                     </div>
 
-                                    <div className="flex justify-between items-baseline pt-4 border-t border-slate-200 dark:border-[#174256]">
+                                    <div className="flex justify-between items-center pt-3 border-t border-slate-200 dark:border-[#174256]">
                                         <div>
-                                            <span className={`block font-black text-sm ${darkMode ? 'text-white' : 'text-slate-900'}`}>Total Tagihan</span>
-                                            <span className="text-[10px] text-slate-400 font-normal">Sudah termasuk PPN & Lisensi</span>
+                                            <span className={`block font-extrabold text-xs sm:text-sm ${darkMode ? 'text-white' : 'text-slate-900'}`}>Total Tagihan</span>
+                                            <span className="text-[9.5px] text-slate-400 font-normal">Termasuk PPN</span>
                                         </div>
-                                        <span className="text-2xl font-black text-[#FFBF00]">
+                                        <span className="text-xl sm:text-2xl font-black text-[#FFBF00]">
                                             {formatCurrency(grandTotal)}
                                         </span>
                                     </div>
@@ -560,32 +560,32 @@ export default function Cart({ user, token, onNavigate, onLogout, darkMode = tru
                                 <button 
                                     onClick={handleCheckout}
                                     disabled={selectedItemsList.length === 0}
-                                    className={`w-full font-black text-xs sm:text-sm py-4 px-6 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer group uppercase tracking-wider ${
+                                    className={`w-full font-black text-xs py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer group uppercase tracking-wider ${
                                         selectedItemsList.length > 0
                                             ? 'bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] shadow-[#FFBF00]/20 active:scale-98'
                                             : 'bg-[#174256] text-slate-500 cursor-not-allowed shadow-none'
                                     }`}
                                 >
-                                    <CreditCard className="w-5 h-5 group-hover:scale-110 transition-transform text-[#0F3040]" />
+                                    <CreditCard className="w-4 h-4 group-hover:scale-110 transition-transform text-[#0F3040]" />
                                     <span>
                                         {selectedItemsList.length > 0 
-                                            ? `Lanjut ke Pembayaran (${selectedItemsList.length})` 
-                                            : 'Pilih Produk untuk Checkout'}
+                                            ? `Lanjut Ke Pembayaran (${selectedItemsList.length})` 
+                                            : 'Pilih Produk'}
                                     </span>
                                     {selectedItemsList.length > 0 && (
                                         <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
                                     )}
                                 </button>
 
-                                {/* Security Badges Guarantee */}
-                                <div className="mt-5 pt-4 border-t border-slate-200 dark:border-[#174256] space-y-2 text-[10.5px] text-slate-500 dark:text-slate-400">
-                                    <div className="flex items-center gap-2">
-                                        <ShieldCheck className="w-4 h-4 text-[#FFBF00] shrink-0" />
-                                        <span>Garansi 100% Uang Kembali Syariah jika file bermasalah</span>
+                                {/* Compact Security Guarantee */}
+                                <div className="mt-3 pt-2.5 border-t border-slate-200 dark:border-[#174256] flex items-center justify-center gap-4 text-[10px] text-slate-400">
+                                    <div className="flex items-center gap-1">
+                                        <ShieldCheck className="w-3.5 h-3.5 text-[#FFBF00] shrink-0" />
+                                        <span>Garansi 100% Syariah</span>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <Lock className="w-4 h-4 text-[#FFBF00] shrink-0" />
-                                        <span>Pembayaran Didekripsi Aman 256-Bit SSL Encryption</span>
+                                    <div className="flex items-center gap-1">
+                                        <Lock className="w-3.5 h-3.5 text-[#FFBF00] shrink-0" />
+                                        <span>Aman 256-Bit SSL</span>
                                     </div>
                                 </div>
 

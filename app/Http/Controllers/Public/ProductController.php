@@ -116,9 +116,13 @@ class ProductController extends Controller
                     'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=600&auto=format&fit=crop',
                     'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop'
                 ];
-                $imageUrl = (!empty($product->thumbnail) && !str_contains($product->thumbnail, 'placeholder'))
-                    ? $product->thumbnail
-                    : $defaultImages[abs(crc32($product->id)) % count($defaultImages)];
+                
+                $imageUrl = $product->thumbnail;
+                if (empty($imageUrl) || str_contains($imageUrl, 'placeholder')) {
+                    $imageUrl = $defaultImages[abs(crc32($product->id)) % count($defaultImages)];
+                } else if (!str_starts_with($imageUrl, 'http://') && !str_starts_with($imageUrl, 'https://')) {
+                    $imageUrl = '/' . ltrim($imageUrl, '/');
+                }
 
                 return [
                     'id' => $product->id,

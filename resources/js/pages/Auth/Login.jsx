@@ -244,18 +244,9 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
                             </div>
 
                             <div>
-                                <div className="flex justify-between items-center mb-1.5">
-                                    <label className="block text-xs font-bold text-slate-200">
-                                        Password
-                                    </label>
-                                    <button 
-                                        type="button"
-                                        onClick={() => setAuthMode('forgot')}
-                                        className="text-[11px] text-[#FFBF00] hover:underline font-bold transition-all"
-                                    >
-                                        Lupa Password?
-                                    </button>
-                                </div>
+                                <label className="block text-xs font-bold text-slate-200 mb-1.5">
+                                    Password
+                                </label>
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <input 
@@ -273,6 +264,15 @@ export default function Login({ onLoginSuccess, onNavigateToRegister }) {
                                         className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
                                     >
                                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    </button>
+                                </div>
+                                <div className="flex justify-end mt-1.5">
+                                    <button 
+                                        type="button"
+                                        onClick={() => setAuthMode('forgot')}
+                                        className="text-[11px] text-[#FFBF00] hover:underline font-bold transition-all"
+                                    >
+                                        Lupa Password?
                                     </button>
                                 </div>
                             </div>

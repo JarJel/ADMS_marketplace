@@ -1,11 +1,32 @@
 import React, { useState } from 'react';
-import { Megaphone, Eye, MousePointerClick, Plus, Crown } from 'lucide-react';
+import { Megaphone, Eye, MousePointerClick, Plus, Crown, Trash2, Edit } from 'lucide-react';
 import CreateAdModal from './CreateAdModal';
 
-export default function AdsTab({ ads, fetchAds, token, packageSubscriptions = [] }) {
+export default function AdsTab({ user, ads, fetchAds, token, packageSubscriptions = [] }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const activeSub = packageSubscriptions.find(sub => sub.status === 'active');
   const pendingSub = packageSubscriptions.find(sub => sub.status === 'pending');
+  const [viewingAd, setViewingAd] = useState(null);
+  const [editingAd, setEditingAd] = useState(null);
+
+  const handleDeleteAd = async (adId) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus iklan ini?')) return;
+    try {
+      const res = await fetch(`/api/customer/ads/${adId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setViewingAd(null);
+        fetchAds();
+      } else {
+        alert(data.message || 'Gagal menghapus iklan.');
+      }
+    } catch {
+      alert('Terjadi kesalahan jaringan.');
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -69,9 +90,9 @@ export default function AdsTab({ ads, fetchAds, token, packageSubscriptions = []
       )}
 
       {ads && ads.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {ads.map(ad => (
-            <div key={ad.id} className="bg-[#071922] shadow-xl border border-[#174256] rounded-2xl p-5 hover:shadow-2xl hover:border-[#FFBF00] transition-all group">
+            <div key={ad.id} onClick={() => setViewingAd(ad)} className="bg-[#071922] shadow-xl border border-[#174256] rounded-2xl p-4 sm:p-5 hover:shadow-2xl hover:border-[#FFBF00] transition-all group cursor-pointer">
               <div className="flex justify-between items-start mb-4">
                 <h4 className="font-bold text-white group-hover:text-[#FFBF00] transition-colors line-clamp-2">{ad.title}</h4>
                 <span className={`px-2 py-1 text-[10px] font-black rounded-md uppercase tracking-wider shrink-0 ml-2 border ${
@@ -106,11 +127,59 @@ export default function AdsTab({ ads, fetchAds, token, packageSubscriptions = []
         </div>
       )}
 
+      {viewingAd && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-[#0B2330] rounded-2xl border border-[#174256] shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#174256] shrink-0">
+              <h3 className="font-extrabold text-white text-lg">Detail Iklan</h3>
+              <button onClick={() => setViewingAd(null)} className="text-slate-400 hover:text-white text-2xl font-bold leading-none cursor-pointer">&times;</button>
+            </div>
+            <div className="p-6 overflow-y-auto text-slate-300 space-y-4">
+              <h2 className="text-2xl font-black text-white">{viewingAd.title}</h2>
+              {viewingAd.price && (
+                <div className="text-xl font-bold text-[#FFBF00]">
+                  Rp {Number(viewingAd.price).toLocaleString('id-ID')}
+                </div>
+              )}
+              <div className="bg-[#071922] p-4 rounded-xl border border-[#174256]">
+                <h4 className="font-bold text-white mb-2">Deskripsi</h4>
+                <p className="whitespace-pre-wrap text-sm leading-relaxed">{viewingAd.description || 'Tidak ada deskripsi.'}</p>
+              </div>
+            </div>
+            <div className="bg-[#071922] p-4 sm:p-6 border-t border-[#174256] flex flex-col sm:flex-row items-center justify-end gap-3 shrink-0 rounded-b-2xl">
+              <button 
+                onClick={() => {
+                  setEditingAd(viewingAd);
+                  setIsModalOpen(true);
+                  setViewingAd(null);
+                }}
+                className="w-full sm:w-auto px-5 py-2.5 bg-[#174256] hover:bg-[#1a4b62] text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              >
+                <Edit size={18} />
+                Edit Iklan
+              </button>
+              <button 
+                onClick={() => handleDeleteAd(viewingAd.id)}
+                className="w-full sm:w-auto px-5 py-2.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-500 font-bold border border-rose-500/30 rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              >
+                <Trash2 size={18} />
+                Hapus Iklan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <CreateAdModal 
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingAd(null);
+        }}
         token={token}
         fetchAds={fetchAds}
+        adToEdit={editingAd}
+        user={user}
       />
     </div>
   );

@@ -311,16 +311,18 @@ export default function AdmsChatWidget({ darkMode = true }) {
         {!isOpen && (
           <button 
             onClick={handleToggleOpen}
-            className="group relative flex items-center gap-3 bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] text-xs font-black py-3 px-5 sm:px-6 rounded-full shadow-[0_8px_30px_rgba(255,191,0,0.35)] hover:scale-105 active:scale-95 transition-all duration-300 border border-[#FFBF00]/40 cursor-pointer"
+            className="group relative flex items-center justify-center bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] text-xs font-black p-3.5 hover:px-5 rounded-full shadow-[0_8px_30px_rgba(255,191,0,0.35)] hover:scale-110 active:scale-95 transition-all duration-300 border border-[#FFBF00]/40 cursor-pointer overflow-hidden"
           >
-            <div className="relative flex items-center justify-center">
-              <Bot className="w-5 h-5 text-[#0F3040]" />
+            <div className="relative flex items-center justify-center shrink-0">
+              <Bot className="w-6 h-6 text-[#0F3040] transition-transform duration-300 group-hover:scale-110" />
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#0F3040] rounded-full animate-ping"></span>
               )}
             </div>
-            <span className="tracking-wide text-[#0F3040] font-black uppercase">Bantuan ADMS</span>
-            <span className="w-2.5 h-2.5 rounded-full bg-[#0F3040]"></span>
+            <span className="max-w-0 opacity-0 group-hover:max-w-[150px] group-hover:opacity-100 group-hover:ml-2.5 transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden tracking-wide text-[#0F3040] font-black uppercase">
+              Bantuan ADMS
+            </span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0F3040] shrink-0 max-w-0 opacity-0 group-hover:max-w-[20px] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300"></span>
           </button>
         )}
 

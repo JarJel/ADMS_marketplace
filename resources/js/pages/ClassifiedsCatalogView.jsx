@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { 
     Search, MapPin, Zap, Filter, ArrowUpDown, LayoutGrid, List,
     Phone, ExternalLink, X, HelpCircle, Star, MessageSquare, AlertCircle,
-    Rss, Clock, Tag, ChevronRight, FileText,
+    Rss, Clock, Tag, ChevronLeft, ChevronRight, FileText,
     Globe, Car, Bike, Smartphone, Monitor, Home, Map as MapIcon, Wrench, Briefcase, Shirt, Sofa
 } from 'lucide-react';
 import Navbar from '../components/Navbar';

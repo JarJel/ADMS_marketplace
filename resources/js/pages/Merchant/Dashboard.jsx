@@ -249,6 +249,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
 
                     {activeTab === 'ads' && (
                         <AdsTab 
+                            user={user}
                             ads={ads}
                             fetchAds={fetchAds}
                             token={token}

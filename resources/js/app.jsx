@@ -34,13 +34,21 @@ function App() {
     const [notifications, setNotifications] = useState([]);
 
     const [loading, setLoading] = useState(true);
-    const [darkMode, setDarkMode] = useState(true);
+    const [darkMode, setDarkMode] = useState(() => {
+        const savedTheme = localStorage.getItem('adms_theme');
+        if (savedTheme !== null) {
+            return savedTheme === 'dark';
+        }
+        return true; // Default to dark mode
+    });
 
     useEffect(() => {
         if (darkMode) {
             document.documentElement.classList.add('dark');
+            localStorage.setItem('adms_theme', 'dark');
         } else {
             document.documentElement.classList.remove('dark');
+            localStorage.setItem('adms_theme', 'light');
         }
     }, [darkMode]);
 
@@ -355,6 +363,10 @@ function App() {
         } else if (targetView === 'merchant_dashboard') {
             setDashboardTab('overview');
             navigateTo('merchant_dashboard', '/merchant');
+        } else if (targetView === 'admin_dashboard') {
+            const tab = filter && filter !== 'all' ? filter : 'dashboard';
+            setDashboardTab(tab);
+            navigateTo('admin_dashboard', `/admin/${tab}`);
         }
     };
 

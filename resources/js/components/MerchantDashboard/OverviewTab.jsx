@@ -91,15 +91,15 @@ export default function OverviewTab({
       )}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-6">
         {cards.map((stat) => (
-          <div key={stat.id} className="bg-[#071922] rounded-2xl p-5 shadow-xl border border-[#174256] hover:shadow-2xl hover:border-[#FFBF00] transition-all group cursor-default">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-sm font-bold text-slate-400 mb-1">{stat.title}</p>
-                <h3 className="text-2xl font-black text-white group-hover:text-[#FFBF00] transition-colors">{stat.value}</h3>
+          <div key={stat.id} className="bg-[#071922] rounded-2xl p-3.5 sm:p-5 shadow-xl border border-[#174256] hover:shadow-2xl hover:border-[#FFBF00] transition-all group cursor-default">
+            <div className="flex justify-between items-start gap-2">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm font-bold text-slate-400 mb-1 truncate">{stat.title}</p>
+                <h3 className="text-base sm:text-2xl font-black text-white group-hover:text-[#FFBF00] transition-colors truncate">{stat.value}</h3>
               </div>
-              <div className={`p-3 rounded-xl ${stat.bgColor}`}>
+              <div className={`p-2 sm:p-3 rounded-xl shrink-0 ${stat.bgColor}`}>
                 {stat.icon}
               </div>
             </div>
@@ -284,35 +284,57 @@ export default function OverviewTab({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders Table */}
         <div className="bg-[#071922] rounded-2xl shadow-xl border border-[#174256] overflow-hidden">
-          <div className="p-5 sm:p-6 border-b border-[#174256] flex items-center justify-between">
-            <h2 className="text-lg font-black text-white">Pesanan Terbaru</h2>
+          <div className="p-4 sm:p-6 border-b border-[#174256] flex items-center justify-between">
+            <h2 className="text-base sm:text-lg font-black text-white">Pesanan Terbaru</h2>
           </div>
-          <div className="overflow-x-auto">
-            {recentOrders.length === 0 ? (
-              <p className="px-6 py-8 text-sm text-slate-400 text-center">Belum ada pesanan masuk.</p>
-            ) : (
-              <table className="w-full text-left text-sm whitespace-nowrap">
-                <thead className="bg-[#0B2330] text-slate-300 border-b border-[#174256]">
-                  <tr>
-                    <th className="px-6 py-4 font-black text-xs uppercase tracking-wider">ID</th>
-                    <th className="px-6 py-4 font-black text-xs uppercase tracking-wider">Pelanggan</th>
-                    <th className="px-6 py-4 font-black text-xs uppercase tracking-wider">Total</th>
-                    <th className="px-6 py-4 font-black text-xs uppercase tracking-wider">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#174256]">
-                  {recentOrders.map((order, index) => (
-                    <tr key={index} className="hover:bg-[#0B2330]/50 transition-colors">
-                      <td className="px-6 py-4 font-bold text-white font-mono text-xs">{order.id}</td>
-                      <td className="px-6 py-4 font-bold text-slate-200">{order.customer}</td>
-                      <td className="px-6 py-4 text-slate-300 font-bold">{order.total}</td>
-                      <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
+          
+          {recentOrders.length === 0 ? (
+            <p className="px-6 py-8 text-sm text-slate-400 text-center">Belum ada pesanan masuk.</p>
+          ) : (
+            <>
+              {/* Desktop Table (>= md) */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left text-sm whitespace-nowrap">
+                  <thead className="bg-[#0B2330] text-slate-300 border-b border-[#174256]">
+                    <tr>
+                      <th className="px-6 py-4 font-black text-xs uppercase tracking-wider">ID</th>
+                      <th className="px-6 py-4 font-black text-xs uppercase tracking-wider">Pelanggan</th>
+                      <th className="px-6 py-4 font-black text-xs uppercase tracking-wider">Total</th>
+                      <th className="px-6 py-4 font-black text-xs uppercase tracking-wider">Status</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+                  </thead>
+                  <tbody className="divide-y divide-[#174256]">
+                    {recentOrders.map((order, index) => (
+                      <tr key={index} className="hover:bg-[#0B2330]/50 transition-colors">
+                        <td className="px-6 py-4 font-bold text-white font-mono text-xs">{order.id}</td>
+                        <td className="px-6 py-4 font-bold text-slate-200">{order.customer}</td>
+                        <td className="px-6 py-4 text-slate-300 font-bold">{order.total}</td>
+                        <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Cards (< md) */}
+              <div className="block md:hidden p-3 space-y-2.5">
+                {recentOrders.map((order, index) => (
+                  <div key={index} className="bg-[#0B2330] p-3 rounded-xl border border-[#174256] flex items-center justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-mono text-[10px] text-slate-400 font-bold">#{order.id}</span>
+                        <span className="font-bold text-xs text-white truncate">{order.customer}</span>
+                      </div>
+                      <p className="text-xs font-black text-emerald-400">{order.total}</p>
+                    </div>
+                    <div className="shrink-0">
+                      {getStatusBadge(order.status)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Recent Reviews */}

@@ -90,9 +90,9 @@ export default function AdsTab({ user, ads, fetchAds, token, packageSubscription
       )}
 
       {ads && ads.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {ads.map(ad => (
-            <div key={ad.id} onClick={() => setViewingAd(ad)} className="bg-[#071922] shadow-xl border border-[#174256] rounded-2xl p-5 hover:shadow-2xl hover:border-[#FFBF00] transition-all group cursor-pointer">
+            <div key={ad.id} onClick={() => setViewingAd(ad)} className="bg-[#071922] shadow-xl border border-[#174256] rounded-2xl p-4 sm:p-5 hover:shadow-2xl hover:border-[#FFBF00] transition-all group cursor-pointer">
               <div className="flex justify-between items-start mb-4">
                 <h4 className="font-bold text-white group-hover:text-[#FFBF00] transition-colors line-clamp-2">{ad.title}</h4>
                 <span className={`px-2 py-1 text-[10px] font-black rounded-md uppercase tracking-wider shrink-0 ml-2 border ${

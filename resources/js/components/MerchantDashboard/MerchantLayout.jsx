@@ -93,11 +93,17 @@ export default function MerchantLayout({ children, user, onLogout, activeTab, se
       <main className="flex-1 flex flex-col h-screen overflow-hidden w-full bg-[#0B2330]">
         {/* Header */}
         <header className="h-16 bg-[#071922] border-b border-[#174256] flex items-center justify-between px-4 sm:px-6 shrink-0">
-          <div className="flex items-center gap-4">
-            <button className="md:hidden text-slate-400 hover:text-white transition-colors" onClick={() => setSidebarOpen(true)}>
+          <div className="flex items-center gap-3">
+            <button className="md:hidden text-slate-400 hover:text-white transition-colors p-1" onClick={() => setSidebarOpen(true)}>
               <Menu size={24} />
             </button>
-            <h1 className="text-lg sm:text-xl font-black text-white hidden sm:block">Selamat datang, {merchantName} 👋</h1>
+            <div className="flex items-center gap-2 md:hidden truncate max-w-[150px]">
+              <div className="w-6 h-6 bg-[#FFBF00] rounded-md flex items-center justify-center shrink-0">
+                <span className="text-[#0F3040] font-black text-xs">{storeName.charAt(0).toUpperCase()}</span>
+              </div>
+              <span className="font-bold text-sm text-white truncate">{storeName}</span>
+            </div>
+            <h1 className="text-lg sm:text-xl font-black text-white hidden md:block">Selamat datang, {merchantName} 👋</h1>
           </div>
           
           <div className="flex items-center gap-3 sm:gap-4">

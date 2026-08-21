@@ -98,23 +98,23 @@ export default function CreateProductModal({ token, isOpen, onClose, fetchProduc
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-slate-200">
-        <div className="sticky top-0 z-10 bg-white border-b border-slate-100 p-6 flex items-center justify-between">
+        <div className="sticky top-0 z-10 bg-white border-b border-slate-100 p-4 sm:p-6 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
               <Package className="text-indigo-600" />
               Tambah Produk Digital
             </h2>
-            <p className="text-sm text-slate-500 mt-1">Lengkapi informasi produk digital, lisensi, atau kursus Anda.</p>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">Lengkapi informasi produk digital, lisensi, atau kursus Anda.</p>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 text-slate-400 hover:text-slate-700 rounded-full transition-colors"
+            className="p-2 hover:bg-slate-100 text-slate-400 hover:text-slate-700 rounded-full transition-colors cursor-pointer"
           >
             <X size={24} />
           </button>
         </div>
 
-        <div className="p-6 sm:p-8 space-y-6">
+        <div className="p-4 sm:p-8 space-y-4 sm:space-y-6">
           {msg && (
             <div className={`p-4 rounded-xl text-sm border font-medium ${
                 msg.type === 'success' 

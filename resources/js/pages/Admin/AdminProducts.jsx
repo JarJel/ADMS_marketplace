@@ -25,6 +25,7 @@ export const AdminProducts = ({ token }) => {
   const [page, setPage]               = useState(1);
   const [meta, setMeta]               = useState(null);
   const [actionLoading, setActionLoading] = useState(null);
+  const [viewingProduct, setViewingProduct] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -65,6 +66,7 @@ export const AdminProducts = ({ token }) => {
       const data = await res.json();
       if (data.success) {
         setProducts(prev => prev.map(p => p.id === id ? { ...p, status: newStatus } : p));
+        setViewingProduct(prev => prev && prev.id === id ? { ...prev, status: newStatus } : prev);
       } else {
         alert(data.message || 'Gagal mengubah status.');
       }
@@ -175,26 +177,14 @@ export const AdminProducts = ({ token }) => {
 
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-2">
-                      {p.status === 'pending' && (
-                        <>
-                          <button onClick={() => changeStatus(p.id, 'active')} title="Setujui" disabled={!!actionLoading} className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer">
-                            <CheckCircle className="w-4 h-4" />
-                          </button>
-                          <button onClick={() => changeStatus(p.id, 'banned')} title="Tolak" disabled={!!actionLoading} className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer">
-                            <XCircle className="w-4 h-4" />
-                          </button>
-                        </>
-                      )}
-                      {p.status === 'active' && (
-                        <button onClick={() => changeStatus(p.id, 'banned')} title="Takedown" disabled={!!actionLoading} className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer">
-                          <Ban className="w-4 h-4" />
-                        </button>
-                      )}
-                      {(p.status === 'banned' || p.status === 'inactive') && (
-                        <button onClick={() => changeStatus(p.id, 'active')} title="Aktifkan" disabled={!!actionLoading} className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50 cursor-pointer">
-                          <CheckCircle className="w-4 h-4" />
-                        </button>
-                      )}
+                      <button 
+                        onClick={() => setViewingProduct(p)} 
+                        title="Tinjau Produk" 
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-gold-400 text-xs font-bold rounded-lg border border-amber-500/20 transition-colors cursor-pointer"
+                      >
+                        <Eye className="w-4 h-4" />
+                        <span>Tinjau</span>
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -245,26 +235,14 @@ export const AdminProducts = ({ token }) => {
 
                   <div className="flex items-center gap-2">
                     <StatusBadge status={p.status} />
-                    {p.status === 'pending' && (
-                      <div className="flex items-center gap-1">
-                        <button onClick={() => changeStatus(p.id, 'active')} title="Setujui" disabled={!!actionLoading} className="p-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-lg border border-emerald-500/20 cursor-pointer">
-                          <CheckCircle className="w-4 h-4" />
-                        </button>
-                        <button onClick={() => changeStatus(p.id, 'banned')} title="Tolak" disabled={!!actionLoading} className="p-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-lg border border-rose-500/20 cursor-pointer">
-                          <XCircle className="w-4 h-4" />
-                        </button>
-                      </div>
-                    )}
-                    {p.status === 'active' && (
-                      <button onClick={() => changeStatus(p.id, 'banned')} title="Takedown" disabled={!!actionLoading} className="p-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-lg border border-rose-500/20 cursor-pointer">
-                        <Ban className="w-4 h-4" />
-                      </button>
-                    )}
-                    {(p.status === 'banned' || p.status === 'inactive') && (
-                      <button onClick={() => changeStatus(p.id, 'active')} title="Aktifkan" disabled={!!actionLoading} className="p-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-lg border border-emerald-500/20 cursor-pointer">
-                        <CheckCircle className="w-4 h-4" />
-                      </button>
-                    )}
+                    <button 
+                      onClick={() => setViewingProduct(p)} 
+                      title="Tinjau Produk" 
+                      className="flex items-center gap-1 px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-gold-400 text-[11px] font-bold rounded-lg border border-amber-500/20 transition-colors cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Tinjau</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -284,6 +262,135 @@ export const AdminProducts = ({ token }) => {
           </div>
         )}
       </div>
+
+      {/* Detail & Review Modal */}
+      {viewingProduct && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl rounded-2xl w-full max-w-2xl overflow-hidden transform transition-all animate-in zoom-in-95 duration-200">
+            
+            {/* Modal Header */}
+            <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <div>
+                <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">Tinjau Detail Produk</h3>
+                <p className="text-[10px] text-slate-400 mt-0.5">Lakukan pemeriksaan konten produk secara menyeluruh sebelum mengambil tindakan.</p>
+              </div>
+              <button 
+                onClick={() => setViewingProduct(null)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 font-bold text-lg"
+              >
+                &times;
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+              
+              {/* Product Info Card */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="w-full sm:w-32 h-32 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 flex items-center justify-center">
+                  <img 
+                    src={viewingProduct.thumbnail || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=300&auto=format&fit=crop'} 
+                    alt="" 
+                    className="w-full h-full object-cover" 
+                  />
+                </div>
+                <div className="space-y-2 text-left">
+                  <h4 className="font-black text-slate-900 dark:text-white text-base leading-tight">{viewingProduct.title}</h4>
+                  <div className="flex flex-wrap items-center gap-2 text-xs">
+                    <span className="font-bold text-amber-600 dark:text-gold-400">{viewingProduct.merchant?.name ?? '-'}</span>
+                    <span className="text-slate-300 dark:text-slate-700">•</span>
+                    {viewingProduct.category && (
+                      <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded font-medium">
+                        {viewingProduct.category.name}
+                      </span>
+                    )}
+                    <span className="text-slate-300 dark:text-slate-700">•</span>
+                    <StatusBadge status={viewingProduct.status} />
+                  </div>
+                  <div className="pt-1">
+                    <span className="font-black text-lg text-slate-900 dark:text-gold-400">{fmt(viewingProduct.price)}</span>
+                    <span className="text-xs text-slate-400 ml-2">(Stok: {viewingProduct.stock})</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Warnings / Flags */}
+              <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-500/20 rounded-xl p-3.5 flex items-start gap-3 text-left">
+                <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
+                <div className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                  <p className="font-extrabold mb-0.5">Panduan Moderasi Konten ADMS</p>
+                  <p>Pastikan produk tidak mengandung konten ilegal seperti perjudian online, pornografi, penipuan, riba non-syariah, atau hak cipta bajakan. Jika melanggar, silakan gunakan tombol **Takedown**.</p>
+                </div>
+              </div>
+
+              {/* Descriptions */}
+              <div className="space-y-4 pt-2 text-left">
+                <div>
+                  <h5 className="font-black text-xs text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Deskripsi Singkat</h5>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-lg leading-relaxed">
+                    {viewingProduct.short_description || 'Tidak ada deskripsi singkat.'}
+                  </p>
+                </div>
+                <div>
+                  <h5 className="font-black text-xs text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Deskripsi Lengkap</h5>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-lg leading-relaxed whitespace-pre-line">
+                    {viewingProduct.full_description || 'Tidak ada deskripsi lengkap.'}
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/40 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-end items-center gap-2.5">
+              
+              {/* Ban / Takedown Action */}
+              {viewingProduct.status !== 'banned' ? (
+                <button 
+                  onClick={() => {
+                    if (confirm('Apakah Anda yakin ingin melakukan takedown pada produk/iklan ini karena melanggar ketentuan (seperti judi online)?')) {
+                      changeStatus(viewingProduct.id, 'banned');
+                    }
+                  }}
+                  disabled={!!actionLoading}
+                  className="w-full sm:w-auto px-4 py-2 text-xs font-black bg-rose-600 hover:bg-rose-500 text-white rounded-lg shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                >
+                  Takedown (Melanggar / Judi Online)
+                </button>
+              ) : (
+                <button 
+                  onClick={() => changeStatus(viewingProduct.id, 'active')}
+                  disabled={!!actionLoading}
+                  className="w-full sm:w-auto px-4 py-2 text-xs font-black bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                >
+                  Pulihkan / Aktifkan Kembali
+                </button>
+              )}
+
+              {/* Approve / Activate Action if pending */}
+              {viewingProduct.status === 'pending' && (
+                <button 
+                  onClick={() => {
+                    changeStatus(viewingProduct.id, 'active');
+                  }}
+                  disabled={!!actionLoading}
+                  className="w-full sm:w-auto px-4 py-2 text-xs font-black bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                >
+                  Setujui & Aktifkan
+                </button>
+              )}
+
+              <button 
+                onClick={() => setViewingProduct(null)}
+                className="w-full sm:w-auto px-4 py-2 text-xs font-black bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition-all cursor-pointer"
+              >
+                Tutup
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );

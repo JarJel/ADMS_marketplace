@@ -15,7 +15,8 @@ import {
     Settings, 
     Activity,
     LogOut,
-    ShieldCheck
+    ShieldCheck,
+    X
 } from 'lucide-react';
 
 // --- DATA MENU ---
@@ -172,9 +173,10 @@ const SidebarUserProfile = ({ user, onLogout }) => {
 };
 
 // --- 5. AdminSidebar (Parent Component) ---
-export default function AdminSidebar({ activeItem = 'dashboard', onNavigate, user, onLogout, pendingCounts = {} }) {
+export default function AdminSidebar({ activeItem = 'dashboard', onNavigate, user, onLogout, pendingCounts = {}, isMobileOpen = false, onCloseMobile }) {
     const handleNavigate = (id) => {
         if (onNavigate) onNavigate(id);
+        if (onCloseMobile) onCloseMobile();
     };
 
     const dynamicGroups = menuGroups.map(group => ({
@@ -193,31 +195,51 @@ export default function AdminSidebar({ activeItem = 'dashboard', onNavigate, use
     }));
 
     return (
-        <aside className="w-72 h-screen bg-[#0F3040] border-r border-[#174256]/80 flex flex-col shrink-0 text-white shadow-2xl">
-            {/* Header / Logo */}
-            <SidebarLogo />
+        <>
+            {/* Desktop Sidebar (visible on lg screens) */}
+            <aside className="hidden lg:flex w-72 h-screen bg-[#0F3040] border-r border-[#174256]/80 flex-col shrink-0 text-white shadow-2xl">
+                <SidebarLogo />
+                <div className="flex-1 overflow-y-auto py-6 hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    {dynamicGroups.map((group, index) => (
+                        <SidebarMenuGroup
+                            key={index}
+                            group={group}
+                            activeItem={activeItem}
+                            onNavigate={handleNavigate}
+                        />
+                    ))}
+                </div>
+                <SidebarUserProfile user={user} onLogout={onLogout} />
+            </aside>
 
-            {/* Menu List dengan Custom Scrollbar Hiding tapi tetap bisa di-scroll */}
-            <div className="flex-1 overflow-y-auto py-6 hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                {dynamicGroups.map((group, index) => (
-                    <SidebarMenuGroup
-                        key={index}
-                        group={group}
-                        activeItem={activeItem}
-                        onNavigate={handleNavigate}
-                    />
-                ))}
-            </div>
-
-            {/* User Profile Footer */}
-            <SidebarUserProfile user={user} onLogout={onLogout} />
-
-            {/* Global style untuk menyembunyikan scrollbar di webkit browser (opsional) */}
-            <style>{`
-                .hide-scrollbar::-webkit-scrollbar {
-                    display: none;
-                }
-            `}</style>
-        </aside>
+            {/* Mobile Sidebar Overlay & Drawer */}
+            {isMobileOpen && (
+                <div className="fixed inset-0 z-50 lg:hidden flex">
+                    <div className="fixed inset-0 bg-black/70 backdrop-blur-xs transition-opacity" onClick={onCloseMobile} />
+                    <aside className="relative w-80 max-w-[85vw] h-full bg-[#0F3040] border-r border-[#174256] flex flex-col text-white shadow-2xl z-10">
+                        <div className="flex items-center justify-between pr-4">
+                            <SidebarLogo />
+                            <button 
+                                onClick={onCloseMobile} 
+                                className="p-2 rounded-xl text-slate-300 hover:text-white bg-[#071922] hover:bg-[#174256] border border-[#174256] transition-colors cursor-pointer"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <div className="flex-1 overflow-y-auto py-4 hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                            {dynamicGroups.map((group, index) => (
+                                <SidebarMenuGroup
+                                    key={index}
+                                    group={group}
+                                    activeItem={activeItem}
+                                    onNavigate={handleNavigate}
+                                />
+                            ))}
+                        </div>
+                        <SidebarUserProfile user={user} onLogout={onLogout} />
+                    </aside>
+                </div>
+            )}
+        </>
     );
 }

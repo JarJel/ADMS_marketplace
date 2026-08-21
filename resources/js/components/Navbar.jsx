@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Search, Heart, Bell, ChevronDown, Sun, Moon, Menu, X, User, ShoppingCart, Store } from 'lucide-react';
+import { 
+    Search, Heart, Bell, ChevronDown, Sun, Moon, Menu, X, User, ShoppingCart, Store,
+    LayoutDashboard, ShoppingBag, Download, Megaphone, ShieldCheck, LogOut
+} from 'lucide-react';
 
 export default function Navbar({ 
     user, 
@@ -58,29 +61,29 @@ export default function Navbar({
 
     return (
         <header className="sticky top-0 z-50 bg-white/95 dark:bg-[#0F3040] border-b border-slate-200 dark:border-[#174256] text-slate-800 dark:text-white shadow-md font-sans backdrop-blur-md transition-colors duration-300">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+            <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
                 
                 {/* Sisi Kiri: Logo dan Burger */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
                     <button 
                         onClick={() => setShowSidebar(true)}
-                        className="p-2 rounded-xl bg-slate-100 dark:bg-[#071922] text-amber-600 dark:text-[#FFBF00] border border-slate-200 dark:border-[#174256] hover:border-amber-400 dark:hover:border-[#FFBF00] transition-colors cursor-pointer"
+                        className="md:hidden p-1.5 sm:p-2 rounded-xl bg-slate-100 dark:bg-[#071922] text-amber-600 dark:text-[#FFBF00] border border-slate-200 dark:border-[#174256] hover:border-amber-400 dark:hover:border-[#FFBF00] transition-colors cursor-pointer shrink-0"
                     >
                         <Menu className="w-5 h-5" />
                     </button>
                     <div 
                         onClick={() => onNavigate('homepage')} 
-                        className="flex items-center gap-2 cursor-pointer active:scale-98 transition-transform"
+                        className="flex items-center gap-1.5 sm:gap-2 cursor-pointer active:scale-98 transition-transform shrink-0"
                     >
                         <img 
                             src="/assets/Images/adms-symbol.png" 
                             alt="ADMS Symbol" 
-                            className="h-8 sm:h-9 w-auto object-contain transition-all duration-300 drop-shadow-md" 
+                            className="h-7 sm:h-9 w-auto object-contain transition-all duration-300 drop-shadow-md shrink-0" 
                         />
                         <img 
                             src="/assets/Images/adms-text.png" 
                             alt="ADMS Text" 
-                            className="h-5 sm:h-6 w-auto object-contain dark:invert dark:mix-blend-screen" 
+                            className="h-4.5 sm:h-6 w-auto object-contain dark:invert dark:mix-blend-screen shrink-0" 
                         />
                     </div>
                 </div>
@@ -140,30 +143,13 @@ export default function Navbar({
                 </nav>
 
                 {/* Sisi Kanan: Conditional render based on Auth status */}
-                <div className="flex items-center gap-3">
-                    {/* Daftar Mitra button for Customer */}
-                    {token && user && user.role === 'user' && (
-                        <button 
-                            onClick={() => onNavigate('merchant_registration')}
-                            className="hidden md:flex items-center gap-1.5 bg-[#FFBF00] hover:bg-[#ffcd33] text-[#0F3040] text-[10px] font-black px-3.5 py-2 rounded-full shadow-md active:scale-95 transition-all cursor-pointer mr-1"
-                        >
-                            <Store className="w-3.5 h-3.5 text-[#0F3040]" />
-                            <span>Daftar Mitra</span>
-                        </button>
-                    )}
+                <div className="flex items-center gap-1 sm:gap-2 shrink-0">
 
-                    {/* Light/Dark Toggle */}
-                    <button 
-                        onClick={() => setDarkMode(!darkMode)}
-                        className="p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-amber-500 dark:text-[#FFBF00] border border-slate-200 dark:border-[#174256] hover:border-amber-400 dark:hover:border-[#FFBF00] transition-colors mr-1 cursor-pointer"
-                    >
-                        {darkMode ? <Sun className="w-4 h-4 text-[#FFBF00]" /> : <Moon className="w-4 h-4 text-slate-700" />}
-                    </button>
 
                     {token ? (
                         <>
                             {/* Search Icon */}
-                            <button className="p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-colors">
+                            <button className="p-1.5 sm:p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-colors">
                                 <Search className="w-4 h-4" />
                             </button>
 
@@ -171,7 +157,7 @@ export default function Navbar({
                             <div className="relative">
                                 <button 
                                     onClick={() => onNavigate('cart')} 
-                                    className="p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-all active:scale-95 cursor-pointer relative"
+                                    className="p-1.5 sm:p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-all active:scale-95 cursor-pointer relative"
                                     title="Keranjang Belanja"
                                 >
                                     <ShoppingCart className="w-4 h-4" />
@@ -187,7 +173,7 @@ export default function Navbar({
                             <div className="relative">
                                 <button 
                                     onClick={() => onNavigate('wishlist')} 
-                                    className="p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-all active:scale-95 cursor-pointer relative"
+                                    className="p-1.5 sm:p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-all active:scale-95 cursor-pointer relative"
                                     title="Favorit Saya"
                                 >
                                     <Heart className="w-4 h-4" />
@@ -203,7 +189,7 @@ export default function Navbar({
                             <div className="relative">
                                 <button 
                                     onClick={() => setShowNotifMenu(!showNotifMenu)}
-                                    className="p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-colors"
+                                    className="p-1.5 sm:p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-colors"
                                 >
                                     <Bell className="w-4 h-4" />
                                 </button>
@@ -248,7 +234,7 @@ export default function Navbar({
                             </div>
 
                             {/* User Profile Avatar Dropdown */}
-                            <div className="relative">
+                            <div className="relative hidden sm:block">
                                 <div 
                                     onClick={() => setShowProfileMenu(!showProfileMenu)}
                                     className="flex items-center gap-1.5 cursor-pointer pl-1 py-0.5 pr-2 rounded-full hover:bg-slate-100 transition-colors"
@@ -260,28 +246,117 @@ export default function Navbar({
                                 </div>
 
                                 {showProfileMenu && (
-                                    <div className="absolute right-0 mt-2 w-48 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xl py-1 z-50 text-slate-700 dark:text-slate-200 animate-in fade-in slide-in-from-top-2 duration-150">
-                                        <span className="block px-4 py-2 text-xs font-semibold text-slate-400 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700 mb-1">
-                                            {user?.name || 'User'}
-                                        </span>
-                                        <button 
-                                            onClick={() => {
-                                                setShowProfileMenu(false);
-                                                onNavigate('dashboard');
-                                            }}
-                                            className="w-full text-left px-4 py-2 text-xs hover:bg-slate-50 dark:hover:bg-slate-700 font-medium"
-                                        >
-                                            Buka Dashboard
-                                        </button>
-                                        <button 
-                                            onClick={() => {
-                                                setShowProfileMenu(false);
-                                                onLogout();
-                                            }}
-                                            className="w-full text-left px-4 py-2 text-xs hover:bg-slate-50 dark:hover:bg-slate-700 font-medium text-rose-600 dark:text-rose-400 border-t border-slate-100 dark:border-slate-700 mt-1"
-                                        >
-                                            Keluar
-                                        </button>
+                                    <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-[#0F3040] border border-slate-200 dark:border-[#174256] shadow-2xl py-2 z-50 text-slate-700 dark:text-slate-200 animate-in fade-in slide-in-from-top-2 duration-150">
+                                        <div className="px-4 py-2 border-b border-slate-100 dark:border-[#174256] mb-1">
+                                            <span className="block text-xs font-black text-slate-900 dark:text-white truncate">
+                                                {user?.name || 'Pelanggan'}
+                                            </span>
+                                            <span className="block text-[10px] text-slate-400 dark:text-slate-400 truncate">
+                                                {user?.email || 'Akun Customer'}
+                                            </span>
+                                        </div>
+
+                                        <div className="space-y-0.5 px-1.5">
+                                            <button 
+                                                onClick={() => {
+                                                    setShowProfileMenu(false);
+                                                    onNavigate('customer_dashboard', 'overview');
+                                                }}
+                                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl hover:bg-slate-100 dark:hover:bg-[#174256] text-slate-700 dark:text-slate-200 transition-colors"
+                                            >
+                                                <LayoutDashboard className="w-4 h-4 text-[#FFBF00]" />
+                                                <span>Ringkasan</span>
+                                            </button>
+
+                                            <button 
+                                                onClick={() => {
+                                                    setShowProfileMenu(false);
+                                                    onNavigate('customer_dashboard', 'purchases');
+                                                }}
+                                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl hover:bg-slate-100 dark:hover:bg-[#174256] text-slate-700 dark:text-slate-200 transition-colors"
+                                            >
+                                                <ShoppingBag className="w-4 h-4 text-teal-500" />
+                                                <span>Transaksi Saya</span>
+                                            </button>
+
+                                            <button 
+                                                onClick={() => {
+                                                    setShowProfileMenu(false);
+                                                    onNavigate('customer_dashboard', 'downloads');
+                                                }}
+                                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl hover:bg-slate-100 dark:hover:bg-[#174256] text-slate-700 dark:text-slate-200 transition-colors"
+                                            >
+                                                <Download className="w-4 h-4 text-emerald-500" />
+                                                <span>Unduhan File</span>
+                                            </button>
+
+                                            <button 
+                                                onClick={() => {
+                                                    setShowProfileMenu(false);
+                                                    onNavigate('customer_dashboard', 'ads');
+                                                }}
+                                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl hover:bg-slate-100 dark:hover:bg-[#174256] text-slate-700 dark:text-slate-200 transition-colors"
+                                            >
+                                                <Megaphone className="w-4 h-4 text-amber-500" />
+                                                <span>Iklan Saya</span>
+                                            </button>
+
+                                            <button 
+                                                onClick={() => {
+                                                    setShowProfileMenu(false);
+                                                    onNavigate('customer_dashboard', 'subscriptions');
+                                                }}
+                                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl hover:bg-slate-100 dark:hover:bg-[#174256] text-slate-700 dark:text-slate-200 transition-colors"
+                                            >
+                                                <ShieldCheck className="w-4 h-4 text-indigo-500" />
+                                                <span>Paket & Langganan</span>
+                                            </button>
+
+                                            <button 
+                                                onClick={() => {
+                                                    setShowProfileMenu(false);
+                                                    onNavigate('customer_dashboard', 'wishlist');
+                                                }}
+                                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl hover:bg-slate-100 dark:hover:bg-[#174256] text-slate-700 dark:text-slate-200 transition-colors"
+                                            >
+                                                <Heart className="w-4 h-4 text-rose-500" />
+                                                <span>Favorit / Wishlist</span>
+                                            </button>
+
+                                            {user?.role === 'user' && (
+                                                <button 
+                                                    onClick={() => {
+                                                        setShowProfileMenu(false);
+                                                        onNavigate('merchant_registration');
+                                                    }}
+                                                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-black rounded-xl bg-[#FFBF00]/15 hover:bg-[#FFBF00]/25 text-amber-700 dark:text-[#FFBF00] border border-[#FFBF00]/30 transition-colors my-1 cursor-pointer"
+                                                >
+                                                    <Store className="w-4 h-4 text-[#FFBF00]" />
+                                                    <span>Daftar Mitra Vendor</span>
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        <div className="pt-1 mt-1 border-t border-slate-100 dark:border-[#174256] px-1.5 space-y-0.5">
+                                            <button 
+                                                onClick={() => setDarkMode(!darkMode)}
+                                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl hover:bg-slate-100 dark:hover:bg-[#174256] text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
+                                            >
+                                                {darkMode ? <Sun className="w-4 h-4 text-[#FFBF00]" /> : <Moon className="w-4 h-4 text-slate-500" />}
+                                                <span>{darkMode ? 'Mode Terang' : 'Mode Gelap'}</span>
+                                            </button>
+
+                                            <button 
+                                                onClick={() => {
+                                                    setShowProfileMenu(false);
+                                                    onLogout();
+                                                }}
+                                                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                                            >
+                                                <LogOut className="w-4 h-4 text-rose-500" />
+                                                <span>Keluar</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -317,11 +392,22 @@ export default function Navbar({
             {/* Sidebar Content */}
             <div className={`fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 z-[70] transform transition-transform duration-300 ease-in-out border-r border-slate-200 dark:border-slate-800 shadow-2xl ${showSidebar ? 'translate-x-0' : '-translate-x-full'}`}>
                 <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
+                    <div 
+                        onClick={() => {
+                            setShowSidebar(false);
+                            onNavigate('homepage');
+                        }}
+                        className="flex items-center gap-2 cursor-pointer"
+                    >
                         <img 
                             src="/assets/Images/adms-symbol.png" 
                             alt="ADMS Symbol" 
-                            className="h-8 w-auto object-contain" 
+                            className="h-8 w-auto object-contain drop-shadow-md" 
+                        />
+                        <img 
+                            src="/assets/Images/adms-text.png" 
+                            alt="ADMS Text" 
+                            className="h-5 w-auto object-contain dark:invert dark:mix-blend-screen" 
                         />
                     </div>
                     <button 
@@ -331,22 +417,161 @@ export default function Navbar({
                         <X className="w-5 h-5" />
                     </button>
                 </div>
-                <div className="p-4 space-y-1 overflow-y-auto max-h-[calc(100vh-70px)] bg-slate-50 dark:bg-slate-950 min-h-full">
+                <div className="p-4 space-y-1.5 overflow-y-auto max-h-[calc(100vh-70px)] bg-slate-50 dark:bg-[#071922] min-h-full text-left">
                     {sidebarContent ? (
                         sidebarContent(() => setShowSidebar(false))
                     ) : (
                         <>
-                            <button onClick={() => { setShowSidebar(false); onNavigate('homepage'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Home</button>
-                            <button onClick={() => { setShowSidebar(false); onNavigate('products', 'digital'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Produk Digital</button>
-                            <button onClick={() => { setShowSidebar(false); onNavigate('merchants'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Merchant Vendor</button>
-                            <button onClick={() => { setShowSidebar(false); onNavigate('classifieds'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Iklan Gratis</button>
-                            <button onClick={() => { setShowSidebar(false); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors">Bantuan</button>
-                            
-                            {token && (
+                            {/* User Profile Card if logged in */}
+                            {token && user && (
+                                <div className="bg-white dark:bg-[#0F3040] rounded-2xl p-3.5 border border-slate-200 dark:border-[#174256] shadow-sm mb-3">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-[#174256] flex items-center justify-center text-slate-500 dark:text-slate-300 font-bold shrink-0">
+                                            <User className="w-4.5 h-4.5 text-[#FFBF00]" />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <h4 className="font-extrabold text-xs text-slate-900 dark:text-white truncate">
+                                                {user.name || 'User'}
+                                            </h4>
+                                            <p className="text-[10px] text-slate-400 dark:text-slate-400 truncate">
+                                                {user.email || 'Customer'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Navigation Section Header */}
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3 pt-1">
+                                Navigasi Utama
+                            </p>
+
+                            <button onClick={() => { setShowSidebar(false); onNavigate('homepage'); }} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer">
+                                <span>Home</span>
+                            </button>
+                            <button onClick={() => { setShowSidebar(false); onNavigate('products', 'digital'); }} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer">
+                                <span>Produk Digital</span>
+                            </button>
+                            <button onClick={() => { setShowSidebar(false); onNavigate('merchants'); }} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer">
+                                <span>Merchant Vendor</span>
+                            </button>
+                            <button onClick={() => { setShowSidebar(false); onNavigate('classifieds'); }} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer">
+                                <span>Iklan Gratis</span>
+                            </button>
+                            <button onClick={() => { setShowSidebar(false); onNavigate('help_center'); }} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer">
+                                <span>Bantuan</span>
+                            </button>
+
+                            {/* Customer Dashboard Quick Links if logged in */}
+                            {token && user && user.role === 'user' && (
                                 <>
-                                    <div className="my-4 border-t border-slate-100 dark:border-slate-800"></div>
-                                    <button onClick={() => { setShowSidebar(false); onNavigate('dashboard'); }} className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors">Dashboard Saya</button>
+                                    <div className="my-2 border-t border-slate-200 dark:border-[#174256]"></div>
+                                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3 pt-1">
+                                        Dashboard Saya
+                                    </p>
+
+                                    <button 
+                                        onClick={() => {
+                                            setShowSidebar(false);
+                                            onNavigate('customer_dashboard', 'overview');
+                                        }}
+                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer"
+                                    >
+                                        <LayoutDashboard className="w-4 h-4 text-[#FFBF00]" />
+                                        <span>Ringkasan</span>
+                                    </button>
+
+                                    <button 
+                                        onClick={() => {
+                                            setShowSidebar(false);
+                                            onNavigate('customer_dashboard', 'purchases');
+                                        }}
+                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer"
+                                    >
+                                        <ShoppingBag className="w-4 h-4 text-teal-500" />
+                                        <span>Transaksi Saya</span>
+                                    </button>
+
+                                    <button 
+                                        onClick={() => {
+                                            setShowSidebar(false);
+                                            onNavigate('customer_dashboard', 'downloads');
+                                        }}
+                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer"
+                                    >
+                                        <Download className="w-4 h-4 text-emerald-500" />
+                                        <span>Unduhan File</span>
+                                    </button>
+
+                                    <button 
+                                        onClick={() => {
+                                            setShowSidebar(false);
+                                            onNavigate('customer_dashboard', 'ads');
+                                        }}
+                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer"
+                                    >
+                                        <Megaphone className="w-4 h-4 text-amber-500" />
+                                        <span>Iklan Saya</span>
+                                    </button>
+
+                                    <button 
+                                        onClick={() => {
+                                            setShowSidebar(false);
+                                            onNavigate('customer_dashboard', 'subscriptions');
+                                        }}
+                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer"
+                                    >
+                                        <ShieldCheck className="w-4 h-4 text-indigo-500" />
+                                        <span>Paket & Langganan</span>
+                                    </button>
+
+                                    <button 
+                                        onClick={() => {
+                                            setShowSidebar(false);
+                                            onNavigate('customer_dashboard', 'wishlist');
+                                        }}
+                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer"
+                                    >
+                                        <Heart className="w-4 h-4 text-rose-500" />
+                                        <span>Favorit / Wishlist</span>
+                                    </button>
+
+                                    <button 
+                                        onClick={() => {
+                                            setShowSidebar(false);
+                                            onNavigate('merchant_registration');
+                                        }}
+                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-black bg-[#FFBF00]/15 hover:bg-[#FFBF00]/25 text-amber-700 dark:text-[#FFBF00] border border-[#FFBF00]/30 transition-colors my-1 cursor-pointer"
+                                    >
+                                        <Store className="w-4 h-4 text-[#FFBF00]" />
+                                        <span>Daftar Mitra Vendor</span>
+                                    </button>
                                 </>
+                            )}
+
+                            <div className="my-2 border-t border-slate-200 dark:border-[#174256]"></div>
+
+                            {/* Theme Toggle */}
+                            <button 
+                                onClick={() => setDarkMode(!darkMode)}
+                                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer"
+                            >
+                                {darkMode ? <Sun className="w-4 h-4 text-[#FFBF00]" /> : <Moon className="w-4 h-4 text-slate-500" />}
+                                <span>{darkMode ? 'Mode Terang' : 'Mode Gelap'}</span>
+                            </button>
+
+                            {/* Logout Button if logged in */}
+                            {token && (
+                                <button 
+                                    onClick={() => {
+                                        setShowSidebar(false);
+                                        onLogout();
+                                    }}
+                                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer mt-1"
+                                >
+                                    <LogOut className="w-4 h-4 text-rose-500" />
+                                    <span>Keluar</span>
+                                </button>
                             )}
                         </>
                     )}

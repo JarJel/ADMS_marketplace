@@ -50,10 +50,10 @@ export const AdminPackageSubscriptions = ({ token }) => {
     };
 
     return (
-        <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-            <h2 className="text-2xl font-black text-white flex items-center gap-3 mb-6">
-                <span className="p-2 bg-emerald-500/20 rounded-xl text-emerald-400">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-4 sm:p-8 shadow-2xl relative overflow-hidden">
+            <h2 className="text-lg sm:text-2xl font-black text-white flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-6">
+                <span className="p-1.5 sm:p-2 bg-emerald-500/20 rounded-xl text-emerald-400">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </span>
@@ -65,77 +65,134 @@ export const AdminPackageSubscriptions = ({ token }) => {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
                 </div>
             ) : subscriptions.length === 0 ? (
-                <div className="text-center py-16 text-slate-500">Belum ada data langganan paket.</div>
+                <div className="text-center py-16 text-slate-500 text-xs sm:text-sm">Belum ada data langganan paket.</div>
             ) : (
-                <div className="overflow-x-auto bg-slate-950/40 rounded-xl border border-slate-800/50">
-                    <table className="w-full text-left text-sm border-collapse">
-                        <thead>
-                            <tr className="border-b border-slate-800/60 text-slate-400 bg-slate-900/50">
-                                <th className="py-3 px-5 font-semibold">User</th>
-                                <th className="py-3 px-5 font-semibold">Paket</th>
-                                <th className="py-3 px-5 font-semibold text-right">Total</th>
-                                <th className="py-3 px-5 font-semibold">Status</th>
-                                <th className="py-3 px-5 font-semibold">Pembayaran</th>
-                                <th className="py-3 px-5 font-semibold">Waktu Pesan</th>
-                                <th className="py-3 px-5 font-semibold text-right">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {subscriptions.map(sub => (
-                                <tr key={sub.id} className="border-b border-slate-800/30 hover:bg-slate-800/30 transition-colors">
-                                    <td className="py-3 px-5 font-semibold text-slate-200">
-                                        {sub.user?.name || 'User Terhapus'}
-                                        <div className="text-xs text-slate-400 font-normal">{sub.user?.email}</div>
-                                    </td>
-                                    <td className="py-3 px-5 text-slate-300">
-                                        <div className="font-semibold text-emerald-400">{sub.package?.name}</div>
-                                        <div className="text-xs text-slate-400 font-mono">{sub.package?.duration_days} Hari</div>
-                                    </td>
-                                    <td className="py-3 px-5 text-right font-bold text-amber-400">
-                                        {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(sub.total_amount)}
-                                    </td>
-                                    <td className="py-3 px-5">
-                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                                            sub.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 
-                                            sub.status === 'pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 
-                                            sub.status === 'expired' ? 'bg-slate-500/10 text-slate-400 border border-slate-500/20' :
-                                            'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                                        }`}>
-                                            {sub.status}
-                                        </span>
-                                    </td>
-                                    <td className="py-3 px-5 text-slate-400 text-xs font-mono">
-                                        {sub.payment_method === 'bank_transfer' ? 'Transfer Bank' : sub.payment_method === 'ewallet' ? 'E-Wallet' : sub.payment_method}
-                                    </td>
-                                    <td className="py-3 px-5 text-slate-400 text-xs font-mono">
-                                        {new Date(sub.created_at).toLocaleString('id-ID')}
-                                    </td>
-                                    <td className="py-3 px-5 text-right space-x-2">
-                                        {sub.status === 'pending' && (
-                                            <>
-                                                <button 
-                                                    onClick={() => handleAction(sub.id, 'approve')}
-                                                    className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg shadow-lg shadow-emerald-500/20 transition-all"
-                                                >
-                                                    Approve
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleAction(sub.id, 'reject')}
-                                                    className="px-3 py-1.5 bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white text-xs font-bold rounded-lg transition-all"
-                                                >
-                                                    Tolak
-                                                </button>
-                                            </>
-                                        )}
-                                        {sub.status === 'active' && (
-                                            <span className="text-emerald-500 text-xs font-semibold">✓ Aktif s/d {new Date(sub.expires_at).toLocaleDateString('id-ID')}</span>
-                                        )}
-                                    </td>
+                <>
+                    {/* Desktop View (>= md) */}
+                    <div className="hidden md:block overflow-x-auto bg-slate-950/40 rounded-xl border border-slate-800/50">
+                        <table className="w-full text-left text-sm border-collapse">
+                            <thead>
+                                <tr className="border-b border-slate-800/60 text-slate-400 bg-slate-900/50">
+                                    <th className="py-3 px-5 font-semibold">User</th>
+                                    <th className="py-3 px-5 font-semibold">Paket</th>
+                                    <th className="py-3 px-5 font-semibold text-right">Total</th>
+                                    <th className="py-3 px-5 font-semibold">Status</th>
+                                    <th className="py-3 px-5 font-semibold">Pembayaran</th>
+                                    <th className="py-3 px-5 font-semibold">Waktu Pesan</th>
+                                    <th className="py-3 px-5 font-semibold text-right">Aksi</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {subscriptions.map(sub => (
+                                    <tr key={sub.id} className="border-b border-slate-800/30 hover:bg-slate-800/30 transition-colors">
+                                        <td className="py-3 px-5 font-semibold text-slate-200">
+                                            {sub.user?.name || 'User Terhapus'}
+                                            <div className="text-xs text-slate-400 font-normal">{sub.user?.email}</div>
+                                        </td>
+                                        <td className="py-3 px-5 text-slate-300">
+                                            <div className="font-semibold text-emerald-400">{sub.package?.name}</div>
+                                            <div className="text-xs text-slate-400 font-mono">{sub.package?.duration_days} Hari</div>
+                                        </td>
+                                        <td className="py-3 px-5 text-right font-bold text-amber-400">
+                                            {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(sub.total_amount)}
+                                        </td>
+                                        <td className="py-3 px-5">
+                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                                sub.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 
+                                                sub.status === 'pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 
+                                                sub.status === 'expired' ? 'bg-slate-500/10 text-slate-400 border border-slate-500/20' :
+                                                'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                            }`}>
+                                                {sub.status}
+                                            </span>
+                                        </td>
+                                        <td className="py-3 px-5 text-slate-400 text-xs font-mono">
+                                            {sub.payment_method === 'bank_transfer' ? 'Transfer Bank' : sub.payment_method === 'ewallet' ? 'E-Wallet' : sub.payment_method}
+                                        </td>
+                                        <td className="py-3 px-5 text-slate-400 text-xs font-mono">
+                                            {new Date(sub.created_at).toLocaleString('id-ID')}
+                                        </td>
+                                        <td className="py-3 px-5 text-right space-x-2">
+                                            {sub.status === 'pending' && (
+                                                <>
+                                                    <button 
+                                                        onClick={() => handleAction(sub.id, 'approve')}
+                                                        className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg shadow-lg shadow-emerald-500/20 transition-all cursor-pointer"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => handleAction(sub.id, 'reject')}
+                                                        className="px-3 py-1.5 bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white text-xs font-bold rounded-lg transition-all cursor-pointer"
+                                                    >
+                                                        Tolak
+                                                    </button>
+                                                </>
+                                            )}
+                                            {sub.status === 'active' && (
+                                                <span className="text-emerald-500 text-xs font-semibold">✓ Aktif s/d {new Date(sub.expires_at).toLocaleDateString('id-ID')}</span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Mobile Stacked View (< md) */}
+                    <div className="block md:hidden space-y-3">
+                        {subscriptions.map(sub => (
+                            <div key={sub.id} className="bg-slate-950/40 border border-slate-800/60 p-3.5 rounded-xl space-y-2.5">
+                                <div className="flex items-start justify-between gap-2 min-w-0">
+                                    <div className="min-w-0 flex-1">
+                                        <h4 className="font-extrabold text-xs text-slate-200 truncate">{sub.user?.name || 'User Terhapus'}</h4>
+                                        <p className="text-[10px] text-slate-400 truncate">{sub.user?.email}</p>
+                                    </div>
+                                    <span className="font-black text-sm text-amber-400 shrink-0">
+                                        {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(sub.total_amount)}
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center justify-between text-xs border-t border-b border-slate-800/40 py-2">
+                                    <div>
+                                        <span className="font-bold text-emerald-400 block text-xs">{sub.package?.name}</span>
+                                        <span className="text-[10px] text-slate-400">{sub.package?.duration_days} Hari</span>
+                                    </div>
+                                    <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase shrink-0 ${
+                                        sub.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 
+                                        sub.status === 'pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 
+                                        sub.status === 'expired' ? 'bg-slate-500/10 text-slate-400 border border-slate-500/20' :
+                                        'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                    }`}>
+                                        {sub.status}
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center justify-between text-[10px] text-slate-400">
+                                    <span>{sub.payment_method === 'bank_transfer' ? 'Transfer Bank' : sub.payment_method === 'ewallet' ? 'E-Wallet' : sub.payment_method}</span>
+                                    <span className="font-mono">{new Date(sub.created_at).toLocaleDateString('id-ID')}</span>
+                                </div>
+
+                                {sub.status === 'pending' && (
+                                    <div className="flex gap-2 pt-1">
+                                        <button 
+                                            onClick={() => handleAction(sub.id, 'approve')}
+                                            className="flex-1 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg shadow-lg shadow-emerald-500/20 transition-all cursor-pointer text-center"
+                                        >
+                                            Approve
+                                        </button>
+                                        <button 
+                                            onClick={() => handleAction(sub.id, 'reject')}
+                                            className="flex-1 py-1.5 bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white text-xs font-bold rounded-lg transition-all cursor-pointer text-center"
+                                        >
+                                            Tolak
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </>
             )}
         </div>
     );

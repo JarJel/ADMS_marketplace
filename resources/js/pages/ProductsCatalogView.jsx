@@ -307,23 +307,23 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             </div>
 
             {/* B. Main Catalog Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 space-y-6 relative z-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 sm:mt-10 space-y-3 sm:space-y-6 relative z-10">
                 
                 {/* Horizontal Category Filter Pills */}
-                <div className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-300 dark:border-[#174256] shadow-md dark:shadow-lg p-4 space-y-3">
+                <div className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-300 dark:border-[#174256] shadow-md dark:shadow-lg p-3.5 sm:p-4 space-y-2.5 sm:space-y-3">
                     <label className="block text-[10px] font-black uppercase tracking-wider text-[#FFBF00]">Kategori Pilihan</label>
                     {loadingCategories ? (
-                        <div className="flex gap-2 overflow-x-auto pb-1">
+                        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
                             <div className="h-8 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-full w-24 flex-shrink-0"></div>
                             <div className="h-8 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-full w-28 flex-shrink-0"></div>
                             <div className="h-8 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-full w-20 flex-shrink-0"></div>
                             <div className="h-8 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-full w-24 flex-shrink-0"></div>
                         </div>
                     ) : (
-                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                        <div className="flex gap-2 overflow-x-auto py-0.5 no-scrollbar scrollbar-none">
                             <button
                                 onClick={() => { setSelectedCategoryId(''); setCurrentPage(1); }}
-                                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black whitespace-nowrap border-2 transition-all active:scale-95 cursor-pointer ${
+                                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-black whitespace-nowrap border-2 transition-all active:scale-95 cursor-pointer shrink-0 ${
                                     selectedCategoryId === '' 
                                         ? 'bg-[#FFBF00] text-[#0F3040] border-[#FFBF00] shadow-md shadow-[#FFBF00]/20' 
                                         : 'bg-slate-50 dark:bg-[#071922] text-slate-700 dark:text-slate-300 border-slate-300 dark:border-[#174256] hover:text-[#FFBF00]'
@@ -332,13 +332,13 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                 <span>Semua Kategori</span>
                             </button>
                             
-                            {categories.map((cat, idx) => {
+                            {categories.map((cat) => {
                                 const isSelected = selectedCategoryId === cat.id.toString();
                                 return (
                                     <button
                                         key={cat.id}
                                         onClick={() => { setSelectedCategoryId(cat.id.toString()); setCurrentPage(1); }}
-                                        className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black whitespace-nowrap border-2 transition-all active:scale-95 cursor-pointer ${
+                                        className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-black whitespace-nowrap border-2 transition-all active:scale-95 cursor-pointer shrink-0 ${
                                             isSelected 
                                                 ? 'bg-[#FFBF00] text-[#0F3040] border-[#FFBF00] shadow-md shadow-[#FFBF00]/20' 
                                                 : 'bg-slate-50 dark:bg-[#071922] text-slate-700 dark:text-slate-300 border-slate-300 dark:border-[#174256] hover:text-[#FFBF00]'
@@ -353,7 +353,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                 </div>
 
                 {/* Unified Search, Price Filter, Sort, View Controls */}
-                <div className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-300 dark:border-[#174256] shadow-md dark:shadow-sm p-4 flex flex-col xl:flex-row gap-4 items-center justify-between">
+                <div className="bg-white dark:bg-[#0F3040] rounded-2xl border-2 border-slate-300 dark:border-[#174256] shadow-md p-3.5 sm:p-4 flex flex-col xl:flex-row gap-3 sm:gap-4 items-stretch xl:items-center justify-between">
                     
                     {/* Search Form */}
                     <form onSubmit={handleSearchSubmit} className="relative w-full xl:w-[32%]">
@@ -362,48 +362,50 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                             placeholder="Cari produk, template, code..." 
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full text-xs pl-10 pr-4 py-2.5 border-2 border-slate-300 dark:border-[#174256] rounded-xl focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] bg-slate-50 dark:bg-[#071922] transition-all font-medium text-slate-900 dark:text-white placeholder-slate-400"
+                            className="w-full text-xs pl-9 pr-4 py-2 sm:py-2.5 border-2 border-slate-300 dark:border-[#174256] rounded-xl focus:outline-none focus:border-[#FFBF00] focus:ring-1 focus:ring-[#FFBF00] bg-slate-50 dark:bg-[#071922] transition-all font-medium text-slate-900 dark:text-white placeholder-slate-400"
                         />
-                        <button type="submit" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#FFBF00] hover:brightness-110 transition-colors">
-                            <Search className="w-4 h-4" />
+                        <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-[#FFBF00] hover:brightness-110 transition-colors">
+                            <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </button>
                     </form>
 
                     {/* Price Range inline filter form */}
-                    <form onSubmit={handleApplyPriceFilter} className="flex items-center gap-1.5 border-2 border-slate-300 dark:border-[#174256] rounded-xl px-3 py-1.5 bg-slate-50 dark:bg-[#071922] focus-within:border-[#FFBF00] focus-within:ring-1 focus-within:ring-[#FFBF00] transition-all w-full sm:w-auto">
-                        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase whitespace-nowrap px-1">Harga (Rp):</span>
-                        <input 
-                            type="number" 
-                            placeholder="Min" 
-                            value={tempMinPrice}
-                            onChange={(e) => setTempMinPrice(e.target.value)}
-                            className="w-20 text-xs border-0 bg-transparent focus:outline-none focus:ring-0 font-bold p-0 text-slate-900 dark:text-white placeholder-slate-400"
-                        />
-                        <span className="text-slate-400 text-xs">-</span>
-                        <input 
-                            type="number" 
-                            placeholder="Max" 
-                            value={tempMaxPrice}
-                            onChange={(e) => setTempMaxPrice(e.target.value)}
-                            className="w-20 text-xs border-0 bg-transparent focus:outline-none focus:ring-0 font-bold p-0 text-slate-900 dark:text-white placeholder-slate-400"
-                        />
+                    <form onSubmit={handleApplyPriceFilter} className="flex items-center justify-between gap-1.5 border-2 border-slate-300 dark:border-[#174256] rounded-xl px-2.5 sm:px-3 py-1.5 bg-slate-50 dark:bg-[#071922] focus-within:border-[#FFBF00] focus-within:ring-1 focus-within:ring-[#FFBF00] transition-all w-full xl:w-auto">
+                        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase whitespace-nowrap shrink-0">Harga (Rp):</span>
+                        <div className="flex items-center gap-1 min-w-0 flex-1 px-1">
+                            <input 
+                                type="number" 
+                                placeholder="Min" 
+                                value={tempMinPrice}
+                                onChange={(e) => setTempMinPrice(e.target.value)}
+                                className="w-full text-xs border-0 bg-transparent focus:outline-none focus:ring-0 font-bold p-0 text-slate-900 dark:text-white placeholder-slate-400 min-w-0"
+                            />
+                            <span className="text-slate-400 text-xs shrink-0">-</span>
+                            <input 
+                                type="number" 
+                                placeholder="Max" 
+                                value={tempMaxPrice}
+                                onChange={(e) => setTempMaxPrice(e.target.value)}
+                                className="w-full text-xs border-0 bg-transparent focus:outline-none focus:ring-0 font-bold p-0 text-slate-900 dark:text-white placeholder-slate-400 min-w-0"
+                            />
+                        </div>
                         <button 
                             type="submit" 
-                            className="bg-[#FFBF00] hover:bg-[#ffcd33] text-[#0F3040] text-[9px] font-black px-2.5 py-1 rounded-lg transition-all active:scale-95 uppercase tracking-wider cursor-pointer"
+                            className="bg-[#FFBF00] hover:bg-[#ffcd33] text-[#0F3040] text-[9px] font-black px-2.5 py-1 rounded-lg transition-all active:scale-95 uppercase tracking-wider cursor-pointer shrink-0"
                         >
-                            Set
+                            SET
                         </button>
                     </form>
 
                     {/* Action Controls (Sort, View Mode, Reset) */}
-                    <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                    <div className="flex items-center gap-2 w-full xl:w-auto justify-between">
                         {/* Sort Dropdown */}
-                        <div className="flex items-center gap-2">
-                            <ArrowUpDown className="w-3.5 h-3.5 text-[#FFBF00]" />
+                        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                            <ArrowUpDown className="w-3.5 h-3.5 text-[#FFBF00] shrink-0" />
                             <select 
                                 value={sortOption}
                                 onChange={(e) => { setSortOption(e.target.value); setCurrentPage(1); }}
-                                className="text-xs border-2 border-slate-300 dark:border-[#174256] rounded-xl px-3 py-2 bg-slate-50 dark:bg-[#071922] focus:outline-none focus:border-[#FFBF00] transition-all font-bold text-slate-900 dark:text-white"
+                                className="w-full text-xs border-2 border-slate-300 dark:border-[#174256] rounded-xl px-2.5 py-2 bg-slate-50 dark:bg-[#071922] focus:outline-none focus:border-[#FFBF00] transition-all font-bold text-slate-900 dark:text-white truncate cursor-pointer"
                             >
                                 <option value="latest">Terbaru</option>
                                 <option value="oldest">Terlama</option>
@@ -412,39 +414,41 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                             </select>
                         </div>
 
-                        {/* Layout View Mode Toggle */}
-                        <div className="flex border-2 border-slate-300 dark:border-[#174256] rounded-xl p-1 bg-slate-50 dark:bg-[#071922] gap-0.5">
+                        <div className="flex items-center gap-2 shrink-0">
+                            {/* Layout View Mode Toggle */}
+                            <div className="flex border-2 border-slate-300 dark:border-[#174256] rounded-xl p-0.5 bg-slate-50 dark:bg-[#071922] gap-0.5">
+                                <button 
+                                    onClick={() => setViewMode('grid')}
+                                    className={`p-1.5 rounded-lg transition-all ${
+                                        viewMode === 'grid' 
+                                            ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-sm' 
+                                            : 'text-slate-500 dark:text-slate-400 hover:text-[#FFBF00]'
+                                    }`}
+                                    title="Grid View"
+                                >
+                                    <LayoutGrid className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                </button>
+                                <button 
+                                    onClick={() => setViewMode('list')}
+                                    className={`p-1.5 rounded-lg transition-all ${
+                                        viewMode === 'list' 
+                                            ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-sm' 
+                                            : 'text-slate-500 dark:text-slate-400 hover:text-[#FFBF00]'
+                                    }`}
+                                    title="List View"
+                                >
+                                    <List className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                </button>
+                            </div>
+
+                            {/* Reset Filter Button */}
                             <button 
-                                onClick={() => setViewMode('grid')}
-                                className={`p-1.5 rounded-lg transition-all ${
-                                    viewMode === 'grid' 
-                                        ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-sm' 
-                                        : 'text-slate-500 dark:text-slate-400 hover:text-[#FFBF00]'
-                                }`}
-                                title="Grid View"
+                                onClick={handleClearFilters}
+                                className="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-[#FFBF00] bg-slate-100 dark:bg-[#071922] border-2 border-slate-300 dark:border-[#174256] hover:border-[#FFBF00] px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl transition-all uppercase tracking-wider cursor-pointer shrink-0"
                             >
-                                <LayoutGrid className="w-4 h-4" />
-                            </button>
-                            <button 
-                                onClick={() => setViewMode('list')}
-                                className={`p-1.5 rounded-lg transition-all ${
-                                    viewMode === 'list' 
-                                        ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-sm' 
-                                        : 'text-slate-500 dark:text-slate-400 hover:text-[#FFBF00]'
-                                }`}
-                                title="List View"
-                            >
-                                <List className="w-4 h-4" />
+                                Reset
                             </button>
                         </div>
-
-                        {/* Reset Filter Button */}
-                        <button 
-                            onClick={handleClearFilters}
-                            className="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-[#FFBF00] bg-slate-100 dark:bg-[#071922] border-2 border-slate-300 dark:border-[#174256] hover:border-[#FFBF00] px-3 py-2 rounded-xl transition-all uppercase tracking-wider cursor-pointer"
-                        >
-                            Reset
-                        </button>
                     </div>
                 </div>
 
@@ -501,8 +505,11 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                     </div>
                 ) : viewMode === 'grid' ? (
                     /* Grid Layout Display */
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {products.map((prod) => (
+                    <>
+                        {/* True 2-Column Masonry Layout for Mobile (< sm) */}
+                        <div className="flex sm:hidden gap-1.5 items-start">
+                            <div className="flex-1 flex flex-col gap-1.5">
+                                {products.filter((_, idx) => idx % 2 === 0).map((prod, idx) => (
                                     <div 
                                         key={prod.id}
                                         onClick={() => setSelectedProduct(prod)}
@@ -510,38 +517,36 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                     >
                                         <button 
                                             onClick={(e) => { e.stopPropagation(); toggleWishlist(prod.id); }}
-                                            className="absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 hover:scale-110 active:scale-95 shadow-md border border-slate-100/50 dark:border-slate-800/50 transition-all duration-300"
+                                            className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-10 p-1.5 sm:p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 hover:scale-110 active:scale-95 shadow-md border border-slate-100/50 dark:border-slate-800/50 transition-all duration-300"
                                         >
-                                            <Heart className="w-4 h-4" />
+                                            <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                         </button>
                                         <div>
-                                            {/* Product Image */}
-                                            <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
+                                            <div className="w-full overflow-hidden bg-slate-100 dark:bg-slate-800 relative aspect-[16/10] sm:aspect-[16/9]">
                                                 <img 
                                                     src={prod.image || prod.thumbnail || 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop'} 
                                                     alt={prod.title} 
                                                     className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                                                 />
-                                                <span className="absolute top-3 left-3 bg-[#071922]/90 backdrop-blur-md text-[9px] font-black text-[#FFBF00] px-3 py-1 rounded-full border border-[#174256] shadow-sm uppercase tracking-wider">
+                                                <span className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-[#071922]/90 backdrop-blur-md text-[8px] sm:text-[9px] font-black text-[#FFBF00] px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-[#174256] shadow-sm uppercase tracking-wider">
                                                     {prod.category?.name || 'Kategori'}
                                                 </span>
                                             </div>
 
-                                            {/* Body */}
-                                            <div className="p-5">
-                                                <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white leading-snug line-clamp-2 h-10 mb-3 group-hover:text-[#FFBF00] transition-colors duration-300">{prod.title}</h4>
+                                            <div className="p-2.5 sm:p-5">
+                                                <h4 className="font-extrabold text-xs sm:text-sm text-[#0F3040] dark:text-white leading-snug line-clamp-2 h-7 sm:h-10 mb-1.5 sm:mb-3 group-hover:text-[#FFBF00] transition-colors duration-300">{prod.title}</h4>
                                                 
-                                                <div className="flex items-center gap-1 text-xs mb-3 text-[#FFBF00]">
-                                                    <Star className="w-3.5 h-3.5 fill-current text-[#FFBF00]" />
+                                                <div className="flex items-center gap-1 text-[10px] sm:text-xs mb-1.5 sm:mb-3 text-[#FFBF00]">
+                                                    <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current text-[#FFBF00]" />
                                                     <span className="font-bold text-[#0F3040] dark:text-white">{prod.average_rating || 5.0}</span>
-                                                    <span className="text-[10px] text-slate-500 dark:text-slate-400">({prod.reviews_count || 0} Ulasan)</span>
+                                                    <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400">({prod.reviews_count || 0} Ulasan)</span>
                                                 </div>
 
-                                                <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                                                    <span>Toko:</span>
-                                                    <strong className="text-[#0F3040] dark:text-white font-bold">{prod.merchant?.store_name || 'ADMS Store'}</strong>
+                                                <div className="flex flex-wrap items-center gap-1 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400">
+                                                    <span className="hidden sm:inline">Toko:</span>
+                                                    <strong className="text-[#0F3040] dark:text-white font-bold truncate max-w-[85px] sm:max-w-none">{prod.merchant?.store_name || 'ADMS Store'}</strong>
                                                     {prod.merchant?.is_verified && (
-                                                        <span className="inline-flex items-center bg-[#FFBF00]/20 text-[#FFBF00] font-black px-2 py-0.5 rounded-full border border-[#FFBF00]/40 text-[8px] uppercase tracking-wider">
+                                                        <span className="inline-flex items-center bg-[#FFBF00]/20 text-[#FFBF00] font-black px-1.5 py-0.5 rounded-full border border-[#FFBF00]/40 text-[7px] sm:text-[8px] uppercase tracking-wider">
                                                             Syariah Certified
                                                         </span>
                                                     )}
@@ -549,20 +554,141 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                             </div>
                                         </div>
 
-                                        {/* Buy action */}
-                                        <div className="p-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                                            <span className="font-black text-base text-[#FFBF00]">Rp{numberFormat(prod.price)}</span>
+                                        <div className="p-2.5 sm:p-5 pt-1.5 sm:pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-1">
+                                            <span className="font-black text-xs sm:text-base text-[#FFBF00] truncate">Rp{numberFormat(prod.price)}</span>
                                             <button 
                                                 onClick={(e) => { e.stopPropagation(); handleAddToCart(prod.id); }}
-                                                className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-xs py-2.5 px-4 rounded-xl shadow-md shadow-[#FFBF00]/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer uppercase tracking-wider"
+                                                className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-[10px] sm:text-xs py-1.5 px-2.5 sm:py-2.5 sm:px-4 rounded-lg sm:rounded-xl shadow-md shadow-[#FFBF00]/20 active:scale-95 transition-all flex items-center gap-1 cursor-pointer uppercase tracking-wider shrink-0"
                                             >
-                                                <ShoppingCart className="w-3.5 h-3.5 text-[#0F3040]" />
-                                                <span>Keranjang</span>
+                                                <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#0F3040]" />
+                                                <span className="hidden xs:inline sm:inline">Keranjang</span>
                                             </button>
                                         </div>
                                     </div>
                                 ))}
                             </div>
+                            <div className="flex-1 flex flex-col gap-1.5">
+                                {products.filter((_, idx) => idx % 2 === 1).map((prod, idx) => (
+                                    <div 
+                                        key={prod.id}
+                                        onClick={() => setSelectedProduct(prod)}
+                                        className="rounded-2xl border-2 border-slate-300 dark:border-[#174256] bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-md dark:shadow-xl hover:border-[#FFBF00] relative cursor-pointer"
+                                    >
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); toggleWishlist(prod.id); }}
+                                            className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-10 p-1.5 sm:p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 hover:scale-110 active:scale-95 shadow-md border border-slate-100/50 dark:border-slate-800/50 transition-all duration-300"
+                                        >
+                                            <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                        </button>
+                                        <div>
+                                            <div className="w-full overflow-hidden bg-slate-100 dark:bg-slate-800 relative aspect-[4/3] sm:aspect-[16/9]">
+                                                <img 
+                                                    src={prod.image || prod.thumbnail || 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop'} 
+                                                    alt={prod.title} 
+                                                    className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
+                                                />
+                                                <span className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-[#071922]/90 backdrop-blur-md text-[8px] sm:text-[9px] font-black text-[#FFBF00] px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-[#174256] shadow-sm uppercase tracking-wider">
+                                                    {prod.category?.name || 'Kategori'}
+                                                </span>
+                                            </div>
+
+                                            <div className="p-2.5 sm:p-5">
+                                                <h4 className="font-extrabold text-xs sm:text-sm text-[#0F3040] dark:text-white leading-snug line-clamp-2 h-7 sm:h-10 mb-1.5 sm:mb-3 group-hover:text-[#FFBF00] transition-colors duration-300">{prod.title}</h4>
+                                                
+                                                <div className="flex items-center gap-1 text-[10px] sm:text-xs mb-1.5 sm:mb-3 text-[#FFBF00]">
+                                                    <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current text-[#FFBF00]" />
+                                                    <span className="font-bold text-[#0F3040] dark:text-white">{prod.average_rating || 5.0}</span>
+                                                    <span className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400">({prod.reviews_count || 0} Ulasan)</span>
+                                                </div>
+
+                                                <div className="flex flex-wrap items-center gap-1 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400">
+                                                    <span className="hidden sm:inline">Toko:</span>
+                                                    <strong className="text-[#0F3040] dark:text-white font-bold truncate max-w-[85px] sm:max-w-none">{prod.merchant?.store_name || 'ADMS Store'}</strong>
+                                                    {prod.merchant?.is_verified && (
+                                                        <span className="inline-flex items-center bg-[#FFBF00]/20 text-[#FFBF00] font-black px-1.5 py-0.5 rounded-full border border-[#FFBF00]/40 text-[7px] sm:text-[8px] uppercase tracking-wider">
+                                                            Syariah Certified
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-2.5 sm:p-5 pt-1.5 sm:pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-1">
+                                            <span className="font-black text-xs sm:text-base text-[#FFBF00] truncate">Rp{numberFormat(prod.price)}</span>
+                                            <button 
+                                                onClick={(e) => { e.stopPropagation(); handleAddToCart(prod.id); }}
+                                                className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-[10px] sm:text-xs py-1.5 px-2.5 sm:py-2.5 sm:px-4 rounded-lg sm:rounded-xl shadow-md shadow-[#FFBF00]/20 active:scale-95 transition-all flex items-center gap-1 cursor-pointer uppercase tracking-wider shrink-0"
+                                            >
+                                                <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#0F3040]" />
+                                                <span className="hidden xs:inline sm:inline">Keranjang</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Standard Grid Layout for Tablet & Desktop (>= sm) */}
+                        <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            {products.map((prod, index) => (
+                                <div 
+                                    key={prod.id}
+                                    onClick={() => setSelectedProduct(prod)}
+                                    className="rounded-2xl border-2 border-slate-300 dark:border-[#174256] bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-md dark:shadow-xl hover:border-[#FFBF00] relative cursor-pointer"
+                                >
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); toggleWishlist(prod.id); }}
+                                        className="absolute top-3 right-3 z-10 p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 hover:scale-110 active:scale-95 shadow-md border border-slate-100/50 dark:border-slate-800/50 transition-all duration-300"
+                                    >
+                                        <Heart className="w-4 h-4" />
+                                    </button>
+                                    <div>
+                                        <div className="w-full overflow-hidden bg-slate-100 dark:bg-slate-800 relative aspect-[16/9]">
+                                            <img 
+                                                src={prod.image || prod.thumbnail || 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop'} 
+                                                alt={prod.title} 
+                                                className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
+                                            />
+                                            <span className="absolute top-3 left-3 bg-[#071922]/90 backdrop-blur-md text-[9px] font-black text-[#FFBF00] px-3 py-1 rounded-full border border-[#174256] shadow-sm uppercase tracking-wider">
+                                                {prod.category?.name || 'Kategori'}
+                                            </span>
+                                        </div>
+
+                                        <div className="p-5">
+                                            <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white leading-snug line-clamp-2 h-10 mb-3 group-hover:text-[#FFBF00] transition-colors duration-300">{prod.title}</h4>
+                                            
+                                            <div className="flex items-center gap-1 text-xs mb-3 text-[#FFBF00]">
+                                                <Star className="w-3.5 h-3.5 fill-current text-[#FFBF00]" />
+                                                <span className="font-bold text-[#0F3040] dark:text-white">{prod.average_rating || 5.0}</span>
+                                                <span className="text-[10px] text-slate-500 dark:text-slate-400">({prod.reviews_count || 0} Ulasan)</span>
+                                            </div>
+
+                                            <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                                                <span>Toko:</span>
+                                                <strong className="text-[#0F3040] dark:text-white font-bold">{prod.merchant?.store_name || 'ADMS Store'}</strong>
+                                                {prod.merchant?.is_verified && (
+                                                    <span className="inline-flex items-center bg-[#FFBF00]/20 text-[#FFBF00] font-black px-2 py-0.5 rounded-full border border-[#FFBF00]/40 text-[8px] uppercase tracking-wider">
+                                                        Syariah Certified
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                        <span className="font-black text-base text-[#FFBF00]">Rp{numberFormat(prod.price)}</span>
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); handleAddToCart(prod.id); }}
+                                            className="bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] font-black text-xs py-2.5 px-4 rounded-xl shadow-md shadow-[#FFBF00]/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer uppercase tracking-wider"
+                                        >
+                                            <ShoppingCart className="w-3.5 h-3.5 text-[#0F3040]" />
+                                            <span>Keranjang</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
                         ) : (
                             /* List Layout Display */
                             <div className="flex flex-col gap-4">

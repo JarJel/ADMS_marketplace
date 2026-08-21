@@ -24,7 +24,15 @@ class OverviewController extends Controller
         $activeAds       = Advertisement::where('status', 'approved')->count();
 
         $gmv             = Order::whereIn('payment_status', ['paid'])->sum('total_amount');
-        $platformRevenue = $gmv * 0.05;
+        
+        // Get dynamic commission fee
+        $feePercent = 5;
+        $commissionPath = storage_path('app/commission.json');
+        if (file_exists($commissionPath)) {
+            $commissionData = json_decode(file_get_contents($commissionPath), true);
+            $feePercent = $commissionData['fee_percent'] ?? 5;
+        }
+        $platformRevenue = $gmv * ($feePercent / 100);
 
         $pendingMerchants  = Merchant::where('is_verified', false)->count();
         $pendingProducts   = Product::where('status', 'pending')->count();
@@ -95,21 +103,21 @@ class OverviewController extends Controller
     {
         // Monthly revenue for current year
         $year = now()->year;
-        $monthlyRaw = Order::select(
-                DB::raw('MONTH(created_at) as month'),
-                DB::raw('SUM(total_amount) as total')
-            )
-            ->whereYear('created_at', $year)
+        $orders = Order::whereYear('created_at', $year)
             ->where('payment_status', 'paid')
-            ->groupBy('month')
-            ->get()
-            ->keyBy('month');
+            ->get();
+
+        $monthlyRaw = $orders->groupBy(function($d) {
+            return $d->created_at->format('n');
+        })->map(function($group) {
+            return $group->sum('total_amount');
+        });
 
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
-        $maxVal = collect($monthlyRaw)->max('total') ?: 1;
+        $maxVal = $monthlyRaw->max() ?: 1;
         $revenueData = [];
         foreach ($months as $i => $lbl) {
-            $total = (float) ($monthlyRaw[$i + 1]->total ?? 0);
+            $total = (float) $monthlyRaw->get($i + 1, 0);
             $revenueData[] = [
                 'label' => $lbl,
                 'value' => round($total / $maxVal * 100, 1),
@@ -135,7 +143,14 @@ class OverviewController extends Controller
 
         // KPI totals
         $gmv          = Order::where('payment_status', 'paid')->sum('total_amount');
-        $revenue      = $gmv * 0.05;
+        // Get dynamic commission fee
+        $feePercent = 5;
+        $commissionPath = storage_path('app/commission.json');
+        if (file_exists($commissionPath)) {
+            $commissionData = json_decode(file_get_contents($commissionPath), true);
+            $feePercent = $commissionData['fee_percent'] ?? 5;
+        }
+        $revenue = $gmv * ($feePercent / 100);
         $totalOrders  = Order::count();
         $activeUsers  = User::where('status', 'active')->count();
 

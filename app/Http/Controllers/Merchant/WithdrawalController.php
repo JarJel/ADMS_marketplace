@@ -41,11 +41,21 @@ class WithdrawalController extends Controller
             })
             ->sum('total_amount');
 
+        // Apply platform commission fee
+        $feePercent = 5;
+        $commissionPath = storage_path('app/commission.json');
+        if (file_exists($commissionPath)) {
+            $commissionData = json_decode(file_get_contents($commissionPath), true);
+            $feePercent = $commissionData['fee_percent'] ?? 5;
+        }
+        
+        $merchantNetSales = $totalCompletedSales * (1 - ($feePercent / 100));
+
         $totalApprovedWithdrawals = Withdrawal::where('merchant_id', $merchant->id)
             ->where('status', 'approved')
             ->sum('amount');
 
-        $currentBalance = $totalCompletedSales - $totalApprovedWithdrawals;
+        $currentBalance = $merchantNetSales - $totalApprovedWithdrawals;
 
         if ($request->amount > $currentBalance) {
             return response()->json([

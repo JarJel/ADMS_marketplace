@@ -183,12 +183,13 @@ export default function AdminSidebar({ activeItem = 'dashboard', onNavigate, use
             const countMap = {
                 merchants: pendingCounts.pendingMerchants,
                 'ads-moderation': pendingCounts.pendingAds,
-                transactions: pendingCounts.pendingTransactions,
+                payouts: pendingCounts.pendingWithdrawals,
+                products: pendingCounts.pendingProducts,
             };
             const count = countMap[item.id];
-            return count != null
+            return count !== undefined
                 ? { ...item, badge: count > 0 ? String(count) : undefined }
-                : item;
+                : { ...item, badge: undefined }; // clear hardcoded badges if no mapping
         }),
     }));
 

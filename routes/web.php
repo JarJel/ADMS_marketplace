@@ -12,6 +12,7 @@ Route::get('/pasang-iklan', function () {
 Route::get('/iklan-gratis', function () {
     return view('welcome');
 });
+
 Route::get('{any}', function () {
     return view('welcome');
 })->where('any', '^(?!api).*$');

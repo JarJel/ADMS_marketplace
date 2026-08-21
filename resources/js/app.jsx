@@ -1,5 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
+import * as Sentry from "@sentry/react";
+
+Sentry.init({
+    dsn: "https://4517166547bb4a9619fa67c9c259181a@o4511863431299072.ingest.us.sentry.io/4511947434885120",
+    integrations: [
+        Sentry.browserTracingIntegration(),
+        Sentry.replayIntegration(),
+    ],
+    tracesSampleRate: 1.0,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+});
+
 import '../css/app.css';
 import Homepage from './pages/Homepage';
 import Login from './pages/Auth/Login';
@@ -22,12 +35,12 @@ import Pricing from './pages/Pricing';
 function App() {
     const [token, setToken] = useState(localStorage.getItem('auth_token'));
     const [user, setUser] = useState(null);
-    const [view, setView] = useState('homepage'); 
+    const [view, setView] = useState('homepage');
     const [productFilter, setProductFilter] = useState('all');
     const [globalSearchQuery, setGlobalSearchQuery] = useState('');
     const [merchantFilterId, setMerchantFilterId] = useState('');
     const [dashboardTab, setDashboardTab] = useState('overview');
-    
+
     // Counts and lists for dynamic Navbar
     const [cartCount, setCartCount] = useState(0);
     const [wishlistCount, setWishlistCount] = useState(0);
@@ -104,8 +117,8 @@ function App() {
         // 1. Always save product details to adms_guest_cart so title, price, thumbnail & merchant are always guaranteed
         const existingCart = JSON.parse(localStorage.getItem('adms_guest_cart') || '[]');
         const existingIndex = existingCart.findIndex(item => (
-            item.product_id === productId || 
-            item.id === productId || 
+            item.product_id === productId ||
+            item.id === productId ||
             item.product?.id === productId
         ));
 
@@ -163,7 +176,7 @@ function App() {
         if (!productOrId) return;
         const prodId = typeof productOrId === 'object' ? (productOrId.id || productOrId.product_id) : productOrId;
         const guestWishlist = JSON.parse(localStorage.getItem('adms_guest_wishlist') || '[]');
-        
+
         let updated = [];
         if (guestWishlist.includes(prodId)) {
             updated = guestWishlist.filter(id => id !== prodId);
@@ -191,7 +204,7 @@ function App() {
 
         setWishlistCount(Math.max(apiWishlistCount, updated.length));
     };
-    
+
     // Toast notification state
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState('success');
@@ -280,7 +293,7 @@ function App() {
             if (response.ok) {
                 const data = await response.json();
                 setUser(data.data.user);
-                
+
                 // If on home/login page, route them to dashboard, otherwise let them stay on their current deep path
                 if (currentPath === '/' || currentPath === '/login') {
                     routeUser(data.data.user);
@@ -459,14 +472,14 @@ function App() {
                 return <Pricing {...dashboardProps} />;
             case 'login':
                 return (
-                    <Login 
-                        onLoginSuccess={handleLoginSuccess} 
+                    <Login
+                        onLoginSuccess={handleLoginSuccess}
                         onNavigateToRegister={() => navigateTo('register', '/register')}
                     />
                 );
             case 'register':
                 return (
-                    <Register 
+                    <Register
                         onRegisterSuccess={() => {
                             setToastMessage('Registrasi Berhasil! Silakan masuk.');
                             setToastType('success');
@@ -478,13 +491,13 @@ function App() {
             case 'homepage':
             default:
                 return (
-                    <Homepage 
-                        isLoggedIn={!!token} 
-                        user={user} 
+                    <Homepage
+                        isLoggedIn={!!token}
+                        user={user}
                         token={token}
-                        onNavigateToLogin={() => navigateTo('login', '/login')} 
-                        onNavigateToRegister={() => navigateTo('register', '/register')} 
-                        onNavigateToDashboard={() => routeUser(user)} 
+                        onNavigateToLogin={() => navigateTo('login', '/login')}
+                        onNavigateToRegister={() => navigateTo('register', '/register')}
+                        onNavigateToDashboard={() => routeUser(user)}
                         onNavigateToCreateAd={() => navigateTo('create_ad', '/pasang-iklan')}
                         onNavigateToClassifieds={() => navigateTo('classifieds', '/iklan-gratis')}
                         onNavigateToProducts={() => navigateTo('products', '/produk')}
@@ -505,10 +518,10 @@ function App() {
 
     return (
         <>
-            <Toast 
-                message={toastMessage} 
-                type={toastType} 
-                onClose={() => setToastMessage('')} 
+            <Toast
+                message={toastMessage}
+                type={toastType}
+                onClose={() => setToastMessage('')}
             />
             {renderContent()}
             <AdmsChatWidget darkMode={darkMode} />

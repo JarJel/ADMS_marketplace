@@ -318,6 +318,102 @@ class TestingDataSeeder extends Seeder
             ]);
         }
 
+        // Create Toko Adms Merchant User
+        $tokoAdmsUser = User::create([
+            'name' => 'Toko Adms',
+            'email' => 'toko.adms@adms.id',
+            'phone' => '081234500001',
+            'password' => Hash::make('password123'),
+            'role' => 'merchant',
+            'status' => 'active',
+            'email_verified_at' => now(),
+        ]);
+
+        // Create Verified Store for Toko Adms
+        $tokoAdmsStore = Merchant::create([
+            'owner_id' => $tokoAdmsUser->id,
+            'name' => 'Toko Adms',
+            'slug' => 'toko-adms',
+            'description' => 'Penyedia layanan jasa profesional pembuatan dokumen legalitas seperti SIM, PASPOR, VISA, pendirian PT & CV, pendaftaran HAKI, dan konsultan pajak terpercaya.',
+            'is_verified' => true,
+            'location' => 'Kota Jakarta Selatan, DKI Jakarta',
+            'contact_whatsapp' => '081234500001',
+            'syariah_certified' => true,
+        ]);
+
+        // Get Category 'Jasa'
+        $catJasaId = isset($catModels['Jasa']) ? $catModels['Jasa']->id : (Category::where('slug', 'jasa')->first()?->id ?? Category::where('type', 'advertisement')->first()?->id);
+
+        // Get Premium Package
+        $premiumPackage = Package::where('type', 'premium')->first() ?? Package::first();
+
+        // Seed Premium Ads for Toko Adms
+        $premiumAdsData = [
+            [
+                'title' => 'Pembuatan SIM ABC & Internasional',
+                'price' => 150000.00,
+                'desc' => 'Jasa pendampingan pembuatan dan perpanjangan SIM A, B, C, serta SIM Internasional secara legal dan transparan sesuai prosedur resmi.',
+                'image' => 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=600&auto=format&fit=crop'
+            ],
+            [
+                'title' => 'Pembuatan PASPOR Resmi',
+                'price' => 350000.00,
+                'desc' => 'Jasa pengurusan dan pendampingan pembuatan paspor baru maupun perpanjangan paspor biasa/e-paspor secara cepat, amanah, dan terpercaya.',
+                'image' => 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?q=80&w=600&auto=format&fit=crop'
+            ],
+            [
+                'title' => 'Pembuatan VISA Perjalanan',
+                'price' => 750000.00,
+                'desc' => 'Layanan jasa pengurusan visa kunjungan, visa bisnis, dan visa wisata untuk berbagai negara tujuan dengan proses mudah dan transparan.',
+                'image' => 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=600&auto=format&fit=crop'
+            ],
+            [
+                'title' => 'Konsultan PAJAK Profesional',
+                'price' => 500000.00,
+                'desc' => 'Layanan konsultasi perpajakan pribadi maupun badan usaha, pelaporan SPT Tahunan, audit pajak, dan perencanaan pajak syariah secara profesional.',
+                'image' => 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=600&auto=format&fit=crop'
+            ],
+            [
+                'title' => 'Pendirian PT & CV Lengkap',
+                'price' => 2500000.00,
+                'desc' => 'Paket lengkap pendirian badan usaha PT maupun CV, termasuk Akta Notaris, SK Kemenkumham, NIB, dan kelengkapan izin usaha lainnya.',
+                'image' => 'https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=600&auto=format&fit=crop'
+            ],
+            [
+                'title' => 'Pendaftaran HAKI & Merek Dagang',
+                'price' => 1200000.00,
+                'desc' => 'Jasa pendaftaran Hak Kekayaan Intelektual (HAKI), hak cipta, paten, dan merek dagang untuk melindungi orisinalitas produk bisnis Anda.',
+                'image' => 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=600&auto=format&fit=crop'
+            ]
+        ];
+
+        foreach ($premiumAdsData as $mock) {
+            $newAd = Advertisement::create([
+                'title' => $mock['title'],
+                'category_id' => $catJasaId,
+                'description' => $mock['desc'],
+                'price' => $mock['price'],
+                'location' => 'Jakarta Selatan, DKI Jakarta',
+                'contact_name' => 'Toko Adms',
+                'whatsapp' => '6281234567890',
+                'condition' => 'baru',
+                'tags' => ['jasa', 'premium', 'dokumen', 'legalitas'],
+                'duration_days' => $premiumPackage->duration_days,
+                'package_id' => $premiumPackage->id,
+                'status' => 'approved',
+                'merchant_id' => $tokoAdmsStore->id,
+                'owner_id' => $tokoAdmsUser->id,
+                'expires_at' => now()->addDays($premiumPackage->duration_days),
+            ]);
+
+            \App\Models\Media::create([
+                'url' => $mock['image'],
+                'type' => 'ad_image',
+                'owner_id' => $newAd->id,
+                'owner_type' => Advertisement::class,
+            ]);
+        }
+
         // 3. Create Customer User
         $customerUser = User::create([
             'name' => 'Akhi Budi Prasetyo',

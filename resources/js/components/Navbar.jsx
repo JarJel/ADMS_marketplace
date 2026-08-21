@@ -265,8 +265,21 @@ export default function Navbar({
                                                 className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl hover:bg-slate-100 dark:hover:bg-[#174256] text-slate-700 dark:text-slate-200 transition-colors"
                                             >
                                                 <LayoutDashboard className="w-4 h-4 text-[#FFBF00]" />
-                                                <span>Ringkasan</span>
+                                                <span>Dashboard</span>
                                             </button>
+
+                                            {(user?.role === 'merchant' || user?.role === 'admin') && (
+                                                <button 
+                                                    onClick={() => {
+                                                        setShowProfileMenu(false);
+                                                        onNavigate('merchant_dashboard');
+                                                    }}
+                                                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-black rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-600 dark:text-teal-400 border border-teal-500/20 transition-colors my-1 cursor-pointer"
+                                                >
+                                                    <Store className="w-4 h-4 text-teal-500" />
+                                                    <span>Dashboard Merchant</span>
+                                                </button>
+                                            )}
 
                                             <button 
                                                 onClick={() => {
@@ -304,7 +317,7 @@ export default function Navbar({
                                             <button 
                                                 onClick={() => {
                                                     setShowProfileMenu(false);
-                                                    onNavigate('customer_dashboard', 'subscriptions');
+                                                    onNavigate('customer_dashboard', 'package-subscriptions');
                                                 }}
                                                 className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl hover:bg-slate-100 dark:hover:bg-[#174256] text-slate-700 dark:text-slate-200 transition-colors"
                                             >
@@ -463,7 +476,7 @@ export default function Navbar({
                             </button>
 
                             {/* Customer Dashboard Quick Links if logged in */}
-                            {token && user && user.role === 'user' && (
+                            {token && user && (
                                 <>
                                     <div className="my-2 border-t border-slate-200 dark:border-[#174256]"></div>
                                     <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 px-3 pt-1">
@@ -480,6 +493,19 @@ export default function Navbar({
                                         <LayoutDashboard className="w-4 h-4 text-[#FFBF00]" />
                                         <span>Ringkasan</span>
                                     </button>
+
+                                    {(user.role === 'merchant' || user.role === 'admin') && (
+                                        <button 
+                                            onClick={() => {
+                                                setShowSidebar(false);
+                                                onNavigate('merchant_dashboard');
+                                            }}
+                                            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-black bg-teal-500/10 hover:bg-teal-500/20 text-teal-600 dark:text-teal-400 border border-teal-500/20 transition-colors my-1 cursor-pointer"
+                                        >
+                                            <Store className="w-4 h-4 text-teal-500" />
+                                            <span>Dashboard Merchant</span>
+                                        </button>
+                                    )}
 
                                     <button 
                                         onClick={() => {
@@ -517,7 +543,7 @@ export default function Navbar({
                                     <button 
                                         onClick={() => {
                                             setShowSidebar(false);
-                                            onNavigate('customer_dashboard', 'subscriptions');
+                                            onNavigate('customer_dashboard', 'package-subscriptions');
                                         }}
                                         className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer"
                                     >
@@ -536,16 +562,18 @@ export default function Navbar({
                                         <span>Favorit / Wishlist</span>
                                     </button>
 
-                                    <button 
-                                        onClick={() => {
-                                            setShowSidebar(false);
-                                            onNavigate('merchant_registration');
-                                        }}
-                                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-black bg-[#FFBF00]/15 hover:bg-[#FFBF00]/25 text-amber-700 dark:text-[#FFBF00] border border-[#FFBF00]/30 transition-colors my-1 cursor-pointer"
-                                    >
-                                        <Store className="w-4 h-4 text-[#FFBF00]" />
-                                        <span>Daftar Mitra Vendor</span>
-                                    </button>
+                                    {user.role === 'user' && (
+                                        <button 
+                                            onClick={() => {
+                                                setShowSidebar(false);
+                                                onNavigate('merchant_registration');
+                                            }}
+                                            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-black bg-[#FFBF00]/15 hover:bg-[#FFBF00]/25 text-amber-700 dark:text-[#FFBF00] border border-[#FFBF00]/30 transition-colors my-1 cursor-pointer"
+                                        >
+                                            <Store className="w-4 h-4 text-[#FFBF00]" />
+                                            <span>Daftar Mitra Vendor</span>
+                                        </button>
+                                    )}
                                 </>
                             )}
 

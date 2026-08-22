@@ -170,27 +170,27 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
         }
 
         setIsUploading(true);
-        setUploadProgress(10);
+        let progress = 10;
+        setUploadProgress(progress);
 
         const interval = setInterval(() => {
-            setUploadProgress((prev) => {
-                if (prev >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        const newPhotos = files.map((file, idx) => ({
-                            id: Date.now() + idx,
-                            name: file.name,
-                            url: URL.createObjectURL(file),
-                            file: file
-                        }));
-                        setPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
-                        setIsUploading(false);
-                        setUploadProgress(0);
-                    }, 300);
-                    return 100;
-                }
-                return prev + 25;
-            });
+            progress += 25;
+            setUploadProgress(progress);
+            
+            if (progress >= 100) {
+                clearInterval(interval);
+                setTimeout(() => {
+                    const newPhotos = files.map((file, idx) => ({
+                        id: Date.now() + idx,
+                        name: file.name,
+                        url: URL.createObjectURL(file),
+                        file: file
+                    }));
+                    setPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
+                    setIsUploading(false);
+                    setUploadProgress(0);
+                }, 300);
+            }
         }, 200);
     };
 

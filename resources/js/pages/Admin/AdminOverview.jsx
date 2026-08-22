@@ -43,10 +43,7 @@ export const AdminOverview = ({ onNavigate, stats, loading }) => {
             <span className="text-xl sm:text-2xl font-black text-[#FFBF00] group-hover:scale-105 transition-transform">{stats?.pendingWithdrawals ?? 0}</span>
             <span className="text-[9px] sm:text-[10px] font-bold text-slate-300 uppercase tracking-wider truncate w-full">Withdrawal</span>
           </button>
-          <button onClick={() => onNavigate && onNavigate('ads-moderation')} className="bg-[#071922] p-3 sm:p-4 rounded-xl border border-[#174256] hover:border-[#FFBF00] hover:shadow-lg transition-all text-left flex flex-col items-start gap-0.5 sm:gap-1 group">
-            <span className="text-xl sm:text-2xl font-black text-[#FFBF00] group-hover:scale-105 transition-transform">{stats?.pendingAds ?? 0}</span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-slate-300 uppercase tracking-wider truncate w-full">Iklan Pending</span>
-          </button>
+
         </div>
       </div>
 

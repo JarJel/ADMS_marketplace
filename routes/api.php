@@ -303,6 +303,10 @@ Route::middleware('auth.custom')->group(function () {
         Route::get('/admin/products', [AdminOverviewController::class, 'getProducts']);
         Route::post('/admin/products/{id}/status', [AdminOverviewController::class, 'toggleProductStatus']);
 
+        // Ads (all, with filter)
+        Route::get('/admin/ads', [AdminOverviewController::class, 'getAds']);
+        Route::post('/admin/ads/{id}/status', [AdminOverviewController::class, 'toggleAdStatus']);
+
         // Categories list
         Route::get('/admin/categories', function () {
             $cats = \App\Models\Category::withCount(['products', 'advertisements'])->orderBy('type')->get();

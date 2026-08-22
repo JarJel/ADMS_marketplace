@@ -39,7 +39,7 @@ const menuGroups = [
     {
         title: "ADVERTISING",
         items: [
-            { id: 'ads-moderation', label: 'Moderasi Iklan Masuk', icon: Megaphone, href: '/admin/ads/moderation', badge: '5', badgeColor: 'bg-amber-500' },
+            { id: 'ads', label: 'Kelola Iklan', icon: Megaphone, href: '/admin/ads' },
             { id: 'ads-packages', label: 'Kelola Paket Iklan', icon: Layers, href: '/admin/ads/packages' },
             { id: 'package-subscriptions', label: 'Verifikasi Berlangganan', icon: ShieldCheck, href: '/admin/ads/subscriptions' },
             { id: 'ads-reports', label: 'Laporan Klik & Tayang', icon: MousePointerClick, href: '/admin/ads/reports' },

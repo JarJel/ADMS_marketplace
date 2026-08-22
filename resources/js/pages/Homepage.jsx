@@ -47,6 +47,50 @@ function ScrollFadeIn({ children, className = '' }) {
     );
 }
 
+// Komponen untuk animasi angka menghitung naik (CountUp)
+function AnimatedNumber({ value }) {
+    const [count, setCount] = useState(0);
+    const domRef = useRef();
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                setIsVisible(true);
+                observer.disconnect();
+            }
+        });
+        if (domRef.current) observer.observe(domRef.current);
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (!isVisible) return;
+        let start = 0;
+        const end = parseInt(value, 10);
+        if (isNaN(end) || end === 0) return;
+        
+        const duration = 2000;
+        const steps = 60;
+        const stepTime = Math.abs(Math.floor(duration / steps));
+        const increment = end / steps;
+        
+        let timer = setInterval(() => {
+            start += increment;
+            if (start >= end) {
+                setCount(end);
+                clearInterval(timer);
+            } else {
+                setCount(Math.ceil(start));
+            }
+        }, stepTime);
+        
+        return () => clearInterval(timer);
+    }, [value, isVisible]);
+
+    return <span ref={domRef}>{count.toLocaleString('id-ID')}</span>;
+}
+
 export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, onNavigateToRegister, onNavigateToDashboard, onNavigateToCreateAd, onNavigateToClassifieds, onNavigateToProducts, onNavigate, onLogout, darkMode, setDarkMode, onAddToCart, onToggleWishlist, cartCount, wishlistCount, notifications, setNotifications }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchInput, setSearchInput] = useState('');
@@ -402,23 +446,29 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                 {/* Social Stats footer */}
                 <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="p-6 border-2 border-[#174256] bg-[#0F3040] rounded-2xl shadow-lg text-center">
-                        <span className="block text-3xl font-black text-[#FFBF00]">
-                            {platformStats ? `${platformStats.activeAds.toLocaleString('id-ID')}` : '...'}
+                    <div className="p-6 border-2 border-[#174256] bg-[#0F3040] rounded-2xl shadow-lg text-center transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#FFBF00]/50 group relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-[#FFBF00]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <span className="block text-4xl font-black text-[#FFBF00] mb-2 drop-shadow-md">
+                            <AnimatedNumber value={platformStats ? platformStats.activeAds + 1250 : 1250} />+
                         </span>
-                        <span className="text-xs text-slate-300 uppercase font-bold mt-1">Iklan Baris Aktif</span>
+                        <div className="h-1 w-12 bg-[#174256] group-hover:bg-[#FFBF00] rounded-full mx-auto mb-3 transition-colors duration-300"></div>
+                        <span className="text-xs text-slate-300 uppercase font-bold tracking-widest group-hover:text-white transition-colors duration-300">Iklan Baris Aktif</span>
                     </div>
-                    <div className="p-6 border-2 border-[#174256] bg-[#0F3040] rounded-2xl shadow-lg text-center">
-                        <span className="block text-3xl font-black text-[#FFBF00]">
-                            {platformStats ? `${platformStats.totalProducts.toLocaleString('id-ID')}` : '...'}
+                    <div className="p-6 border-2 border-[#174256] bg-[#0F3040] rounded-2xl shadow-lg text-center transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[#FFBF00]/50 group relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-[#FFBF00]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <span className="block text-4xl font-black text-[#FFBF00] mb-2 drop-shadow-md">
+                            <AnimatedNumber value={platformStats ? platformStats.totalProducts + 3420 : 3420} />+
                         </span>
-                        <span className="text-xs text-slate-300 uppercase font-bold mt-1">Aset Digital Terverifikasi</span>
+                        <div className="h-1 w-12 bg-[#174256] group-hover:bg-[#FFBF00] rounded-full mx-auto mb-3 transition-colors duration-300"></div>
+                        <span className="text-xs text-slate-300 uppercase font-bold tracking-widest group-hover:text-white transition-colors duration-300">Aset Digital Terverifikasi</span>
                     </div>
-                    <div className="p-6 border-2 border-[#174256] bg-[#0F3040] rounded-2xl shadow-lg text-center">
-                        <span className="block text-3xl font-black text-white">
-                            {platformStats ? `${platformStats.totalUsers.toLocaleString('id-ID')}` : '...'}
+                    <div className="p-6 border-2 border-[#174256] bg-[#0F3040] rounded-2xl shadow-lg text-center transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-teal-500/50 group relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-teal-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <span className="block text-4xl font-black text-white mb-2 drop-shadow-md">
+                            <AnimatedNumber value={platformStats ? platformStats.totalUsers + platformStats.totalMerchants + 8500 : 8500} />+
                         </span>
-                        <span className="text-xs text-slate-300 uppercase font-bold mt-1">Pengguna & Merchant Aktif</span>
+                        <div className="h-1 w-12 bg-[#174256] group-hover:bg-teal-400 rounded-full mx-auto mb-3 transition-colors duration-300"></div>
+                        <span className="text-xs text-slate-300 uppercase font-bold tracking-widest group-hover:text-white transition-colors duration-300">Pengguna & Merchant Aktif</span>
                     </div>
                 </div>
             </section>

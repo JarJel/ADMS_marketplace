@@ -22,7 +22,11 @@ class AdController extends Controller
         $merchant = $user->merchant;
 
         // Ads associated with the merchant, ordered by newest first
-        $ads = Advertisement::where('merchant_id', $merchant->id)->with(['category', 'package'])->latest()->get();
+        $ads = Advertisement::where('merchant_id', $merchant->id)
+            ->whereNotIn('status', ['rejected', 'banned'])
+            ->with(['category', 'package'])
+            ->latest()
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -83,6 +87,14 @@ class AdController extends Controller
             ], 400);
         }
 
+        // --- SISTEM MODERASI OTOMATIS ---
+        $moderationService = new \App\Services\AdModerationService();
+        $moderationResult = $moderationService->analyze(
+            $request->title,
+            $request->description,
+            $request->website_url ?? null
+        );
+
         DB::beginTransaction();
 
         try {
@@ -97,7 +109,8 @@ class AdController extends Controller
                 'condition' => $request->condition ?? 'baru',
                 'duration_days' => $activePackage->duration_days,
                 'package_id' => $activePackage->id,
-                'status' => 'approved', // Automatically approved to show on homepage
+                'status' => $moderationResult['status'],
+                'moderation_note' => $moderationResult['reason'],
                 'merchant_id' => $merchant->id,
                 'owner_id' => $user->id,
             ]);

@@ -19,6 +19,7 @@ class AdController extends Controller
     public function getAds(Request $request)
     {
         $ads = Advertisement::where('owner_id', $request->user()->id)
+            ->whereNotIn('status', ['rejected', 'banned'])
             ->with(['category', 'package', 'media', 'merchant'])
             ->latest()
             ->get();
@@ -47,13 +48,14 @@ class AdController extends Controller
             'condition' => 'nullable|string',
             'website_url' => 'nullable|url',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp,heic|max:10240',
         ]);
 
         if ($validator->fails()) {
+            $errorString = implode(', ', $validator->errors()->all());
             return response()->json([
                 'success' => false,
-                'message' => 'Validasi gagal',
+                'message' => 'Validasi gagal: ' . $errorString,
                 'errors' => $validator->errors()
             ], 422);
         }
@@ -84,6 +86,14 @@ class AdController extends Controller
             }
         }
 
+        // --- SISTEM MODERASI OTOMATIS ---
+        $moderationService = new \App\Services\AdModerationService();
+        $moderationResult = $moderationService->analyze(
+            $request->title,
+            $request->description,
+            $request->website_url
+        );
+
         DB::beginTransaction();
 
         try {
@@ -99,7 +109,8 @@ class AdController extends Controller
                 'website_url' => $request->website_url,
                 'duration_days' => $activePackage->duration_days,
                 'package_id' => $activePackage->id,
-                'status' => 'approved',
+                'status' => $moderationResult['status'],
+                'moderation_note' => $moderationResult['reason'],
                 'owner_id' => $user->id,
             ]);
 
@@ -166,7 +177,23 @@ class AdController extends Controller
             return response()->json(['success' => false, 'message' => 'Validasi gagal', 'errors' => $validator->errors()], 422);
         }
 
-        $ad->update($request->only(['title', 'category_id', 'description', 'price', 'location', 'whatsapp', 'contact_name', 'condition']));
+        // --- SISTEM MODERASI OTOMATIS ---
+        $titleToCheck = $request->title ?? $ad->title;
+        $descToCheck = $request->description ?? $ad->description;
+        $urlToCheck = $request->website_url ?? $ad->website_url;
+        
+        $moderationService = new \App\Services\AdModerationService();
+        $moderationResult = $moderationService->analyze($titleToCheck, $descToCheck, $urlToCheck);
+
+        $updateData = $request->only(['title', 'category_id', 'description', 'price', 'location', 'whatsapp', 'contact_name', 'condition', 'website_url']);
+        
+        // Hanya ubah status jika hasil moderasi bukan approved, atau jika butuh direview ulang
+        if ($moderationResult['status'] !== 'approved') {
+            $updateData['status'] = $moderationResult['status'];
+            $updateData['moderation_note'] = $moderationResult['reason'];
+        }
+
+        $ad->update($updateData);
 
         return response()->json([
             'success' => true,

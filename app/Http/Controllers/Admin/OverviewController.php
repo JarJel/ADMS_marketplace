@@ -243,4 +243,51 @@ class OverviewController extends Controller
         return response()->json(['success' => true, 'data' => $product]);
     }
 
+
+    public function getAds(Request $request)
+    {
+        $query = Advertisement::with(['merchant:id,name', 'category:id,name', 'media', 'package']);
+
+        if ($request->filled('search')) {
+            $q = $request->search;
+            $query->where(function ($sq) use ($q) {
+                $sq->where('title', 'like', "%$q%");
+            });
+        }
+
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        $ads = $query->latest()->paginate(20);
+
+        return response()->json([
+            'success' => true,
+            'data'    => $ads,
+        ]);
+    }
+
+    public function toggleAdStatus(Request $request, $id)
+    {
+        $ad = Advertisement::findOrFail($id);
+        $status = $request->input('status');
+
+        $allowed = ['approved', 'rejected', 'pending'];
+        if (!in_array($status, $allowed)) {
+            return response()->json(['success' => false, 'message' => 'Status tidak valid.'], 422);
+        }
+
+        $ad->status = $status;
+        $ad->save();
+
+        AdminAuditLog::create([
+            'admin_id'    => $request->user()->id,
+            'action'      => 'update_ad_status',
+            'target_type' => 'advertisement',
+            'target_id'   => $ad->id,
+            'reason'      => "Status diubah ke: $status",
+        ]);
+
+        return response()->json(['success' => true, 'data' => $ad]);
+    }
 }

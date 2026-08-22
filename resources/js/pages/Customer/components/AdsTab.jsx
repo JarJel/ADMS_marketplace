@@ -32,7 +32,12 @@ export default function AdsTab({ advertisements, onNavigate }) {
                                     {ad.package}
                                 </span>
                             </div>
-                            <h4 className="font-extrabold text-sm text-slate-800 leading-snug">{ad.title}</h4>
+                            <div className="flex items-center gap-2">
+                                <h4 className="font-extrabold text-sm text-slate-800 leading-snug">{ad.title}</h4>
+                                {ad.status === 'approved' && <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[10px] font-bold">Tayang</span>}
+                                {ad.status === 'rejected' && <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-[10px] font-bold">Ditolak / Takedown</span>}
+                                {ad.status === 'pending' && <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">Pending</span>}
+                            </div>
                             
                             <div className="flex items-center gap-4 text-[10px] text-slate-400">
                                 <span>Views: <strong className="text-slate-600">{ad.views}</strong></span>

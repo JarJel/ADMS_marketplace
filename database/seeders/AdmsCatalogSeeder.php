@@ -143,9 +143,15 @@ class AdmsCatalogSeeder extends Seeder
             ['title' => 'Content Creation', 'slug' => 'content-creation', 'category_slug' => 'social-media', 'price' => 2999000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'desc' => 'Pembuatan konten kreatif dan profesional, termasuk video reels/Tiktok, desain feed, dan copywriting.'],
 
             // LEGAL & BISNIS
-            ['title' => 'Pendirian PT', 'slug' => 'pendirian-pt', 'category_slug' => 'legal-bisnis', 'price' => 2500000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'desc' => 'Jasa pengurusan legalitas dan pendirian badan usaha PT lengkap dengan akta notaris dan SK Kemenkumham.'],
-            ['title' => 'Pendirian CV', 'slug' => 'pendirian-cv', 'category_slug' => 'legal-bisnis', 'price' => 2500000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'desc' => 'Jasa pembuatan CV secara profesional, cepat, dan legal untuk menunjang aktivitas bisnis Anda.'],
-            ['title' => 'Legalitas Usaha (NIB, Perizinan Usaha & Legalitas UMKM)', 'slug' => 'legalitas-usaha-nib-perizinan-usaha-legalitas-umkm', 'category_slug' => 'legal-bisnis', 'price' => 1000000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'desc' => 'Layanan pendaftaran NIB (Nomor Induk Berusaha) dan perizinan dasar UMKM melalui sistem OSS.'],
+            ['title' => 'Pendirian PT Persekutuan Modal', 'slug' => 'pendirian-pt-persekutuan-modal', 'category_slug' => 'legal-bisnis', 'price' => 2500000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'thumbnail' => 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=300&auto=format&fit=crop', 'desc' => 'Jasa pengurusan legalitas dan pendirian badan usaha PT lengkap dengan akta notaris dan SK Kemenkumham.'],
+            ['title' => 'Pendirian CV', 'slug' => 'pendirian-cv', 'category_slug' => 'legal-bisnis', 'price' => 2500000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'thumbnail' => 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=300&auto=format&fit=crop', 'desc' => 'Jasa pembuatan CV secara profesional, cepat, dan legal untuk menunjang aktivitas bisnis Anda.'],
+            ['title' => 'Legalitas Usaha (NIB, Perizinan Usaha & Legalitas UMKM)', 'slug' => 'legalitas-usaha-nib-perizinan-usaha-legalitas-umkm', 'category_slug' => 'legal-bisnis', 'price' => 1000000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'thumbnail' => 'https://images.unsplash.com/photo-1618044733300-9472054094ee?q=80&w=300&auto=format&fit=crop', 'desc' => 'Layanan pendaftaran NIB (Nomor Induk Berusaha) dan perizinan dasar UMKM melalui sistem OSS.'],
+            ['title' => 'Pembuatan SIM A/B/C', 'slug' => 'pembuatan-sim-abc', 'category_slug' => 'legal-bisnis', 'price' => 500000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'thumbnail' => 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=300&auto=format&fit=crop', 'desc' => 'Biro jasa pengurusan pembuatan baru dan perpanjangan SIM A, B, dan C secara cepat dan aman.'],
+            ['title' => 'Pembuatan SIM Internasional', 'slug' => 'pembuatan-sim-internasional', 'category_slug' => 'legal-bisnis', 'price' => 500000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'thumbnail' => 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=300&auto=format&fit=crop', 'desc' => 'Biro jasa pengurusan pembuatan SIM Internasional untuk kebutuhan mengemudi di luar negeri.'],
+            ['title' => 'Pembuatan Paspor', 'slug' => 'pembuatan-paspor', 'category_slug' => 'legal-bisnis', 'price' => 750000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'thumbnail' => 'https://images.unsplash.com/photo-1502224562085-639556652f33?q=80&w=300&auto=format&fit=crop', 'desc' => 'Biro jasa pembuatan paspor baru dan perpanjangan paspor biasa maupun paspor elektronik (e-paspor).'],
+            ['title' => 'Pembuatan Visa', 'slug' => 'pembuatan-visa', 'category_slug' => 'legal-bisnis', 'price' => 1500000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'thumbnail' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=300&auto=format&fit=crop', 'desc' => 'Jasa pengurusan dan pendampingan aplikasi pengajuan Visa untuk berbagai negara tujuan.'],
+            ['title' => 'Konsultan Pajak', 'slug' => 'konsultan-pajak', 'category_slug' => 'legal-bisnis', 'price' => 1000000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'thumbnail' => 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=300&auto=format&fit=crop', 'desc' => 'Layanan konsultasi perpajakan, pelaporan SPT Tahunan, dan perencanaan pajak untuk individu dan badan usaha.'],
+            ['title' => 'Pendirian PT Perorangan', 'slug' => 'pendirian-pt-perorangan', 'category_slug' => 'legal-bisnis', 'price' => 499000, 'price_type' => 'starting_from', 'product_type' => 'digital_service', 'thumbnail' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=300&auto=format&fit=crop', 'desc' => 'Jasa pengurusan legalitas dan pendaftaran PT Perorangan (UMKM) dengan proses mudah dan cepat.'],
 
             // LAYANAN OFFLINE
             ['title' => 'Pindahan Rumah', 'slug' => 'pindahan-rumah', 'category_slug' => 'layanan-offline', 'price' => null, 'price_type' => 'quotation', 'product_type' => 'service', 'desc' => 'Jasa layanan pindahan rumah komprehensif, mulai dari packing barang, pengangkutan, hingga penyusunan kembali.'],
@@ -163,13 +169,23 @@ class AdmsCatalogSeeder extends Seeder
 
             $existingProduct = DB::table('products')->where('slug', $prod['slug'])->first();
 
+            $thumbnails = [
+                'marketing-distribution' => 'https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=300&auto=format&fit=crop',
+                'automation-blast' => 'https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=300&auto=format&fit=crop',
+                'social-media' => 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=300&auto=format&fit=crop',
+                'legal-bisnis' => 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=300&auto=format&fit=crop',
+                'layanan-offline' => 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=300&auto=format&fit=crop',
+            ];
+            $thumbnailUrl = $prod['thumbnail'] ?? ($thumbnails[$prod['category_slug']] ?? null);
+
             if ($existingProduct) {
-                // Update if price differs or merchant is different
-                if ($existingProduct->price != $prod['price'] || $existingProduct->merchant_id !== $merchantId) {
+                // Update if price differs or merchant is different or thumbnail changed
+                if ($existingProduct->price != $prod['price'] || $existingProduct->merchant_id !== $merchantId || $existingProduct->thumbnail !== $thumbnailUrl) {
                     DB::table('products')->where('id', $existingProduct->id)->update([
                         'price' => $prod['price'],
                         'price_type' => $prod['price_type'],
                         'merchant_id' => $merchantId,
+                        'thumbnail' => $thumbnailUrl,
                         'updated_at' => now(),
                     ]);
                     $updatedProducts++;
@@ -191,6 +207,7 @@ class AdmsCatalogSeeder extends Seeder
                     'short_description' => $prod['desc'],
                     'full_description' => '<p>' . $prod['desc'] . '</p>',
                     'status' => 'active',
+                    'thumbnail' => $thumbnailUrl,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

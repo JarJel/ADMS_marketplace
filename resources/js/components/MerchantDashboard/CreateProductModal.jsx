@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Package, Upload, X, ArrowLeft } from 'lucide-react';
+import Toast from '../Toast';
 
-export default function CreateProductModal({ token, isOpen, onClose, fetchProducts }) {
+export default function CreateProductModal({ token, isOpen, onClose, fetchProducts, product }) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState(null);
@@ -18,6 +19,36 @@ export default function CreateProductModal({ token, isOpen, onClose, fetchProduc
   });
   const [thumbnail, setThumbnail] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+
+  useEffect(() => {
+    if (product && isOpen) {
+      setFormData({
+        title: product.title || '',
+        slug: product.slug || '',
+        category_id: product.category_id || '',
+        price: product.price ? Math.floor(product.price) : '',
+        price_type: product.price_type || 'starting_from',
+        short_description: product.short_description || '',
+        full_description: product.full_description || '',
+        stock: product.stock || '',
+      });
+      setPreviewUrl(product.thumbnail || null);
+    } else if (!product && isOpen) {
+      setFormData({
+        title: '',
+        slug: '',
+        category_id: '',
+        price: '',
+        price_type: 'starting_from',
+        short_description: '',
+        full_description: '',
+        stock: '',
+      });
+      setPreviewUrl(null);
+    }
+    setThumbnail(null);
+    setMsg(null);
+  }, [product, isOpen]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -65,9 +96,14 @@ export default function CreateProductModal({ token, isOpen, onClose, fetchProduc
     if (thumbnail) {
       data.append('thumbnail', thumbnail);
     }
+    
+    if (product) {
+      data.append('_method', 'PUT');
+    }
 
     try {
-      const res = await fetch('/api/merchant/products', {
+      const url = product ? `/api/merchant/products/${product.id}` : '/api/merchant/products';
+      const res = await fetch(url, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -78,7 +114,7 @@ export default function CreateProductModal({ token, isOpen, onClose, fetchProduc
       const result = await res.json();
 
       if (res.ok && result.success) {
-        setMsg({ type: 'success', text: 'Produk digital berhasil ditambahkan dan sudah live!' });
+        setMsg({ type: 'success', text: product ? 'Produk berhasil diubah!' : 'Produk digital berhasil ditambahkan dan sudah live!' });
         setTimeout(() => {
           fetchProducts();
           onClose();
@@ -102,28 +138,26 @@ export default function CreateProductModal({ token, isOpen, onClose, fetchProduc
           <div>
             <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
               <Package className="text-indigo-600" />
-              Tambah Produk Digital
+              {product ? 'Edit Produk Digital' : 'Tambah Produk Baru'}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">Lengkapi informasi produk digital, lisensi, atau kursus Anda.</p>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                {product ? 'Perbarui informasi produk Anda' : 'Lengkapi informasi produk digital yang ingin Anda jual'}
+            </p>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 text-slate-400 hover:text-slate-700 rounded-full transition-colors cursor-pointer"
+            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
           >
-            <X size={24} />
+            <X size={20} />
           </button>
         </div>
 
         <div className="p-4 sm:p-8 space-y-4 sm:space-y-6">
-          {msg && (
-            <div className={`p-4 rounded-xl text-sm border font-medium ${
-                msg.type === 'success' 
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
-                    : 'bg-red-50 border-red-200 text-red-700'
-            }`}>
-                {msg.text}
-            </div>
-          )}
+          <Toast 
+              message={msg?.text} 
+              type={msg?.type} 
+              onClose={() => setMsg(null)} 
+          />
 
           <form onSubmit={handleSubmit} className="space-y-6">
         
@@ -178,7 +212,7 @@ export default function CreateProductModal({ token, isOpen, onClose, fetchProduc
                     <span className="text-xs text-slate-500 text-center">Format JPG, PNG (Max 2MB)</span>
                     <label className="mt-3 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer hover:bg-slate-50 transition-colors">
                       Pilih Gambar
-                      <input type="file" name="thumbnail" accept="image/jpeg,image/png,image/jpg" className="hidden" onChange={handleFileChange} required />
+                      <input type="file" name="thumbnail" accept="image/jpeg,image/png,image/jpg" className="hidden" onChange={handleFileChange} required={!product} />
                     </label>
                   </>
                 )}
@@ -248,10 +282,16 @@ export default function CreateProductModal({ token, isOpen, onClose, fetchProduc
           <button 
             type="submit" 
             disabled={loading}
-            className="px-6 py-2.5 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all disabled:opacity-70 flex items-center gap-2"
+            className="px-6 py-2.5 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-colors disabled:opacity-70 flex items-center gap-2"
           >
-            {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span> : null}
-            {loading ? 'Menyimpan...' : 'Simpan Produk Digital'}
+            {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Menyimpan...
+                </>
+              ) : (
+                product ? 'Simpan Perubahan' : 'Terbitkan Produk'
+              )}
           </button>
         </div>
 

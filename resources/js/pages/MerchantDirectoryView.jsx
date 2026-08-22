@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MapPin, CheckCircle, Store, AlertCircle, Phone, ArrowLeft } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import SearchBar from '../components/SearchBar';
 
 export default function MerchantDirectoryView({ user, token, onNavigate, darkMode, setDarkMode, onLogout, cartCount = 0, wishlistCount = 0, notifications = [], setNotifications }) {
     const [merchants, setMerchants] = useState([]);
@@ -87,19 +88,30 @@ export default function MerchantDirectoryView({ user, token, onNavigate, darkMod
                         Temukan berbagai produk digital dan jasa dari penjual terpercaya kami yang telah diverifikasi sesuai syariat dan memiliki reputasi terbaik.
                     </p>
 
-                    <div className="max-w-xl mx-auto pt-4">
-                        <div className="relative shadow-xl rounded-2xl border-2 border-slate-300 dark:border-[#174256] bg-white dark:bg-[#0F3040] overflow-hidden focus-within:ring-2 focus-within:ring-[#FFBF00] focus-within:border-[#FFBF00] transition-all">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Search className="h-4 w-4 text-[#FFBF00]" />
-                            </div>
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                    <div className="max-w-lg mx-auto mt-4 relative flex items-center rounded-2xl p-1.5 pl-4 shadow-xl border-2 bg-white dark:bg-[#0F3040] border-slate-300 dark:border-[#174256] text-slate-900 dark:text-white">
+                        <div className="flex-1 min-w-0 pr-2">
+                            <SearchBar 
+                                onSelect={(item) => {
+                                    if (item.type === 'merchant') {
+                                        setSearchQuery(item.title);
+                                    } else {
+                                        setSearchQuery(item.title);
+                                    }
+                                }}
                                 placeholder="Cari nama toko, deskripsi, atau lokasi..."
-                                className="block w-full pl-10 pr-4 py-3 bg-transparent text-xs text-slate-900 dark:text-white placeholder-slate-400 border-0 focus:outline-none focus:ring-0 font-medium"
+                                apiEndpoint="/api/public/search-all"
+                                queryParam="q"
+                                onSearchChange={(val) => setSearchQuery(val)}
+                                containerClassName="flex items-center w-full"
+                                inputClassName="w-full bg-transparent text-slate-900 dark:text-white focus:outline-none text-xs sm:text-sm placeholder-slate-400 font-medium truncate"
                             />
                         </div>
+                        <button 
+                            onClick={() => {}}
+                            className="shrink-0 bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] text-xs font-black px-4 sm:px-5 py-2.5 rounded-xl active:scale-95 transition-all shadow-lg shadow-[#FFBF00]/20 cursor-pointer uppercase tracking-wider"
+                        >
+                            Cari
+                        </button>
                     </div>
                 </div>
 

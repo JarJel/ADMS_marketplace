@@ -4,6 +4,17 @@ import CreateProductModal from './CreateProductModal';
 
 export default function ProductsTab({ products, handleDeleteProduct, fetchProducts, token }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const handleEditClick = (p) => {
+    setSelectedProduct(p);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
 
   return (
     <div className="space-y-6">
@@ -13,7 +24,7 @@ export default function ProductsTab({ products, handleDeleteProduct, fetchProduc
           Kelola Produk Digital
         </h2>
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => { setSelectedProduct(null); setIsModalOpen(true); }}
           className="flex items-center gap-2 bg-[#FFBF00] hover:bg-amber-400 text-[#0F3040] text-sm font-black py-2.5 px-4 rounded-xl transition-all shadow-md shadow-[#FFBF00]/20 uppercase tracking-wider"
         >
           <Plus size={18} />
@@ -44,7 +55,11 @@ export default function ProductsTab({ products, handleDeleteProduct, fetchProduc
                         <span className="bg-[#0B2330] border border-[#174256] text-[#FFBF00] px-3 py-1 rounded-full text-xs font-black">{p.stock}</span>
                       </td>
                       <td className="px-6 py-4 flex gap-2 justify-end">
-                        <button className="p-2 text-indigo-400 hover:bg-[#174256] rounded-lg transition-colors cursor-pointer" title="Edit">
+                        <button 
+                          onClick={() => handleEditClick(p)}
+                          className="p-2 text-indigo-400 hover:bg-[#174256] rounded-lg transition-colors cursor-pointer" 
+                          title="Edit"
+                        >
                           <Edit size={18} />
                         </button>
                         <button 
@@ -72,7 +87,11 @@ export default function ProductsTab({ products, handleDeleteProduct, fetchProduc
                   <div className="flex items-center justify-between pt-2 border-t border-[#174256]/60">
                     <p className="text-sm font-black text-emerald-400">Rp{parseFloat(p.price || 0).toLocaleString('id-ID')}</p>
                     <div className="flex gap-1.5">
-                      <button className="p-1.5 text-indigo-400 hover:bg-[#174256] rounded-lg transition-colors cursor-pointer" title="Edit">
+                      <button 
+                        onClick={() => handleEditClick(p)}
+                        className="p-1.5 text-indigo-400 hover:bg-[#174256] rounded-lg transition-colors cursor-pointer" 
+                        title="Edit"
+                      >
                         <Edit size={16} />
                       </button>
                       <button 
@@ -98,10 +117,11 @@ export default function ProductsTab({ products, handleDeleteProduct, fetchProduc
       </div>
 
       <CreateProductModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
         token={token}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
         fetchProducts={fetchProducts}
+        product={selectedProduct}
       />
     </div>
   );

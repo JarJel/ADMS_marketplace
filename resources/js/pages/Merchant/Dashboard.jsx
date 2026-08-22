@@ -5,6 +5,7 @@ import ProductsTab from '../../components/MerchantDashboard/ProductsTab';
 import OrdersTab from '../../components/MerchantDashboard/OrdersTab';
 import OrderHistoryTab from '../../components/MerchantDashboard/OrderHistoryTab';
 import AdsTab from '../../components/MerchantDashboard/AdsTab';
+import Toast from '../../components/Toast';
 
 export default function MerchantDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode }) {
     const getInitialTab = () => {
@@ -45,6 +46,7 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
     const [accNumber, setAccNumber] = useState('');
     const [payoutMsg, setPayoutMsg] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+    const [toastMsg, setToastMsg] = useState(null);
 
     useEffect(() => {
         if (activeTab === 'overview') {
@@ -148,14 +150,20 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
     };
 
     const handleDeleteProduct = async (id) => {
-        if (!confirm('Apakah Anda yakin ingin menghapus produk ini?')) return;
         try {
             const res = await fetch(`/api/merchant/products/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            if (res.ok) fetchProducts();
-        } catch { }
+            if (res.ok) {
+                fetchProducts();
+                setToastMsg({ type: 'success', text: 'Produk berhasil dihapus!' });
+            } else {
+                setToastMsg({ type: 'error', text: 'Gagal menghapus produk.' });
+            }
+        } catch { 
+            setToastMsg({ type: 'error', text: 'Terjadi kesalahan jaringan.' });
+        }
     };
 
     const handlePayoutRequest = async (e) => {
@@ -258,6 +266,11 @@ export default function MerchantDashboard({ user, token, onLogout, onNavigate, d
                     )}
                 </>
             )}
+            <Toast 
+                message={toastMsg?.text} 
+                type={toastMsg?.type} 
+                onClose={() => setToastMsg(null)} 
+            />
         </MerchantLayout>
     );
 }

@@ -5,7 +5,8 @@ import { AdminAnalytics } from './AdminAnalytics';
 import { AdminProducts } from './AdminProducts';
 import { AdminAds } from './AdminAds';
 import { AdminPackageSubscriptions } from './AdminPackageSubscriptions';
-import { CheckCircle2, Clock, Users, Store, Package, ReceiptText, BarChart3, TrendingUp, Percent, Save, Info, HandCoins, Megaphone, Sparkles, Banknote, CreditCard, Settings, Shield, FolderOpen, Tag, Wrench, Check, X, Download, Menu } from 'lucide-react';
+import Toast from '../../components/Toast';
+import { CheckCircle2, Clock, Users, Store, Package, ReceiptText, BarChart3, TrendingUp, Percent, Save, Info, HandCoins, Megaphone, Sparkles, Banknote, CreditCard, Settings, Shield, FolderOpen, Tag, Wrench, Check, X, Download, Menu, Plus, Trash2 } from 'lucide-react';
 
 export default function AdminDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode, cartCount, wishlistCount, notifications, initialTab }) {
     const [activeTab, setActiveTab] = useState(initialTab || 'dashboard');
@@ -22,8 +23,11 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
     const [pendingWithdrawals, setPendingWithdrawals] = useState([]);
     const [auditLogs, setAuditLogs] = useState([]);
     
-    const [loading, setLoading] = useState(true);
+    const [selectedRole, setSelectedRole] = useState(null);
     const [actionMsg, setActionMsg] = useState(null);
+    const [toastMessage, setToastMessage] = useState(null);
+    
+    const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
     const [usersLoading, setUsersLoading] = useState(false);
     const [adminStats, setAdminStats] = useState(null);
@@ -38,6 +42,8 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
 
     const [categories, setCategories] = useState([]);
     const [categoriesLoading, setCategoriesLoading] = useState(false);
+    const [editingCategory, setEditingCategory] = useState(null);
+    const [savingCategory, setSavingCategory] = useState(false);
     const [transactions, setTransactions] = useState([]);
     const [transactionsLoading, setTransactionsLoading] = useState(false);
     const [packages, setPackages] = useState([]);
@@ -366,8 +372,14 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
         e.preventDefault();
         setSavingPackage(true);
         try {
-            const res = await fetch(`/api/admin/packages/${editingPackage.id}`, {
-                method: 'PUT',
+            const isEditing = !!editingPackage.id;
+            const url = isEditing 
+                ? `/api/admin/packages/${editingPackage.id}`
+                : `/api/admin/packages`;
+            const method = isEditing ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method: method,
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -383,14 +395,17 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
             });
             const data = await res.json();
             if (data.success) {
-                setPackages(prev => prev.map(p => p.id === editingPackage.id ? data.data : p));
+                setPackages(prev => isEditing 
+                    ? prev.map(p => p.id === data.data.id ? data.data : p)
+                    : [...prev, data.data]
+                );
                 setEditingPackage(null);
-                alert('Paket iklan berhasil diperbarui!');
+                setToastMessage({ type: 'success', text: isEditing ? 'Paket iklan berhasil diperbarui!' : 'Paket iklan berhasil ditambahkan!' });
             } else {
-                alert(data.message || 'Gagal memperbarui paket.');
+                setToastMessage({ type: 'error', text: data.message || 'Gagal menyimpan paket.' });
             }
-        } catch (error) {
-            alert('Terjadi kesalahan jaringan.');
+        } catch (err) {
+            setToastMessage({ type: 'error', text: 'Terjadi kesalahan saat menyimpan paket.' });
         } finally {
             setSavingPackage(false);
         }
@@ -403,9 +418,88 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
         }
     };
 
+    const handleDeletePackage = async (id) => {
+        try {
+            const res = await fetch(`/api/admin/packages/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await res.json();
+            if (data.success) {
+                setPackages(prev => prev.filter(p => p.id !== id));
+                setToastMessage({ type: 'success', text: 'Paket berhasil dihapus!' });
+            } else {
+                setToastMessage({ type: 'error', text: data.message || 'Gagal menghapus paket.' });
+            }
+        } catch (err) {
+            setToastMessage({ type: 'error', text: 'Terjadi kesalahan sistem saat menghapus paket.' });
+        }
+    };
+
+    const handleSaveCategory = async (e) => {
+        e.preventDefault();
+        setSavingCategory(true);
+        try {
+            const isEditing = !!editingCategory.id;
+            const url = isEditing 
+                ? `/api/admin/categories/${editingCategory.id}`
+                : `/api/admin/categories`;
+            const method = isEditing ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method: method,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: editingCategory.name,
+                    slug: editingCategory.slug,
+                    type: editingCategory.type
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setCategories(prev => isEditing 
+                    ? prev.map(c => c.id === data.data.id ? {...c, ...data.data} : c)
+                    : [...prev, { ...data.data, products_count: 0, advertisements_count: 0 }]
+                );
+                setEditingCategory(null);
+                setToastMessage({ type: 'success', text: isEditing ? 'Kategori berhasil diperbarui!' : 'Kategori berhasil ditambahkan!' });
+            } else {
+                setToastMessage({ type: 'error', text: data.message || 'Gagal menyimpan kategori.' });
+            }
+        } catch (err) {
+            setToastMessage({ type: 'error', text: 'Terjadi kesalahan saat menyimpan kategori.' });
+        } finally {
+            setSavingCategory(false);
+        }
+    };
+
+    const handleDeleteCategory = async (id) => {
+        try {
+            const res = await fetch(`/api/admin/categories/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await res.json();
+            if (data.success) {
+                setCategories(prev => prev.filter(c => c.id !== id));
+                setToastMessage({ type: 'success', text: 'Kategori berhasil dihapus!' });
+            } else {
+                setToastMessage({ type: 'error', text: data.message || 'Gagal menghapus kategori.' });
+            }
+        } catch (err) {
+            setToastMessage({ type: 'error', text: 'Terjadi kesalahan sistem saat menghapus kategori.' });
+        }
+    };
+
     return (
         <div className="h-screen bg-[#071922] text-slate-100 font-sans flex overflow-hidden">
-            {/* Sidebar Baru */}
             <AdminSidebar
                 activeItem={activeTab}
                 onNavigate={handleTabChange}
@@ -422,7 +516,6 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
             />
 
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
-                {/* Top Mobile Header */}
                 <header className="lg:hidden flex items-center justify-between px-6 py-4 bg-[#0F3040] border-b border-[#174256]/80 text-white shrink-0 shadow-md">
                     <div className="flex items-center gap-3">
                         <button 
@@ -441,7 +534,6 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                     </div>
                 </header>
 
-                {/* Dashboard Contents */}
                 <main className="flex-1 overflow-y-auto px-6 py-10 bg-[#0B2330] text-slate-100">
                     <div className="max-w-6xl mx-auto">
                         <div className="mb-8 border-b border-[#174256] pb-5">
@@ -461,7 +553,6 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                             </div>
                         )}
 
-                        {/* Rendering Content Berdasarkan activeTab */}
                         {activeTab === 'dashboard' || activeTab === 'overview' ? (
                             <AdminOverview onNavigate={setActiveTab} stats={adminStats} loading={!adminStats} />
                         ) : activeTab === 'analytics' ? (
@@ -633,7 +724,6 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                     </div>
                 ) : activeTab === 'commissions' ? (
                     <div className="relative">
-                        {/* Decorative Background */}
                         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/20 via-slate-900 to-emerald-900/10 pointer-events-none -z-10 rounded-3xl"></div>
                         <div className="absolute -top-20 -right-20 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
                         <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
@@ -650,7 +740,6 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                             </div>
                             
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                {/* Form Section */}
                                 <div className="group bg-gradient-to-br from-slate-900 to-slate-950 p-8 rounded-3xl border border-slate-800/80 hover:border-indigo-500/30 transition-all duration-300 shadow-xl relative overflow-hidden">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none group-hover:scale-150 transition-transform duration-700"></div>
                                     
@@ -700,7 +789,6 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                     </div>
                                 </div>
                                 
-                                {/* Stats Section */}
                                 <div className="group bg-gradient-to-br from-indigo-900 to-purple-900 p-6 md:p-8 rounded-3xl border border-indigo-500/30 relative overflow-hidden shadow-[0_0_40px_rgba(79,70,229,0.15)] flex flex-col justify-center gap-6 hover:-translate-y-1 transition-transform duration-300 h-fit lg:self-center">
                                     <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-purple-500/30 rounded-full blur-3xl group-hover:bg-purple-500/40 transition-all duration-500"></div>
                                     <div className="absolute top-0 right-0 p-6 opacity-30 group-hover:opacity-100 transition-opacity">
@@ -848,10 +936,23 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                     </div>
                 ) : activeTab === 'categories' ? (
                     <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-                        <h2 className="text-2xl font-black text-white flex items-center gap-3 mb-6">
-                            <Tag className="w-10 h-10 p-2 bg-indigo-500/20 rounded-xl text-indigo-400" />
-                            Manajemen Kategori
-                        </h2>
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                            <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                                <Tag className="w-10 h-10 p-2 bg-indigo-500/20 rounded-xl text-indigo-400" />
+                                Manajemen Kategori
+                            </h2>
+                            <button
+                                onClick={() => setEditingCategory({
+                                    name: '',
+                                    slug: '',
+                                    type: 'product'
+                                })}
+                                className="flex items-center gap-2 px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-bold rounded-lg transition-colors"
+                            >
+                                <Plus className="w-4 h-4" />
+                                Tambah Kategori
+                            </button>
+                        </div>
                         {categoriesLoading ? (
                             <div className="flex justify-center py-16"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div></div>
                         ) : (
@@ -864,11 +965,12 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                             <th className="py-3 px-5 font-semibold">Tipe</th>
                                             <th className="py-3 px-5 font-semibold text-right">Produk</th>
                                             <th className="py-3 px-5 font-semibold text-right">Iklan</th>
+                                            <th className="py-3 px-5 font-semibold text-right">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {categories.length === 0 ? (
-                                            <tr><td colSpan="5" className="py-10 text-center text-slate-500">Belum ada kategori.</td></tr>
+                                            <tr><td colSpan="6" className="py-10 text-center text-slate-500">Belum ada kategori.</td></tr>
                                         ) : categories.map(cat => (
                                             <tr key={cat.id} className="border-b border-slate-800/30 hover:bg-slate-800/30 transition-colors">
                                                 <td className="py-3 px-5 font-semibold text-slate-200">{cat.name}</td>
@@ -880,10 +982,53 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                                 </td>
                                                 <td className="py-3 px-5 text-right text-slate-300 font-bold">{cat.products_count ?? 0}</td>
                                                 <td className="py-3 px-5 text-right text-slate-300 font-bold">{cat.advertisements_count ?? 0}</td>
+                                                <td className="py-3 px-5 text-right">
+                                                    <button onClick={() => handleDeleteCategory(cat.id)} className="px-3 py-1.5 rounded-lg bg-red-500 text-white text-[10px] font-bold hover:bg-red-600 transition-colors inline-flex items-center gap-1.5">
+                                                        <Trash2 className="w-3 h-3" />
+                                                        Hapus
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
+                            </div>
+                        )}
+
+                        {editingCategory && (
+                            <div className="fixed inset-0 z-[100] p-4 sm:p-8 bg-slate-900/80 backdrop-blur-sm overflow-y-auto">
+                                <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl flex flex-col mx-auto mt-4 sm:mt-10 mb-8">
+                                    <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                                        <h3 className="text-lg font-bold text-white">{editingCategory.id ? 'Edit Kategori' : 'Tambah Kategori'}</h3>
+                                        <button type="button" onClick={() => setEditingCategory(null)} className="text-slate-500 hover:text-white"><X className="w-5 h-5" /></button>
+                                    </div>
+                                    <form onSubmit={handleSaveCategory} className="p-6 space-y-4">
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-400 mb-1">Nama Kategori</label>
+                                            <input type="text" value={editingCategory.name} onChange={e => {
+                                                const name = e.target.value;
+                                                const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                                                setEditingCategory({...editingCategory, name, slug: editingCategory.id ? editingCategory.slug : slug});
+                                            }} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500" required />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-400 mb-1">Slug</label>
+                                            <input type="text" value={editingCategory.slug} onChange={e => setEditingCategory({...editingCategory, slug: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500" required />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-400 mb-1">Tipe Kategori</label>
+                                            <select value={editingCategory.type} onChange={e => setEditingCategory({...editingCategory, type: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500" required>
+                                                <option value="product">Produk</option>
+                                                <option value="advertisement">Iklan</option>
+                                            </select>
+                                        </div>
+                                        <div className="flex items-center justify-end pt-4 border-t border-slate-800/60 mt-4">
+                                            <button type="submit" disabled={savingCategory} className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold px-6 py-2 rounded-lg transition-colors disabled:opacity-50">
+                                                {savingCategory ? 'Menyimpan...' : 'Simpan'}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -948,10 +1093,26 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                     </div>
                 ) : activeTab === 'ads-packages' ? (
                     <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-                        <h2 className="text-2xl font-black text-white flex items-center gap-3 mb-6">
-                            <Package className="w-10 h-10 p-2 bg-amber-500/20 rounded-xl text-amber-400" />
-                            Paket Iklan
-                        </h2>
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                            <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                                <Package className="w-10 h-10 p-2 bg-amber-500/20 rounded-xl text-amber-400" />
+                                Paket Iklan
+                            </h2>
+                            <button
+                                onClick={() => setEditingPackage({
+                                    name: '',
+                                    price: 0,
+                                    duration_days: 7,
+                                    type: 'premium',
+                                    benefits: '',
+                                    is_active: true
+                                })}
+                                className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-900 text-sm font-bold rounded-lg transition-colors"
+                            >
+                                <Plus className="w-4 h-4" />
+                                Tambah Paket
+                            </button>
+                        </div>
                         {packagesLoading ? (
                             <div className="flex justify-center py-16"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div></div>
                         ) : packages.length === 0 ? (
@@ -979,9 +1140,15 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                             <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${pkg.is_active ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
                                                 {pkg.is_active ? 'Aktif' : 'Nonaktif'}
                                             </span>
-                                            <button onClick={() => setEditingPackage({...pkg, benefits: pkg.benefits.join('\n')})} className="text-xs font-bold text-amber-400 hover:text-amber-300">
-                                                Edit Paket
-                                            </button>
+                                            <div className="flex items-center gap-2">
+                                                <button onClick={() => handleDeletePackage(pkg.id)} className="px-4 py-2 rounded-lg bg-red-500 text-white text-xs font-bold hover:bg-red-600 transition-colors flex items-center gap-1.5">
+                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                    Hapus
+                                                </button>
+                                                <button onClick={() => setEditingPackage({...pkg, benefits: pkg.benefits.join('\n')})} className="px-4 py-2 rounded-lg bg-amber-500 text-slate-900 text-xs font-bold hover:bg-amber-600 transition-colors">
+                                                    Edit Paket
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -989,11 +1156,11 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                         )}
 
                         {editingPackage && (
-                            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
-                                <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+                            <div className="fixed inset-0 z-[100] p-4 sm:p-8 bg-slate-900/80 backdrop-blur-sm overflow-y-auto">
+                                <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl flex flex-col mx-auto mt-4 sm:mt-10 mb-8">
                                     <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
-                                        <h3 className="text-lg font-bold text-white">Edit Paket Iklan</h3>
-                                        <button onClick={() => setEditingPackage(null)} className="text-slate-500 hover:text-white"><X className="w-5 h-5" /></button>
+                                        <h3 className="text-lg font-bold text-white">{editingPackage.id ? 'Edit Paket Iklan' : 'Tambah Paket Iklan'}</h3>
+                                        <button type="button" onClick={() => setEditingPackage(null)} className="text-slate-500 hover:text-white"><X className="w-5 h-5" /></button>
                                     </div>
                                     <form onSubmit={handleSavePackage} className="p-6 space-y-4">
                                         <div>
@@ -1002,9 +1169,18 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
+                                                <label className="block text-xs font-bold text-slate-400 mb-1">Tipe Paket</label>
+                                                <select value={editingPackage.type} onChange={e => setEditingPackage({...editingPackage, type: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-amber-500" required>
+                                                    <option value="free">Free</option>
+                                                    <option value="premium">Premium</option>
+                                                </select>
+                                            </div>
+                                            <div>
                                                 <label className="block text-xs font-bold text-slate-400 mb-1">Harga (Rp)</label>
                                                 <input type="number" min="0" value={editingPackage.price} onChange={e => setEditingPackage({...editingPackage, price: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-amber-500" required />
                                             </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-xs font-bold text-slate-400 mb-1">Durasi Tayang (Hari)</label>
                                                 <input type="number" min="1" value={editingPackage.duration_days} onChange={e => setEditingPackage({...editingPackage, duration_days: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-amber-500" required />
@@ -1014,7 +1190,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                                             <label className="block text-xs font-bold text-slate-400 mb-1">Fitur/Benefits (Pisahkan dengan baris baru)</label>
                                             <textarea rows="4" value={editingPackage.benefits} onChange={e => setEditingPackage({...editingPackage, benefits: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-amber-500" placeholder="Misal:&#10;Masa tayang 30 hari&#10;Tampil di Headline"></textarea>
                                         </div>
-                                        <div className="flex items-center justify-between pt-2">
+                                        <div className="flex items-center justify-between pt-4 border-t border-slate-800/60 mt-4">
                                             <label className="flex items-center gap-2 cursor-pointer">
                                                 <input type="checkbox" checked={editingPackage.is_active} onChange={e => setEditingPackage({...editingPackage, is_active: e.target.checked})} className="w-4 h-4 rounded bg-slate-900 border-slate-700 text-amber-500 focus:ring-amber-500" />
                                                 <span className="text-sm font-bold text-slate-300">Paket Aktif</span>
@@ -1095,6 +1271,12 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                     </div>
                 </main>
             </div>
+            {/* Toast Notification */}
+            <Toast 
+                message={toastMessage?.text} 
+                type={toastMessage?.type} 
+                onClose={() => setToastMessage(null)} 
+            />
         </div>
     );
 }

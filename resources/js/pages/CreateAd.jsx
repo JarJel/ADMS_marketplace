@@ -344,7 +344,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
 
                             {/* Form Step Content */}
                             <div className="p-6 sm:p-8 min-h-[400px]">
-                                <div className="flex items-center gap-2 mb-8 text-[#FFBF00] text-sm font-black uppercase tracking-wide">
+                                <div className="flex items-center gap-2 mb-8 text-[#0F3040] text-sm font-black uppercase tracking-wide">
                                     <Info className="w-5 h-5" />
                                     LANGKAH {step}: {stepTitles[step-1]}
                                 </div>

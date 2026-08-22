@@ -117,7 +117,32 @@ class AdController extends Controller
 
             // Save images
             foreach ($images as $key => $imageFile) {
-                $path = $imageFile->store('ads', 'public');
+                $extension = strtolower($imageFile->getClientOriginalExtension());
+                $filename = \Illuminate\Support\Str::random(40) . '.webp';
+                $path = 'ads/' . $filename;
+                
+                $sourceImage = null;
+                if (in_array($extension, ['jpg', 'jpeg'])) {
+                    $sourceImage = @imagecreatefromjpeg($imageFile->getPathname());
+                } elseif ($extension === 'png') {
+                    $sourceImage = @imagecreatefrompng($imageFile->getPathname());
+                    if ($sourceImage) {
+                        imagepalettetotruecolor($sourceImage);
+                        imagealphablending($sourceImage, true);
+                        imagesavealpha($sourceImage, true);
+                    }
+                }
+                
+                if ($sourceImage) {
+                    ob_start();
+                    imagewebp($sourceImage, null, 80);
+                    $imageContent = ob_get_clean();
+                    Storage::disk('public')->put($path, $imageContent);
+                    imagedestroy($sourceImage);
+                } else {
+                    $path = $imageFile->store('ads', 'public');
+                }
+
                 $media = new Media([
                     'url' => Storage::url($path),
                     'type' => 'ad_image',

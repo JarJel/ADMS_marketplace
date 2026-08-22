@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import Navbar from '../components/Navbar';
-import { 
-    Search, ChevronDown, Plus, Minus, MessageCircle, ShoppingCart, 
-    CreditCard, Package, User, Store, RefreshCcw, ShieldCheck 
+import {
+    Search, ChevronDown, Plus, Minus, MessageCircle, ShoppingCart,
+    CreditCard, Package, User, Store, RefreshCcw, ShieldCheck
 } from 'lucide-react';
 
 export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavigate, onLogout, cartCount = 0, wishlistCount = 0, notifications = [], setNotifications }) {
@@ -95,8 +95,8 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
         if (searchQuery.trim()) {
             const lowerQuery = searchQuery.toLowerCase();
             result = result.map(cat => {
-                const matchingItems = cat.items.filter(item => 
-                    item.q.toLowerCase().includes(lowerQuery) || 
+                const matchingItems = cat.items.filter(item =>
+                    item.q.toLowerCase().includes(lowerQuery) ||
                     item.a.toLowerCase().includes(lowerQuery)
                 );
                 return { ...cat, items: matchingItems };
@@ -113,13 +113,13 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
 
     return (
         <div className="min-h-screen bg-slate-100 dark:bg-[#071922] text-slate-900 dark:text-white font-sans pb-20 transition-colors duration-300">
-            <Navbar 
-                user={user} 
-                token={token} 
-                darkMode={darkMode} 
-                setDarkMode={setDarkMode} 
+            <Navbar
+                user={user}
+                token={token}
+                darkMode={darkMode}
+                setDarkMode={setDarkMode}
                 onLogout={onLogout}
-                onNavigate={onNavigate} 
+                onNavigate={onNavigate}
                 currentView="help_center"
                 cartCount={cartCount}
                 wishlistCount={wishlistCount}
@@ -136,36 +136,21 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                     <p className="text-base sm:text-lg max-w-2xl mx-auto leading-relaxed text-slate-600 dark:text-slate-300">
                         Temukan jawaban atas pertanyaan seputar pembelian, pembayaran, produk digital, akun, dan kendala penggunaan ADMS Marketplace.
                     </p>
-
-                    {/* 3. Search bantuan */}
-                    <div className="relative max-w-2xl mx-auto mt-8 group">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#FFBF00]">
-                            <Search className="h-5 w-5" />
-                        </div>
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Bagaimana kami dapat membantu?"
-                            className="block w-full pl-11 pr-4 py-4 text-sm sm:text-base rounded-2xl border-2 border-slate-300 dark:border-[#174256] focus:outline-none focus:ring-2 focus:ring-[#FFBF00] focus:border-[#FFBF00] bg-white dark:bg-[#071922] text-slate-900 dark:text-white placeholder-slate-400 shadow-xl transition-all font-medium"
-                        />
-                    </div>
                 </div>
             </header>
 
             <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                
+
                 {/* Category Navigation Tabs */}
                 {!searchQuery && (
                     <div className="mb-12">
                         <div className="flex flex-wrap items-center justify-center gap-3">
                             <button
                                 onClick={() => setActiveCategory('Semua')}
-                                className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap cursor-pointer border-2 ${
-                                    activeCategory === 'Semua'
+                                className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap cursor-pointer border-2 ${activeCategory === 'Semua'
                                         ? 'bg-[#FFBF00] text-[#0F3040] font-black border-[#FFBF00] shadow-lg shadow-[#FFBF00]/20'
                                         : 'bg-white dark:bg-[#071922] text-slate-700 dark:text-slate-300 border-slate-300 dark:border-[#174256] hover:text-[#FFBF00]'
-                                }`}
+                                    }`}
                             >
                                 Semua Kategori
                             </button>
@@ -176,11 +161,10 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                                     <button
                                         key={idx}
                                         onClick={() => setActiveCategory(cat.category)}
-                                        className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap cursor-pointer border-2 ${
-                                            isActive 
+                                        className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap cursor-pointer border-2 ${isActive
                                                 ? 'bg-[#FFBF00] text-[#0F3040] font-black border-[#FFBF00] shadow-lg shadow-[#FFBF00]/20'
                                                 : 'bg-white dark:bg-[#071922] text-slate-700 dark:text-slate-300 border-slate-300 dark:border-[#174256] hover:text-[#FFBF00]'
-                                        }`}
+                                            }`}
                                     >
                                         <Icon className="w-4 h-4 text-[#FFBF00]" />
                                         {cat.category}
@@ -197,54 +181,51 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                         filteredData.map((cat, catIdx) => {
                             const Icon = cat.icon;
                             return (
-                            <section key={catIdx} className="space-y-4">
-                                {/* Only show Category header if not searching, or if searching we can still show it */}
-                                <h2 className="text-xl sm:text-2xl font-black flex items-center gap-2 mb-6 text-[#0F3040] dark:text-white">
-                                    <Icon className="w-6 h-6 text-[#FFBF00]" />
-                                    {cat.category}
-                                </h2>
-                                
-                                <div className="space-y-3">
-                                    {cat.items.map((item, itemIdx) => {
-                                        const isOpen = openFaqs[`${catIdx}-${itemIdx}`];
-                                        return (
-                                            <div 
-                                                key={itemIdx}
-                                                className="border-2 border-slate-300 dark:border-[#174256] rounded-2xl overflow-hidden transition-all duration-300 bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white hover:border-[#FFBF00] shadow-md dark:shadow-lg"
-                                            >
-                                                <button
-                                                    onClick={() => toggleFaq(catIdx, itemIdx)}
-                                                    className="w-full px-6 py-5 flex items-start sm:items-center justify-between gap-4 focus:outline-none text-left cursor-pointer"
-                                                    aria-expanded={isOpen}
+                                <section key={catIdx} className="space-y-4">
+                                    {/* Only show Category header if not searching, or if searching we can still show it */}
+                                    <h2 className="text-xl sm:text-2xl font-black flex items-center gap-2 mb-6 text-[#0F3040] dark:text-white">
+                                        <Icon className="w-6 h-6 text-[#FFBF00]" />
+                                        {cat.category}
+                                    </h2>
+
+                                    <div className="space-y-3">
+                                        {cat.items.map((item, itemIdx) => {
+                                            const isOpen = openFaqs[`${catIdx}-${itemIdx}`];
+                                            return (
+                                                <div
+                                                    key={itemIdx}
+                                                    className="border-2 border-slate-300 dark:border-[#174256] rounded-2xl overflow-hidden transition-all duration-300 bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white hover:border-[#FFBF00] shadow-md dark:shadow-lg"
                                                 >
-                                                    <h3 className={`font-black text-sm sm:text-base leading-snug transition-colors ${
-                                                        isOpen ? 'text-[#FFBF00]' : 'text-[#0F3040] dark:text-white'
-                                                    }`}>
-                                                        {item.q}
-                                                    </h3>
-                                                    <div className={`mt-0.5 sm:mt-0 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${
-                                                        isOpen 
-                                                            ? 'bg-[#FFBF00] text-[#0F3040]'
-                                                            : 'bg-slate-100 dark:bg-[#071922] text-[#FFBF00] border border-slate-300 dark:border-[#174256]'
-                                                    }`}>
-                                                        {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-                                                    </div>
-                                                </button>
-                                                
-                                                <div 
-                                                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                                                        isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
-                                                    }`}
-                                                >
-                                                    <div className="px-6 pb-6 pt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-[#174256]/50 mt-2">
-                                                        <p>{item.a}</p>
+                                                    <button
+                                                        onClick={() => toggleFaq(catIdx, itemIdx)}
+                                                        className="w-full px-6 py-5 flex items-start sm:items-center justify-between gap-4 focus:outline-none text-left cursor-pointer"
+                                                        aria-expanded={isOpen}
+                                                    >
+                                                        <h3 className={`font-black text-sm sm:text-base leading-snug transition-colors ${isOpen ? 'text-[#FFBF00]' : 'text-[#0F3040] dark:text-white'
+                                                            }`}>
+                                                            {item.q}
+                                                        </h3>
+                                                        <div className={`mt-0.5 sm:mt-0 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen
+                                                                ? 'bg-[#FFBF00] text-[#0F3040]'
+                                                                : 'bg-slate-100 dark:bg-[#071922] text-[#FFBF00] border border-slate-300 dark:border-[#174256]'
+                                                            }`}>
+                                                            {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                                                        </div>
+                                                    </button>
+
+                                                    <div
+                                                        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                                                            }`}
+                                                    >
+                                                        <div className="px-6 pb-6 pt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-300 border-t border-slate-200 dark:border-[#174256]/50 mt-2">
+                                                            <p>{item.a}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                            </section>
+                                            )
+                                        })}
+                                    </div>
+                                </section>
                             );
                         })
                     ) : (
@@ -256,7 +237,7 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                             <p className={`mb-8 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                                 Coba gunakan kata kunci lain atau hubungi tim dukungan kami.
                             </p>
-                            <button 
+                            <button
                                 onClick={handleWhatsAppClick}
                                 className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1DA851] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-green-500/20"
                             >
@@ -268,11 +249,10 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                 </div>
 
                 {/* 5. Section Customer Support */}
-                <div className={`mt-20 p-8 sm:p-10 rounded-3xl border flex flex-col sm:flex-row items-center justify-between gap-8 text-center sm:text-left ${
-                    darkMode 
-                        ? 'bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700/50' 
+                <div className={`mt-20 p-8 sm:p-10 rounded-3xl border flex flex-col sm:flex-row items-center justify-between gap-8 text-center sm:text-left ${darkMode
+                        ? 'bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700/50'
                         : 'bg-gradient-to-br from-indigo-50/50 to-white border-indigo-100 shadow-sm'
-                }`}>
+                    }`}>
                     <div className="max-w-xl">
                         <h4 className={`text-2xl font-extrabold tracking-tight mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                             Masih Membutuhkan Bantuan?
@@ -282,7 +262,7 @@ export default function HelpCenter({ user, token, darkMode, setDarkMode, onNavig
                         </p>
                     </div>
                     <div className="flex-shrink-0 w-full sm:w-auto">
-                        <button 
+                        <button
                             onClick={handleWhatsAppClick}
                             className="w-full sm:w-auto flex items-center justify-center gap-2.5 bg-[#25D366] hover:bg-[#1DA851] text-white px-8 py-4 rounded-xl font-bold text-sm sm:text-base transition-all shadow-lg shadow-green-500/20 active:scale-[0.98]"
                         >

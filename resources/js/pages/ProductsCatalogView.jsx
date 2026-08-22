@@ -395,7 +395,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                         </button>
                     </form>
 
-                    {/* Price Range inline filter form */}
+                    {/* Price Range inline filter form
                     <form onSubmit={handleApplyPriceFilter} className="flex items-center justify-between gap-1.5 border-2 border-slate-300 dark:border-[#174256] rounded-xl px-2.5 sm:px-3 py-1.5 bg-slate-50 dark:bg-[#071922] focus-within:border-[#FFBF00] focus-within:ring-1 focus-within:ring-[#FFBF00] transition-all w-full xl:w-auto">
                         <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase whitespace-nowrap shrink-0">Harga (Rp):</span>
                         <div className="flex items-center gap-1 min-w-0 flex-1 px-1">
@@ -421,7 +421,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                         >
                             SET
                         </button>
-                    </form>
+                    </form> */}
 
                     {/* Action Controls (Sort, View Mode, Reset) */}
                     <div className="flex items-center gap-2 w-full xl:w-auto justify-between">

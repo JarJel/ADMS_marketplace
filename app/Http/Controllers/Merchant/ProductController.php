@@ -70,7 +70,33 @@ class ProductController extends Controller
         }
 
         // Handle thumbnail upload
-        $path = $request->file('thumbnail')->store('products/thumbnails', 'public');
+        $thumbnailFile = $request->file('thumbnail');
+        $extension = strtolower($thumbnailFile->getClientOriginalExtension());
+        $filename = \Illuminate\Support\Str::random(40) . '.webp';
+        $path = 'products/thumbnails/' . $filename;
+        
+        $sourceImage = null;
+        if (in_array($extension, ['jpg', 'jpeg'])) {
+            $sourceImage = @imagecreatefromjpeg($thumbnailFile->getPathname());
+        } elseif ($extension === 'png') {
+            $sourceImage = @imagecreatefrompng($thumbnailFile->getPathname());
+            if ($sourceImage) {
+                imagepalettetotruecolor($sourceImage);
+                imagealphablending($sourceImage, true);
+                imagesavealpha($sourceImage, true);
+            }
+        }
+        
+        if ($sourceImage) {
+            ob_start();
+            imagewebp($sourceImage, null, 80);
+            $imageContent = ob_get_clean();
+            Storage::disk('public')->put($path, $imageContent);
+            imagedestroy($sourceImage);
+        } else {
+            $path = $thumbnailFile->store('products/thumbnails', 'public');
+        }
+        
         $thumbnailUrl = Storage::url($path);
 
         $product = Product::create([
@@ -144,7 +170,33 @@ class ProductController extends Controller
                 Storage::disk('public')->delete(str_replace('/storage/', '', $product->thumbnail));
             }
 
-            $path = $request->file('thumbnail')->store('products/thumbnails', 'public');
+            $thumbnailFile = $request->file('thumbnail');
+            $extension = strtolower($thumbnailFile->getClientOriginalExtension());
+            $filename = \Illuminate\Support\Str::random(40) . '.webp';
+            $path = 'products/thumbnails/' . $filename;
+            
+            $sourceImage = null;
+            if (in_array($extension, ['jpg', 'jpeg'])) {
+                $sourceImage = @imagecreatefromjpeg($thumbnailFile->getPathname());
+            } elseif ($extension === 'png') {
+                $sourceImage = @imagecreatefrompng($thumbnailFile->getPathname());
+                if ($sourceImage) {
+                    imagepalettetotruecolor($sourceImage);
+                    imagealphablending($sourceImage, true);
+                    imagesavealpha($sourceImage, true);
+                }
+            }
+            
+            if ($sourceImage) {
+                ob_start();
+                imagewebp($sourceImage, null, 80);
+                $imageContent = ob_get_clean();
+                Storage::disk('public')->put($path, $imageContent);
+                imagedestroy($sourceImage);
+            } else {
+                $path = $thumbnailFile->store('products/thumbnails', 'public');
+            }
+            
             $product->thumbnail = Storage::url($path);
         }
 

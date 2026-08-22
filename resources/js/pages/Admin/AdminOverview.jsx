@@ -102,7 +102,7 @@ export const AdminOverview = ({ onNavigate, stats, loading }) => {
         <div className="bg-[#0F3040] p-3.5 sm:p-5 rounded-2xl border border-[#174256] shadow-md flex items-center justify-between gap-2 hover:border-[#FFBF00]/50 transition-all min-w-0">
           <div className="min-w-0 flex-1">
             <p className="text-[10px] sm:text-xs font-bold text-slate-300 uppercase tracking-wider truncate">GMV Total</p>
-            <p className="text-xs sm:text-base font-black text-[#FFBF00] mt-0.5 sm:mt-1 truncate">{fmt(stats?.gmv ?? 0)}</p>
+            <p className="text-lg sm:text-2xl font-black text-[#FFBF00] mt-0.5 sm:mt-1 truncate">{fmt(stats?.gmv ?? 0)}</p>
           </div>
           <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#071922] border border-[#174256] flex items-center justify-center shrink-0">
             <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFBF00]" />
@@ -112,7 +112,7 @@ export const AdminOverview = ({ onNavigate, stats, loading }) => {
         <div className="bg-gradient-to-br from-[#0F3040] to-[#071922] p-4 sm:p-5 rounded-2xl border-2 border-[#FFBF00] shadow-lg flex items-center justify-between col-span-2 relative overflow-hidden min-w-0">
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFBF00]/10 rounded-full blur-xl pointer-events-none"></div>
           <div className="min-w-0 flex-1 pr-2">
-            <p className="text-[10px] sm:text-xs font-black text-[#FFBF00] uppercase tracking-wider truncate">Net Platform Revenue (5%)</p>
+            <p className="text-[10px] sm:text-xs font-black text-[#FFBF00] uppercase tracking-wider truncate">Net Platform Revenue ({stats?.feePercent ?? 5}%)</p>
             <p className="text-lg sm:text-2xl font-black text-white mt-0.5 sm:mt-1 truncate">{fmt(stats?.platformRevenue ?? 0)}</p>
           </div>
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#FFBF00] flex items-center justify-center shadow-lg shadow-[#FFBF00]/20 shrink-0">

@@ -42,6 +42,13 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
         }, 400);
         return () => clearTimeout(handler);
     }, [searchQuery]);
+
+    // Sync from global/navbar search
+    useEffect(() => {
+        if (initialSearchQuery !== undefined && initialSearchQuery !== searchQuery) {
+            setSearchQuery(initialSearchQuery);
+        }
+    }, [initialSearchQuery]);
     const [selectedCategoryId, setSelectedCategoryId] = useState('');
     const [selectedMerchantId, setSelectedMerchantId] = useState(initialMerchantId || '');
     const [minPrice, setMinPrice] = useState('');

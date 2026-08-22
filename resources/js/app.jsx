@@ -237,7 +237,7 @@ function App() {
         };
         window.addEventListener('popstate', handlePopState);
         return () => window.removeEventListener('popstate', handlePopState);
-    }, []);
+    }, [user, token]);
 
     const routeByPath = (path, currentUser = user) => {
         if (path === '/login') {
@@ -260,7 +260,15 @@ function App() {
             setView('create_ad');
         } else if (path === '/iklan-gratis') {
             setView('classifieds');
+        } else if (path.startsWith('/iklan/')) {
+            const slug = path.split('/')[2];
+            window.initialAdSlug = slug;
+            setView('classifieds');
         } else if (path === '/produk' || path === '/products') {
+            setView('products');
+        } else if (path.startsWith('/produk/') || path.startsWith('/products/')) {
+            const slug = path.split('/')[2];
+            window.initialProductSlug = slug;
             setView('products');
         } else if (path === '/merchants') {
             setView('merchants');

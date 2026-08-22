@@ -20,9 +20,21 @@ const StatusBadge = ({ status }) => {
 export const AdminProducts = ({ token }) => {
   const [products, setProducts]       = useState([]);
   const [loading, setLoading]         = useState(true);
+  const [searchInput, setSearchInput] = useState('');
   const [searchTerm, setSearchTerm]   = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [page, setPage]               = useState(1);
+  const [confirmTakedownProduct, setConfirmTakedownProduct] = useState(null);
+
+  // Debounce search input to avoid heavy server requests on every keystroke
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearchTerm(searchInput);
+      setPage(1);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [searchInput]);
   const [meta, setMeta]               = useState(null);
   const [actionLoading, setActionLoading] = useState(null);
   const [viewingProduct, setViewingProduct] = useState(null);
@@ -93,8 +105,8 @@ export const AdminProducts = ({ token }) => {
           <input
             type="text"
             placeholder="Cari nama produk..."
-            value={searchTerm}
-            onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg pl-9 sm:pl-10 pr-4 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
           />
         </div>
@@ -347,11 +359,7 @@ export const AdminProducts = ({ token }) => {
               {/* Ban / Takedown Action */}
               {viewingProduct.status !== 'banned' ? (
                 <button 
-                  onClick={() => {
-                    if (confirm('Apakah Anda yakin ingin melakukan takedown pada produk/iklan ini karena melanggar ketentuan (seperti judi online)?')) {
-                      changeStatus(viewingProduct.id, 'banned');
-                    }
-                  }}
+                  onClick={() => setConfirmTakedownProduct(viewingProduct)}
                   disabled={!!actionLoading}
                   className="w-full sm:w-auto px-4 py-2 text-xs font-black bg-rose-600 hover:bg-rose-500 text-white rounded-lg shadow-sm transition-all cursor-pointer disabled:opacity-50"
                 >
@@ -388,6 +396,40 @@ export const AdminProducts = ({ token }) => {
               </button>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* Custom Takedown Confirmation Modal */}
+      {confirmTakedownProduct && (
+        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 border-2 border-rose-500/20 dark:border-rose-500/30 shadow-2xl rounded-2xl w-full max-w-md overflow-hidden transform transition-all animate-in zoom-in-95 duration-200 p-6 text-center space-y-4">
+            <div className="w-14 h-14 bg-rose-500/10 dark:bg-rose-500/20 rounded-full flex items-center justify-center mx-auto border border-rose-500/30">
+              <AlertTriangle className="w-7 h-7 text-rose-600 dark:text-rose-500" />
+            </div>
+            <div className="space-y-1.5">
+              <h3 className="font-extrabold text-lg text-slate-900 dark:text-white">Konfirmasi Takedown</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Apakah Anda yakin ingin melakukan takedown pada produk <strong className="text-slate-700 dark:text-slate-300 font-bold">"{confirmTakedownProduct.title}"</strong>? Tindakan ini akan menonaktifkan produk dari katalog marketplace karena melanggar ketentuan.
+              </p>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button 
+                onClick={() => setConfirmTakedownProduct(null)}
+                className="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition-all cursor-pointer border border-slate-200/50 dark:border-slate-700/50"
+              >
+                Batal
+              </button>
+              <button 
+                onClick={() => {
+                  changeStatus(confirmTakedownProduct.id, 'banned');
+                  setConfirmTakedownProduct(null);
+                }}
+                className="flex-1 px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition-all cursor-pointer shadow-md shadow-rose-500/20"
+              >
+                Takedown Produk
+              </button>
+            </div>
           </div>
         </div>
       )}

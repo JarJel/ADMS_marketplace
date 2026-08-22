@@ -60,6 +60,32 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
     // Selected product for detail modal
     const [selectedProduct, setSelectedProduct] = useState(null);
 
+    const handleSelectProduct = (prod) => {
+        if (prod) {
+            window.history.pushState(null, '', `/produk/${prod.slug}`);
+            setSelectedProduct(prod);
+        } else {
+            window.history.pushState(null, '', '/produk');
+            setSelectedProduct(null);
+        }
+    };
+
+    // Handle initial detail modal if deep linked by slug
+    useEffect(() => {
+        if (window.initialProductSlug) {
+            const slug = window.initialProductSlug;
+            window.initialProductSlug = null;
+            fetch(`/api/public/products/${slug}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        setSelectedProduct(data.data);
+                    }
+                })
+                .catch(err => console.error("Error loading deep-linked product:", err));
+        }
+    }, []);
+
     // Fetch categories and initial products
     useEffect(() => {
         fetchCategories();
@@ -510,9 +536,10 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                         <div className="flex sm:hidden gap-1.5 items-start">
                             <div className="flex-1 flex flex-col gap-1.5">
                                 {products.filter((_, idx) => idx % 2 === 0).map((prod, idx) => (
-                                    <div 
+                                    <a 
                                         key={prod.id}
-                                        onClick={() => setSelectedProduct(prod)}
+                                        href={`/produk/${prod.slug}`}
+                                        onClick={(e) => { e.preventDefault(); handleSelectProduct(prod); }}
                                         className="rounded-2xl border-2 border-slate-300 dark:border-[#174256] bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-md dark:shadow-xl hover:border-[#FFBF00] relative cursor-pointer"
                                     >
                                         <button 
@@ -564,14 +591,15 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                                 <span className="hidden xs:inline sm:inline">Keranjang</span>
                                             </button>
                                         </div>
-                                    </div>
+                                    </a>
                                 ))}
                             </div>
                             <div className="flex-1 flex flex-col gap-1.5">
                                 {products.filter((_, idx) => idx % 2 === 1).map((prod, idx) => (
-                                    <div 
+                                    <a 
                                         key={prod.id}
-                                        onClick={() => setSelectedProduct(prod)}
+                                        href={`/produk/${prod.slug}`}
+                                        onClick={(e) => { e.preventDefault(); handleSelectProduct(prod); }}
                                         className="rounded-2xl border-2 border-slate-300 dark:border-[#174256] bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-md dark:shadow-xl hover:border-[#FFBF00] relative cursor-pointer"
                                     >
                                         <button 
@@ -623,7 +651,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                                 <span className="hidden xs:inline sm:inline">Keranjang</span>
                                             </button>
                                         </div>
-                                    </div>
+                                    </a>
                                 ))}
                             </div>
                         </div>
@@ -631,9 +659,10 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                         {/* Standard Grid Layout for Tablet & Desktop (>= sm) */}
                         <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {products.map((prod, index) => (
-                                <div 
+                                <a 
                                     key={prod.id}
-                                    onClick={() => setSelectedProduct(prod)}
+                                    href={`/produk/${prod.slug}`}
+                                    onClick={(e) => { e.preventDefault(); handleSelectProduct(prod); }}
                                     className="rounded-2xl border-2 border-slate-300 dark:border-[#174256] bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white overflow-hidden flex flex-col justify-between group transition-all duration-300 hover:-translate-y-1.5 shadow-md dark:shadow-xl hover:border-[#FFBF00] relative cursor-pointer"
                                 >
                                     <button 
@@ -685,7 +714,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                             <span>Keranjang</span>
                                         </button>
                                     </div>
-                                </div>
+                                </a>
                             ))}
                         </div>
                     </>
@@ -693,9 +722,10 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                             /* List Layout Display */
                             <div className="flex flex-col gap-4">
                                 {products.map((prod) => (
-                                    <div 
+                                    <a 
                                         key={prod.id}
-                                        onClick={() => setSelectedProduct(prod)}
+                                        href={`/produk/${prod.slug}`}
+                                        onClick={(e) => { e.preventDefault(); handleSelectProduct(prod); }}
                                         className="rounded-2xl border border-slate-300 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 overflow-hidden flex flex-col sm:flex-row justify-between group transition-all duration-300 hover:-translate-y-1 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-lg hover:shadow-indigo-500/5 relative cursor-pointer p-4 gap-4 dark:backdrop-blur-md"
                                     >
                                         {/* Left Side: Product Image */}
@@ -759,7 +789,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
                                                 </button>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 ))}
                             </div>
                         )}
@@ -807,7 +837,7 @@ export default function ProductsCatalogView({ user, token, onNavigate, darkMode,
             <ProductDetailModal 
                 product={selectedProduct}
                 isOpen={!!selectedProduct}
-                onClose={() => setSelectedProduct(null)}
+                onClose={() => handleSelectProduct(null)}
                 darkMode={darkMode}
                 onAddToCart={(prod) => {
                     if (onAddToCart) {

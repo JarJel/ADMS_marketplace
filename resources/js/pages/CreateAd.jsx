@@ -93,8 +93,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
     }, []);
 
     useEffect(() => {
-        const parentId = parseInt(selectedCategoryId);
-        const parentCat = dbCategories.find(c => c.id === parentId);
+        const parentCat = dbCategories.find(c => c.id.toString() === selectedCategoryId.toString());
         if (parentCat) {
             if (parentCat.children && parentCat.children.length > 0) {
                 setSelectedSubCategoryId(parentCat.children[0].id.toString());
@@ -264,7 +263,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
         "PRATINJAU AKHIR IKLAN"
     ];
 
-    const activeCategoryName = dbCategories.find(c => c.id === parseInt(selectedCategoryId))?.name || '';
+    const activeCategoryName = dbCategories.find(c => c.id.toString() === selectedCategoryId.toString())?.name || '';
     const isJasa = activeCategoryName.toLowerCase().includes('jasa');
 
     return (
@@ -399,7 +398,7 @@ export default function CreateAd({ user, token, onNavigate, darkMode, setDarkMod
                                                             style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%236b7280\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
                                                         >
                                                             {(() => {
-                                                                const parent = dbCategories.find(c => c.id === parseInt(selectedCategoryId));
+                                                                const parent = dbCategories.find(c => c.id.toString() === selectedCategoryId.toString());
                                                                 if (parent && parent.children && parent.children.length > 0) {
                                                                     return parent.children.map((sub) => (
                                                                         <option key={sub.id} value={sub.id} className="text-slate-900 bg-white">{sub.name}</option>

@@ -17,6 +17,7 @@ class PackageSubscriptionController extends Controller
     {
         $subscriptions = PackageSubscription::with(['user', 'package'])
             ->orderBy('created_at', 'desc')
+            ->take(150)
             ->get();
             
         return response()->json([

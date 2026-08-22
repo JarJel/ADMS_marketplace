@@ -72,10 +72,15 @@ class OverviewController extends Controller
                 'created_at' => $log->created_at->diffForHumans(),
             ]);
 
+        $now = now();
         $thisMonthGmv = Order::where('payment_status', 'paid')
-            ->whereMonth('created_at', now()->month)->sum('total_amount');
+            ->whereYear('created_at', $now->year)
+            ->whereMonth('created_at', $now->month)->sum('total_amount');
+
+        $lastMonthDate = now()->subMonth();
         $lastMonthGmv = Order::where('payment_status', 'paid')
-            ->whereMonth('created_at', now()->subMonth()->month)->sum('total_amount');
+            ->whereYear('created_at', $lastMonthDate->year)
+            ->whereMonth('created_at', $lastMonthDate->month)->sum('total_amount');
         $gmvGrowth = $lastMonthGmv > 0 ? round(($thisMonthGmv - $lastMonthGmv) / $lastMonthGmv * 100, 1) : 0;
 
         return response()->json([
@@ -103,21 +108,21 @@ class OverviewController extends Controller
     {
         // Monthly revenue for current year
         $year = now()->year;
-        $orders = Order::whereYear('created_at', $year)
+        
+        $monthlyRaw = Order::select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(total_amount) as total')
+            )
+            ->whereYear('created_at', $year)
             ->where('payment_status', 'paid')
-            ->get();
-
-        $monthlyRaw = $orders->groupBy(function($d) {
-            return $d->created_at->format('n');
-        })->map(function($group) {
-            return $group->sum('total_amount');
-        });
+            ->groupBy('month')
+            ->pluck('total', 'month');
 
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
         $maxVal = $monthlyRaw->max() ?: 1;
         $revenueData = [];
         foreach ($months as $i => $lbl) {
-            $total = (float) $monthlyRaw->get($i + 1, 0);
+            $total = (float) ($monthlyRaw[$i + 1] ?? 0);
             $revenueData[] = [
                 'label' => $lbl,
                 'value' => round($total / $maxVal * 100, 1),
@@ -155,10 +160,15 @@ class OverviewController extends Controller
         $activeUsers  = User::where('status', 'active')->count();
 
         // Compare with previous month
+        $now = now();
         $thisMonth = Order::where('payment_status', 'paid')
-            ->whereMonth('created_at', now()->month)->sum('total_amount');
+            ->whereYear('created_at', $now->year)
+            ->whereMonth('created_at', $now->month)->sum('total_amount');
+
+        $lastMonthDate = now()->subMonth();
         $lastMonth = Order::where('payment_status', 'paid')
-            ->whereMonth('created_at', now()->subMonth()->month)->sum('total_amount');
+            ->whereYear('created_at', $lastMonthDate->year)
+            ->whereMonth('created_at', $lastMonthDate->month)->sum('total_amount');
         $gmvGrowth = $lastMonth > 0 ? round(($thisMonth - $lastMonth) / $lastMonth * 100, 1) : 0;
 
         return response()->json([
@@ -179,26 +189,34 @@ class OverviewController extends Controller
 
     public function getProducts(Request $request)
     {
-        $query = Product::with(['merchant:id,name', 'category:id,name'])
-            ->withCount('reviews');
+        $search = $request->input('search', '');
+        $status = $request->input('status', 'all');
+        $page = $request->input('page', 1);
 
-        if ($request->filled('search')) {
-            $q = $request->search;
-            $query->where(function ($sq) use ($q) {
-                $sq->where('title', 'like', "%$q%");
-            });
-        }
+        $cacheKey = "admin_products_search_" . md5("{$search}_{$status}_{$page}");
 
-        if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
-        }
+        $data = cache()->remember($cacheKey, 3, function () use ($request) {
+            $query = Product::with(['merchant:id,name', 'category:id,name'])
+                ->withCount('reviews');
 
-        $products = $query->latest()->paginate(20);
+            if ($request->filled('search')) {
+                $q = $request->search;
+                $query->where(function ($sq) use ($q) {
+                    $sq->where('title', 'like', "%$q%");
+                });
+            }
 
-        return response()->json([
-            'success' => true,
-            'data'    => $products,
-        ]);
+            if ($request->filled('status') && $request->status !== 'all') {
+                $query->where('status', $request->status);
+            }
+
+            return [
+                'success' => true,
+                'data'    => $query->latest()->paginate(20)->toArray(),
+            ];
+        });
+
+        return response()->json($data);
     }
 
     public function toggleProductStatus(Request $request, $id)

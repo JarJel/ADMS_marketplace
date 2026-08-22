@@ -65,14 +65,20 @@ class ProductController extends Controller
     /**
      * Get detail of a specific product.
      */
-    public function show($id)
+    public function show($idOrSlug)
     {
-        $product = Product::with([
+        $query = Product::with([
             'merchant.owner', 
             'category', 
             'media',
             'reviews.user' // Load reviews and their authors
-        ])->active()->find($id);
+        ])->active();
+
+        if (is_string($idOrSlug) && preg_match('/^[a-f\d]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}$/i', $idOrSlug)) {
+            $product = $query->find($idOrSlug);
+        } else {
+            $product = $query->where('slug', $idOrSlug)->first();
+        }
 
         if (!$product) {
             return response()->json([

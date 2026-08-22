@@ -4,10 +4,17 @@ import { AdminOverview } from './AdminOverview';
 import { AdminAnalytics } from './AdminAnalytics';
 import { AdminProducts } from './AdminProducts';
 import { AdminPackageSubscriptions } from './AdminPackageSubscriptions';
-import { CheckCircle2, Clock, Users, Store, Package, ReceiptText, BarChart3, TrendingUp, Percent, Save, Info, HandCoins, Megaphone, Sparkles, Banknote, CreditCard, Settings, Shield, FolderOpen, Tag, Wrench, Check, X, Download } from 'lucide-react';
+import { CheckCircle2, Clock, Users, Store, Package, ReceiptText, BarChart3, TrendingUp, Percent, Save, Info, HandCoins, Megaphone, Sparkles, Banknote, CreditCard, Settings, Shield, FolderOpen, Tag, Wrench, Check, X, Download, Menu } from 'lucide-react';
 
-export default function AdminDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode, cartCount, wishlistCount, notifications }) {
-    const [activeTab, setActiveTab] = useState('dashboard');
+export default function AdminDashboard({ user, token, onLogout, onNavigate, darkMode, setDarkMode, cartCount, wishlistCount, notifications, initialTab }) {
+    const [activeTab, setActiveTab] = useState(initialTab || 'dashboard');
+    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+    useEffect(() => {
+        if (initialTab) {
+            setActiveTab(initialTab);
+        }
+    }, [initialTab]);
     const [pendingMerchants, setPendingMerchants] = useState([]);
     const [pendingProducts, setPendingProducts] = useState([]);
     const [pendingAds, setPendingAds] = useState([]);
@@ -413,14 +420,23 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
         }
     };
 
+    const handleTabChange = (id) => {
+        setActiveTab(id);
+        if (onNavigate) {
+            onNavigate('admin_dashboard', id);
+        }
+    };
+
     return (
         <div className="h-screen bg-[#071922] text-slate-100 font-sans flex overflow-hidden">
             {/* Sidebar Baru */}
             <AdminSidebar
                 activeItem={activeTab}
-                onNavigate={setActiveTab}
+                onNavigate={handleTabChange}
                 user={user}
                 onLogout={onLogout}
+                isMobileOpen={isMobileSidebarOpen}
+                onCloseMobile={() => setIsMobileSidebarOpen(false)}
                 pendingCounts={{
                     pendingMerchants: adminStats?.pendingMerchants ?? pendingMerchants.length,
                     pendingAds: adminStats?.pendingAds ?? pendingAds.length,
@@ -430,6 +446,24 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
             />
 
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
+                {/* Top Mobile Header */}
+                <header className="lg:hidden flex items-center justify-between px-6 py-4 bg-[#0F3040] border-b border-[#174256]/80 text-white shrink-0 shadow-md">
+                    <div className="flex items-center gap-3">
+                        <button 
+                            onClick={() => setIsMobileSidebarOpen(true)}
+                            className="p-2 -ml-2 rounded-xl text-slate-200 hover:text-white bg-[#071922] hover:bg-[#174256] border border-[#174256] transition-all cursor-pointer"
+                        >
+                            <Menu className="w-5 h-5" />
+                        </button>
+                        <div className="flex items-center gap-2">
+                            <img src="/assets/Images/adms-symbol.png" alt="Logo" className="h-6 w-auto" />
+                            <span className="text-xs font-black text-[#FFBF00] uppercase tracking-wider">Superadmin</span>
+                        </div>
+                    </div>
+                    <div className="text-xs font-bold text-slate-300">
+                        {user?.name || 'Admin'}
+                    </div>
+                </header>
 
                 {/* Dashboard Contents */}
                 <main className="flex-1 overflow-y-auto px-6 py-10 bg-[#0B2330] text-slate-100">

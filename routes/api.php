@@ -80,9 +80,11 @@ Route::get('/public/stats', function () {
 Route::get('/public/categories', [PublicCategoryController::class, 'index']);
 Route::get('/public/products', [PublicProductController::class, 'index']);
 Route::get('/public/products/recommended', [PublicProductController::class, 'recommended']);
-Route::get('/public/products/{id}', [PublicProductController::class, 'show']);
+Route::get('/public/products/{idOrSlug}', [PublicProductController::class, 'show']);
 
-Route::post('/public/ads/{id}/click', [PublicAdController::class, 'trackClick']);
+Route::get('/public/ads/search', [PublicAdController::class, 'search']);
+Route::get('/public/ads/{idOrSlug}', [PublicAdController::class, 'show']);
+Route::post('/public/ads/{idOrSlug}/click', [PublicAdController::class, 'trackClick']);
 
 Route::get('/public/merchants', function () {
     $merchants = Merchant::where('is_verified', true)->with(['owner', 'products' => function($q) {
@@ -103,6 +105,7 @@ Route::get('/public/ads', function () {
             return [
                 'id' => $ad->id,
                 'title' => $ad->title,
+                'slug' => $ad->slug,
                 'category' => $ad->category?->name ?? 'Umum',
                 'condition' => ucfirst($ad->condition ?? 'bekas'),
                 'price' => (float)$ad->price,

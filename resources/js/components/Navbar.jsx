@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { 
+import React, { useState, useEffect, useRef } from 'react';
+import {
     Search, Heart, Bell, ChevronDown, Sun, Moon, Menu, X, User, ShoppingCart, Store,
     LayoutDashboard, ShoppingBag, Download, Megaphone, ShieldCheck, LogOut
 } from 'lucide-react';
 
-export default function Navbar({ 
-    user, 
-    token, 
-    darkMode, 
-    setDarkMode, 
-    onLogout, 
-    onNavigate, 
+export default function Navbar({
+    user,
+    token,
+    darkMode,
+    setDarkMode,
+    onLogout,
+    onNavigate,
     currentView,
     currentFilter,
     sidebarContent,
@@ -22,6 +22,22 @@ export default function Navbar({
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
     const [showNotifMenu, setShowNotifMenu] = useState(false);
+
+    const notifRef = useRef(null);
+    const profileRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (notifRef.current && !notifRef.current.contains(event.target)) {
+                setShowNotifMenu(false);
+            }
+            if (profileRef.current && !profileRef.current.contains(event.target)) {
+                setShowProfileMenu(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleMarkNotifRead = async (id) => {
         try {
@@ -62,81 +78,76 @@ export default function Navbar({
     return (
         <header className="sticky top-0 z-50 bg-white/95 dark:bg-[#0F3040] border-b border-slate-200 dark:border-[#174256] text-slate-800 dark:text-white shadow-md font-sans backdrop-blur-md transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-                
+
                 {/* Sisi Kiri: Logo dan Burger */}
                 <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-                    <button 
+                    <button
                         onClick={() => setShowSidebar(true)}
                         className="md:hidden p-1.5 sm:p-2 rounded-xl bg-slate-100 dark:bg-[#071922] text-amber-600 dark:text-[#FFBF00] border border-slate-200 dark:border-[#174256] hover:border-amber-400 dark:hover:border-[#FFBF00] transition-colors cursor-pointer shrink-0"
                     >
                         <Menu className="w-5 h-5" />
                     </button>
-                    <div 
-                        onClick={() => onNavigate('homepage')} 
+                    <div
+                        onClick={() => onNavigate('homepage')}
                         className="flex items-center gap-1.5 sm:gap-2 cursor-pointer active:scale-98 transition-transform shrink-0"
                     >
-                        <img 
-                            src="/assets/Images/adms-symbol.png" 
-                            alt="ADMS Symbol" 
-                            className="h-7 sm:h-9 w-auto object-contain transition-all duration-300 drop-shadow-md shrink-0" 
+                        <img
+                            src="/assets/Images/adms-symbol.png"
+                            alt="ADMS Symbol"
+                            className="h-7 sm:h-9 w-auto object-contain transition-all duration-300 drop-shadow-md shrink-0"
                         />
-                        <img 
-                            src="/assets/Images/adms-text.png" 
-                            alt="ADMS Text" 
-                            className="h-4.5 sm:h-6 w-auto object-contain dark:invert dark:mix-blend-screen shrink-0" 
+                        <img
+                            src="/assets/Images/adms-text.png"
+                            alt="ADMS Text"
+                            className="h-4.5 sm:h-6 w-auto object-contain dark:invert dark:mix-blend-screen shrink-0"
                         />
                     </div>
                 </div>
 
                 {/* Sisi Tengah: Menu Pilihan */}
                 <nav className="hidden md:flex items-center gap-1 bg-slate-100/90 dark:bg-[#071922]/80 p-1.5 rounded-full border border-slate-200 dark:border-[#174256]">
-                    <button 
+                    <button
                         onClick={() => onNavigate('homepage')}
-                        className={`text-xs font-bold px-4 py-2 rounded-full transition-all cursor-pointer ${
-                            isHomeActive 
-                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md' 
+                        className={`text-xs font-bold px-4 py-2 rounded-full transition-all cursor-pointer ${isHomeActive
+                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md'
                                 : 'text-slate-600 dark:text-slate-300 hover:text-teal-700 dark:hover:text-[#FFBF00]'
-                        }`}
+                            }`}
                     >
                         Home
                     </button>
-                    <button 
+                    <button
                         onClick={() => onNavigate('products', 'digital')}
-                        className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${
-                            isDigitalActive 
-                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md' 
+                        className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${isDigitalActive
+                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md'
                                 : 'text-slate-600 dark:text-slate-300 hover:text-teal-700 dark:hover:text-[#FFBF00]'
-                        }`}
+                            }`}
                     >
                         Produk Digital
                     </button>
-                    <button 
+                    <button
                         onClick={() => onNavigate('merchants')}
-                        className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${
-                            isVendorActive 
-                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md' 
+                        className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${isVendorActive
+                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md'
                                 : 'text-slate-600 dark:text-slate-300 hover:text-teal-700 dark:hover:text-[#FFBF00]'
-                        }`}
+                            }`}
                     >
                         Merchant Vendor
                     </button>
-                    <button 
+                    <button
                         onClick={() => onNavigate('classifieds')}
-                        className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${
-                            isClassifiedsActive 
-                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md' 
+                        className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${isClassifiedsActive
+                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md'
                                 : 'text-slate-600 dark:text-slate-300 hover:text-teal-700 dark:hover:text-[#FFBF00]'
-                        }`}
+                            }`}
                     >
                         Iklan Gratis
                     </button>
-                    <button 
-                        onClick={() => onNavigate('help_center')} 
-                        className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${
-                            isHelpActive 
-                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md' 
+                    <button
+                        onClick={() => onNavigate('help_center')}
+                        className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition-all ${isHelpActive
+                                ? 'bg-[#FFBF00] text-[#0F3040] font-black shadow-md'
                                 : 'text-slate-600 dark:text-slate-300 hover:text-teal-700 dark:hover:text-[#FFBF00]'
-                        }`}
+                            }`}
                     >
                         Bantuan
                     </button>
@@ -155,8 +166,8 @@ export default function Navbar({
 
                             {/* Cart Icon */}
                             <div className="relative">
-                                <button 
-                                    onClick={() => onNavigate('cart')} 
+                                <button
+                                    onClick={() => onNavigate('cart')}
                                     className="p-1.5 sm:p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-all active:scale-95 cursor-pointer relative"
                                     title="Keranjang Belanja"
                                 >
@@ -171,8 +182,8 @@ export default function Navbar({
 
                             {/* Wishlist Icon */}
                             <div className="relative">
-                                <button 
-                                    onClick={() => onNavigate('wishlist')} 
+                                <button
+                                    onClick={() => onNavigate('wishlist')}
                                     className="p-1.5 sm:p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-all active:scale-95 cursor-pointer relative"
                                     title="Favorit Saya"
                                 >
@@ -186,8 +197,8 @@ export default function Navbar({
                             </div>
 
                             {/* Notification Bell Icon */}
-                            <div className="relative">
-                                <button 
+                            <div ref={notifRef} className="relative">
+                                <button
                                     onClick={() => setShowNotifMenu(!showNotifMenu)}
                                     className="p-1.5 sm:p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-colors"
                                 >
@@ -202,7 +213,7 @@ export default function Navbar({
                                         <div className="px-4 pb-2 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
                                             <span className="text-xs font-black">Notifikasi</span>
                                             {unreadNotifCount > 0 && (
-                                                <button 
+                                                <button
                                                     onClick={(e) => { e.stopPropagation(); handleMarkAllNotificationsRead(); }}
                                                     className="text-[10px] text-indigo-500 hover:underline font-bold"
                                                 >
@@ -213,7 +224,7 @@ export default function Navbar({
                                         <div className="max-h-64 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700">
                                             {notifications && notifications.length > 0 ? (
                                                 notifications.map(notif => (
-                                                    <div 
+                                                    <div
                                                         key={notif.id}
                                                         onClick={() => handleMarkNotifRead(notif.id)}
                                                         className={`p-3 text-[11px] leading-snug cursor-pointer transition-colors ${!notif.is_read ? 'bg-indigo-50/40 dark:bg-indigo-900/10 font-semibold' : 'hover:bg-slate-50 dark:hover:bg-slate-700/50'}`}
@@ -234,8 +245,8 @@ export default function Navbar({
                             </div>
 
                             {/* User Profile Avatar Dropdown */}
-                            <div className="relative hidden sm:block">
-                                <div 
+                            <div ref={profileRef} className="relative hidden sm:block">
+                                <div
                                     onClick={() => setShowProfileMenu(!showProfileMenu)}
                                     className="flex items-center gap-1.5 cursor-pointer pl-1 py-0.5 pr-2 rounded-full hover:bg-slate-100 transition-colors"
                                 >
@@ -257,7 +268,7 @@ export default function Navbar({
                                         </div>
 
                                         <div className="space-y-0.5 px-1.5">
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     setShowProfileMenu(false);
                                                     onNavigate('customer_dashboard', 'overview');
@@ -269,7 +280,7 @@ export default function Navbar({
                                             </button>
 
                                             {(user?.role === 'merchant' || user?.role === 'admin') && (
-                                                <button 
+                                                <button
                                                     onClick={() => {
                                                         setShowProfileMenu(false);
                                                         onNavigate('merchant_dashboard');
@@ -281,7 +292,7 @@ export default function Navbar({
                                                 </button>
                                             )}
 
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     setShowProfileMenu(false);
                                                     onNavigate('customer_dashboard', 'purchases');
@@ -292,7 +303,7 @@ export default function Navbar({
                                                 <span>Transaksi Saya</span>
                                             </button>
 
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     setShowProfileMenu(false);
                                                     onNavigate('customer_dashboard', 'downloads');
@@ -303,7 +314,7 @@ export default function Navbar({
                                                 <span>Unduhan File</span>
                                             </button>
 
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     setShowProfileMenu(false);
                                                     onNavigate('customer_dashboard', 'ads');
@@ -314,7 +325,7 @@ export default function Navbar({
                                                 <span>Iklan Saya</span>
                                             </button>
 
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     setShowProfileMenu(false);
                                                     onNavigate('customer_dashboard', 'package-subscriptions');
@@ -325,7 +336,7 @@ export default function Navbar({
                                                 <span>Paket & Langganan</span>
                                             </button>
 
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     setShowProfileMenu(false);
                                                     onNavigate('customer_dashboard', 'wishlist');
@@ -337,10 +348,10 @@ export default function Navbar({
                                             </button>
 
                                             {user?.role === 'user' && (
-                                                <button 
+                                                <button
                                                     onClick={() => {
                                                         setShowProfileMenu(false);
-                                                        onNavigate('merchant_registration');
+                                                        onNavigate('customer_dashboard', 'merchant_registration');
                                                     }}
                                                     className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-black rounded-xl bg-[#FFBF00]/15 hover:bg-[#FFBF00]/25 text-amber-700 dark:text-[#FFBF00] border border-[#FFBF00]/30 transition-colors my-1 cursor-pointer"
                                                 >
@@ -351,7 +362,7 @@ export default function Navbar({
                                         </div>
 
                                         <div className="pt-1 mt-1 border-t border-slate-100 dark:border-[#174256] px-1.5 space-y-0.5">
-                                            <button 
+                                            <button
                                                 onClick={() => setDarkMode(!darkMode)}
                                                 className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl hover:bg-slate-100 dark:hover:bg-[#174256] text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
                                             >
@@ -359,7 +370,7 @@ export default function Navbar({
                                                 <span>{darkMode ? 'Mode Terang' : 'Mode Gelap'}</span>
                                             </button>
 
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     setShowProfileMenu(false);
                                                     onLogout();
@@ -376,13 +387,13 @@ export default function Navbar({
                         </>
                     ) : (
                         <div className="flex items-center gap-2">
-                            <button 
+                            <button
                                 onClick={() => onNavigate('login')}
                                 className="text-xs font-bold py-2 px-4 rounded-full border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors"
                             >
                                 Masuk
                             </button>
-                            <button 
+                            <button
                                 onClick={() => onNavigate('register')}
                                 className="bg-teal-500 hover:bg-teal-400 text-white text-xs font-bold py-2 px-4 rounded-full shadow-md shadow-teal-500/10 transition-colors"
                             >
@@ -396,7 +407,7 @@ export default function Navbar({
 
             {/* Sidebar Overlay */}
             {showSidebar && (
-                <div 
+                <div
                     className="fixed inset-0 bg-slate-900/50 z-[60] transition-opacity"
                     onClick={() => setShowSidebar(false)}
                 />
@@ -405,25 +416,25 @@ export default function Navbar({
             {/* Sidebar Content */}
             <div className={`fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 z-[70] transform transition-transform duration-300 ease-in-out border-r border-slate-200 dark:border-slate-800 shadow-2xl ${showSidebar ? 'translate-x-0' : '-translate-x-full'}`}>
                 <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <div 
+                    <div
                         onClick={() => {
                             setShowSidebar(false);
                             onNavigate('homepage');
                         }}
                         className="flex items-center gap-2 cursor-pointer"
                     >
-                        <img 
-                            src="/assets/Images/adms-symbol.png" 
-                            alt="ADMS Symbol" 
-                            className="h-8 w-auto object-contain drop-shadow-md" 
+                        <img
+                            src="/assets/Images/adms-symbol.png"
+                            alt="ADMS Symbol"
+                            className="h-8 w-auto object-contain drop-shadow-md"
                         />
-                        <img 
-                            src="/assets/Images/adms-text.png" 
-                            alt="ADMS Text" 
-                            className="h-5 w-auto object-contain dark:invert dark:mix-blend-screen" 
+                        <img
+                            src="/assets/Images/adms-text.png"
+                            alt="ADMS Text"
+                            className="h-5 w-auto object-contain dark:invert dark:mix-blend-screen"
                         />
                     </div>
-                    <button 
+                    <button
                         onClick={() => setShowSidebar(false)}
                         className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                     >
@@ -483,7 +494,7 @@ export default function Navbar({
                                         Dashboard Saya
                                     </p>
 
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             setShowSidebar(false);
                                             onNavigate('customer_dashboard', 'overview');
@@ -495,7 +506,7 @@ export default function Navbar({
                                     </button>
 
                                     {(user.role === 'merchant' || user.role === 'admin') && (
-                                        <button 
+                                        <button
                                             onClick={() => {
                                                 setShowSidebar(false);
                                                 onNavigate('merchant_dashboard');
@@ -507,7 +518,7 @@ export default function Navbar({
                                         </button>
                                     )}
 
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             setShowSidebar(false);
                                             onNavigate('customer_dashboard', 'purchases');
@@ -518,7 +529,7 @@ export default function Navbar({
                                         <span>Transaksi Saya</span>
                                     </button>
 
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             setShowSidebar(false);
                                             onNavigate('customer_dashboard', 'downloads');
@@ -529,7 +540,7 @@ export default function Navbar({
                                         <span>Unduhan File</span>
                                     </button>
 
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             setShowSidebar(false);
                                             onNavigate('customer_dashboard', 'ads');
@@ -540,7 +551,7 @@ export default function Navbar({
                                         <span>Iklan Saya</span>
                                     </button>
 
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             setShowSidebar(false);
                                             onNavigate('customer_dashboard', 'package-subscriptions');
@@ -551,7 +562,7 @@ export default function Navbar({
                                         <span>Paket & Langganan</span>
                                     </button>
 
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             setShowSidebar(false);
                                             onNavigate('customer_dashboard', 'wishlist');
@@ -563,10 +574,10 @@ export default function Navbar({
                                     </button>
 
                                     {user.role === 'user' && (
-                                        <button 
+                                        <button
                                             onClick={() => {
                                                 setShowSidebar(false);
-                                                onNavigate('merchant_registration');
+                                                onNavigate('customer_dashboard', 'merchant_registration');
                                             }}
                                             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-black bg-[#FFBF00]/15 hover:bg-[#FFBF00]/25 text-amber-700 dark:text-[#FFBF00] border border-[#FFBF00]/30 transition-colors my-1 cursor-pointer"
                                         >
@@ -580,7 +591,7 @@ export default function Navbar({
                             <div className="my-2 border-t border-slate-200 dark:border-[#174256]"></div>
 
                             {/* Theme Toggle */}
-                            <button 
+                            <button
                                 onClick={() => setDarkMode(!darkMode)}
                                 className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-[#0F3040] transition-colors cursor-pointer"
                             >
@@ -590,7 +601,7 @@ export default function Navbar({
 
                             {/* Logout Button if logged in */}
                             {token && (
-                                <button 
+                                <button
                                     onClick={() => {
                                         setShowSidebar(false);
                                         onLogout();

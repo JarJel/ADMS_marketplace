@@ -6,6 +6,7 @@ import {
     Globe, Car, Bike, Smartphone, Monitor, Home, Map as MapIcon, Wrench, Briefcase, Shirt, Sofa
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import SearchBar from '../components/SearchBar';
 
 // Classifieds catalog view component with DB seeder data
 
@@ -88,6 +89,34 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
 
     // Modal state
     const [selectedAd, setSelectedAd] = useState(null);
+
+    const handleSelectAd = (ad) => {
+        if (ad) {
+            window.history.pushState(null, '', `/iklan/${ad.slug}`);
+            setSelectedAd(ad);
+            handleAdClick(ad.id);
+        } else {
+            window.history.pushState(null, '', '/iklan-gratis');
+            setSelectedAd(null);
+        }
+    };
+
+    // Handle initial detail modal if deep linked by slug
+    useEffect(() => {
+        if (window.initialAdSlug) {
+            const slug = window.initialAdSlug;
+            window.initialAdSlug = null;
+            fetch(`/api/public/ads/${slug}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        setSelectedAd(data.data);
+                        handleAdClick(data.data.id);
+                    }
+                })
+                .catch(err => console.error("Error loading deep-linked ad:", err));
+        }
+    }, []);
 
     // Categories configurations
     const categories = [
@@ -242,14 +271,10 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                     {/* Floating Search Widget */}
                     <div className="max-w-4xl mx-auto bg-white/95 dark:bg-[#071922] border-2 border-slate-200 dark:border-[#174256] rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-2xl flex flex-col md:flex-row gap-3 items-center mt-10 backdrop-blur-md">
                         {/* Keyword Input */}
-                        <div className="w-full flex items-center bg-slate-50 dark:bg-[#05131b] border-2 border-slate-200 dark:border-[#174256] rounded-xl p-3 pl-4">
-                            <Search className="w-4 h-4 text-amber-500 dark:text-[#FFBF00] mr-2.5 flex-shrink-0" />
-                            <input 
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Cari mobil bekas, handphone, laptop..."
-                                className="w-full bg-transparent text-slate-900 dark:text-white focus:outline-none text-xs sm:text-sm placeholder-slate-400 font-medium"
+                        <div className="w-full">
+                            <SearchBar 
+                                onSelect={(item) => handleSelectAd(item)} 
+                                placeholder="Cari mobil bekas, handphone, laptop..." 
                             />
                         </div>
 
@@ -448,9 +473,10 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                         {viewMode === 'grid' ? (
                             (() => {
                                 const renderAdCard = (ad, isRightCol = false) => (
-                                    <div 
+                                    <a 
                                         key={ad.id}
-                                        onClick={() => { setSelectedAd(ad); handleAdClick(ad.id); }}
+                                        href={`/iklan/${ad.slug}`}
+                                        onClick={(e) => { e.preventDefault(); handleSelectAd(ad); }}
                                         className={`bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white rounded-2xl border-2 ${ad.is_premium ? 'border-[#FFBF00]/60 hover:border-[#FFBF00]' : 'border-slate-200 dark:border-[#174256] hover:border-amber-400 dark:hover:border-[#FFBF00]'} overflow-hidden flex flex-col justify-between cursor-pointer group transition-all shadow-md dark:shadow-xl relative w-full min-w-0`}
                                     >
                                         {ad.is_premium && (
@@ -500,7 +526,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 );
 
                                 return (
@@ -526,9 +552,10 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                             /* List Layout Display */
                             <div className="flex flex-col gap-4">
                                 {paginatedAds.map((ad) => (
-                                    <div 
+                                    <a 
                                         key={ad.id}
-                                        onClick={() => { setSelectedAd(ad); handleAdClick(ad.id); }}
+                                        href={`/iklan/${ad.slug}`}
+                                        onClick={(e) => { e.preventDefault(); handleSelectAd(ad); }}
                                         className={`bg-white dark:bg-[#0F3040] text-slate-900 dark:text-white rounded-2xl border-2 ${ad.is_premium ? 'border-[#FFBF00]/60 hover:border-[#FFBF00]' : 'border-slate-200 dark:border-[#174256] hover:border-amber-400 dark:hover:border-[#FFBF00]'} overflow-hidden flex items-center gap-4 p-4 cursor-pointer group transition-all shadow-md dark:shadow-xl relative`}
                                     >
                                         {ad.is_premium && (
@@ -574,7 +601,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 ))}
                             </div>
                         )}
@@ -739,7 +766,7 @@ export default function ClassifiedsCatalogView({ user, token, onNavigate, darkMo
                     <div className="bg-white dark:bg-[#0F3040] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative text-left border-2 border-slate-200 dark:border-[#174256] text-slate-900 dark:text-white transition-colors">
                         {/* Close button */}
                         <button 
-                            onClick={() => setSelectedAd(null)}
+                            onClick={() => handleSelectAd(null)}
                             className="absolute top-4 right-4 p-2 bg-slate-100 dark:bg-[#071922] hover:bg-slate-200 dark:hover:bg-[#174256] text-slate-700 dark:text-[#FFBF00] border border-slate-200 dark:border-[#174256] rounded-full transition-colors z-10 cursor-pointer shadow-md"
                         >
                             <X className="w-4 h-4" />

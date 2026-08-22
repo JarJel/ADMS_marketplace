@@ -60,6 +60,48 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
         }).format(val || 0);
     };
 
+    const handleRedirectWhatsApp = (orderResult) => {
+        let phone = '';
+        let template = '';
+
+        const firstItem = checkoutItems[0];
+        
+        if (firstItem?.isPackage) {
+            phone = '6281234500001'; // Default platform admin WA
+            template = `Assalamu'alaikum Admin ADMS, saya ingin mengonfirmasi pembayaran untuk Paket Iklan Baris.\n\n` +
+                       `*Detail Pembayaran:*\n` +
+                       `• No Invoice: ${orderResult.invoice}\n` +
+                       `• Nama Pemesan: ${orderResult.customer.name}\n` +
+                       `• Email: ${orderResult.customer.email}\n` +
+                       `• Total Bayar: ${formatCurrency(orderResult.total)}\n` +
+                       `• Metode: ${orderResult.paymentMethod.toUpperCase()} (Screenshot terlampir)\n\n` +
+                       `Berikut saya lampirkan screenshot bukti transfer pembayarannya. Terima kasih!`;
+        } else {
+            const merchantWa = orderResult?.merchant?.contact_whatsapp || 
+                               firstItem?.product?.merchant?.contact_whatsapp || 
+                               firstItem?.merchant?.contact_whatsapp;
+            phone = merchantWa ? merchantWa.replace(/[^0-9]/g, '') : '6281234500001';
+            
+            if (phone.startsWith('0')) {
+                phone = '62' + phone.substring(1);
+            }
+
+            const productTitle = firstItem?.product?.title || 'Produk';
+            template = `Assalamu'alaikum Kak, saya ingin mengonfirmasi pembayaran untuk pembelian produk digital Anda.\n\n` +
+                       `*Detail Transaksi:*\n` +
+                       `• No Invoice: ${orderResult.invoice}\n` +
+                       `• Nama Pembeli: ${orderResult.customer.name}\n` +
+                       `• Produk: ${productTitle}\n` +
+                       `• Total Bayar: ${formatCurrency(orderResult.total)}\n` +
+                       `• Metode: ${orderResult.paymentMethod.toUpperCase()} (Screenshot terlampir)\n\n` +
+                       `Berikut saya lampirkan screenshot bukti transfer pembayarannya. Mohon bantuannya untuk memproses pesanan saya. Terima kasih!`;
+        }
+
+        const encodedText = encodeURIComponent(template);
+        const waUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedText}`;
+        window.open(waUrl, '_blank');
+    };
+
     const handleProcessPayment = async (e) => {
         e.preventDefault();
         if (checkoutItems.length === 0) {
@@ -69,6 +111,8 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
 
         setIsSubmitting(true);
         let orderInvoice = 'INV-ADMS-' + Date.now().toString(36).toUpperCase();
+
+        let orderMerchant = null;
 
         try {
             if (token) {
@@ -114,7 +158,10 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                         })
                     });
                     const data = await res.json();
-                    if (data.invoice_number) orderInvoice = data.invoice_number;
+                    if (data.invoice_number) {
+                        orderInvoice = data.invoice_number;
+                        orderMerchant = data.data?.merchant;
+                    }
                 }
             }
         } catch (err) {
@@ -136,6 +183,7 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
             total: grandTotal,
             paymentMethod,
             customer: customerInfo,
+            merchant: orderMerchant || checkoutItems[0]?.product?.merchant || checkoutItems[0]?.merchant,
             date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
         };
 
@@ -388,11 +436,11 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                                     <div className={`p-4 rounded-2xl border text-center space-y-3 ${
                                         darkMode ? 'bg-[#071922] border-[#174256]' : 'bg-amber-50/50 border-amber-200'
                                     }`}>
-                                        <div className="w-48 h-48 mx-auto bg-white p-3 rounded-2xl shadow-md border flex flex-col items-center justify-center">
+                                        <div className="w-64 mx-auto bg-white p-4 rounded-2xl shadow-md border flex flex-col items-center justify-center">
                                             <img 
-                                                src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=00020101021126580016ID.CO.ADMS.WWW01189360091438901234565204581253033605802ID5916ADMS%20MARKETPLACE6007BANDUNG61054011562070703A0163048B90" 
+                                                src="/assets/Images/QRIS_ADMS.png" 
                                                 alt="QRIS ADMS"
-                                                className="w-full h-full object-contain"
+                                                className="w-full h-auto object-contain"
                                             />
                                         </div>
                                         <p className="text-[11px] font-semibold text-slate-400">
@@ -585,6 +633,14 @@ export default function Checkout({ user, token, onNavigate, onLogout, darkMode =
                         </div>
 
                         <div className="space-y-3">
+                            <button 
+                                onClick={() => handleRedirectWhatsApp(createdOrder)}
+                                className="w-full py-3.5 px-6 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
+                            >
+                                <PhoneCall className="w-4 h-4 text-white" />
+                                <span>Kirim Konfirmasi WhatsApp</span>
+                            </button>
+
                             <button 
                                 onClick={() => {
                                     setIsSuccessModalOpen(false);

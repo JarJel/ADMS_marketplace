@@ -13,6 +13,7 @@ class Advertisement extends Model
 
     protected $fillable = [
         'title',
+        'slug',
         'category_id',
         'subcategory',
         'description',
@@ -49,6 +50,19 @@ class Advertisement extends Model
         static::creating(function ($ad) {
             if (empty($ad->expires_at) && $ad->duration_days) {
                 $ad->expires_at = now()->addDays($ad->duration_days);
+            }
+            if (empty($ad->slug)) {
+                $baseSlug = Str::slug($ad->title);
+                if (empty($baseSlug)) {
+                    $baseSlug = 'ad';
+                }
+                $slug = $baseSlug;
+                $count = 1;
+                while (static::where('slug', $slug)->exists()) {
+                    $slug = $baseSlug . '-' . $count;
+                    $count++;
+                }
+                $ad->slug = $slug;
             }
         });
     }

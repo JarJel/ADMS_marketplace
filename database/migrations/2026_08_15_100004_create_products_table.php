@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('price_type', ['starting_from', 'contact_us']);
             $table->string('short_description');
             $table->text('full_description');
-            $table->enum('status', ['active', 'pending', 'rejected'])->default('pending');
+            $table->enum('status', ['active', 'pending', 'rejected', 'inactive', 'banned'])->default('pending');
             $table->string('thumbnail')->nullable();
             $table->integer('stock')->default(0);
             $table->integer('views_count')->default(0);

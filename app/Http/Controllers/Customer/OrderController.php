@@ -139,7 +139,7 @@ class OrderController extends Controller
                 'success'        => true,
                 'message'        => 'Pesanan berhasil dibuat',
                 'invoice_number' => $invoiceNumber,
-                'data'           => $order->load('items.product')
+                'data'           => $order->load(['items.product.merchant', 'merchant'])
             ], 200);
 
         } catch (\Exception $e) {

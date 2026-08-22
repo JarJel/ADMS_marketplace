@@ -170,24 +170,62 @@ class TestingDataSeeder extends Seeder
 
         // 1. Create categories of type 'advertisement' if they don't exist
         $adCategories = [
-            'Mobil' => 'car',
-            'Motor' => 'motorcycle',
-            'Handphone' => 'mobile',
-            'Elektronik' => 'laptop',
-            'Properti' => 'home',
-            'Tanah' => 'map-marked',
-            'Jasa' => 'tools',
-            'Lowongan Kerja' => 'briefcase',
-            'Fashion' => 'tshirt',
-            'Rumah Tangga' => 'couch'
+            'Mobil' => [
+                'icon' => 'car',
+                'sub' => ['Sedan', 'SUV', 'MPV', 'Hatchback']
+            ],
+            'Motor' => [
+                'icon' => 'motorcycle',
+                'sub' => ['Bebek', 'Matic', 'Sport', 'Vespa']
+            ],
+            'Handphone' => [
+                'icon' => 'mobile',
+                'sub' => ['Android', 'iOS', 'Aksesoris']
+            ],
+            'Elektronik' => [
+                'icon' => 'laptop',
+                'sub' => ['Laptop & PC', 'TV & Audio', 'Kamera', 'AC & Kulkas']
+            ],
+            'Properti' => [
+                'icon' => 'home',
+                'sub' => ['Rumah', 'Ruko', 'Apartemen', 'Kost']
+            ],
+            'Tanah' => [
+                'icon' => 'map-marked',
+                'sub' => ['Kavling', 'Sawah / Kebun', 'Industri']
+            ],
+            'Jasa' => [
+                'icon' => 'tools',
+                'sub' => ['Servis AC', 'Pertukangan', 'Desain & Grafis', 'Pindahan']
+            ],
+            'Lowongan Kerja' => [
+                'icon' => 'briefcase',
+                'sub' => ['Full Time', 'Part Time', 'Freelance']
+            ],
+            'Fashion' => [
+                'icon' => 'tshirt',
+                'sub' => ['Pria', 'Wanita', 'Anak-anak']
+            ],
+            'Rumah Tangga' => [
+                'icon' => 'couch',
+                'sub' => ['Mebel / Furniture', 'Peralatan Dapur', 'Dekorasi']
+            ]
         ];
 
         $catModels = [];
-        foreach ($adCategories as $name => $icon) {
-            $catModels[$name] = Category::firstOrCreate(
+        foreach ($adCategories as $name => $info) {
+            $parent = Category::firstOrCreate(
                 ['slug' => Str::slug($name), 'type' => 'advertisement'],
-                ['name' => $name, 'icon' => $icon]
+                ['name' => $name, 'icon' => $info['icon']]
             );
+            $catModels[$name] = $parent;
+
+            foreach ($info['sub'] as $subName) {
+                Category::firstOrCreate(
+                    ['slug' => Str::slug($subName), 'type' => 'advertisement', 'parent_id' => $parent->id],
+                    ['name' => $subName, 'icon' => $info['icon']]
+                );
+            }
         }
 
         $mockAdsData = [
@@ -294,6 +332,7 @@ class TestingDataSeeder extends Seeder
             
             $newAd = Advertisement::create([
                 'title' => $mock['title'],
+                'slug' => Str::slug($mock['title']),
                 'category_id' => $catId,
                 'description' => $mock['desc'],
                 'price' => $mock['price'],
@@ -390,6 +429,7 @@ class TestingDataSeeder extends Seeder
         foreach ($premiumAdsData as $mock) {
             $newAd = Advertisement::create([
                 'title' => $mock['title'],
+                'slug' => Str::slug($mock['title']),
                 'category_id' => $catJasaId,
                 'description' => $mock['desc'],
                 'price' => $mock['price'],

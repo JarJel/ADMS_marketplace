@@ -242,7 +242,10 @@ Route::middleware('auth.custom')->group(function () {
         // Category & Package Management
         Route::post('/admin/categories', [CategoryAndPackageController::class, 'storeCategory']);
         Route::put('/admin/categories/{id}', [CategoryAndPackageController::class, 'updateCategory']);
+        Route::delete('/admin/categories/{id}', [CategoryAndPackageController::class, 'deleteCategory']);
+        Route::post('/admin/packages', [CategoryAndPackageController::class, 'storeAdPackage']);
         Route::put('/admin/packages/{id}', [CategoryAndPackageController::class, 'updateAdPackage']);
+        Route::delete('/admin/packages/{id}', [CategoryAndPackageController::class, 'deleteAdPackage']);
 
         // Package Verification
         Route::get('/admin/package-subscriptions', [AdminPackageSubscriptionController::class, 'index']);

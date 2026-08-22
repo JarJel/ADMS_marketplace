@@ -749,7 +749,7 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                 <ChevronRight className="w-4.5 h-4.5" />
                                             </button>
                                             <button 
-                                                onClick={() => onNavigate('classifieds')}
+                                                onClick={() => onNavigate('products')}
                                                 className="text-xs sm:text-sm font-bold text-gold-500 hover:text-gold-400 dark:text-gold-400 transition-colors ml-2 cursor-pointer"
                                             >
                                                 Lihat Semua &rarr;

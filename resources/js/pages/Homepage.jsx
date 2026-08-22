@@ -93,11 +93,62 @@ function AnimatedNumber({ value }) {
 
 export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, onNavigateToRegister, onNavigateToDashboard, onNavigateToCreateAd, onNavigateToClassifieds, onNavigateToProducts, onNavigate, onLogout, darkMode, setDarkMode, onAddToCart, onToggleWishlist, cartCount, wishlistCount, notifications, setNotifications }) {
     const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const searchRef = useRef(null);
     const [searchInput, setSearchInput] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [merchants, setMerchants] = useState([]);
     const [loadingMerchants, setLoadingMerchants] = useState(true);
     const [selectedProduct, setSelectedProduct] = useState(null);
+
+    // Live Search Debounce Logic
+    useEffect(() => {
+        const fetchSearchResults = async () => {
+            if (searchQuery.trim().length < 2) {
+                setSearchResults([]);
+                setShowDropdown(false);
+                return;
+            }
+
+            setIsSearching(true);
+
+            try {
+                const res = await fetch(`/api/public/products?search=${encodeURIComponent(searchQuery)}`);
+                const data = await res.json();
+                if (data.success) {
+                    const items = Array.isArray(data.data) ? data.data : (data.data?.data || []);
+                    setSearchResults(items.slice(0, 5));
+                } else {
+                    setSearchResults([]);
+                }
+            } catch (err) {
+                console.error("Error fetching search results:", err);
+                setSearchResults([]);
+            } finally {
+                setIsSearching(false);
+            }
+        };
+
+        const timer = setTimeout(() => {
+            fetchSearchResults();
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
+    // Click Outside Dropdown Logic
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const [currentPromoSlide, setCurrentPromoSlide] = useState(0);
     const promoSlides = [
@@ -105,22 +156,22 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
             title: "ADMS Social Panel",
             desc: "Pusat Layanan SMM Termurah & Tercepat untuk Kebutuhan Sosial Media Anda.",
             image: "/images/banners/adms_social_panel.jpg",
-            link: "https://panel.armadadigitalmarketing.top/",
-            domain: "panel.armadadigitalmarketing.top"
+            link: "https://admsgroup.my.id/",
+            domain: "admsgroup.my.id"
         },
         {
             title: "ADMS Whatsapp Blast",
             desc: "Kirim pesan masal ke ribuan kontak dengan sekali klik. Solusi broadcast terbaik.",
             image: "/images/banners/adms_blast.jpg",
-            link: "https://blast.armadadigitalmarketing.top/",
-            domain: "blast.armadadigitalmarketing.top"
+            link: "https://armadadigitalmarketing.icu/",
+            domain: "armadadigitalmarketing.icu"
         },
         {
             title: "ADMS Marketplace",
             desc: "Jual beli produk digital dan jasa freelancer terpercaya dengan sistem rekening bersama.",
             image: "/images/banners/adms_marketplace.jpg",
-            link: "https://adms-marketplace.armadadigitalmarketing.top/",
-            domain: "adms-marketplace.armadadigitalmarketing.top"
+            link: "https://admsmarketplace.my.id/",
+            domain: "admsmarketplace.my.id"
         }
     ];
 
@@ -251,21 +302,21 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
     const [platformStats, setPlatformStats] = useState(null);
 
     const categories = [
-        { name: "Template", count: "42+ Layanan", icon: LayoutTemplate },
-        { name: "Ebook", count: "28+ Layanan", icon: Book },
-        { name: "Software", count: "19+ Layanan", icon: Code },
-        { name: "Website", count: "35+ Layanan", icon: Globe },
-        { name: "Design", count: "54+ Layanan", icon: Palette },
-        { name: "Video", count: "22+ Layanan", icon: Video },
-        { name: "Audio", count: "15+ Layanan", icon: Headphones },
-        { name: "Course", count: "31+ Layanan", icon: GraduationCap },
-        { name: "Social Media", count: "48+ Layanan", icon: Share2, isBlueIcon: true },
-        { name: "Digital Marketing", count: "39+ Layanan", icon: TrendingUp },
-        { name: "Business", count: "26+ Layanan", icon: Briefcase },
-        { name: "Education", count: "18+ Layanan", icon: BookOpen },
-        { name: "Tools", count: "45+ Layanan", icon: Wrench },
-        { name: "Jasa", count: "29+ Layanan", icon: Handshake },
-        { name: "Lainnya", count: "12+ Layanan", icon: MoreHorizontal }
+        { name: "Template", count: "42+ Layanan", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=400&auto=format&fit=crop" },
+        { name: "Ebook", count: "28+ Layanan", image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop" },
+        { name: "Software", count: "19+ Layanan", image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=400&auto=format&fit=crop" },
+        { name: "Website", count: "35+ Layanan", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&auto=format&fit=crop" },
+        { name: "Design", count: "54+ Layanan", image: "https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=400&auto=format&fit=crop" },
+        { name: "Video", count: "22+ Layanan", image: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=400&auto=format&fit=crop" },
+        { name: "Audio", count: "15+ Layanan", image: "https://images.unsplash.com/photo-1516280440502-869d511197c4?q=80&w=400&auto=format&fit=crop" },
+        { name: "Course", count: "31+ Layanan", image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=400&auto=format&fit=crop" },
+        { name: "Social Media", count: "48+ Layanan", image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=400&auto=format&fit=crop" },
+        { name: "Digital Marketing", count: "39+ Layanan", image: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?q=80&w=400&auto=format&fit=crop" },
+        { name: "Business", count: "26+ Layanan", image: "https://images.unsplash.com/photo-1507679622792-5d454dfd60e6?q=80&w=400&auto=format&fit=crop" },
+        { name: "Education", count: "18+ Layanan", image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop" },
+        { name: "Tools", count: "45+ Layanan", image: "https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=400&auto=format&fit=crop" },
+        { name: "Jasa", count: "29+ Layanan", image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=400&auto=format&fit=crop" },
+        { name: "Lainnya", count: "12+ Layanan", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop" }
     ];
 
     return (
@@ -311,21 +362,71 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         </p>
 
                         {/* Search Bar inside Hero */}
-                        <div className="max-w-lg mt-8 relative flex items-center rounded-2xl p-1.5 pl-4 shadow-xl border-2 bg-white dark:bg-[#0F3040] border-slate-200 dark:border-[#174256] text-slate-900 dark:text-white">
-                            <Search className="w-4 h-4 mr-2.5 flex-shrink-0 text-amber-500 dark:text-[#FFBF00]" />
-                            <input 
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Cari produk digital, jasa, atau iklan..."
-                                className="w-full min-w-0 flex-1 bg-transparent focus:outline-none text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 font-medium pr-2 truncate"
-                            />
-                            <button 
-                                onClick={() => onNavigate('products', 'all', searchQuery)}
-                                className="shrink-0 bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] text-xs font-black px-4 sm:px-5 py-2.5 rounded-xl active:scale-95 transition-all shadow-lg shadow-[#FFBF00]/20 cursor-pointer uppercase tracking-wider"
-                            >
-                                Cari
-                            </button>
+                        <div ref={searchRef} className="max-w-lg mt-8 relative">
+                            <div className="flex items-center rounded-2xl p-1.5 pl-4 shadow-xl border-2 bg-white dark:bg-[#0F3040] border-slate-200 dark:border-[#174256] text-slate-900 dark:text-white">
+                                <Search className="w-4 h-4 mr-2.5 flex-shrink-0 text-amber-500 dark:text-[#FFBF00]" />
+                                <input 
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => {
+                                        setSearchQuery(e.target.value);
+                                        setShowDropdown(true);
+                                    }}
+                                    onFocus={() => {
+                                        if (searchQuery.trim().length >= 2) setShowDropdown(true);
+                                    }}
+                                    placeholder="Cari produk digital..."
+                                    className="w-full min-w-0 flex-1 bg-transparent focus:outline-none text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 font-medium pr-2 truncate"
+                                />
+                                <button 
+                                    onClick={() => {
+                                        setShowDropdown(false);
+                                        onNavigate('products', 'all', searchQuery);
+                                    }}
+                                    className="shrink-0 bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] text-xs font-black px-4 sm:px-5 py-2.5 rounded-xl active:scale-95 transition-all shadow-lg shadow-[#FFBF00]/20 cursor-pointer uppercase tracking-wider"
+                                >
+                                    Cari
+                                </button>
+                            </div>
+                            
+                            {/* Dropdown Results */}
+                            {showDropdown && (searchQuery.trim().length >= 2) && (
+                                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#0F3040] border border-slate-200 dark:border-[#174256] rounded-xl shadow-2xl overflow-hidden z-50">
+                                    {isSearching ? (
+                                        <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400">Mencari...</div>
+                                    ) : searchResults.length > 0 ? (
+                                        <ul className="max-h-64 overflow-y-auto">
+                                            {searchResults.map((product) => (
+                                                <li key={product.id}>
+                                                    <button 
+                                                        onClick={() => {
+                                                            setShowDropdown(false);
+                                                            onNavigate('product_detail', product.slug);
+                                                        }}
+                                                        className="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-[#071922] transition-colors border-b border-slate-100 dark:border-[#174256] last:border-0 flex items-center gap-3 cursor-pointer"
+                                                    >
+                                                        <div className="w-10 h-10 bg-slate-200 dark:bg-[#174256] rounded-md overflow-hidden flex-shrink-0">
+                                                            <img src={product.image || product.thumbnail || 'https://via.placeholder.com/40'} alt={product.title} className="w-full h-full object-cover" />
+                                                        </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <div className="text-sm font-bold text-slate-900 dark:text-white truncate">{product.title}</div>
+                                                            <div className="text-xs font-semibold text-teal-600 dark:text-[#FFBF00]">Rp {product.price?.toLocaleString('id-ID')}</div>
+                                                        </div>
+                                                    </button>
+                                                </li>
+                                            ))}
+                                            <li className="p-2 bg-slate-50 dark:bg-[#071922] text-center border-t border-slate-200 dark:border-[#174256]">
+                                                <button onClick={() => {
+                                                    setShowDropdown(false);
+                                                    onNavigate('products', 'all', searchQuery);
+                                                }} className="text-xs font-bold text-teal-600 dark:text-[#FFBF00] hover:underline cursor-pointer w-full text-center">Lihat semua hasil</button>
+                                            </li>
+                                        </ul>
+                                    ) : (
+                                        <div className="p-4 text-center text-sm text-slate-500 dark:text-slate-400">Tidak ada hasil ditemukan.</div>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {/* Popular Tags */}
@@ -501,27 +602,25 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         </p>
                     </div>
                     
-                    {/* 5-column grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+                    {/* 4-column grid (changed from 5 to accommodate images better) */}
+                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {categories.map((cat, idx) => {
-                            const IconComponent = cat.icon;
                             return (
                                 <div 
                                     key={idx}
-                                    className="p-6 bg-white dark:bg-[#0F3040] border-2 border-slate-300 dark:border-[#174256] rounded-2xl transition-all duration-300 hover:-translate-y-1.5 cursor-pointer text-left flex flex-col justify-between min-h-[140px] group relative overflow-hidden shadow-md dark:shadow-lg hover:border-[#FFBF00]"
+                                    className="relative rounded-2xl overflow-hidden min-h-[160px] sm:min-h-[180px] shadow-sm dark:shadow-md group"
                                 >
-                                    <div className="relative z-10">
-                                        <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-[#071922] border border-slate-300 dark:border-[#174256] flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 text-[#0F3040] dark:text-[#FFBF00]">
-                                            <IconComponent className="w-6 h-6 transition-transform duration-300" strokeWidth={2} />
-                                        </div>
- 
-                                        <div>
-                                            <h4 className="font-extrabold text-sm text-[#0F3040] dark:text-white leading-tight mb-1 group-hover:text-[#FFBF00] transition-colors duration-300">{cat.name}</h4>
-                                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold transition-all duration-300 flex items-center gap-1 group-hover:text-[#FFBF00]">
-                                                {cat.count} 
-                                                <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
-                                            </span>
-                                        </div>
+                                    <div 
+                                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                        style={{ backgroundImage: `url('${cat.image}')` }}
+                                    ></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
+                                    
+                                    <div className="absolute inset-x-0 bottom-0 p-5 flex flex-col justify-end z-10">
+                                        <h4 className="font-extrabold text-base text-white leading-tight mb-1">{cat.name}</h4>
+                                        <span className="text-[11px] text-slate-300 font-medium block">
+                                            {cat.count} 
+                                        </span>
                                     </div>
                                 </div>
                             );
@@ -586,7 +685,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                                         onClick={(e) => { e.stopPropagation(); toggleWishlist(prod.id); }}
                                         className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-10 p-1.5 sm:p-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 hover:scale-110 active:scale-95 shadow-md border border-slate-100/50 dark:border-slate-800/50 transition-all duration-300"
                                     >
-                                        <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                        <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${userWishlist.some(id => id?.toString() === prod.id?.toString()) ? 'fill-rose-500 text-rose-500' : ''}`} />
                                     </button>
                                     <div>
                                         {/* Product Image */}

@@ -82,6 +82,73 @@ Route::get('/public/products', [PublicProductController::class, 'index']);
 Route::get('/public/products/recommended', [PublicProductController::class, 'recommended']);
 Route::get('/public/products/{idOrSlug}', [PublicProductController::class, 'show']);
 
+Route::get('/public/search-all', function (\Illuminate\Http\Request $request) {
+    $q = $request->input('q', '');
+    if (strlen($q) < 2) return response()->json(['success' => true, 'data' => []]);
+
+    $ads = \App\Models\Advertisement::select('id', 'title', 'slug', 'price', 'category_id')
+        ->where('status', 'approved')
+        ->where(function($query) use ($q) {
+            $query->where('title', 'like', "%{$q}%")
+                  ->orWhere('description', 'like', "%{$q}%");
+        })
+        ->with('media')
+        ->take(4)->get()
+        ->map(fn($ad) => [
+            'id' => $ad->id,
+            'title' => $ad->title,
+            'slug' => $ad->slug,
+            'category' => 'Iklan Baris',
+            'price' => (float)$ad->price,
+            'image' => $ad->media->first()?->url ?? 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop',
+            'type' => 'ad'
+        ]);
+
+    $products = \App\Models\Product::select('id', 'title', 'slug', 'price', 'thumbnail')
+        ->active()
+        ->where(function($query) use ($q) {
+            $query->where('title', 'like', "%{$q}%")
+                  ->orWhere('short_description', 'like', "%{$q}%")
+                  ->orWhere('full_description', 'like', "%{$q}%");
+        })
+        ->take(4)->get()
+        ->map(fn($p) => [
+            'id' => $p->id,
+            'title' => $p->title,
+            'slug' => $p->slug,
+            'category' => 'Produk Digital',
+            'price' => (float)$p->price,
+            'image' => $p->image_url ?? 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop',
+            'type' => 'product'
+        ]);
+
+    return response()->json([
+        'success' => true,
+        'data' => $products->concat($ads)->values()
+    ]);
+});
+
+Route::get('/public/ads', function () {
+    $ads = \App\Models\Advertisement::with(['category', 'media', 'package'])
+        ->where('status', 'approved')
+        ->latest()
+        ->take(12)
+        ->get()
+        ->map(fn($ad) => [
+            'id' => $ad->id,
+            'title' => $ad->title,
+            'slug' => $ad->slug,
+            'category' => $ad->category?->name ?? 'Umum',
+            'condition' => ucfirst($ad->condition ?? 'bekas'),
+            'price' => (float)$ad->price,
+            'image' => $ad->media->first()?->url ?? 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600&auto=format&fit=crop',
+            'is_premium' => $ad->package && $ad->package->type !== 'free',
+            'date' => $ad->created_at->format('Y-m-d')
+        ]);
+    
+    return response()->json(['success' => true, 'data' => $ads]);
+});
+
 Route::get('/public/ads/search', [PublicAdController::class, 'search']);
 Route::get('/public/ads/{idOrSlug}', [PublicAdController::class, 'show']);
 Route::post('/public/ads/{idOrSlug}/click', [PublicAdController::class, 'trackClick']);

@@ -2,13 +2,21 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search } from 'lucide-react';
 import useDebounce from '../hooks/useDebounce';
 
-export default function SearchBar({ onSelect, placeholder = "Cari mobil bekas, handphone, laptop..." }) {
+export default function SearchBar({ 
+    onSelect, 
+    placeholder = "Cari mobil bekas, handphone, laptop...", 
+    apiEndpoint = "/api/public/ads/search",
+    queryParam = "q",
+    onSearchChange,
+    containerClassName = "w-full flex items-center bg-slate-50 dark:bg-[#05131b] border-2 border-slate-200 dark:border-[#174256] rounded-xl p-3 pl-4 focus-within:border-amber-400 dark:focus-within:border-[#FFBF00] transition-colors relative z-20",
+    inputClassName = "w-full bg-transparent text-slate-900 dark:text-white focus:outline-none text-xs sm:text-sm placeholder-slate-400 font-medium"
+}) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [activeIndex, setActiveIndex] = useState(-1);
-    const debouncedQuery = useDebounce(query, 300);
+    const debouncedQuery = useDebounce(query, 150);
     const searchRef = useRef(null);
     const abortControllerRef = useRef(null);
 
@@ -41,13 +49,17 @@ export default function SearchBar({ onSelect, placeholder = "Cari mobil bekas, h
 
         setLoading(true);
 
-        fetch(`/api/public/ads/search?q=${encodeURIComponent(debouncedQuery)}`, {
+        const url = apiEndpoint.includes('?') 
+            ? `${apiEndpoint}&${queryParam}=${encodeURIComponent(debouncedQuery)}`
+            : `${apiEndpoint}?${queryParam}=${encodeURIComponent(debouncedQuery)}`;
+
+        fetch(url, {
             signal: controller.signal
         })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    setResults(data.data);
+                    setResults(Array.isArray(data.data) ? data.data : data.data.data || []);
                 }
             })
             .catch(err => {
@@ -87,6 +99,7 @@ export default function SearchBar({ onSelect, placeholder = "Cari mobil bekas, h
     const handleItemClick = (item) => {
         setQuery(item.title);
         setShowDropdown(false);
+        if (onSearchChange) onSearchChange(item.title);
         if (onSelect) {
             onSelect(item);
         }
@@ -106,7 +119,7 @@ export default function SearchBar({ onSelect, placeholder = "Cari mobil bekas, h
 
     return (
         <div ref={searchRef} className="relative w-full" onKeyDown={handleKeyDown}>
-            <div className="w-full flex items-center bg-slate-50 dark:bg-[#05131b] border-2 border-slate-200 dark:border-[#174256] rounded-xl p-3 pl-4 focus-within:border-amber-400 dark:focus-within:border-[#FFBF00] transition-colors relative z-20">
+            <div className={containerClassName}>
                 <Search className="w-4 h-4 text-amber-500 dark:text-[#FFBF00] mr-2.5 flex-shrink-0" />
                 <input 
                     type="text"
@@ -115,10 +128,11 @@ export default function SearchBar({ onSelect, placeholder = "Cari mobil bekas, h
                         setQuery(e.target.value);
                         setShowDropdown(true);
                         setActiveIndex(-1);
+                        if (onSearchChange) onSearchChange(e.target.value);
                     }}
                     onFocus={() => setShowDropdown(true)}
                     placeholder={placeholder}
-                    className="w-full bg-transparent text-slate-900 dark:text-white focus:outline-none text-xs sm:text-sm placeholder-slate-400 font-medium"
+                    className={inputClassName}
                 />
             </div>
 

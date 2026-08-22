@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Navbar from '../components/Navbar';
 import ProductDetailModal from '../components/ProductDetailModal';
+import SearchBar from '../components/SearchBar';
 import { 
     Search, Palette, BookOpen, Code, Cpu, Megaphone, 
     Briefcase, Star, MessageSquare, Sun, Moon, ArrowRight, 
@@ -312,14 +313,25 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
 
                         {/* Search Bar inside Hero */}
                         <div className="max-w-lg mt-8 relative flex items-center rounded-2xl p-1.5 pl-4 shadow-xl border-2 bg-white dark:bg-[#0F3040] border-slate-200 dark:border-[#174256] text-slate-900 dark:text-white">
-                            <Search className="w-4 h-4 mr-2.5 flex-shrink-0 text-amber-500 dark:text-[#FFBF00]" />
-                            <input 
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Cari produk digital, jasa, atau iklan..."
-                                className="w-full min-w-0 flex-1 bg-transparent focus:outline-none text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 font-medium pr-2 truncate"
-                            />
+                            <div className="flex-1 min-w-0 pr-2">
+                                <SearchBar 
+                                    onSelect={(item) => {
+                                        if (item.type === 'ad') {
+                                            // Pass to global window object so ClassifiedsCatalogView can pick it up if needed, or just let them find it
+                                            window.initialAdSlug = item.slug;
+                                            onNavigate('classifieds');
+                                        } else {
+                                            onNavigate('products', 'all', item.title);
+                                        }
+                                    }}
+                                    placeholder="Cari produk digital, jasa, atau iklan..."
+                                    apiEndpoint="/api/public/search-all"
+                                    queryParam="q"
+                                    onSearchChange={(val) => setSearchQuery(val)}
+                                    containerClassName="flex items-center w-full"
+                                    inputClassName="w-full bg-transparent text-slate-900 dark:text-white focus:outline-none text-xs sm:text-sm placeholder-slate-400 font-medium truncate"
+                                />
+                            </div>
                             <button 
                                 onClick={() => onNavigate('products', 'all', searchQuery)}
                                 className="shrink-0 bg-gradient-to-r from-[#FFBF00] via-[#ffcd33] to-[#FFBF00] hover:brightness-110 text-[#0F3040] text-xs font-black px-4 sm:px-5 py-2.5 rounded-xl active:scale-95 transition-all shadow-lg shadow-[#FFBF00]/20 cursor-pointer uppercase tracking-wider"
@@ -566,15 +578,7 @@ export default function Homepage({ isLoggedIn, user, token, onNavigateToLogin, o
                         <div className="text-center py-10 text-slate-400">Belum ada produk digital pilihan saat ini.</div>
                     ) : (
                         (() => {
-                            const filtered = searchQuery ? recommendedProducts.filter(p => p.name?.toLowerCase().includes(searchQuery.toLowerCase()) || p.title?.toLowerCase().includes(searchQuery.toLowerCase()) || p.description?.toLowerCase().includes(searchQuery.toLowerCase())) : recommendedProducts;
-                            
-                            if (filtered.length === 0) {
-                                return (
-                                    <div className="py-12 text-center text-slate-400 font-medium">
-                                        Tidak ada produk yang sesuai dengan pencarian &quot;{searchQuery}&quot;.
-                                    </div>
-                                );
-                            }
+                            const filtered = recommendedProducts;
 
                             const renderCard = (prod, isRightCol = false) => (
                                 <div 

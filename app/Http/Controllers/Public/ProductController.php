@@ -106,14 +106,16 @@ class ProductController extends Controller
     {
         $limit = $request->get('limit', 8);
 
-        $products = Product::with(['merchant', 'category', 'reviews'])
+        $products = Product::with(['merchant', 'category'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->active()
             ->latest()
             ->take($limit)
             ->get()
             ->map(function ($product) {
-                $avgRating = $product->reviews->avg('rating');
-                $reviewsCount = $product->reviews->count();
+                $avgRating = $product->reviews_avg_rating;
+                $reviewsCount = $product->reviews_count;
 
                 // Sample high quality placeholder images based on category if thumbnail is missing
                 $defaultImages = [

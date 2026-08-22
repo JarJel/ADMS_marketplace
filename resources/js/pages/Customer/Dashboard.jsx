@@ -1185,7 +1185,12 @@ export default function CustomerDashboard({ user, token, onLogout, onNavigate, d
                                                     />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <h4 className="font-semibold text-[15px] text-gold-500 dark:text-gold-400 hover:underline cursor-pointer leading-tight mb-1 truncate">{ad.title}</h4>
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <h4 className="font-semibold text-[15px] text-gold-500 dark:text-gold-400 hover:underline cursor-pointer leading-tight truncate">{ad.title}</h4>
+                                                        {ad.status === 'approved' && <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[10px] font-bold">Tayang</span>}
+                                                        {ad.status === 'rejected' && <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-[10px] font-bold">Ditolak / Takedown</span>}
+                                                        {ad.status === 'pending' && <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">Pending</span>}
+                                                    </div>
                                                     
                                                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500 dark:text-slate-400 mb-2">
                                                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {ad.created_at ? new Date(ad.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : 'Hari ini'}</span>

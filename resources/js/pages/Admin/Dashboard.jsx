@@ -3,6 +3,7 @@ import AdminSidebar from './AdminSidebar';
 import { AdminOverview } from './AdminOverview';
 import { AdminAnalytics } from './AdminAnalytics';
 import { AdminProducts } from './AdminProducts';
+import { AdminAds } from './AdminAds';
 import { AdminPackageSubscriptions } from './AdminPackageSubscriptions';
 import { CheckCircle2, Clock, Users, Store, Package, ReceiptText, BarChart3, TrendingUp, Percent, Save, Info, HandCoins, Megaphone, Sparkles, Banknote, CreditCard, Settings, Shield, FolderOpen, Tag, Wrench, Check, X, Download } from 'lucide-react';
 
@@ -44,7 +45,7 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
             fetchAdminStats();
         } else if (activeTab === 'merchants') {
             fetchPendingMerchants();
-        } else if (activeTab === 'ads' || activeTab === 'ads-moderation') {
+        } else if (activeTab === 'ads') {
             fetchPendingAds();
         } else if (activeTab === 'withdrawals' || activeTab === 'payouts') {
             fetchPendingWithdrawals();
@@ -326,31 +327,6 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
         }
     };
 
-    const handleVerifyAd = async (id, approve) => {
-        setActionMsg(null);
-        try {
-            const res = await fetch(`/api/admin/ads/${id}/verify`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ status: approve ? 'active' : 'rejected' })
-            });
-            const data = await res.json();
-            if (res.ok && data.success) {
-                setActionMsg({ type: 'success', text: `Iklan berhasil ${approve ? 'diaktifkan' : 'ditolak'}.` });
-                fetchPendingAds();
-                fetchAuditLogs();
-                fetchAdminStats();
-            } else {
-                setActionMsg({ type: 'error', text: data.message || 'Gagal memverifikasi iklan.' });
-            }
-        } catch (err) {
-            setActionMsg({ type: 'error', text: 'Terjadi kesalahan jaringan.' });
-        }
-    };
-
     const handleVerifyWithdrawal = async (id, approve) => {
         setActionMsg(null);
         try {
@@ -513,53 +489,9 @@ export default function AdminDashboard({ user, token, onLogout, onNavigate, dark
                     </div>
                 ) : activeTab === 'products' ? (
                             <AdminProducts token={token} />
-                        ) : activeTab === 'ads' || activeTab === 'ads-moderation' ? (
-                    <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-                        <div className="flex justify-between items-center mb-8 relative z-10">
-                            <div>
-                                <h2 className="text-2xl font-black text-white flex items-center gap-3">
-                                    <Megaphone className="w-10 h-10 p-2 bg-amber-500/20 rounded-xl text-amber-400 shadow-inner" /> 
-                                    Moderasi Iklan Baris (Pending)
-                                </h2>
-                                <p className="text-sm text-slate-400 mt-2">Tinjau dan setujui iklan baru yang diajukan oleh pengguna sebelum tayang.</p>
-                            </div>
-                            <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold px-4 py-2 rounded-xl text-sm shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-                                {pendingAds.length} Menunggu Review
-                            </span>
-                        </div>
-                        {loading ? (
-                            <div className="flex justify-center items-center py-20 relative z-10">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
-                            </div>
-                        ) : pendingAds.length === 0 ? (
-                            <div className="text-center py-16 bg-slate-950/40 rounded-xl border border-slate-800/50 relative z-10">
-                                <div className="mb-4 opacity-50 flex justify-center"><Sparkles className="w-12 h-12 text-slate-500" /></div>
-                                <h3 className="text-lg font-bold text-slate-300 mb-1">Semua Iklan Sudah Direview</h3>
-                                <p className="text-sm text-slate-500">Tidak ada pengajuan iklan baru yang menunggu persetujuan.</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-4 relative z-10">
-                                {pendingAds.map((ad) => (
-                                    <div key={ad.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-5 bg-slate-950/80 backdrop-blur border border-slate-700/50 hover:border-amber-500/50 rounded-xl shadow-lg transition-colors duration-300 gap-4">
-                                        <div>
-                                            <span className="block text-base font-bold text-slate-200">{ad.title}</span>
-                                            <span className="block text-xs text-slate-400 mt-1">Pemilik: <span className="text-slate-300">{ad.user?.name || 'User'}</span> &bull; Paket: <span className="text-indigo-400 font-semibold">{ad.ad_package?.name || '-'}</span></span>
-                                        </div>
-                                        <div className="flex gap-3 w-full sm:w-auto">
-                                            <button onClick={() => handleVerifyAd(ad.id, true)} className="flex-1 sm:flex-none bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 font-bold py-2 px-5 rounded-lg text-xs transition-all hover:shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                                                Approve Iklan
-                                            </button>
-                                            <button onClick={() => handleVerifyAd(ad.id, false)} className="flex-1 sm:flex-none bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-bold py-2 px-5 rounded-lg text-xs transition-all hover:shadow-[0_0_15px_rgba(239,68,68,0.2)]">
-                                                Tolak Iklan
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                        ) : activeTab === 'withdrawals' || activeTab === 'payouts' ? (
+                ) : activeTab === 'ads' ? (
+                            <AdminAds token={token} />
+                ) : activeTab === 'withdrawals' || activeTab === 'payouts' ? (
                     <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
                         <div className="flex justify-between items-center mb-8 relative z-10">

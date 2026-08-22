@@ -31,6 +31,7 @@ class Advertisement extends Model
         'views_count',
         'clicks_count',
         'expires_at',
+        'moderation_note',
     ];
 
     protected $casts = [

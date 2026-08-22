@@ -63,16 +63,24 @@ class OrderController extends Controller
         } elseif ($request->filled('items')) {
             foreach ($request->items as $item) {
                 $prod = Product::find($item['product_id']);
+                $cartItem = \App\Models\CartItem::where('user_id', $user->id)
+                                ->where('product_id', $prod->id)
+                                ->first();
                 $checkoutItems[] = [
                     'product' => $prod,
-                    'quantity' => $item['quantity']
+                    'quantity' => $item['quantity'],
+                    'cart_item' => $cartItem
                 ];
             }
         } else {
             $prod = Product::find($request->product_id);
+            $cartItem = \App\Models\CartItem::where('user_id', $user->id)
+                            ->where('product_id', $prod->id)
+                            ->first();
             $checkoutItems[] = [
                 'product' => $prod,
-                'quantity' => $request->quantity
+                'quantity' => $request->quantity,
+                'cart_item' => $cartItem
             ];
         }
 

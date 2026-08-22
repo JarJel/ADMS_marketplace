@@ -308,6 +308,9 @@ Route::middleware('auth.custom')->group(function () {
 
         // Ads (all, with filter)
         Route::get('/admin/ads', [AdminOverviewController::class, 'getAds']);
+        Route::post('/admin/ads', [AdminOverviewController::class, 'createAd']);
+        Route::put('/admin/ads/{id}', [AdminOverviewController::class, 'updateAd']);
+        Route::delete('/admin/ads/{id}', [AdminOverviewController::class, 'deleteAd']);
         Route::post('/admin/ads/{id}/status', [AdminOverviewController::class, 'toggleAdStatus']);
 
         // Categories list

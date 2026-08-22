@@ -23,6 +23,12 @@ export default function Navbar({
     const [showSidebar, setShowSidebar] = useState(false);
     const [showNotifMenu, setShowNotifMenu] = useState(false);
 
+    // Search states
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const searchInputRef = useRef(null);
+    const searchContainerRef = useRef(null);
+
     const notifRef = useRef(null);
     const profileRef = useRef(null);
 
@@ -34,10 +40,35 @@ export default function Navbar({
             if (profileRef.current && !profileRef.current.contains(event.target)) {
                 setShowProfileMenu(false);
             }
+            if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+                setIsSearchOpen(false);
+            }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    // Debounce search effect
+    useEffect(() => {
+        if (!isSearchOpen) return;
+        const timer = setTimeout(() => {
+            if (searchQuery.trim().length > 0) {
+                onNavigate('products', 'all', searchQuery);
+            }
+        }, 600); // 600ms debounce
+        return () => clearTimeout(timer);
+    }, [searchQuery, isSearchOpen, onNavigate]);
+
+    const handleSearchClick = () => {
+        if (isSearchOpen && searchQuery.trim().length > 0) {
+            onNavigate('products', 'all', searchQuery);
+        } else {
+            setIsSearchOpen(!isSearchOpen);
+            if (!isSearchOpen) {
+                setTimeout(() => searchInputRef.current?.focus(), 100);
+            }
+        }
+    };
 
     const handleMarkNotifRead = async (id) => {
         try {
@@ -159,10 +190,34 @@ export default function Navbar({
 
                     {token ? (
                         <>
-                            {/* Search Icon */}
-                            <button className="p-1.5 sm:p-2 rounded-full bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00] transition-colors">
-                                <Search className="w-4 h-4" />
-                            </button>
+                            {/* Expandable Search */}
+                            <div ref={searchContainerRef} className={`relative flex items-center transition-all duration-300 ${isSearchOpen ? 'w-48 sm:w-64' : 'w-8 sm:w-9 h-8 sm:h-9'}`}>
+                                <input
+                                    ref={searchInputRef}
+                                    type="text"
+                                    placeholder="Cari produk..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && searchQuery.trim().length > 0) {
+                                            onNavigate('products', 'all', searchQuery);
+                                        }
+                                    }}
+                                    className={`absolute right-0 top-1/2 -translate-y-1/2 h-8 sm:h-9 bg-white dark:bg-[#071922] border border-slate-200 dark:border-[#174256] rounded-full text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:border-amber-400 dark:focus:border-[#FFBF00] transition-all duration-300 pl-4 pr-10 shadow-sm ${
+                                        isSearchOpen ? 'w-full opacity-100 pointer-events-auto' : 'w-0 opacity-0 pointer-events-none'
+                                    }`}
+                                />
+                                <button 
+                                    onClick={handleSearchClick}
+                                    className={`absolute right-0 top-1/2 -translate-y-1/2 p-1.5 sm:p-2 rounded-full transition-colors z-10 flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 ${
+                                        isSearchOpen 
+                                            ? 'text-amber-600 dark:text-[#FFBF00] hover:text-slate-700 dark:hover:text-slate-200' 
+                                            : 'bg-slate-100 dark:bg-[#071922] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#174256] hover:text-amber-600 dark:hover:text-[#FFBF00]'
+                                    }`}
+                                >
+                                    {isSearchOpen && searchQuery === '' ? <X className="w-4 h-4" onClick={(e) => {e.stopPropagation(); setIsSearchOpen(false);}} /> : <Search className="w-4 h-4" />}
+                                </button>
+                            </div>
 
                             {/* Cart Icon */}
                             <div className="relative">

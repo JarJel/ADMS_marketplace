@@ -93,6 +93,7 @@ class OverviewController extends Controller
                 'activeAds'          => $activeAds,
                 'gmv'                => $gmv,
                 'platformRevenue'    => $platformRevenue,
+                'feePercent'         => $feePercent,
                 'gmvGrowth'          => $gmvGrowth,
                 'pendingMerchants'   => $pendingMerchants,
                 'pendingProducts'    => $pendingProducts,
@@ -289,5 +290,74 @@ class OverviewController extends Controller
         ]);
 
         return response()->json(['success' => true, 'data' => $ad]);
+    }
+
+    public function createAd(Request $request)
+    {
+        $validated = $request->validate([
+            'title'       => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+            'price'       => 'required|numeric|min:0',
+            'location'    => 'required|string|max:255',
+            'status'      => 'required|in:approved,pending,rejected',
+        ]);
+
+        $ad = Advertisement::create(array_merge($validated, [
+            'owner_id' => $request->user()->id,
+        ]));
+
+        AdminAuditLog::create([
+            'admin_id'    => $request->user()->id,
+            'action'      => 'create_ad',
+            'target_type' => 'advertisement',
+            'target_id'   => $ad->id,
+            'reason'      => 'Admin membuat iklan baru',
+        ]);
+
+        return response()->json(['success' => true, 'data' => $ad->load('category')]);
+    }
+
+    public function updateAd(Request $request, $id)
+    {
+        $ad = Advertisement::findOrFail($id);
+
+        $validated = $request->validate([
+            'title'       => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+            'price'       => 'required|numeric|min:0',
+            'location'    => 'required|string|max:255',
+            'status'      => 'required|in:approved,pending,rejected',
+        ]);
+
+        $ad->update($validated);
+
+        AdminAuditLog::create([
+            'admin_id'    => $request->user()->id,
+            'action'      => 'update_ad',
+            'target_type' => 'advertisement',
+            'target_id'   => $ad->id,
+            'reason'      => 'Admin memperbarui iklan',
+        ]);
+
+        return response()->json(['success' => true, 'data' => $ad->load(['category', 'merchant', 'media'])]);
+    }
+
+    public function deleteAd(Request $request, $id)
+    {
+        $ad = Advertisement::findOrFail($id);
+        
+        AdminAuditLog::create([
+            'admin_id'    => $request->user()->id,
+            'action'      => 'delete_ad',
+            'target_type' => 'advertisement',
+            'target_id'   => $ad->id,
+            'reason'      => 'Admin menghapus iklan',
+        ]);
+
+        $ad->delete();
+
+        return response()->json(['success' => true, 'message' => 'Iklan berhasil dihapus']);
     }
 }
